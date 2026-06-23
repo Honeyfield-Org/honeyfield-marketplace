@@ -1,0 +1,6 @@
+{
+  "name": "honeyfield-eurlex-mcp",
+  "description": "EUR-Lex MCP — EU-Rechtsdatenbank (Suche, Volltext, Zitate, Konsolidierungen) über mcp.honeyfield.at",
+  "version": "1.0.0",
+  "author": { "name": "Honeyfield GmbH", "email": "vernes@honeyfield.at" }
+}

@@ -1,0 +1,59 @@
+name: Validate Marketplace
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate JSON files
+        run: |
+          set -e
+          for f in .claude-plugin/marketplace.json plugins/*/.claude-plugin/plugin.json plugins/*/.mcp.json; do
+            [ -f "$f" ] || continue
+            python3 -m json.tool "$f" > /dev/null
+            echo "OK: $f"
+          done
+
+      - name: Check marketplace plugin sources exist
+        run: |
+          set -e
+          python3 - <<'EOF'
+          import json, os, sys
+          with open(".claude-plugin/marketplace.json") as f:
+              mp = json.load(f)
+          missing = []
+          for p in mp["plugins"]:
+              src = p["source"]
+              if not os.path.isfile(os.path.join(src, ".claude-plugin", "plugin.json")):
+                  missing.append(src)
+          if missing:
+              print("Missing plugin.json for:", missing)
+              sys.exit(1)
+          print(f"All {len(mp['plugins'])} plugin sources valid")
+          EOF
+
+      - name: Check skill frontmatter
+        run: |
+          set -e
+          for f in plugins/*/skills/*/SKILL.md; do
+            [ -f "$f" ] || continue
+            head -1 "$f" | grep -q '^---$' || { echo "FEHLER: $f hat kein Frontmatter"; exit 1; }
+            grep -q '^name:' "$f" || { echo "FEHLER: $f ohne name:"; exit 1; }
+            grep -q '^description:' "$f" || { echo "FEHLER: $f ohne description:"; exit 1; }
+            echo "OK: $f"
+          done
+
+      - name: Claude plugin validate
+        run: |
+          set -e
+          npm install -g @anthropic-ai/claude-code
+          for d in plugins/*/; do
+            claude plugin validate "$d"
+            echo "OK: $d"
+          done

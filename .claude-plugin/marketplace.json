@@ -1,0 +1,40 @@
+{
+  "name": "honeyfield-marketplace",
+  "owner": {
+    "name": "Honeyfield GmbH",
+    "email": "vernes@honeyfield.at"
+  },
+  "metadata": {
+    "description": "Öffentlicher Honeyfield Marketplace: MCP-Plugins (Ads/Marketing, EUR-Lex, RIS) über das Gateway mcp.honeyfield.at",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "honeyfield-ads-mcp",
+      "source": "./plugins/honeyfield-ads-mcp",
+      "description": "Honeyfield Ads/Marketing MCP — Google Ads, GA4, Search Console, Google Business Profile, GTM, Clarity, DataForSEO über mcp.ads.honeyfield.at",
+      "version": "1.0.0",
+      "author": {
+        "name": "Honeyfield GmbH"
+      }
+    },
+    {
+      "name": "honeyfield-eurlex-mcp",
+      "source": "./plugins/honeyfield-eurlex-mcp",
+      "description": "EUR-Lex MCP — EU-Rechtsdatenbank (Suche, Volltext, Zitate, Konsolidierungen) über mcp.honeyfield.at",
+      "version": "1.0.0",
+      "author": {
+        "name": "Honeyfield GmbH"
+      }
+    },
+    {
+      "name": "honeyfield-ris-mcp",
+      "source": "./plugins/honeyfield-ris-mcp",
+      "description": "RIS MCP — österreichisches Rechtsinformationssystem (Bundes-/Landesrecht, Judikatur, Verordnungen) über mcp.honeyfield.at",
+      "version": "1.0.0",
+      "author": {
+        "name": "Honeyfield GmbH"
+      }
+    }
+  ]
+}

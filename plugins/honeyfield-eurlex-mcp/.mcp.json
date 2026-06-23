@@ -1,0 +1,6 @@
+{
+  "eurlex": {
+    "type": "http",
+    "url": "https://mcp.honeyfield.at/eurlex/mcp"
+  }
+}
