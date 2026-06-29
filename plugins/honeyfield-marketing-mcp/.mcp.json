@@ -1,5 +1,5 @@
 {
-  "ads": {
+  "marketing": {
     "type": "http",
     "url": "https://mcp.ads.honeyfield.at/mcp"
   }

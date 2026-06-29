@@ -41,13 +41,10 @@ jobs:
       - name: Check skill frontmatter
         run: |
           set -e
-          for f in plugins/*/skills/*/SKILL.md; do
-            [ -f "$f" ] || continue
-            head -1 "$f" | grep -q '^---$' || { echo "FEHLER: $f hat kein Frontmatter"; exit 1; }
-            grep -q '^name:' "$f" || { echo "FEHLER: $f ohne name:"; exit 1; }
-            grep -q '^description:' "$f" || { echo "FEHLER: $f ohne description:"; exit 1; }
-            echo "OK: $f"
-          done
+          python3 -c "import yaml" 2>/dev/null \
+            || python3 -m pip install --quiet pyyaml \
+            || python3 -m pip install --quiet --break-system-packages pyyaml
+          python3 .github/scripts/check_skill_frontmatter.py
 
       - name: Claude plugin validate
         run: |
