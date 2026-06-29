@@ -1,0 +1,95 @@
+[
+  {
+    "id": "trigger-basic-ads-audit",
+    "prompt": "Kannst du mal unser Google Ads Konto durchchecken? Ich hab das Gefühl wir verbrennen Geld.",
+    "expected_output": "Invoziert google-ads-audit. Startet mit Schritt 0: list_workspaces, prüft die sources (google_ads verbunden? ga4 für Tracking-Cross-Check?), klärt Zielmarkt und Geschäftsziel. Liefert evidenz-gestufte Befunde über die Phasen, kein generischer Ratschlag.",
+    "assertions": [
+      "Aktiviert den google-ads-audit-Skill",
+      "Ruft list_workspaces auf und prüft die verbundenen sources, bevor Phasen laufen",
+      "Beginnt mit der Conversion-Tracking-Integrität (Gate), bevor CPA/ROAS bewertet werden",
+      "Kennzeichnet jeden Befund nach Beleg-Stufe (gemessen / mit Tracking-Vorbehalt / beratend)"
+    ],
+    "files": ["SKILL.md"]
+  },
+  {
+    "id": "tracking-gate-first",
+    "prompt": "Warum ist unser CPA in Google Ads auf einmal so hoch?",
+    "expected_output": "Prüft ZUERST die Conversion-Tracking-Integrität (ads_list_conversion_actions: primär vs. sekundär, Jede/Eine-Zählung) und spiegelt gegen GA4, bevor der hohe CPA als Performance-Problem gewertet wird. Behandelt eine große Ads-vs-GA4-Diskrepanz als Tracking-Verdacht, nicht als gegebene Wahrheit.",
+    "assertions": [
+      "Validiert das Conversion-Tracking, bevor der CPA-Wert als belastbar behandelt wird",
+      "Prüft primäre vs. sekundäre Conversion-Actions und die Jede/Eine-Zählung",
+      "Macht einen GA4-Cross-Check und deutet Faktor-2+-Diskrepanz als Tracking-Verdacht",
+      "Berücksichtigt Attributions-Lag (frisches Kurzfenster nicht hart bewerten)"
+    ],
+    "files": ["SKILL.md", "references/google-ads-benchmarks.md"]
+  },
+  {
+    "id": "search-term-hygiene-owned",
+    "prompt": "Räum mir die verschwendeten Suchbegriffe auf, wir zahlen für totalen Müll.",
+    "expected_output": "Führt die Suchbegriff-Hygiene SELBST aus (delegiert sie nicht): zieht ads_search_terms, macht eine n-gram-Analyse statt Einzelbegriffe, trennt Brand von Non-Brand, prüft Negative-Konflikte gegen aktive Keywords und beziffert den unattribuierten Spend-Anteil.",
+    "assertions": [
+      "Behandelt die Suchbegriff-Hygiene als Teil dieses Skills, verweist NICHT auf einen separaten Skill dafür",
+      "Nutzt eine n-gram-/Token-Analyse statt nur einzelne Suchbegriffe durchzugehen",
+      "Trennt Brand- von Non-Brand-Suchbegriffen",
+      "Prüft Negative-Kandidaten auf Konflikte mit aktiven Keywords und beachtet, dass Negatives keine Close-Variants matchen"
+    ],
+    "files": ["SKILL.md", "references/search-term-hygiene.md"]
+  },
+  {
+    "id": "tool-reality-impression-share",
+    "prompt": "Wir kriegen kaum noch Klicks. Sollen wir einfach das Budget erhöhen?",
+    "expected_output": "Unterscheidet Lost IS (Budget) von Lost IS (Rank), bevor eine Budget-Erhöhung empfohlen wird. Bei hohem Lost IS (Rank) verweist es auf QS-Komponenten/Gebot statt Budget; eine Budget-Erhöhung nur bei hohem Lost IS (Budget) UND gutem CPA/ROAS.",
+    "assertions": [
+      "Zieht die Impression-Share-Diagnose heran (Lost IS Budget vs. Rank), statt pauschal Budget zu empfehlen",
+      "Empfiehlt Budget nur bei Lost IS (Budget) in Kombination mit gutem CPA/ROAS",
+      "Verweist bei Lost IS (Rank) auf Quality-Score-Komponenten / Gebot statt Budget",
+      "Behandelt IS-Werte als Schätzung (teils redigiert)"
+    ],
+    "files": ["SKILL.md", "references/google-ads-benchmarks.md"]
+  },
+  {
+    "id": "smart-bidding-data-threshold",
+    "prompt": "Soll ich auf Target ROAS umstellen, läuft gerade auf Maximize Clicks?",
+    "expected_output": "Prüft das Conversion-Volumen, bevor eine Smart-Bidding-Umstellung empfohlen wird. Nennt die konservative Daten-Schwelle (tROAS braucht mehr Conversions als tCPA) und warnt vor der Lernphase nach einem Strategiewechsel. Behandelt die Bidding-Strategie-Umstellung als Operator-Tabu ohne ausführliche Rücksprache.",
+    "assertions": [
+      "Prüft das monatliche Conversion-Volumen gegen die Smart-Bidding-Schwellen, bevor tROAS empfohlen wird",
+      "Warnt vor der 1–2-wöchigen Lernphase nach einem Strategiewechsel",
+      "Behandelt einen Mismatch (Maximize Clicks bei Conversion-Ziel) als Befund",
+      "Stellt die Gebotsstrategie nicht ungefragt um (Operator-Tabu)"
+    ],
+    "files": ["SKILL.md", "references/google-ads-benchmarks.md"]
+  },
+  {
+    "id": "operator-confirmation-required",
+    "prompt": "Setz die schlechtesten Suchbegriffe direkt als Negatives, mach einfach.",
+    "expected_output": "Zeigt erst einen Dry-Run (welche Begriffe, welche Ebene Account/Shared-Liste/Kampagne/Ad-Group, welcher Match-Type, Konfliktprüfung gegen aktive Keywords) und führt den Bulk-Ausschluss erst nach ausdrücklicher Bestätigung aus — trotz des „mach einfach”.",
+    "assertions": [
+      "Führt keine Schreib-Aktion aus, ohne vorher einen Dry-Run zu zeigen und zu bestätigen",
+      "Legt Ziel-Ebene und Match-Type der Negatives explizit fest",
+      "Prüft Konflikte mit aktiven Keywords vor dem Ausschluss",
+      "Besteht auf Bestätigung trotz der Aufforderung, einfach zu machen"
+    ],
+    "files": ["SKILL.md", "references/search-term-hygiene.md"]
+  },
+  {
+    "id": "dach-location-presence",
+    "prompt": "Wir sind eine Zahnarztpraxis in Graz und werben über Google Ads, aber viele Anfragen sind totaler Quatsch von weit weg.",
+    "expected_output": "Identifiziert die Standort-Targeting-Einstellung „Anwesenheit oder Interesse” (Default) als wahrscheinliche Wasted-Spend-Quelle für ein lokales Geschäft und empfiehlt „Anwesenheit”. Behandelt das als High-Impact-DACH-Befund, nicht als generischen Tipp.",
+    "assertions": [
+      "Prüft die Standort-Targeting-Methode (Anwesenheit vs. Anwesenheit oder Interesse)",
+      "Empfiehlt „Anwesenheit” für das lokale DACH-Geschäft als High-Impact-Fix",
+      "Verbindet die irrelevanten Anfragen mit der Targeting-Einstellung, nicht nur mit Negatives"
+    ],
+    "files": ["SKILL.md", "references/dach-ads.md"]
+  },
+  {
+    "id": "defer-to-seo-audit",
+    "prompt": "Warum ranke ich bei Google organisch nicht auf Seite 1 für meine wichtigsten Keywords?",
+    "expected_output": "Erkennt, dass es um organisches Ranking geht, und verweist auf seo-audit, statt einen Google-Ads-Audit zu starten.",
+    "assertions": [
+      "Verweist auf seo-audit als den passenden Skill",
+      "Startet keinen Google-Ads-Audit für eine rein organische Ranking-Frage"
+    ],
+    "files": ["SKILL.md"]
+  }
+]
