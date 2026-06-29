@@ -1,6 +1,6 @@
 {
   "name": "honeyfield-marketing-mcp",
-  "description": "Honeyfield Marketing-Ops MCP + Skills — Google Ads, GA4, Search Console, Google Business Profile, GTM, Clarity, DataForSEO über mcp.ads.honeyfield.at, mit DACH-kalibrierten Audit-Skills (SEO-Audit + GEO-/KI-Sichtbarkeits-Audit)",
-  "version": "1.2.0",
+  "description": "Honeyfield Marketing-Ops MCP + Skills — Google Ads, GA4, Search Console, Google Business Profile, GTM, Clarity, DataForSEO über mcp.ads.honeyfield.at, mit marketing-ops als Front-Door und DACH-kalibrierten Audit-Skills (SEO-Audit + GEO-/KI-Sichtbarkeits-Audit)",
+  "version": "1.3.0",
   "author": { "name": "Honeyfield GmbH", "email": "vernes@honeyfield.at" }
 }
