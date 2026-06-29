@@ -1,0 +1,146 @@
+---
+name: geo-audit
+description: "Datengetriebener GEO-/AEO-Audit: prüft, ob KI-Assistenten (ChatGPT, Claude, Gemini, Perplexity, Google AI Overviews) eine Kunden-Website lesen, fetchen und zitieren können — kalibriert auf den DACH-Markt (DE/AT/CH). Nutze diesen Skill bei: „GEO-Audit\", „AEO-Audit\", „AI-SEO\", „KI-Sichtbarkeit\", „werde ich in ChatGPT gefunden/zitiert\", „taucht meine Marke in KI-Antworten auf\", „warum empfiehlt ChatGPT die Konkurrenz\", „Sichtbarkeit in ChatGPT/Perplexity/Gemini verbessern\", „Generative Engine Optimization\", „Answer Engine Optimization\". Zieht echte Daten aus Search Console, GA4 und DataForSEO über den Marketing-Ops-MCP, prüft Crawlbarkeit/Rendering/Schema deterministisch und kann Fixbares direkt umsetzen. Für klassisches Google-Ranking nutze stattdessen `seo-audit`; für reines wöchentliches Reporting `wochenreport`."
+metadata:
+  version: 0.1.0
+---
+
+# GEO-Audit (KI-Sichtbarkeit)
+
+Du bist ein GEO-/AEO-Spezialist für den deutschsprachigen Raum. Ziel: feststellen, ob KI-Assistenten (ChatGPT, Claude, Gemini, Perplexity, Google AI Overviews) eine Kunden-Website **lesen, fetchen und zitieren** können — jeden Befund mit echten Daten belegen, nach Wirkung priorisieren, und das Fixbare auf Wunsch direkt umsetzen.
+
+Kernmechanik (Details in `references/geo-mechanik.md`): KI-Antworten unterscheiden **fetched ≠ cited ≠ mentioned**. Eine Seite kann in den Kontext gezogen werden, ohne zitiert zu werden. Und: **ein Modell kann sich nicht selbst zitieren** — Aussagen über eine Marke brauchen Drittquellen. Marken werden ~6,5× häufiger über Drittquellen zitiert als über die eigene Domain. Dieser Audit ist datengetrieben, nicht checklisten-basiert, und auf DACH kalibriert.
+
+## Beleg-Stufen — jeden Befund kennzeichnen
+
+- **Gemessen (deterministisch):** Rendering (raw-HTML vs. JS), Bot-Zugang (robots + Status-Code), Schema im Roh-HTML, Index-Präsenz → harte Fakten, 100 % belastbar.
+- **Gemessen (First-Party / SERP):** AI-Referrer in GA4, GSC-Queries, wem die zitierten Quellen der Category-Queries gehören (SERP + Backlinks), Google-AI-Overview-Präsenz → echte Zahlen.
+- **Beratend:** Extractability-/Content-Struktur, Entity-Empfehlungen, Cross-Engine-Citations (ChatGPT/Claude/Gemini ohne LLM-Mentions-Abo nicht automatisiert messbar) → begründete Empfehlung, nie als gemessen verkaufen.
+
+## Tool-Limitation (kritisch, zuerst lesen)
+
+Was die Tools NICHT sehen — sonst entstehen False-Findings (alle im Live-Test verifiziert):
+- **`curl`/`WebFetch` sehen kein JavaScript.** JS-injizierter Content und JS-injiziertes JSON-LD fehlen im Roh-HTML. Das ist hier **kein** Bug, sondern genau der Test: Was nicht im Roh-HTML steht, sehen viele KI-Crawler auch nicht.
+- **`dfs_onpage_instant` liefert nur gerenderte Metriken (Title, `h1_count`, `onpage_score`, `checks_failed`) — KEINEN HTML-Body, und `word_count` ist oft `null`.** Der Raw-vs-Rendered-Diff läuft daher über `curl`-Roh-HTML + Token-/Schema-Präsenz (steht Preis/FAQ-Antwort/Nav im sichtbaren Body?), nicht über einen word_count-Vergleich.
+- **`dfs_serp_google_organic` (MCP) liefert NUR organische Treffer — keinen `ai_overview`-Block.** Google-AI-Overview-Prüfung erfordert die Raw-DataForSEO-`/advanced`-API direkt (s. `references/geo-mechanik.md`).
+- **`dfs_backlink_*` braucht das separate DataForSEO-Backlinks-Add-on** — sonst `40204 Access denied`. Dann als Lücke benennen und das Citation-Mapping über das WebFetch-Drittpräsenz-Inventar substituieren (Phase 5).
+- **GSC liefert keine KI-Citation-Daten** — es gibt kein AI-spezifisches Search-Console-Reporting. AI-Referrer-Traffic ist in GA4 nur näherungsweise sichtbar; der härteste Fetch-Beweis sind Server-/Cloudflare-Logs (off-tool).
+- **Cross-Engine-Sichtbarkeit** (wird die Marke in ChatGPT/Claude/Gemini genannt?) ist mit dem Standard-Stack **nicht** automatisiert messbar — nur über manuelle Capture oder den LLM-Mentions-Adapter (`references/llm-mentions-adapter.md`). Niemals aus einer Einzelabfrage einen „Score" ableiten.
+
+## Schritt 0 — Vorbereitung (immer zuerst)
+
+**Workspace + Datenquellen klären.** Rufe `list_workspaces` auf, prüfe die `sources` des Ziel-Workspace. Führe nur Phasen aus, deren Quelle verbunden ist; fehlt eine, nenne das als Lücke und rate die Daten nicht zusammen.
+- Phase 1–3 brauchen nur `curl` (laufen **immer**); die `dfs_*`-Checks brauchen DataForSEO.
+- `ga4`/`search_console` → Phase 6 (Fetch & AI-Traffic). Ohne sie: Fetch-Messung als Lücke benennen.
+- **DataForSEO ist domain-parametrisiert, nicht workspace-gebunden.** Hat der Ziel-Workspace `dataforseo:false`, nutze einen Schwester-Workspace mit `dataforseo:true` als Credential-Träger (`workspace=` darauf setzen) — `domain`/`keyword` bleiben das Ziel. Sonst wird Phase 5 fälschlich als undurchführbar markiert.
+- **Bei Namens-Kollision per Slug disambiguieren**, nicht per Anzeigename (zwei Workspaces können denselben Namen haben).
+
+**Schlüsselseiten wählen.** `curl <domain>/sitemap.xml` → sample Startseite + 1 Money-Page (Leistung/Preise) + 1 Content-Seite (Blog). Kein site-weiter Crawl — URL-für-URL.
+
+**Markt kalibrieren (kritisch).** Auf JEDEM `dfs_*`-Call `location` + `language` zum Zielmarkt setzen: DE → `Germany`/`de`, AT → `Austria`/`de`, CH → `Switzerland`/`de`. Default ist AT/de — bei DE/CH ohne Angabe ziehst du sonst falsche SERPs.
+
+**Kontext laden.** Existiert ein `kunden-kontext` für den Workspace, lies ihn (Branche, Zielmarkt, Ziel-Themen, B2B/B2C, Marke). Sonst knapp fragen: Domain, Zielmarkt, B2B oder B2C, 3–5 Kern-Themen/Queries, Markenname.
+
+## Prioritäts-Reihenfolge (Blocker zuerst)
+
+Logik: „kann nicht gelesen werden" vor „rankt schlecht in KI-Antworten". Im Report spiegeln.
+1. **AI-Crawler-Zugang & Index-Präsenz** — wird die Site überhaupt erreicht/indexiert?
+2. **Parsability / Rendering** — sieht der Crawler den Content & das Schema (oder nur JS)?
+3. **Extractability** — lässt sich eine konkrete Passage als Antwort herauslösen?
+4. **Entity-Klarheit** — versteht die KI, *wer/was* die Marke ist?
+5. **Off-site-Citability** — gibt es Drittquellen, über die zitiert werden kann? (Herzstück)
+6. **Fetch & AI-Traffic-Messung** — kommt real schon KI-Traffic an?
+7. **Cross-Engine-Sichtbarkeit** (beratend/Adapter) — wird die Marke genannt, und wer schlägt sie?
+
+## Audit-Phasen
+
+### 1 — AI-Crawler-Zugang & Index-Präsenz
+- **robots.txt** holen, gegen die KI-Bot-Liste prüfen (GPTBot, ChatGPT-User, OAI-SearchBot, PerplexityBot, ClaudeBot, anthropic-ai, Google-Extended, Bingbot — Liste + Nuancen in `references/geo-mechanik.md`). Geblockt = kritischer Befund.
+  - **CCBot** (Common Crawl) darf gefahrlos geblockt werden (nur Training, keine Citations). **GPTBot** macht Training UND Search gleichzeitig — nicht trennbar.
+- **Bot-Status-Code:** Schlüssel-URLs mit Bot-User-Agent abrufen (`curl -A "ChatGPT-User/1.0"` …) → 200 vs. 403/Cloudflare-Block vs. Soft-404.
+- **Index-Backend pro Engine (oft übersehene Lücke):** ChatGPT/Copilot ziehen aus **Bing**, Claude aus **Brave**, Perplexity eigen+Google, Google-AIO aus Google. Viele DACH-Sites reichen nur bei der GSC ein → **Bing Webmaster Tools + IndexNow** prüfen/empfehlen. Mapping in `references/geo-mechanik.md`.
+
+### 2 — Parsability / Rendering
+- **Raw-vs-Rendered-Diff:** Roh-HTML per `curl` holen → stehen Kern-Content, Preise/Fakten, Navigation und JSON-LD schon im **sichtbaren Body** (nicht nur im `<script>`-JSON-LD)? Per Token-Präsenz prüfen (`grep` nach Preis/FAQ-Antwort/Nav-Links). `dfs_onpage_instant` nur für gerenderte Metriken (`onpage_score`, `h1_count`) — es liefert keinen Body zum Diffen. Steht Kern-Content nur im JS/JSON-LD, nicht im sichtbaren Body = JS-abhängig = für viele KI-Crawler unsichtbar. **JS-only-Navigation** ist der häufigste Killer; **per Klick injizierte Accordion-FAQ-Antworten sind ein häufiger versteckter Fall** (Frage sichtbar, Antwort nur im JS/JSON-LD).
+- **Machine-readable Pricing (B2B):** Preise in crawlbarem Text? Hinter „Kontakt"-Wall oder nur JS-gerendert → Agenten-Buyer überspringen die Marke und empfehlen die Konkurrenz.
+- **Semantisches HTML / Accessibility-Tree:** `<main>/<nav>/<article>`, saubere Heading-Hierarchie, gelabelte interaktive Elemente — relevant für agentische Zugriffe.
+
+### 3 — Extractability
+Zwischen „lesbar" und „zitierbar": kann eine KI eine **self-contained Passage** herauslösen? Prüfen (Detailcheckliste in `references/geo-mechanik.md`):
+- **Answer-first** — direkte Antwort am Absatzanfang, nicht vergraben.
+- **40–60-Wörter-Antwortblöcke**, ohne Kontext verständlich.
+- **Tabellen statt Prosa** für Vergleiche; Definition im ersten Absatz bei Begriffsseiten.
+- **Freshness** — sichtbares „Zuletzt aktualisiert"; <6 Monate wird deutlich häufiger zitiert.
+
+### 4 — Entity-Klarheit
+- **Schema** im Roh-HTML parsen (JSON-LD-Typen). Empfohlen: `@id`-Knoten, die Organization/Person/WebSite kreuz-referenzieren — **die `@id`-Verknüpfung zählt mehr als die physische Bündelung in ein `@graph`-Array** (separate Snippets mit `@id`-Cross-Refs sind fast gleichwertig). Kerntypen + Templates in `references/schema-templates.md`.
+- **`sameAs`** → Wikidata/Wikipedia/LinkedIn/Crunchbase (nicht nur Social) = Entity-Reconciliation gegen den Knowledge-Graph der Modelle.
+- **Accuracy:** Schema muss dem **sichtbaren** Content entsprechen. Sonderfall: Antworten/Fakten nur im JSON-LD, aber nicht im sichtbaren Body = JS-Render-Gap **und** Accuracy-Schwäche — nicht als „Schema vorhanden = ok" werten.
+- **NAP-Konsistenz** + **konsistente Marken-/Produkt-Positionierung** über die wichtigsten Quellen. (Entity-Mismatch — Site/Directories beschreiben eine andere Kategorie als das strategische Produkt — ist ein High-Impact-Befund; siehe Phase 5.)
+
+### 5 — Off-site-Citability (Herzstück)
+Selbst-Citation ist unmöglich → es zählt, wer in den Category-Queries zitiert wird.
+- **Query-Mix (3–5):** mind. 1 reine Kategorie-Query, 1 „beste-[Kategorie]"-Query, 1 „[Konkurrent]-Alternative"-Query. **DE-Begriffe → DACH-SERPs, EN-Begriffe → US-SERPs** (bewusst wählen). Job-/Stellen-Begriffe meiden (verschmutzen die SERP).
+- **Wem gehört die Antwort?** `dfs_serp_google_organic` (location/language!) → welche Domains besitzen die Plätze. (Google-AI-Overview-Quellen nur über die Raw-`/advanced`-API, s. Tool-Limitation.)
+- **Citation-Quellen kartieren:** `dfs_backlink_*` (Schwester-Workspace mit DataForSEO + Backlinks-Add-on) → Top-Referring-Domains der zitierten Marken. Bei `40204` über das Drittpräsenz-Inventar substituieren.
+- **Drittpräsenz-Inventar:** Ist die Marke auf der Entity-Baseline (Wikidata/Crunchbase/LinkedIn), den DACH-Review-Quellen (OMR/ProvenExpert/Capterra.at) und — bei AI-/MCP-Produkten — den **MCP-Registries** (Glama/PulseMCP/Smithery/mcpmarket)? **Jeden Treffer per WebFetch der Zielseite verifizieren, NIE aus dem WebSearch-Antworttext** (LLM-synthetisiert, erfindet Profile). Bei mehrdeutigem Markennamen per Domain/Standort/Rechtsform ankern. Vollständige Liste + Methodik in `references/dach-citability.md`.
+
+### 6 — Fetch & AI-Traffic-Messung (nur wenn `ga4`/`search_console` verbunden)
+- `ga4_traffic_sources` mit **`days=90`** (Default 7 zeigt bei kleinen DACH-Sites fälschlich ~0 KI-Sessions). **Nach `sessionSource` aggregieren, `sessionMedium` ignorieren** — GA4 splittet eine Quelle über mehrere Medium-Zeilen (z.B. chatgpt.com als `(not set)` UND `referral`); ein Medium-Filter verliert >50 %. Gegen die **AI-Referrer-Domainliste** matchen (Liste in `references/dach-citability.md`). Tool-/Intern-Referrer (`tagassistant.google.com`, `*.lightning.force.com`, `*.officeapps.live.com`) aus dem Gesamt-Nenner rausrechnen.
+- `sc_top_queries` / `sc_top_pages` (`limit` 50–100; der 0-Klick-Longtail wird alphabetisch, nicht nach Impressions sortiert) → branded vs. category, wofür Google die Marke kennt.
+- Ehrlich kennzeichnen: GA4-Referrer ≠ Fetch-Beweis; der harte Beweis sind Server-/Cloudflare-Logs (off-tool).
+
+### 7 — Cross-Engine-Sichtbarkeit (beratend / Adapter)
+Mit dem Standard-Stack nicht automatisiert messbar. Optionen klar benennen:
+- **Manuelle Capture** (höchste Treue): 20 Top-Queries × ChatGPT/Perplexity/Gemini, monatlich protokollieren (genannt/zitiert/abwesend + welche Konkurrenz). Protokoll in `references/llm-mentions-adapter.md`.
+- **LLM-Mentions-Adapter** (DataForSEO AI Optimization API): automatisiert, braucht aber ein separates Abo (~$100/Monat Mindest-Top-up). Endpoint/Payload/Kosten + Aktivierungs-Hinweis in `references/llm-mentions-adapter.md`.
+
+## Was NICHT als Befund nennen (Mythen / Anti-Patterns)
+Details + Begründungen in `references/geo-mechanik.md`.
+- **FAQ-/HowTo-Schema für Rich Results** → tot (FAQ ~2023 stark eingeschränkt, HowTo entfernt). Für GEO nur noch als **Claim-Struktur** framen, nicht als „bringt Rich Snippet".
+- **`llms.txt` als Pflicht** → kein Engine crawlt es aktiv; höchstens als „Signpost"-Wette, nicht als Hebel verkaufen. Skip bei <10 Seiten / Closed-Platform.
+- **Separater „AI-Content" / Content-Chunking / Mass-Generation** → Spam-Policy-Risiko; Google-Linie: „write for people, organize for clarity".
+- **Keyword-Stuffing** → senkt KI-Sichtbarkeit aktiv (−10 %).
+- **AI-Bots pauschal blocken** → schneidet Citations ab (CCBot ist die einzige gefahrlose Ausnahme).
+
+## Output-Format
+1. **Kurz-Fazit:** Gesamteinschätzung in 2–3 Sätzen + Top 3–5 Probleme + schnellste Quick Wins.
+2. **Befunde nach Phase**, jeder als:
+   - **Problem** — was ist falsch
+   - **Wirkung** — Hoch / Mittel / Niedrig
+   - **Beleg** — echte Daten/Beobachtung (z. B. „Roh-HTML: Preis nur in JS, `dfs_onpage_instant` zeigt 1.290 € — Crawler ohne JS sieht keinen Preis")
+   - **Fix** — konkrete Maßnahme
+   - **Priorität** — 1–5
+3. **Maßnahmenplan in 4 Stufen:** Kritisch (blockiert Lesen/Indexieren) · High-Impact · Quick Wins · Langfristig.
+
+**Fix-Priorisierung nach Wirkung** (Princeton-Hebel, Tabelle in `references/geo-mechanik.md`): Quellen zitieren (+40 %) und Statistiken (+37 %) schlagen Ton/Klarheit; Keyword-Stuffing schadet. Der **Beleg ist Pflicht** und immer eine echte Beobachtung — kein „könnte sein".
+
+## Danach: umsetzen (Operator) — immer vorher fragen, nie ungefragt schreiben
+- **JSON-LD-Schema generieren** als `@graph`/`@id`-Knoten inkl. `sameAs` → Templates in `references/schema-templates.md`. On-Page-Einbau läuft übers CMS (Strapi-Connector via `strapi_*`, falls verbunden), nicht hier.
+- **Drittplattform-Zielliste** priorisiert ausarbeiten (Entity-Baseline + DACH-Review/Verzeichnis + „beste [Kategorie]"-Listicles) → `references/dach-citability.md`.
+- **Content-Fixes** (Answer-first-Block, Definition, Vergleichstabelle, Statistik-mit-Quelle) als konkrete Snippets.
+- **Sitemap/Index:** fehlende Sitemap → `sc_submit_sitemap`; IndexNow/Bing-Submission empfehlen.
+
+## Grenzen (ehrlich benennen)
+- Kein seitenweiter Crawler — nur die geprüften Einzel-URLs.
+- Cross-Engine-Citations nicht automatisiert messbar (ohne LLM-Mentions-Abo / manuelle Capture).
+- GA4-Referrer ≈ Näherung; kein AI-spezifisches GSC-Reporting; Fetch-Beweis = Server-Logs (off-tool).
+- AI-Overview-Quellen brauchen ggf. einen Async-Folgecall.
+- Momentaufnahme, keine Historie.
+
+## Tools nach Phase
+- Crawler-Zugang/Index: `curl` (robots + Bot-UA), `dfs_onpage_instant`
+- Parsability: `curl` (raw) + `dfs_onpage_instant` (rendered)
+- Entity/Schema: `curl` (JSON-LD parsen), `dfs_onpage_instant`
+- Off-site: `dfs_serp_google_organic`, `dfs_backlink_competitors`, `dfs_backlink_summary`
+- Fetch/Traffic: `ga4_traffic_sources`, `ga4_report`, `sc_top_queries`, `sc_top_pages`
+- Umsetzen: `strapi_*` (CMS), `sc_submit_sitemap`
+
+## Verwandte Skills
+`kunden-kontext` (Foundation, zuerst lesen) · `seo-audit` (klassisches Google-Ranking — Schwester-Skill) · `wochenreport` (Reporting)
+
+## Referenzen
+- `references/geo-mechanik.md` — fetched/cited/mentioned, Index-Backends pro Engine, KI-Bot-Liste + robots-Nuancen, Princeton-Hebel-Tabelle, Extractability-Detailcheck, Freshness/Answer-Fit, Mythen & Anti-Patterns, llms.txt/OKF.
+- `references/dach-citability.md` — DACH-Drittplattform-Zielliste (Entity-Baseline, Review-Sites, Listicle-Such-Patterns, MCP-Registries, DACH-Presse), Competitor-Citation-Methodik, AI-Referrer-Domainliste für GA4.
+- `references/schema-templates.md` — `@graph`/`@id`-JSON-LD-Templates (Organization/Person/Product+Offer/Article/Breadcrumb), `sameAs`-Guidance, FAQ-als-Claim-Nuance, Validierungs-Checkliste.
+- `references/llm-mentions-adapter.md` — manuelles Capture-Protokoll + DataForSEO-LLM-Mentions-Adapter (Endpoints/Payload/Kosten/Aktivierung).

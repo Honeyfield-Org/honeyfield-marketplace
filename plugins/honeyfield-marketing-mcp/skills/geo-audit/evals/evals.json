@@ -1,0 +1,92 @@
+[
+  {
+    "id": "trigger-basic-ki-sichtbarkeit",
+    "prompt": "Werde ich in ChatGPT und Perplexity überhaupt gefunden? Mach mir bitte einen Check für unsere Website.",
+    "expected_output": "Invoziert geo-audit (nicht seo-audit). Startet mit Schritt 0: list_workspaces, prüft sources, kalibriert location/language auf den Zielmarkt. Liefert evidenz-gestufte Befunde über die Phasen, kein generischer Ratschlag.",
+    "assertions": [
+      "Aktiviert den geo-audit-Skill, nicht seo-audit",
+      "Ruft list_workspaces auf und prüft die verbundenen sources, bevor Phasen laufen",
+      "Setzt location und language passend zum DACH-Zielmarkt auf dfs_*-Calls",
+      "Kennzeichnet jeden Befund nach Beleg-Stufe (gemessen vs. beratend)"
+    ],
+    "files": ["SKILL.md"]
+  },
+  {
+    "id": "trigger-casual-konkurrenz",
+    "prompt": "warum empfiehlt ChatGPT immer die konkurrenz statt uns?",
+    "expected_output": "Triggert geo-audit, Schwerpunkt Phase 5 (Off-site-Citability). Erklärt, dass Selbst-Citation unmöglich ist und Marken ~6,5x häufiger über Drittquellen zitiert werden; identifiziert, wem die Category-SERP gehört, und wo die Marke fehlt.",
+    "assertions": [
+      "Erklärt fetched != cited != mentioned",
+      "Nennt das Selbst-Citation-Prinzip und den Third-Party-Hebel",
+      "Untersucht, welche Domains die Category-Queries besitzen, statt nur die eigene Domain zu prüfen"
+    ],
+    "files": ["SKILL.md", "references/dach-citability.md", "references/geo-mechanik.md"]
+  },
+  {
+    "id": "defer-to-seo-audit",
+    "prompt": "Warum ranke ich bei Google nicht auf Seite 1 für meine wichtigsten Keywords?",
+    "expected_output": "Erkennt, dass es um klassisches Google-Ranking geht, und verweist auf den seo-audit-Skill statt das GEO-Panel zu fahren.",
+    "assertions": [
+      "Verweist auf seo-audit als den passenden Skill",
+      "Startet keinen vollständigen GEO-/KI-Sichtbarkeits-Audit für eine reine Google-Ranking-Frage"
+    ],
+    "files": ["SKILL.md"]
+  },
+  {
+    "id": "tool-reality-onpage-diff",
+    "prompt": "Prüf, ob ChatGPT die Preise und Fakten auf unserer Produktseite überhaupt lesen kann.",
+    "expected_output": "Macht den Raw-vs-Rendered-Diff über curl-Roh-HTML + Token-Präsenz (steht der Preis im sichtbaren Body?). Nutzt dfs_onpage_instant nur für gerenderte Metriken und verlässt sich NICHT auf einen word_count-Vergleich.",
+    "assertions": [
+      "Holt das Roh-HTML per curl und prüft Token-/Schema-Präsenz im sichtbaren Body",
+      "Behauptet keinen word_count-Diff aus dfs_onpage_instant (Feld kann null sein, kein Body)",
+      "Behandelt per Klick injizierte Accordion-FAQ-Antworten als versteckten JS-Render-Fall"
+    ],
+    "files": ["SKILL.md", "references/geo-mechanik.md"]
+  },
+  {
+    "id": "tool-reality-ai-overview",
+    "prompt": "Tauchen wir in den Google AI Overviews für unsere Kategorie auf?",
+    "expected_output": "Erkennt, dass der MCP-Wrapper dfs_serp_google_organic keinen ai_overview-Block liefert. Markiert AI-Overview als Lücke oder nutzt die Raw-DataForSEO-/advanced-API. Erfindet keine AI-Overview-Quellen aus den organischen Treffern.",
+    "assertions": [
+      "Fabriziert keine ai_overview-Daten aus den organischen dfs_serp-Treffern",
+      "Benennt die AI-Overview-Prüfung als Lücke des MCP-Wrappers oder verweist auf die Raw-/advanced-API"
+    ],
+    "files": ["SKILL.md", "references/geo-mechanik.md"]
+  },
+  {
+    "id": "workspace-routing-dataforseo",
+    "prompt": "Mach den GEO-Audit für unseren Kunden-Workspace, der nur GA4 und Search Console verbunden hat, kein DataForSEO.",
+    "expected_output": "Routet die dfs_*-Calls auf einen Schwester-Workspace mit dataforseo:true als Credential-Träger (domain/keyword bleiben das Ziel), statt Phase 5 als undurchführbar abzustempeln. Disambiguiert Workspaces per Slug.",
+    "assertions": [
+      "Erklärt, dass DataForSEO domain-parametrisiert und nicht workspace-gebunden ist",
+      "Nutzt einen Schwester-Workspace mit dataforseo:true für die dfs_*-Calls",
+      "Disambiguiert per Slug, nicht per Anzeigename"
+    ],
+    "files": ["SKILL.md"]
+  },
+  {
+    "id": "ga4-aggregation-sessionsource",
+    "prompt": "Wie viel Traffic bekommen wir real aus KI-Assistenten?",
+    "expected_output": "Phase 6: ga4_traffic_sources mit days=90, aggregiert nach sessionSource (ignoriert sessionMedium), matcht gegen die AI-Referrer-Domainliste inkl. copilot.com, rechnet Tool-/Intern-Referrer aus dem Nenner. Kennzeichnet GA4-Referrer als Näherung, nicht als Fetch-Beweis.",
+    "assertions": [
+      "Aggregiert nach sessionSource und ignoriert sessionMedium",
+      "Verwendet days=90 statt des Default 7",
+      "Schließt tagassistant.google.com, *.lightning.force.com, *.officeapps.live.com aus dem Gesamt-Nenner aus",
+      "Berücksichtigt copilot.com zusätzlich zu copilot.microsoft.com",
+      "Kennzeichnet GA4-Referrer als Näherung, kein Fetch-Beweis"
+    ],
+    "files": ["SKILL.md", "references/dach-citability.md"]
+  },
+  {
+    "id": "citability-verify-mcp-product",
+    "prompt": "Wir sind ein MCP-Marketing-Tool. Wo müssten wir auftauchen, damit KIs uns empfehlen?",
+    "expected_output": "Prüft Entity-Baseline (Wikidata/Crunchbase/LinkedIn), DACH-Review-Sites und insbesondere MCP-Registries (Glama/PulseMCP/Smithery/mcpmarket). Verifiziert jede Drittpräsenz per WebFetch der Zielseite, nicht aus dem WebSearch-Antworttext, und ankert mehrdeutige Markennamen per Domain/Standort.",
+    "assertions": [
+      "Prüft MCP-Registries (z.B. Glama, PulseMCP, Smithery, mcpmarket) für ein AI-natives Produkt",
+      "Verifiziert Drittpräsenz per WebFetch der Zielseite, nicht aus dem WebSearch-Antworttext",
+      "Ankert mehrdeutige Markennamen per Domain/Standort/Rechtsform",
+      "Liefert eine priorisierte Drittplattform-Zielliste (Entity-Baseline zuerst)"
+    ],
+    "files": ["SKILL.md", "references/dach-citability.md"]
+  }
+]
