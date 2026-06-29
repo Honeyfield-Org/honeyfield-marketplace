@@ -9,7 +9,7 @@ Honeyfield-MCP-Server als einzeln installierbare Plugins über das Gateway
 
 ```
 /plugin marketplace add Honeyfield-Org/honeyfield-marketplace
-/plugin install honeyfield-ads-mcp@honeyfield-marketplace
+/plugin install honeyfield-marketing-mcp@honeyfield-marketplace
 /plugin install honeyfield-eurlex-mcp@honeyfield-marketplace
 /plugin install honeyfield-ris-mcp@honeyfield-marketplace
 ```
@@ -20,12 +20,21 @@ Nach der Installation Claude Code neu starten; `/mcp` zeigt den Verbindungsstatu
 
 | Plugin | MCP-Server | Endpoint |
 |---|---|---|
-| `honeyfield-ads-mcp` | Ads/Marketing — Google Ads, GA4, Search Console, Google Business Profile, GTM, Clarity, DataForSEO | `https://mcp.ads.honeyfield.at/mcp` |
+| `honeyfield-marketing-mcp` | Marketing-Ops — Google Ads, GA4, Search Console, Google Business Profile, GTM, Clarity, DataForSEO **+ Audit-Skills** | `https://mcp.ads.honeyfield.at/mcp` |
 | `honeyfield-eurlex-mcp` | EUR-Lex — EU-Rechtsdatenbank (Suche, Volltext, Zitate, Konsolidierungen) | `https://mcp.honeyfield.at/eurlex/mcp` |
 | `honeyfield-ris-mcp` | RIS — österreichisches Rechtsinformationssystem (Bundes-/Landesrecht, Judikatur, Verordnungen) | `https://mcp.honeyfield.at/ris/mcp` |
 
 Jeder MCP ist ein eigenes Plugin — so installiert man nur, was man braucht.
-Skills folgen in späteren Releases.
+`honeyfield-marketing-mcp` bündelt die Marketing-Tools **und** die dazu passenden
+Audit-Skills in einem Plugin — ein Install, alles dabei.
+
+## Skills (honeyfield-marketing-mcp)
+
+| Skill | Zweck |
+|---|---|
+| `seo-audit` | Datengetriebener, DACH-kalibrierter SEO-Audit (DE/AT/CH) — zieht echte Daten aus Search Console, DataForSEO, GA4, Clarity und Google Business Profile, priorisiert Befunde nach Wirkung und kann behebbare Punkte direkt umsetzen. |
+
+Trigger z.B.: „mach einen SEO-Audit für example.at". Weitere Skills folgen.
 
 ## Updates
 
