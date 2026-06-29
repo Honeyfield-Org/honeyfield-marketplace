@@ -29,7 +29,7 @@ dann den exakten Diff zeigen, dann erst — nach expliziter Bestätigung — mut
 
 **Live-Publish / Einreichung**
 
-- `gtm_publish_version`, `sc_submit_sitemap`
+- `gtm_publish_version`, `sc_submit_sitemap`, `strapi_publish_entry`
 
 ## Defaults
 
