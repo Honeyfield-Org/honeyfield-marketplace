@@ -1,0 +1,82 @@
+[
+  {
+    "query": "kannst du kurz schauen wie es bei Kunde Mayer Elektro läuft? irgendwas stimmt nicht mit den kampagnen glaub ich",
+    "should_trigger": true
+  },
+  {
+    "query": "budget bei der max-hausverwaltung kampagne ist wieder weg bevor mittag — erhöh das auf 40€/Tag",
+    "should_trigger": true
+  },
+  {
+    "query": "zeig mir die search terms von letzter Woche für workspace bäckerei-huber, ich will negative keywords hinzufügen",
+    "should_trigger": true
+  },
+  {
+    "query": "welche GA4-Property ist für Kunde Steinmayr Immobilien verbunden und wie viel organischer Traffic kommt gerade rein?",
+    "should_trigger": true
+  },
+  {
+    "query": "neue Kampagne für Pizzeria Rossi anlegen — Ziel: Anrufe, Budget 15€/Tag, Radius Wien",
+    "should_trigger": true
+  },
+  {
+    "query": "wie ist der Impression Share für die Roofing-Kampagne von dachbau-lang.at? welche Keywords performen schlecht?",
+    "should_trigger": true
+  },
+  {
+    "query": "GTM-Tags für den neuen Formular-Submit überprüfen — hat Brunner & Partner das Conversion-Tracking richtig eingerichtet?",
+    "should_trigger": true
+  },
+  {
+    "query": "kannst du die Google Business Profile Bewertungen für Holzbau Obermayr abrufen? will wissen ob welche unbeantwortet sind",
+    "should_trigger": true
+  },
+  {
+    "query": "welche workspaces habe ich überhaupt und welche quellen sind jeweils verbunden?",
+    "should_trigger": true
+  },
+  {
+    "query": "unser organischer Traffic ist seit dem März-Update massiv eingebrochen — 30 % weniger Besucher. was ist da passiert und wie fixen wir das?",
+    "should_trigger": false
+  },
+  {
+    "query": "mach einen SEO-Audit für medizin-praxis-muller.at — die werden seit dem Relaunch nicht mehr gefunden",
+    "should_trigger": false
+  },
+  {
+    "query": "core web vitals bei unserem Onlineshop sind schlecht, LCP über 4 Sekunden auf Mobile — wie fixen wir das?",
+    "should_trigger": false
+  },
+  {
+    "query": "warum rankt unsere Produktseite nicht für 'Winterreifen Österreich'? Konkurrenz ist überall, wir nirgends",
+    "should_trigger": false
+  },
+  {
+    "query": "Indexierungsproblem bei fitnessstudio-berlin.de — Google findet 200 Seiten nicht, die Sitemap scheint kaputt",
+    "should_trigger": false
+  },
+  {
+    "query": "wird unsere Marke in ChatGPT zitiert wenn Leute nach Steuerberater Wien suchen? wir wollen da sichtbar werden",
+    "should_trigger": false
+  },
+  {
+    "query": "GEO-Audit für perplexity-sichtbarkeit — wir wollen wissen ob KI-Suchen unsere Seite finden und zitieren",
+    "should_trigger": false
+  },
+  {
+    "query": "warum empfiehlt ChatGPT immer die Konkurrenz und nie uns? KI-Sichtbarkeit verbessern",
+    "should_trigger": false
+  },
+  {
+    "query": "schreib mir 5 starke Headlines für eine neue Google Ads Kampagne für unsere Zahnarztpraxis — möglichst emotional und lokal",
+    "should_trigger": false
+  },
+  {
+    "query": "erkläre mir wie Smart Bidding in Google Ads funktioniert und welche Strategie ich für einen neuen Kunden wählen soll",
+    "should_trigger": false
+  },
+  {
+    "query": "wie viel kostet DataForSEO pro Monat und lohnt sich das für einen kleinen Kunden mit 3 Kampagnen?",
+    "should_trigger": false
+  }
+]
