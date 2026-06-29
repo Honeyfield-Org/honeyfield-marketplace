@@ -1,6 +1,6 @@
 ---
 name: seo-audit
-description: "Datengetriebener SEO-Audit für eine Kunden-Website, kalibriert auf den DACH-Markt (DE/AT/CH). Nutze diesen Skill, wenn der Nutzer einen „SEO-Audit\", eine „SEO-Analyse\", einen „SEO-Check\" oder eine Diagnose von Ranking- bzw. Sichtbarkeitsproblemen will. Auch bei: „warum ranke ich nicht\", „warum werden wir nicht gefunden\", „Traffic ist eingebrochen\", „Sichtbarkeit gesunken\", „seit dem Relaunch weg\", „nach dem Google-Update abgestürzt\", „technisches SEO prüfen\", „Core Web Vitals / Ladezeit\", „Indexierungsprobleme\", „stimmt was mit der Seite nicht\", oder vage „unser SEO ist schlecht\". Zieht echte Daten aus Search Console, DataForSEO, GA4 und Microsoft Clarity über den Marketing-Ops-MCP und kann gefundene Probleme auf Wunsch direkt beheben. Für reines wöchentliches Reporting nutze stattdessen `wochenreport`; für das Ausschließen verschwendeter Ads-Suchbegriffe `suchbegriff-hygiene`."
+description: "Datengetriebener SEO-Audit für eine Kunden-Website, kalibriert auf den DACH-Markt (DE/AT/CH). Nutze diesen Skill, wenn der Nutzer einen „SEO-Audit\", eine „SEO-Analyse\", einen „SEO-Check\" oder eine Diagnose von Ranking- bzw. Sichtbarkeitsproblemen will. Auch bei: „warum ranke ich nicht\", „warum werden wir nicht gefunden\", „Traffic ist eingebrochen\", „Sichtbarkeit gesunken\", „seit dem Relaunch weg\", „nach dem Google-Update abgestürzt\", „technisches SEO prüfen\", „Core Web Vitals / Ladezeit\", „Indexierungsprobleme\", „stimmt was mit der Seite nicht\", oder vage „unser SEO ist schlecht\". Zieht echte Daten aus Search Console, DataForSEO, GA4 und Microsoft Clarity über den Marketing-Ops-MCP und kann gefundene Probleme auf Wunsch direkt beheben. Für reines wöchentliches Reporting nutze stattdessen `wochenreport`; für bezahlte Suche / Google Ads (Wasted Spend, verschwendete Suchbegriffe, Konto-Audit) `google-ads-audit`."
 metadata:
   version: 0.2.0
 ---
@@ -157,7 +157,7 @@ Biete am Ende an, die sicher behebbaren Punkte direkt zu erledigen. **Immer vorh
 - Umsetzen: `sc_submit_sitemap`, `gtm_create_tag`, `gbp_reply_review`
 
 ## Verwandte Skills
-`kunden-kontext` (Foundation, zuerst lesen) · `wochenreport` · `suchbegriff-hygiene` · `tracking-check`
+`kunden-kontext` (Foundation, zuerst lesen) · `google-ads-audit` (bezahlte Suche / Ads) · `wochenreport` · `tracking-check`
 
 ## Referenzen
 - `references/dach-seo.md` — hreflang-Matrix, Citation-Listen je Land, Pixel-Snippet-Details, AEO-DACH, AT/CH-Linter, Impressum/Datenschutz-Checkliste.
