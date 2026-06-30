@@ -19,6 +19,7 @@ Der `projekt-kontext`-Skill erzeugt/pflegt dieses Fundament-Dokument (Frontmatte
 
 ## Vor jedem Commit validieren
 - `python3 .github/scripts/check_skill_frontmatter.py` — echter YAML-Parse aller Skills (läuft auch in CI `validate.yml`).
+- `python3 .github/scripts/check_version_sync.py` — `plugin.json`-Version == marketplace-Plugin-Eintrag für jedes Plugin (läuft auch in CI). Der Guard gegen den Sync-Drift.
 - `python3 -m json.tool plugins/honeyfield-marketing-mcp/skills/<skill>/evals/evals.json` — Evals valides JSON.
 - `claude plugin validate plugins/honeyfield-marketing-mcp/` — Manifest.
 - Beim Anlegen eines Skills, der Kontext konsumiert: prüfen, dass der Projekt-Kontext-Absatz drin ist und keine alten `kunden-kontext`-Referenzen übrig sind.
@@ -35,5 +36,5 @@ Der Org-Marketplace in Claude.ai synct **von `main`** und erkennt ein Update **n
 3. **Sync zieht von `main`, nicht vom Feature-Branch.** Ein Skill, der nur auf einem Feature-Branch / in einem offenen PR liegt, taucht in Claude Web **nie** auf — egal wie oft man „Update" drückt. Erst nach `main` mergen, dann syncen.
 
 Verifikation vor „fertig":
+- `python3 .github/scripts/check_version_sync.py` → erzwingt `plugin.json` `version` == marketplace-Plugin-Eintrag für **jedes** Plugin (und warnt, wenn `metadata.version` hinterherhinkt). Läuft auch in CI `validate.yml`. Dieser Check fängt genau den Drift, der dazu führte, dass `google-ads-audit` beim Client nie ankam.
 - `git ls-tree -r main --name-only -- plugins/<plugin>/skills/` → was liegt wirklich auf `main`?
-- Versionen abgleichen: `plugin.json` `version` == marketplace-Plugin-Eintrag (und Katalog-`metadata.version` mitgezogen).
