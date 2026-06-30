@@ -22,3 +22,18 @@ Der `projekt-kontext`-Skill erzeugt/pflegt dieses Fundament-Dokument (Frontmatte
 - `python3 -m json.tool plugins/honeyfield-marketing-mcp/skills/<skill>/evals/evals.json` — Evals valides JSON.
 - `claude plugin validate plugins/honeyfield-marketing-mcp/` — Manifest.
 - Beim Anlegen eines Skills, der Kontext konsumiert: prüfen, dass der Projekt-Kontext-Absatz drin ist und keine alten `kunden-kontext`-Referenzen übrig sind.
+- **Inhaltliche Plugin-Änderung** (neuer/geänderter Skill, References, MCP-Config)? → Version in **allen drei Feldern** erhöht (siehe „Release & Org-Marketplace-Sync") — sonst synct der Org-Marketplace nicht.
+
+## Release & Org-Marketplace-Sync
+Der Org-Marketplace in Claude.ai synct **von `main`** und erkennt ein Update **nur an erhöhten Versionsnummern**. Drei Dinge gehen sonst immer wieder schief:
+
+1. **Inhalt geändert, Version nicht erhöht → kein Sync.** Jede inhaltliche Änderung an einem Plugin (neuer Skill, geänderte `SKILL.md`/References, MCP-Config) **muss** mit einem Version-Bump einhergehen. Ohne Bump sieht der Sync keine Änderung — auch manuelles „Update" in den Org-Settings bringt dann nichts.
+2. **Drei Versionsfelder, die zusammen steigen** (laufen sonst auseinander — `marketplace.json` wird am häufigsten vergessen, weil die Quelle der Wahrheit in `plugin.json` liegt):
+   - `plugins/<plugin>/.claude-plugin/plugin.json` → `version` — Quelle der Wahrheit fürs Plugin.
+   - `.claude-plugin/marketplace.json` → der `version` des Plugin-Eintrags in `plugins[]` — **muss exakt = `plugin.json` sein.**
+   - `.claude-plugin/marketplace.json` → `metadata.version` — Katalog-Version, bei jeder Katalog-Änderung erhöhen.
+3. **Sync zieht von `main`, nicht vom Feature-Branch.** Ein Skill, der nur auf einem Feature-Branch / in einem offenen PR liegt, taucht in Claude Web **nie** auf — egal wie oft man „Update" drückt. Erst nach `main` mergen, dann syncen.
+
+Verifikation vor „fertig":
+- `git ls-tree -r main --name-only -- plugins/<plugin>/skills/` → was liegt wirklich auf `main`?
+- Versionen abgleichen: `plugin.json` `version` == marketplace-Plugin-Eintrag (und Katalog-`metadata.version` mitgezogen).

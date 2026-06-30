@@ -32,9 +32,12 @@ Audit-Skills in einem Plugin — ein Install, alles dabei.
 
 | Skill | Zweck |
 |---|---|
+| `projekt-kontext` | Foundation-Skill — legt das Projekt-Kontext-Fundament eines Kunden (Markt, Marke, Ziele, rechtlicher Rahmen) an und pflegt es; alle anderen Skills lesen es zuerst, statt erneut zu fragen. Am Anfang eines Kunden-Projekts ausführen. |
 | `seo-audit` | Datengetriebener, DACH-kalibrierter SEO-Audit (DE/AT/CH) — zieht echte Daten aus Search Console, DataForSEO, GA4, Clarity und Google Business Profile, priorisiert Befunde nach Wirkung und kann behebbare Punkte direkt umsetzen. |
+| `geo-audit` | GEO-/AEO-Audit — prüft, ob KI-Assistenten (ChatGPT, Claude, Gemini, Perplexity, Google AI Overviews) die Website lesen, fetchen und zitieren können (Crawlbarkeit, Rendering, Schema), DACH-kalibriert. |
+| `google-ads-audit` | Google-Ads-Audit — Wasted Spend, verschwendete Suchbegriffe, Quality Score, Impression Share, Konto-Struktur; zieht echte Ads-Daten (+ GA4-Cross-Check) und kann nach Bestätigung direkt aufräumen. |
 
-Trigger z.B.: „mach einen SEO-Audit für example.at". Weitere Skills folgen.
+Trigger z.B.: „mach einen SEO-Audit für example.at", „GEO-Audit für …", „Google-Ads-Audit für …". Jeder Skill liest zuerst den `projekt-kontext`, falls vorhanden.
 
 ## Updates
 
@@ -47,7 +50,12 @@ Trigger z.B.: „mach einen SEO-Audit für example.at". Weitere Skills folgen.
 1. Branch + PR gegen `main`; die CI validiert alle Plugins (`claude plugin validate`).
 2. Neue Plugins: Ordner unter `plugins/<name>/` mit `.claude-plugin/plugin.json`
    anlegen und in `.claude-plugin/marketplace.json` registrieren.
-3. Versionsnummer im jeweiligen `plugin.json` und im Katalog-Eintrag erhöhen.
+3. **Bei jeder inhaltlichen Änderung die Version erhöhen** — sonst erkennt der
+   Org-Marketplace-Sync das Update nicht. Drei Felder synchron halten:
+   `plugin.json` → `version`, der Plugin-Eintrag in `marketplace.json`
+   (`plugins[].version`, **muss = `plugin.json`**) und die Katalog-`metadata.version`.
+4. Sichtbar wird ein Skill in Claude Web erst **nach dem Merge nach `main`** — der
+   Sync zieht von `main`, nicht vom Feature-Branch.
 
 ## Troubleshooting
 
@@ -56,4 +64,4 @@ Trigger z.B.: „mach einen SEO-Audit für example.at". Weitere Skills folgen.
 | `marketplace add` schlägt fehl | GitHub-Auth prüfen (`gh auth status` / SSH-Key) |
 | MCP-Tools fehlen nach Install | Claude Code neu starten; `/mcp` zeigt den Verbindungsstatus |
 | Gateway nicht erreichbar | `curl -I https://mcp.honeyfield.at/eurlex/mcp` bzw. `https://mcp.ads.honeyfield.at/mcp` prüfen |
-| Plugin-Update kommt nicht an | `/plugin marketplace update honeyfield-marketplace`, danach neu starten |
+| Plugin-Update / neuer Skill kommt nicht an | Erstens: Version in `plugin.json` **und** `marketplace.json` (Plugin-Eintrag + `metadata.version`) erhöht? Zweitens: Änderung nach `main` gemerged? Der Sync (auch Org-Auto-Sync in Claude Web) zieht von `main`, nicht vom Feature-Branch. Dann `/plugin marketplace update honeyfield-marketplace` und neu starten. |
