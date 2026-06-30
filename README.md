@@ -47,7 +47,10 @@ Trigger z.B.: „mach einen SEO-Audit für example.at", „GEO-Audit für …", 
 
 ## Beitragen
 
-1. Branch + PR gegen `main`; die CI validiert alle Plugins (`claude plugin validate`).
+1. Branch + PR gegen `main`. Die CI (`.github/workflows/validate.yml`, Check `validate`)
+   prüft JSON-Manifeste, **Version-Sync** (`plugin.json` ↔ `marketplace.json`),
+   **Skill-Frontmatter** (echter YAML-Parse, fängt den Anführungszeichen-Footgun) und
+   `claude plugin validate`. Der Check ist als Required Status Check gesetzt: **rot = kein Merge**.
 2. Neue Plugins: Ordner unter `plugins/<name>/` mit `.claude-plugin/plugin.json`
    anlegen und in `.claude-plugin/marketplace.json` registrieren.
 3. **Bei jeder inhaltlichen Änderung die Version erhöhen** — sonst erkennt der
