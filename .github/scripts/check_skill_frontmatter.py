@@ -3,7 +3,10 @@
 
 Faengt z.B. eine unquotierte `description:` mit `: ` darin, die den strengen
 YAML-Parser bricht und zur Laufzeit dazu fuehrt, dass Claude Code die Metadata
-still verwirft (Skill triggert dann nicht). Default-Glob: plugins/*/skills/*/SKILL.md;
+still verwirft (Skill triggert dann nicht). Prueft zusaetzlich das harte
+1024-Zeichen-Limit der `description`: laenger -> Claude Web verwirft den Skill
+still beim Einlesen (Claude Code ist toleranter und laedt ihn trotzdem, daher
+faellt es lokal nicht auf). Default-Glob: plugins/*/skills/*/SKILL.md;
 optional koennen Glob-Pattern als Argumente uebergeben werden.
 """
 import glob
@@ -33,6 +36,13 @@ for f in files:
                         val = fm.get(key)
                         if not isinstance(val, str) or not val.strip():
                             errs.append(f"'{key}' fehlt oder ist leer")
+                    desc = fm.get("description")
+                    if isinstance(desc, str) and len(desc) > 1024:
+                        errs.append(
+                            f"'description' zu lang: {len(desc)} Zeichen (max 1024) "
+                            "- Claude Web verwirft den Skill sonst still, "
+                            "Claude Code laedt ihn trotzdem"
+                        )
             except yaml.YAMLError as e:
                 errs.append("YAML-Frontmatter parst nicht: " + str(e).replace("\n", " "))
     if errs:

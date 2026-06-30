@@ -1,8 +1,8 @@
 ---
 name: google-ads-audit
-description: "Datengetriebener Google-Ads-Audit für einen Kunden-Account, kalibriert auf den DACH-Markt (DE/AT/CH). Nutze diesen Skill, wenn der Nutzer einen „Google-Ads-Audit”, eine „Ads-Analyse”, einen „Ads-Check” oder eine Diagnose von Performance-/Spend-Problemen in Google Ads will. Auch bei: „warum performen meine Ads schlecht”, „wo verbrenne ich Budget”, „Wasted Spend / verschwendete Suchbegriffe”, „CPA/ROAS zu schlecht”, „Conversions eingebrochen”, „Quality Score niedrig”, „Impression Share verloren”, „warum kriege ich kaum Klicks/Traffic”, „Negatives/Suchbegriffe aufräumen”, „Konto-Struktur prüfen”, oder vage „mein Google Ads läuft nicht”. Zieht echte Daten aus dem Google-Ads-Konto über den Marketing-Ops-MCP (+ GA4-Cross-Check fürs Conversion-Tracking) und kann behebbare Probleme — Negatives setzen, Keywords/Anzeigen pausieren, Budget und Gebots-Modifier anpassen — nach ausdrücklicher Bestätigung direkt umsetzen. Für reines wöchentliches Reporting nutze stattdessen `wochenreport`; für organisches Ranking / Landingpage-Tiefe `seo-audit`; für KI-Sichtbarkeit `geo-audit`."
+description: "Datengetriebener Google-Ads-Audit für einen Kunden-Account, kalibriert auf den DACH-Markt (DE/AT/CH). Nutze diesen Skill, wenn der Nutzer einen „Google-Ads-Audit”, eine „Ads-Analyse” oder einen „Ads-Check” will oder Performance-/Spend-Probleme diagnostizieren möchte. Auch bei: „warum performen meine Ads schlecht”, „wo verbrenne ich Budget”, „Wasted Spend / verschwendete Suchbegriffe”, „CPA/ROAS zu schlecht”, „Conversions eingebrochen”, „Impression Share verloren”, „Negatives/Suchbegriffe aufräumen” oder vage „mein Google Ads läuft nicht”. Zieht echte Daten aus dem Konto über den Marketing-Ops-MCP (+ GA4-Cross-Check fürs Conversion-Tracking) und kann behebbare Probleme — Negatives setzen, Keywords/Anzeigen pausieren, Budget und Gebote anpassen — nach Bestätigung direkt umsetzen. Für wöchentliches Reporting nutze `wochenreport`; für organisches Ranking / Landingpage-Tiefe `seo-audit`; für KI-Sichtbarkeit `geo-audit`."
 metadata:
-  version: 0.1.0
+  version: 0.1.1
 ---
 
 # Google-Ads-Audit
