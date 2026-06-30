@@ -37,7 +37,7 @@ Ein zu breites Negative kann ein **aktives, bezahltes Keyword** aushebeln (das K
 
 ## Brand vs. Non-Brand trennen
 Brand-Suchbegriffe (eigener Markenname) haben hohe CTR, niedrigen CPC, hohen ROAS — sie **blähen jeden Blended-Wert auf**. Ein Konto kann „profitabel" aussehen, während das Non-Brand-Geschäft Geld verliert. Immer getrennt auswerten:
-- Brand identifizieren (Markenname + Varianten/Tippfehler aus dem Kontext / `kunden-kontext`).
+- Brand identifizieren (Markenname + Varianten/Tippfehler aus dem Projekt-Kontext / `projekt-kontext`).
 - Performance Brand vs. Non-Brand getrennt berichten.
 - Achtung: Konkurrenz, die auf den eigenen Brand bietet, und eigene Kampagnen, die Brand + Generic mischen.
 

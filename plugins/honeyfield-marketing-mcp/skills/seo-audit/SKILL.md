@@ -22,7 +22,7 @@ Dieser Audit ist **datengetrieben**, nicht checklisten-basiert: Du rätst nicht,
 - SEO-Kern (`search_console` + `dataforseo`) ist meist verbunden → Rankings, On-Page, SERP, Backlinks, Lighthouse laufen immer.
 - `ga4`, `clarity`, `business_profile`, `gtm` sind variabel → die jeweiligen Querschnitte nur, wenn verbunden.
 
-**Kontext laden.** Existiert ein `kunden-kontext` für den Workspace, lies ihn zuerst (Zielmarkt, Branche, Ziel-Keywords, Geschäftsziel). Sonst frage knapp: Domain, Zielmarkt (DE/AT/CH), lokal oder national, 3-5 wichtigste Keywords/Seiten.
+**Projekt-Kontext zuerst.** Liegt für dieses Projekt ein Projekt-Kontext vor — als **Projektwissen** in diesem Claude-Projekt oder als `projekt-kontext.md` im Arbeitsverzeichnis —, nutze ihn (Zielmarkt, Branche, Ziel-Keywords, Geschäftsziel, Brand-Begriffe), bevor du fragst, und frage nur nach, was dort fehlt oder für diese Aufgabe spezifisch ist. Beachte gesetzte `compliance`-Flags als harte Leitplanke. Fehlt der Kontext, biete an, ihn per `projekt-kontext` anzulegen, oder frage knapp: Domain, Zielmarkt (DE/AT/CH), lokal oder national, 3-5 wichtigste Keywords/Seiten.
 
 **Markt kalibrieren (kritisch).** Setze auf JEDEM `dfs_*`-Call `location` + `language` passend zum Zielmarkt:
 - Deutschland → `location="Germany"`, `language="de"`
@@ -157,7 +157,7 @@ Biete am Ende an, die sicher behebbaren Punkte direkt zu erledigen. **Immer vorh
 - Umsetzen: `sc_submit_sitemap`, `gtm_create_tag`, `gbp_reply_review`
 
 ## Verwandte Skills
-`kunden-kontext` (Foundation, zuerst lesen) · `google-ads-audit` (bezahlte Suche / Ads) · `wochenreport` · `tracking-check`
+`projekt-kontext` (Foundation, zuerst lesen) · `google-ads-audit` (bezahlte Suche / Ads) · `wochenreport` · `tracking-check`
 
 ## Referenzen
 - `references/dach-seo.md` — hreflang-Matrix, Citation-Listen je Land, Pixel-Snippet-Details, AEO-DACH, AT/CH-Linter, Impressum/Datenschutz-Checkliste.

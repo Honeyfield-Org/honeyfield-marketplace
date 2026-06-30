@@ -39,7 +39,7 @@ Was die Tools NICHT sehen — sonst entstehen False-Findings (alle im Live-Test 
 
 **Markt kalibrieren (kritisch).** Auf JEDEM `dfs_*`-Call `location` + `language` zum Zielmarkt setzen: DE → `Germany`/`de`, AT → `Austria`/`de`, CH → `Switzerland`/`de`. Default ist AT/de — bei DE/CH ohne Angabe ziehst du sonst falsche SERPs.
 
-**Kontext laden.** Existiert ein `kunden-kontext` für den Workspace, lies ihn (Branche, Zielmarkt, Ziel-Themen, B2B/B2C, Marke). Sonst knapp fragen: Domain, Zielmarkt, B2B oder B2C, 3–5 Kern-Themen/Queries, Markenname.
+**Projekt-Kontext zuerst.** Liegt für dieses Projekt ein Projekt-Kontext vor — als **Projektwissen** in diesem Claude-Projekt oder als `projekt-kontext.md` im Arbeitsverzeichnis —, nutze ihn (Branche, Zielmarkt, Ziel-Themen, B2B/B2C, Marke), bevor du fragst, und frage nur nach, was dort fehlt oder für diese Aufgabe spezifisch ist. Beachte gesetzte `compliance`-Flags als harte Leitplanke. Fehlt der Kontext, biete an, ihn per `projekt-kontext` anzulegen, oder frage knapp: Domain, Zielmarkt, B2B oder B2C, 3–5 Kern-Themen/Queries, Markenname.
 
 ## Prioritäts-Reihenfolge (Blocker zuerst)
 
@@ -137,7 +137,7 @@ Details + Begründungen in `references/geo-mechanik.md`.
 - Umsetzen: `strapi_*` (CMS), `sc_submit_sitemap`
 
 ## Verwandte Skills
-`kunden-kontext` (Foundation, zuerst lesen) · `seo-audit` (klassisches Google-Ranking — Schwester-Skill) · `wochenreport` (Reporting)
+`projekt-kontext` (Foundation, zuerst lesen) · `seo-audit` (klassisches Google-Ranking — Schwester-Skill) · `wochenreport` (Reporting)
 
 ## Referenzen
 - `references/geo-mechanik.md` — fetched/cited/mentioned, Index-Backends pro Engine, KI-Bot-Liste + robots-Nuancen, Princeton-Hebel-Tabelle, Extractability-Detailcheck, Freshness/Answer-Fit, Mythen & Anti-Patterns, llms.txt/OKF.

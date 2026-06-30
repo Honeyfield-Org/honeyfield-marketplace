@@ -1,0 +1,71 @@
+[
+  {
+    "id": "trigger-neu-anlegen",
+    "prompt": "Wir haben einen neuen Kunden, eine Tischlerei aus Linz. Richte mir den Projekt-Kontext ein.",
+    "expected_output": "Aktiviert projekt-kontext. Prüft zuerst, ob schon ein Kontext existiert (Projektwissen / projekt-kontext.md). Bevorzugt Auto-Draft aus verbundenen Quellen (Website/Impressum, GBP, Search Console, GA4) statt nur zu fragen, befüllt den Pflichtkern zuerst und fragt nur Lücken nach.",
+    "assertions": [
+      "Aktiviert den projekt-kontext-Skill",
+      "Prüft zuerst, ob bereits ein Kontext existiert, bevor neu angelegt wird",
+      "Zieht eine Erstversion aus verbundenen Quellen (Auto-Draft), statt alles per Interview zu erfragen",
+      "Befüllt den Pflichtkern zuerst; optionaler Teil ist überspringbar",
+      "Kalibriert Markt/Sprache auf AT (Austria/de)"
+    ],
+    "files": ["SKILL.md"]
+  },
+  {
+    "id": "trigger-update",
+    "prompt": "Aktualisiere den Projekt-Kontext — der Kunde verkauft jetzt auch in die Schweiz.",
+    "expected_output": "Erkennt vorhandenen Kontext und UPDATET gezielt (maerkte um CH, sprachen um de-CH, Währung CHF, ggf. CH-Impressum-Hinweis), statt von vorn zu interviewen. Aktualisiert das stand-Datum.",
+    "assertions": [
+      "Updatet den bestehenden Kontext gezielt statt komplett neu anzulegen",
+      "Ergänzt CH in maerkte/sprachen und berücksichtigt CHF",
+      "Aktualisiert das stand-Datum"
+    ],
+    "files": ["SKILL.md"]
+  },
+  {
+    "id": "auto-draft-quellen",
+    "prompt": "Kannst du den Kontext selbst vorausfüllen, ich hab wenig Zeit?",
+    "expected_output": "Nutzt list_workspaces, GBP-Profil, Search-Console-Top-Queries und GA4-Top-Pages plus Homepage/Impressum (dfs_onpage_instant/curl), um eine V1 zu entwerfen, und legt sie dem Nutzer zur Korrektur vor. Erfindet keine Felder, sondern markiert Unbekanntes als offen.",
+    "assertions": [
+      "Zieht reale Daten aus verbundenen Quellen (GBP, Search Console, GA4, Website) für den Entwurf",
+      "Legt den Entwurf zur Bestätigung vor, statt ihn als gesichert auszugeben",
+      "Erfindet keine Werte; unbekannte Felder bleiben offen"
+    ],
+    "files": ["SKILL.md"]
+  },
+  {
+    "id": "plattform-handoff-cloud",
+    "prompt": "Speichere den fertigen Kontext.",
+    "expected_output": "In Claude.ai (ohne Dateizugriff) gibt der Skill das vollständige Dokument aus und weist an, es dem Projektwissen des Claude-Projekts hinzuzufügen; er behauptet NICHT, selbst gespeichert zu haben. In Claude Code schreibt er stattdessen projekt-kontext.md.",
+    "assertions": [
+      "Ohne Dateizugriff: gibt das Dokument aus und verweist auf manuelles Hinzufügen zum Projektwissen",
+      "Behauptet nicht, in Claude.ai selbst ins Projektwissen geschrieben zu haben",
+      "Mit Dateizugriff: schreibt projekt-kontext.md ins Arbeitsverzeichnis"
+    ],
+    "files": ["SKILL.md"]
+  },
+  {
+    "id": "compliance-erkennung",
+    "prompt": "Der Kunde ist eine Zahnarztpraxis. Leg den Kontext an.",
+    "expected_output": "Setzt compliance-Flags passend zur Branche (HWG, dazu DSGVO/TTDSG/Impressum) und hält im Kontext fest, dass Audit-/Ads-Skills keine Heil-/Wirkversprechen empfehlen dürfen. Gibt keine Rechtsberatung.",
+    "assertions": [
+      "Setzt HWG sowie die allgemeinen Flags (DSGVO, TTDSG, Impressum) für eine Arztpraxis",
+      "Notiert die Flags als harte Leitplanke für nachgelagerte Skills (keine Heilversprechen)",
+      "Gibt explizit keine Rechtsberatung, verweist im Zweifel weiter",
+      "Konsultiert references/dach-compliance.md für das Branchen-Mapping"
+    ],
+    "files": ["SKILL.md", "references/dach-compliance.md"]
+  },
+  {
+    "id": "optional-ueberspringen",
+    "prompt": "Ich brauch nur das Nötigste für die Audits, keine Personas und so.",
+    "expected_output": "Füllt nur den Pflichtkern (Sektionen 1–8 + Frontmatter) und überspringt den optionalen Teil (Zielgruppe/Personas, Brand-Voice, Kundensprache, Proof Points), ohne den Wert des Kontexts zu mindern.",
+    "assertions": [
+      "Befüllt den Pflichtkern und lässt den optionalen Teil bewusst weg",
+      "Erzwingt keine Personas/Brand-Voice, wenn der Nutzer sie nicht will",
+      "Der erzeugte Kontext genügt trotzdem den Audit-Anforderungen (Markt, Marke, Ziele, Compliance)"
+    ],
+    "files": ["SKILL.md"]
+  }
+]
