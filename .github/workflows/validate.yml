@@ -38,6 +38,11 @@ jobs:
           print(f"All {len(mp['plugins'])} plugin sources valid")
           EOF
 
+      - name: Check version sync (marketplace.json <-> plugin.json)
+        run: |
+          set -e
+          python3 .github/scripts/check_version_sync.py
+
       - name: Check skill frontmatter
         run: |
           set -e
