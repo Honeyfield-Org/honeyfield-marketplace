@@ -30,7 +30,7 @@ Was die Daten NICHT bedeuten — sonst entstehen False-Findings:
 ## Schritt 0 — Vorbereitung (immer zuerst)
 **Workspace + Datenquellen klären.** Rufe `list_workspaces` auf, prüfe die `sources` des Ziel-Workspace. `google_ads` muss verbunden sein (sonst läuft nichts); `ga4` ist für den Tracking-Cross-Check (Phase 1) nötig — fehlt es, den Cross-Check als Lücke benennen. Bei Namens-Kollision per Slug disambiguieren, nicht per Anzeigename.
 
-**Kontext laden.** Existiert ein `kunden-kontext` für den Workspace, lies ihn zuerst (Branche, Zielmarkt, Geschäftsziel, Ziel-CPA/-ROAS, Brand-Begriffe, Saisonalität). Sonst knapp fragen: welches Konto/Workspace, Zielmarkt (DE/AT/CH), Geschäftsziel (Leads vs. Sales vs. Awareness), Ziel-CPA oder -ROAS, was die Brand-Begriffe sind.
+**Projekt-Kontext zuerst.** Liegt für dieses Projekt ein Projekt-Kontext vor — als **Projektwissen** in diesem Claude-Projekt oder als `projekt-kontext.md` im Arbeitsverzeichnis —, nutze ihn (Branche, Zielmarkt, Geschäftsziel, Ziel-CPA/-ROAS, Brand-Begriffe, Saisonalität), bevor du fragst; achte besonders auf die Brand-Begriffe für den Brand/Non-Brand-Split (Phase 3). Beachte gesetzte `compliance`-Flags als harte Leitplanke (z. B. HWG → keine Heil-/Wirkversprechen in Anzeigen-Empfehlungen). Fehlt der Kontext, biete an, ihn per `projekt-kontext` anzulegen, oder frage knapp: welches Konto/Workspace, Zielmarkt (DE/AT/CH), Geschäftsziel (Leads vs. Sales vs. Awareness), Ziel-CPA oder -ROAS, Brand-Begriffe.
 
 **Zeitraum + Markt kalibrieren.** Standard-Analysefenster: die letzten ~30 Tage, dabei die jüngsten ~7 Tage separat als „noch nachlaufend (Attributions-Lag)” markieren. Währung in Kontowährung lesen (CH-Konten oft CHF). Für `dfs_*`-Beifänge (SERP-Wettbewerb) `location` + `language` zum Zielmarkt setzen: DE → `Germany`/`de`, AT → `Austria`/`de`, CH → `Switzerland`/`de`. Default ist AT/de — bei DE/CH ohne Angabe ziehst du sonst falsche SERPs.
 
@@ -149,7 +149,7 @@ Jede Schreib-Aktion bewegt echtes Geld oder echte Auslieferung. Regel: **erst Dr
 - Wettbewerb (DACH-Beifang): `dfs_serp_google_ads`
 
 ## Verwandte Skills
-`kunden-kontext` (Foundation, zuerst lesen) · `seo-audit` (organisch / Landingpage-Tiefe) · `geo-audit` (KI-Sichtbarkeit) · `wochenreport` (Reporting) · `tracking-check` (tiefe Tracking-Diagnose)
+`projekt-kontext` (Foundation, zuerst lesen) · `seo-audit` (organisch / Landingpage-Tiefe) · `geo-audit` (KI-Sichtbarkeit) · `wochenreport` (Reporting) · `tracking-check` (tiefe Tracking-Diagnose)
 
 ## Referenzen
 - `references/google-ads-benchmarks.md` — QS-Komponenten-Deutung, Smart-Bidding-Conversion-Schwellen, Impression-Share-Diagnose-Matrix (Budget vs. Rank), Attributions-Fenster, primäre/sekundäre & „Jede/Eine”-Conversion-Mechanik, Ad-Strength- & Optimization-Score-Realität, Warnung gegen erfundene CTR/CPC-Benchmarks.
