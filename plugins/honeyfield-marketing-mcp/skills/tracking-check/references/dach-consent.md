@@ -41,9 +41,9 @@ Referenz für `tracking-check`. Detailkörper zum Consent-Layer-Querschnitt in S
 
 Empfehlung DACH: Advanced = mehr Daten + Modelling, aber technisch anspruchsvoller und muss Banner-Logik korrekt implementieren (Default denied, kein Pre-Consent-Firing).
 
-### Juni 2026 — neues Update (Stand: aktiv)
+### Juni 2026 — Update (Stand/Datum vor Kundennutzung verifizieren)
 
-Ab 15. Juni 2026 ist `ad_storage` der einzige Kontrollhebel für Ads-Daten. Google Signals wird auf Analytics-interne Zwecke (GA4-Nutzerberichte) eingeschränkt — nicht mehr für Ads-Daten. **Praktische Konsequenz:** CMP-Konfiguration ist der alleinige Datenschutz-Hebel für Google-Ads-Signale; fehlerhafte CMP-Konfiguration hat direkten Ads-Impact.
+Nach Google-Ankündigung ist ab 15. Juni 2026 `ad_storage` der einzige Kontrollhebel für Ads-Daten. Google Signals wird auf Analytics-interne Zwecke (GA4-Nutzerberichte) eingeschränkt — nicht mehr für Ads-Daten. **Praktische Konsequenz:** CMP-Konfiguration ist der alleinige Datenschutz-Hebel für Google-Ads-Signale; fehlerhafte CMP-Konfiguration hat direkten Ads-Impact.
 
 ---
 
