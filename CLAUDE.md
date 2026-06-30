@@ -16,7 +16,17 @@ Der `projekt-kontext`-Skill erzeugt/pflegt dieses Fundament-Dokument (Frontmatte
 - **`description`-Länge: hartes Limit 1024 Zeichen.** Länger → **Claude Web verwirft den Skill still beim Einlesen** (Claude Code ist toleranter und lädt ihn trotzdem, also fällt es lokal nicht auf — der Skill kommt beim Kunden nie an). Ziel ~950 Zeichen mit Marge. `check_skill_frontmatter.py` erzwingt das Limit (CI). Genau dieser Fall ließ `google-ads-audit` in Claude Web verschwinden, obwohl auf `main` + valide.
 - **MCP-Tools** mit Bare-Name in Backticks nennen (`ads_*`, `ga4_*`, `sc_*`, `dfs_*`, `gbp_*`, `gtm_*`, `clarity_*`, `list_workspaces`).
 - **Audit-Skill-Struktur:** Beleg-Stufen → Schritt 0 (inkl. Projekt-Kontext-Absatz + `list_workspaces`/`sources`-Check + Markt-Kalibrierung) → Phasen (Blocker zuerst) → DACH-Layer → Mythen → Output-Format → Operator (Schreib-Aktionen nur mit Dry-Run + Bestätigung) → Grenzen → Tools nach Phase → Verwandte Skills → Referenzen.
-- **References/Evals:** Detail-Wissen in `references/*.md` (on-demand laden, hält SKILL.md schlank); `evals/evals.json` mit Trigger-/Defer-/Tool-Reality-Cases.
+- **References/Evals:** Detail-Wissen in `references/*.md` (on-demand laden, hält SKILL.md schlank); `evals/evals.json` mit Trigger-/Defer-/Tool-Reality-Cases. **Jeder Skill braucht `evals/`** — fehlt es, ist nie geprüft, ob der Skill korrekt triggert und gegen die Schwester-Skills defert.
+
+## Skill-Schnitt — ein Topic pro Skill, kein Funktions-Suffix
+Wie ein neuer Skill geschnitten wird (Entscheidung 2026-06-30, abgeleitet vom Referenz-Marketplace `marketingskills`, der Funktions-Suffixe in v2 aktiv zurückbaute: `paid-ads`→`ads`, `analytics-tracking`→`analytics`, `page-cro`+`form-cro`→`cro`):
+
+- **Topic-Skills bündeln Diagnose + Fix.** Ein Skill pro Kanal/Thema (`google-ads-audit`, `seo-audit`, `geo-audit`), der diagnostiziert **und** die behebbaren Punkte als Operator (Dry-Run + Bestätigung) umsetzt. Audit und Umsetzung **nicht** auf zwei Skills aufteilen — sie teilen Tools, Metriken und Kontext.
+- **Foundation:** `projekt-kontext` liefert den geteilten Markt-/Marke-/Ziele-/Recht-Kontext, den jeder Skill zuerst liest.
+- **Reports nur als Cross-Topic-Hub.** Ein Report rechtfertigt einen eigenen Skill **nur**, wenn er kanalübergreifend aggregiert (`wochenreport` über Ads + SEO + GEO). Ein Single-Topic-Report (nur Ads) gehört als Abschnitt in den Topic-Skill, **nicht** als `<topic>-report` daneben.
+- **Kein Funktions-Suffix-Wildwuchs.** Niemals `<topic>-audit` + `<topic>-report` + `<topic>-build` nebeneinander. Funktion (audit/report/build) lebt **im** Topic-Skill, nicht im Namen.
+- **Splitten nur nach Deliverable, nicht nach Funktion.** Ein Topic erst aufteilen, wenn ein klar **anderes Artefakt** entsteht (z.B. Massen-Anzeigen-Generierung neben dem Ads-Audit) — dann nach dem Output benennen (`ad-creative`), nicht `ads-build`. Auslöser: anderes Deliverable **oder** SKILL.md wird zu groß (~>500 Zeilen). Bei starker Überlappung **mergen** statt nebeneinanderstellen.
+- **Unser Vorteil ggü. reinen Wissens-/Checklisten-Skills** (wie `marketingskills`): echte MCP-Daten + sichere Write-Operatoren + Beleg-Stufen + DACH-Kalibrierung. Das ist der Qualitätsmaßstab pro Skill — nicht die Skill-Anzahl. Tiefe schlägt Breite.
 
 ## Vor jedem Commit validieren
 - `python3 .github/scripts/check_skill_frontmatter.py` — echter YAML-Parse aller Skills (läuft auch in CI `validate.yml`).
