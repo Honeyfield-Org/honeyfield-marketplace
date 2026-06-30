@@ -20,13 +20,13 @@ Nach der Installation Claude Code neu starten; `/mcp` zeigt den Verbindungsstatu
 
 | Plugin | MCP-Server | Endpoint |
 |---|---|---|
-| `honeyfield-marketing-mcp` | Marketing-Ops — Google Ads, GA4, Search Console, Google Business Profile, GTM, Clarity, DataForSEO **+ Audit-Skills** | `https://mcp.ads.honeyfield.at/mcp` |
+| `honeyfield-marketing-mcp` | Marketing-Ops — Google Ads, GA4, Search Console, Google Business Profile, GTM, Clarity, DataForSEO **+ Skills (Projekt-Kontext + Audits)** | `https://mcp.ads.honeyfield.at/mcp` |
 | `honeyfield-eurlex-mcp` | EUR-Lex — EU-Rechtsdatenbank (Suche, Volltext, Zitate, Konsolidierungen) | `https://mcp.honeyfield.at/eurlex/mcp` |
 | `honeyfield-ris-mcp` | RIS — österreichisches Rechtsinformationssystem (Bundes-/Landesrecht, Judikatur, Verordnungen) | `https://mcp.honeyfield.at/ris/mcp` |
 
 Jeder MCP ist ein eigenes Plugin — so installiert man nur, was man braucht.
 `honeyfield-marketing-mcp` bündelt die Marketing-Tools **und** die dazu passenden
-Audit-Skills in einem Plugin — ein Install, alles dabei.
+Skills (Projekt-Kontext-Fundament + Audits) in einem Plugin — ein Install, alles dabei.
 
 ## Skills (honeyfield-marketing-mcp)
 
