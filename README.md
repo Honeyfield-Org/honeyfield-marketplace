@@ -36,8 +36,11 @@ Skills (Projekt-Kontext-Fundament + Audits) in einem Plugin — ein Install, all
 | `seo-audit` | Datengetriebener, DACH-kalibrierter SEO-Audit (DE/AT/CH) — zieht echte Daten aus Search Console, DataForSEO, GA4, Clarity und Google Business Profile, priorisiert Befunde nach Wirkung und kann behebbare Punkte direkt umsetzen. |
 | `geo-audit` | GEO-/AEO-Audit — prüft, ob KI-Assistenten (ChatGPT, Claude, Gemini, Perplexity, Google AI Overviews) die Website lesen, fetchen und zitieren können (Crawlbarkeit, Rendering, Schema), DACH-kalibriert. |
 | `google-ads-audit` | Google-Ads-Audit — Wasted Spend, verschwendete Suchbegriffe, Quality Score, Impression Share, Konto-Struktur; zieht echte Ads-Daten (+ GA4-Cross-Check) und kann nach Bestätigung direkt aufräumen. |
+| `tracking-check` | Measurement-Audit — prüft die Integrität des Conversion-/Event-Trackings (GA4, GTM, Google Ads) end-to-end, stuft jeden Befund nach Beweiskraft (gemessen / nur konfiguriert / nicht prüfbar) und behebt Sicheres nach Bestätigung. DACH-Consent-Layer (Consent Mode v2, TDDDG). |
+| `ad-creative` | Google-Ads-Copy-Generator — erstellt/iteriert Responsive Search Ads + Sitelinks daten-fundiert aus der Konto-Performance, hält die harten Zeichen-Limits gegen deutsche Komposita, prüft DACH-Werberecht (UWG/Preisangaben) und schreibt nach Bestätigung als pausierte Assets ins Konto. |
+| `wochenreport` | Cross-Kanal-Report-Hub — zieht die Kern-KPIs aus allen verbundenen Kanälen (Ads, SEO, GA4, AI-Sichtbarkeit) als Woche-über-Woche-Vergleich; read-only, verweist bei Auffälligkeiten auf den passenden Audit. |
 
-Trigger z.B.: „mach einen SEO-Audit für example.at", „GEO-Audit für …", „Google-Ads-Audit für …". Jeder Skill liest zuerst den `projekt-kontext`, falls vorhanden.
+Trigger z.B.: „mach einen SEO-Audit für example.at", „GEO-Audit für …", „Google-Ads-Audit für …". Jeder Skill liest zuerst den `projekt-kontext`, falls vorhanden. Weitere Trigger: „stimmt mein Conversion-Tracking?" (`tracking-check`), „schreib neue Anzeigen für Kampagne X" (`ad-creative`), „Wochenreport für Kunde Y" (`wochenreport`).
 
 ## Updates
 
