@@ -17,6 +17,7 @@ dann den exakten Diff zeigen, dann erst — nach expliziter Bestätigung — mut
 - `ads_remove_negative_keyword`, `ga4_delete_key_event`
 - `ga4_archive_custom_dimension`, `ga4_archive_custom_metric`
 - `gtm_remove_tag`, `sc_delete_sitemap`, `strapi_delete_entry`
+- `wp_delete_post`, `wp_delete_media` (`force=True` → endgültig statt Papierkorb)
 
 **Budget / Status / Bidding**
 
@@ -30,6 +31,7 @@ dann den exakten Diff zeigen, dann erst — nach expliziter Bestätigung — mut
 **Live-Publish / Einreichung**
 
 - `gtm_publish_version`, `sc_submit_sitemap`, `strapi_publish_entry`
+- `wp_create_post` / `wp_update_post` mit `status='publish'` (Default `draft`) — geht sofort live
 
 ## Defaults
 

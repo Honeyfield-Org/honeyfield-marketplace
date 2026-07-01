@@ -257,3 +257,20 @@ Lege Schreib-Tools (W) nie ohne write-guardrails.md an.
 | `strapi_unpublish_entry` | Eintrag depublizieren (setzt publishedAt auf null) | strapi | W |
 | `strapi_upload_media` | Datei in die Medienbibliothek hochladen | strapi | W |
 | `strapi_delete_media` | Datei aus der Medienbibliothek löschen | strapi | W |
+
+---
+
+## WordPress CMS (source: wordpress)
+
+| Tool | Was | Quelle | R/W |
+|---|---|---|---|
+| `wp_list_posts` | Beiträge oder Seiten auflisten (post_type, Volltext, Status, paginiert) | wordpress | R |
+| `wp_get_post` | Einzelnen Beitrag/Seite/Site-Editor-Vorlage mit vollem Inhalt abrufen | wordpress | R |
+| `wp_list_media` | Dateien aus der Medienbibliothek auflisten (paginiert) | wordpress | R |
+| `wp_list_terms` | Kategorien oder Tags auflisten (id, name, slug, count) — IDs für `wp_create_post` | wordpress | R |
+| `wp_create_post` | Beitrag/Seite anlegen — status default `draft`; `publish` = sofort live | wordpress | W |
+| `wp_update_post` | Beitrag/Seite/Vorlage aktualisieren (nur gesetzte Felder); `status=publish` = live | wordpress | W |
+| `wp_delete_post` | Beitrag/Seite löschen — `force=False` → Papierkorb, `force=True` → endgültig | wordpress | W |
+| `wp_upload_media` | Datei in die Medienbibliothek hochladen (`source_url` ODER `file_base64`) | wordpress | W |
+| `wp_delete_media` | Datei aus der Medienbibliothek löschen (`force=True` Default → endgültig) | wordpress | W |
+| `wp_create_term` | Kategorie/Tag anlegen — idempotent (existierender Name → vorhandener Term, kein Duplikat) | wordpress | W |
