@@ -123,6 +123,7 @@ Lege Schreib-Tools (W) nie ohne write-guardrails.md an.
 | `ga4_conversions` | Conversion Events mit Count und Value | ga4 | R |
 | `ga4_list_key_events` | Konfigurierte Key Events + Counts — feuern sie wirklich? | ga4 | R |
 | `ga4_list_properties` | Alle GA4 Properties der verbundenen Google-Verbindung | ga4 | R |
+| `ga4_list_data_streams` | Datenströme (Web/App) einer Property auflisten inkl. Measurement-ID | ga4 | R |
 | `ga4_list_custom_dimensions` | Custom Dimensions einer Property auflisten | ga4 | R |
 | `ga4_list_custom_metrics` | Custom Metrics einer Property auflisten | ga4 | R |
 
@@ -218,6 +219,13 @@ Lege Schreib-Tools (W) nie ohne write-guardrails.md an.
 | `gbp_search_keywords` | Suchbegriffe, über die Nutzer das Profil gefunden haben | business_profile | R |
 | `gbp_reviews` | Rezensionen: Durchschnittswertung + neueste Bewertungen inkl. Antworten | business_profile | R |
 | `gbp_reply_review` | Auf eine Rezension antworten (erstellt oder ersetzt bestehende Antwort) | business_profile | W |
+| `gbp_get_review_link` | Direkten Bewertungs-Link (Kurz-URL) für einen Standort abrufen | business_profile | R |
+| `gbp_local_rank` | Lokales Grid-Ranking für Keywords rund um den Standort (Local-Pack-Position) | business_profile | R |
+| `gbp_local_seo_audit` | Lokaler SEO-Check des Profils (Vollständigkeit, Kategorien, NAP-Konsistenz) | business_profile | R |
+| `gbp_manage_categories` | Primär- und Zusatzkategorien des Standorts lesen/setzen | business_profile | R/W |
+| `gbp_manage_hours` | Reguläre + Sonderöffnungszeiten lesen/setzen | business_profile | R/W |
+| `gbp_update_attributes` | Profil-Attribute setzen (z.B. Service-Optionen, Barrierefreiheit, Zahlungsarten) | business_profile | W |
+| `gbp_update_profile` | Profildaten aktualisieren (Beschreibung, Website, Telefon) | business_profile | W |
 
 ---
 
@@ -227,6 +235,10 @@ Lege Schreib-Tools (W) nie ohne write-guardrails.md an.
 |---|---|---|---|
 | `meta_campaign_performance` | Meta-Ads-Kampagnen-Performance (Impressionen, Klicks, Spend, Conversions) | meta_ads | R |
 | `linkedin_campaign_performance` | LinkedIn-Ads-Kampagnen-Performance (Impressionen, Klicks, Kosten, Conversions) | linkedin_ads | R |
+| `linkedin_list_accounts` | Verbundene LinkedIn-Ad-Accounts auflisten | linkedin_ads | R |
+| `linkedin_list_campaigns` | LinkedIn-Kampagnen auflisten (Name, Status, Budget) | linkedin_ads | R |
+| `linkedin_update_campaign_budget` | Tages-/Gesamtbudget einer LinkedIn-Kampagne ändern | linkedin_ads | W |
+| `linkedin_update_campaign_status` | LinkedIn-Kampagne aktivieren/pausieren | linkedin_ads | W |
 
 ---
 
@@ -243,3 +255,5 @@ Lege Schreib-Tools (W) nie ohne write-guardrails.md an.
 | `strapi_delete_entry` | Eintrag löschen | strapi | W |
 | `strapi_publish_entry` | Eintrag veröffentlichen (setzt publishedAt auf jetzt) | strapi | W |
 | `strapi_unpublish_entry` | Eintrag depublizieren (setzt publishedAt auf null) | strapi | W |
+| `strapi_upload_media` | Datei in die Medienbibliothek hochladen | strapi | W |
+| `strapi_delete_media` | Datei aus der Medienbibliothek löschen | strapi | W |
