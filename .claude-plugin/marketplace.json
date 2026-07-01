@@ -6,14 +6,14 @@
   },
   "metadata": {
     "description": "Öffentlicher Honeyfield Marketplace: MCP-Plugins (Marketing-Ops mit Audit-Skills, EUR-Lex, RIS) über das Gateway mcp.honeyfield.at",
-    "version": "1.6.0"
+    "version": "1.7.0"
   },
   "plugins": [
     {
       "name": "honeyfield-marketing-mcp",
       "source": "./plugins/honeyfield-marketing-mcp",
       "description": "Honeyfield Marketing-Ops MCP + Skills — Google Ads, GA4, Search Console, Google Business Profile, GTM, Clarity, DataForSEO über mcp.ads.honeyfield.at; mit DACH-kalibriertem Projekt-Kontext-Fundament und Audit-Skills (SEO-, GEO-, Google-Ads-Audit)",
-      "version": "1.6.0",
+      "version": "1.7.0",
       "author": {
         "name": "Honeyfield GmbH"
       }
