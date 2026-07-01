@@ -1,0 +1,137 @@
+[
+  {
+    "id": "trigger-basic-tracking-check",
+    "prompt": "Ich glaube unser Tracking stimmt nicht. GA4 zählt viel weniger Conversions als ich erwarten würde, und ich bin nicht sicher ob unsere Events überhaupt ankommen. Kannst du das prüfen?",
+    "expected_output": "Aktiviert den tracking-check-Skill. Startet mit Schritt 0: list_workspaces aufrufen, sources prüfen (ga4 / gtm / google_ads verbunden?). Phase 1 zuerst: ads_list_conversion_actions + ads_conversion_performance (last_gap_days, letztes Conversion-Datum) + ga4_conversions / ga4_list_key_events. Jeden Befund mit Beleg-Stufe (gemessen / nur konfiguriert / nicht prüfbar) kennzeichnen.",
+    "assertions": [
+      "Aktiviert den tracking-check-Skill, nicht google-ads-audit oder einen anderen Skill",
+      "Ruft list_workspaces auf und prüft die verbundenen sources (ga4 / gtm / google_ads), bevor Phasen beginnen",
+      "Startet mit Phase 1 (Gate: lebt das Conversion-Tracking?), bevor spätere Phasen laufen",
+      "Kennzeichnet jeden Befund nach Beleg-Stufe (gemessen / nur konfiguriert / nicht prüfbar)"
+    ],
+    "files": ["SKILL.md"]
+  },
+  {
+    "id": "defer-to-google-ads-audit",
+    "prompt": "Unser CPA ist in den letzten 4 Wochen um 40% gestiegen und der ROAS ist eingebrochen. Was stimmt mit unseren Google Ads nicht?",
+    "expected_output": "Erkennt, dass es sich um eine bezahlte Such-Performance-Frage (CPA, ROAS, Kampagneneffizienz) handelt, und verweist auf google-ads-audit als den passenden Skill. Startet keinen vollständigen Tracking-Audit.",
+    "assertions": [
+      "Verweist auf google-ads-audit als den passenden Skill für bezahlte Such-Performance",
+      "Startet keinen vollständigen tracking-check-Audit für eine reine Ads-Performance-Frage",
+      "Nennt ggf. den Hinweis, dass google-ads-audit ein schlankes Tracking-Gate enthält und für Tracking-Tiefe an tracking-check defert"
+    ],
+    "files": ["SKILL.md"]
+  },
+  {
+    "id": "defer-to-wochenreport",
+    "prompt": "Kannst du mir zeigen wie sich unsere Conversions und der Traffic über die letzten 8 Wochen entwickelt haben? Ich brauche einen Überblick für unser Weekly.",
+    "expected_output": "Erkennt, dass es sich um ein wöchentliches Reporting / eine Zeitreihenanalyse handelt, und verweist auf den wochenreport-Skill. Startet keinen Tracking-Integritäts-Audit.",
+    "assertions": [
+      "Verweist auf wochenreport als den passenden Skill für wöchentliches Reporting und Zeitreihen",
+      "Startet keinen tracking-check-Audit für eine reine Reporting-Anfrage",
+      "Verwechselt Zahlen-über-Zeit nicht mit Tracking-Integrität"
+    ],
+    "files": ["SKILL.md"]
+  },
+  {
+    "id": "tool-reality-config-vs-firing",
+    "prompt": "Ich sehe in GTM, dass unser Purchase-Tag konfiguriert ist. Feuert der Tag?",
+    "expected_output": "Behauptet NICHT, dass der Tag feuert, allein weil er in GTM konfiguriert ist. Benennt die Beleg-Stufe: GTM-Config ist 'nur konfiguriert', kein Firing-Beweis. Verlangt einen Counts-Kreuzcheck: ga4_list_key_events / ga4_report (purchase-Event-Counts > 0?) und/oder ads_conversion_performance (letztes Conversion-Datum, last_gap_days) im selben Zeitraum, um Firing zu belegen. Config ohne Counts = Verdacht.",
+    "assertions": [
+      "Behauptet NICHT 'Tag feuert' allein aus GTM-Config (gtm_get_tag / gtm_list_tags)",
+      "Benennt GTM-Config-Befunde explizit als Beleg-Stufe 'nur konfiguriert'",
+      "Verlangt einen Counts-Kreuzcheck (ga4_list_key_events / ga4_report oder ads_conversion_performance) um Firing zu belegen",
+      "Formuliert 'Config ohne Counts = Verdacht, nicht Befund' oder äquivalent"
+    ],
+    "files": ["SKILL.md", "references/tracking-tool-grenzen.md"]
+  },
+  {
+    "id": "tool-reality-workspace-drift",
+    "prompt": "Was ist gerade in unserem GTM-Container live? Wir haben kürzlich Änderungen gemacht, ich bin nicht sicher was schon publiziert ist.",
+    "expected_output": "Vergleicht explizit Live-Version (gtm_container_info / gtm_get_version) mit Workspace-Draft (gtm_list_tags / gtm_list_triggers). Benennt die Quelle jeder Aussage ('Live-Version' vs. 'Workspace-Draft'). Weist Drift explizit aus, wenn Workspace-Tags existieren, die nicht in der Live-Version sind. Ein nie gepublishter Tag ist nicht live.",
+    "assertions": [
+      "Ruft gtm_container_info oder gtm_get_version auf, um den Live-Zustand zu ermitteln",
+      "Ruft gtm_list_tags auf, um den Workspace-Draft-Zustand zu ermitteln",
+      "Vergleicht Live vs. Workspace-Draft und weist Drift explizit aus",
+      "Benennt die Quelle jeder Aussage ('Live-Version' / 'Workspace-Draft' / 'Beleg-Stufe: nur konfiguriert')",
+      "Behauptet nicht, dass ein Workspace-Tag live ist, ohne gtm_get_version-Bestätigung"
+    ],
+    "files": ["SKILL.md", "references/tracking-tool-grenzen.md"]
+  },
+  {
+    "id": "tool-reality-consent-v2-not-verifiable",
+    "prompt": "Haben wir Consent Mode v2 korrekt eingerichtet? Wir haben Usercentrics und ich mache mir Sorgen wegen DSGVO.",
+    "expected_output": "Prüft Consent-Tag-Präsenz über gtm_list_tags / gtm_get_tag (Beleg-Stufe: nur konfiguriert). Deklariert explizit, dass die Korrektheit von Consent Mode v2 (Default-denied, Update-on-grant, ad_user_data / ad_personalization) über die MCP-Tools nicht prüfbar ist — GTM-Preview / Tag-Assistant nötig. Empfiehlt keinen 'grünen Haken' für Consent v2 ohne Browser-Test.",
+    "assertions": [
+      "Prüft Consent-Tag-Präsenz via gtm_list_tags / gtm_get_tag (Beleg-Stufe: nur konfiguriert)",
+      "Deklariert Consent-Mode-v2-Korrektheit (Default-denied, Update-on-grant) explizit als 'nicht prüfbar' über MCP-Tools",
+      "Nennt GTM-Preview / Tag-Assistant als notwendiges Mittel für den Korrektheitsprüfbeweis",
+      "Gibt keinen 'grünen Haken' für Consent-v2-Korrektheit ohne Browser-Verifikation"
+    ],
+    "files": ["SKILL.md", "references/dach-consent.md", "references/tracking-tool-grenzen.md"]
+  },
+  {
+    "id": "tool-reality-realtime-not-firing-proof",
+    "prompt": "Ich sehe gerade aktive Nutzer in GA4 Realtime — bedeutet das, dass unsere Tags feuern?",
+    "expected_output": "Klärt, dass ga4_realtime_users nur aggregierte aktive User zeigt, nicht ob spezifische Events / Tags feuern. Für einen Event-Smoketest sind ga4_list_key_events / ga4_report (eventCount pro eventName) heranzuziehen. ga4_realtime_users ist kein Firing-Beweis für spezifische Tags oder Custom Events.",
+    "assertions": [
+      "Behandelt ga4_realtime_users NICHT als Beweis, dass spezifische Tags oder Custom Events feuern",
+      "Erklärt, dass ga4_realtime_users nur aggregierte aktive User misst, nicht Event-Counts",
+      "Verweist auf ga4_list_key_events / ga4_report (eventCount pro eventName) für Event-Smoketests",
+      "Erklärt ga4_realtime_users als ungeeignet, um Tag-Firing zu belegen — kein Firing-Beweis"
+    ],
+    "files": ["SKILL.md", "references/tracking-tool-grenzen.md"]
+  },
+  {
+    "id": "ga4-ads-consistency",
+    "prompt": "Unser GA4 zeigt 120 Conversions diese Woche, aber Google Ads meldet 280. Ist das normal?",
+    "expected_output": "Prüft mit ga4_manage_google_ads_links, ob der GA4↔Ads-Link gesetzt ist. Kreuzcheckt ga4_conversions vs. ads_conversion_performance für denselben Zeitraum. Bewertet Faktor-2+-Diskrepanz als Tracking-Verdacht (nicht 'ist halt so'): mögliche Doppelzählung (GA4-Import + nativer Ads-Tag), fehlender Import oder Zählmethoden-Mismatch. Deduplication als nicht prüfbar kennzeichnen.",
+    "assertions": [
+      "Prüft ga4_manage_google_ads_links auf gesetzten GA4↔Ads-Link",
+      "Kreuzcheckt ga4_conversions gegen ads_conversion_performance für denselben Zeitraum",
+      "Bewertet Faktor-2+-Diskrepanz als Tracking-Verdacht, nicht als Attributions-Normalfall",
+      "Benennt mögliche Doppelzählung (GA4-Import-Conversion + nativer Ads-Tag) als Ursache-Verdacht",
+      "Kennzeichnet Doppelzählungs-Bestätigung als 'nicht prüfbar' (Tools dedupen nicht)"
+    ],
+    "files": ["SKILL.md", "references/tracking-tool-grenzen.md"]
+  },
+  {
+    "id": "event-coverage-funnel-gap",
+    "prompt": "Wir betreiben einen Online-Shop. Ich will wissen, ob unser E-Commerce-Tracking vollständig ist — von der Produktansicht bis zum Kauf.",
+    "expected_output": "Zieht die E-Commerce-Sektion aus der Soll-Library (references/event-soll-dach.md), nicht die gesamte Library. Prüft den Ist-Zustand via ga4_list_key_events / ga4_report (eventCount pro eventName). Erstellt einen Soll-Ist-Diff: identifiziert fehlende Funnel-Glieder (z.B. view_item → add_to_cart → begin_checkout → purchase), prüft Pflicht-Properties (purchase ohne transaction_id / value / currency: EUR). Hält die Diff-Ausgabe auf den E-Commerce-Funnel beschränkt.",
+    "assertions": [
+      "Zieht nur die E-Commerce-Sektion der Soll-Library, nicht die gesamte Event-Library",
+      "Nutzt ga4_list_key_events / ga4_report für den Ist-Zustand (gemessene Event-Counts)",
+      "Erstellt einen Soll-Ist-Diff und benennt fehlende Funnel-Glieder explizit",
+      "Prüft Pflicht-Properties für purchase (transaction_id, value, currency: EUR)",
+      "Bewertet fehlende Funnel-Glieder als Befund mit Wirkung, nicht als generische Empfehlung"
+    ],
+    "files": ["SKILL.md", "references/event-soll-dach.md"]
+  },
+  {
+    "id": "operator-confirmation-gtm-publish",
+    "prompt": "Leg einen neuen GA4-Event-Tag für das Formular-Submit in GTM an und publizier das direkt.",
+    "expected_output": "Führt den GTM-4-Stufen-Flow aus (list_workspaces → gtm_list_workspaces → gtm_create_trigger → gtm_create_tag → gtm_create_version als Snapshot). Zeigt vor gtm_publish_version den Diff der Version mit Change-Notes. Holt explizite Bestätigung ein, bevor gtm_publish_version aufgerufen wird — trotz der Aufforderung 'direkt'. Publiziert nicht ohne Bestätigung.",
+    "assertions": [
+      "Holt explizite Bestätigung ein, BEVOR gtm_publish_version aufgerufen wird",
+      "Erstellt eine benannte Version (gtm_create_version) mit Change-Notes vor dem Publish",
+      "Zeigt den Diff / die Änderungen der Version, bevor bestätigt wird",
+      "Ruft gtm_publish_version NICHT ohne explizite Bestätigung auf, auch nicht bei 'direkt'-Aufforderung",
+      "Weist darauf hin, dass gtm_publish_version live wirkt und ohne neuen Publish nicht rückgängig ist"
+    ],
+    "files": ["SKILL.md", "references/tracking-tool-grenzen.md"]
+  },
+  {
+    "id": "dach-data-retention",
+    "prompt": "Wir sind ein österreichisches SaaS-Unternehmen. Reicht unsere GA4-Einstellung so wie sie ist?",
+    "expected_output": "Prüft ga4_data_retention und ga4_enhanced_measurement. Identifiziert TWO_MONTHS (2-Monats-Retention) als unnötig kurz für DACH (Default ≠ Pflicht). Empfiehlt 14 Monate als Quick Win mit geringer Datenschutz-Hürde. Benennt §165 TKG (AT) als relevanten Rahmen ohne Rechtsberatung. Datenschutz-Default ≠ Pflicht — 14 Monate sind in AT/DE zulässig.",
+    "assertions": [
+      "Ruft ga4_data_retention auf, um den aktuellen Retention-Wert zu prüfen",
+      "Identifiziert TWO_MONTHS als unnötig kurz für DACH und empfiehlt FOURTEEN_MONTHS",
+      "Benennt §165 TKG (AT) oder DSGVO als Rechtsrahmen ohne konkrete Rechtsberatung zu geben",
+      "Behandelt die Retention-Verlängerung als Quick Win, nicht als Datenschutz-Risiko",
+      "Verwechselt Datenschutz-Default nicht mit Pflicht ('14 Monate zulässig')"
+    ],
+    "files": ["SKILL.md", "references/dach-consent.md"]
+  }
+]

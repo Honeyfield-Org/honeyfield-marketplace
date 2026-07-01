@@ -1,0 +1,128 @@
+[
+  {
+    "id": "trigger-basic-wochenreport",
+    "prompt": "Kannst du mir den Wochenreport für unseren Kunden Bäckerei Huber machen?",
+    "expected_output": "Invoziert wochenreport. Startet mit Schritt 0: list_workspaces, prüft die verbundenen sources, klärt den Zeitraum (letzte abgeschlossene Woche vs. Vorwoche). Baut den Report adaptiv nur aus den verbundenen Kanälen mit Zeitraum-Vergleich (WoW-Δ) und liefert Executive Summary + KPI-Tabellen + Auffälligkeiten.",
+    "assertions": [
+      "Aktiviert den wochenreport-Skill",
+      "Ruft list_workspaces auf und prüft die verbundenen sources, bevor der Report gebaut wird",
+      "Legt den Zeitraum fest (Default letzte abgeschlossene Woche vs. Vorwoche) mit Attributions-Lag-Hinweis",
+      "Nimmt nur verbundene Kanäle in den Report auf",
+      "Liefert Zeitraum-Vergleiche (WoW-Δ), keine reine Momentaufnahme"
+    ],
+    "files": ["SKILL.md"]
+  },
+  {
+    "id": "read-only-verweist-nicht-operator",
+    "prompt": "Mach den Wochenreport und pausier gleich die Kampagnen, die schlecht laufen.",
+    "expected_output": "Erstellt den Report (read-only) und markiert schwache Kampagnen als Auffälligkeit — führt aber KEINE Schreib-Aktion aus. Für das Pausieren verweist es auf google-ads-audit (dort liegt der Operator mit Dry-Run + Bestätigung), statt selbst zu pausieren.",
+    "assertions": [
+      "Führt keine Schreib-/Operator-Aktion aus (pausiert keine Kampagne)",
+      "Markiert die schwachen Kampagnen als Auffälligkeit mit Zahlen",
+      "Verweist für die Umsetzung (Pausieren) auf google-ads-audit statt es selbst zu tun",
+      "Benennt die Read-only-Natur des Reports"
+    ],
+    "files": ["SKILL.md"]
+  },
+  {
+    "id": "orchestrate-verweist-statt-diagnose",
+    "prompt": "Wochenreport bitte — und die Conversions sind diese Woche eingebrochen, woran liegt das?",
+    "expected_output": "Benennt den Conversion-Einbruch im Report mit Zahl + Δ, ordnet ihn ein (Kontext/Fallstrick), und verweist für die Ursachenanalyse auf tracking-check (zuerst: kommen Conversions überhaupt an?) bzw. google-ads-audit. Diagnostiziert die Ursache NICHT selbst tief — das ist Audit-Arbeit.",
+    "assertions": [
+      "Benennt den Conversion-Einbruch mit konkreter Zahl und Delta",
+      "Prüft zuerst die Tracking-Plausibilität (kommen Conversions an?) und verweist bei Verdacht auf tracking-check",
+      "Verweist für die tiefe Ursachenanalyse auf den passenden Audit-Skill, statt sie selbst im Report zu leisten",
+      "Behandelt eine Auffälligkeit als 'dass/wo', nicht als fertige Ursachen-Diagnose"
+    ],
+    "files": ["SKILL.md", "references/report-kpis.md"]
+  },
+  {
+    "id": "adaptiv-nur-verbundene-kanaele",
+    "prompt": "Report für die letzte Woche für den Workspace 'zahnarzt-graz' — der hat nur Google Ads und GA4 verbunden, keine Search Console.",
+    "expected_output": "Baut den Report adaptiv: Ads-Block + Web/GA4-Block. Der SEO-Block wird nicht mit Nullen gefüllt, sondern als Lücke benannt ('Search Console nicht verbunden'). Rät keine organischen Zahlen zusammen.",
+    "assertions": [
+      "Nimmt nur die verbundenen Kanäle (Ads, GA4) in den Report auf",
+      "Benennt die fehlende Search Console als Lücke, nicht als 0 Klicks/Impressionen",
+      "Erfindet keine organischen Zahlen ohne verbundene Quelle"
+    ],
+    "files": ["SKILL.md"]
+  },
+  {
+    "id": "tracking-gate-zuerst",
+    "prompt": "Wochenreport für Kunde X — mir ist aufgefallen, GA4 zeigt 40 Conversions, Google Ads meldet 5.",
+    "expected_output": "Behandelt die große Ads-vs-GA4-Klaffung als Tracking-Blocker und stellt ihn GANZ OBEN in den Report, mit Verweis auf tracking-check — weil jede weitere Zahl im Report auf unzuverlässigem Tracking steht. Verkauft die CPA/ROAS-Zahlen nicht als belastbar, solange das Tracking unklar ist.",
+    "assertions": [
+      "Erkennt die Ads-vs-GA4-Conversion-Klaffung als Tracking-Verdacht",
+      "Stellt den Tracking-Blocker oben in den Report (vor den Performance-KPIs)",
+      "Verweist auf tracking-check für die Tracking-Diagnose",
+      "Kennzeichnet die abhängigen KPIs (CPA/ROAS) als vorbehaltlich, solange das Tracking unklar ist"
+    ],
+    "files": ["SKILL.md", "references/report-kpis.md"]
+  },
+  {
+    "id": "wow-niedriges-volumen-rauschen",
+    "prompt": "Wochenreport — die Conversions sind von 4 auf 3 gefallen, ist das ein Problem?",
+    "expected_output": "Ordnet die Änderung bei niedrigem Volumen als Rauschen ein, nicht als Trend: -1 Conversion bei einstelligem Volumen ist statistisch nicht belastbar. Empfiehlt, nicht auf so dünner Datenbasis zu handeln, und nennt die absolute Größe als Kontext.",
+    "assertions": [
+      "Behandelt die -1-Conversion-Bewegung bei einstelligem Volumen als Rauschen, nicht als Trend",
+      "Warnt vor Überinterpretation dünner Datenbasis",
+      "Bezieht die absolute Größe ein (nicht nur den Prozentwert)"
+    ],
+    "files": ["SKILL.md", "references/report-kpis.md"]
+  },
+  {
+    "id": "attributions-lag-frische-tage",
+    "prompt": "Mach mir den Report bis heute, ich will die aktuellsten Zahlen inklusive der letzten drei Tage.",
+    "expected_output": "Kennzeichnet die letzten 1-3 Tage als attributions-unvollständig (Conversions tropfen nach) und bewertet sie nicht hart bzw. klammert sie aus dem Vergleich aus. Empfiehlt für belastbare Deltas den letzten abgeschlossenen Zeitraum.",
+    "assertions": [
+      "Kennzeichnet die letzten 1-3 Tage als attributions-unvollständig / vorläufig",
+      "Bewertet die frischen Kurzfenster nicht als harten Trend",
+      "Empfiehlt einen abgeschlossenen Zeitraum für belastbare Deltas"
+    ],
+    "files": ["SKILL.md"]
+  },
+  {
+    "id": "dach-saison-vor-alarm",
+    "prompt": "Wochenreport KW — die Klicks und Conversions sind über die Weihnachtswoche stark eingebrochen, alarmierend oder?",
+    "expected_output": "Prüft den saisonalen/Feiertags-Kontext (Weihnachten) als naheliegende Erklärung, bevor ein Alarm ausgelöst wird, statt den Einbruch als Performance-Problem zu behandeln. Berücksichtigt DACH-Feiertage (regional AT/CH/DE unterschiedlich).",
+    "assertions": [
+      "Zieht den saisonalen Feiertags-Kontext (Weihnachten) als Erklärung heran, bevor ein Problem-Alarm ausgelöst wird",
+      "Behandelt den Einbruch nicht vorschnell als Performance-Problem",
+      "Berücksichtigt DACH-spezifische Feiertage / Saisonalität"
+    ],
+    "files": ["SKILL.md", "references/report-kpis.md"]
+  },
+  {
+    "id": "auch-positives-nennen",
+    "prompt": "Wochenreport für den Kunden — bitte ein ausgewogenes Bild, nicht nur Probleme.",
+    "expected_output": "Liefert neben Auffälligkeiten auch einen 'Was gut lief'-Abschnitt mit belegten positiven Bewegungen (z.B. ROAS gestiegen, Position verbessert), damit der Report nicht einseitig negativ ist.",
+    "assertions": [
+      "Nennt positive Bewegungen belegt mit Zahlen, nicht nur Probleme",
+      "Enthält einen 'Was gut lief'-Abschnitt im Output",
+      "Bleibt bei den positiven Aussagen datenbelegt (kein Schönreden)"
+    ],
+    "files": ["SKILL.md"]
+  },
+  {
+    "id": "flexibler-zeitraum-monat",
+    "prompt": "Ich brauch keinen Wochen- sondern einen Monatsreport für den Oktober im Vergleich zum September.",
+    "expected_output": "Passt den Zeitraum flexibel an (Monat vs. Vormonat statt Woche) und baut den Report mit MoM-Deltas. Beibehaltung derselben Struktur (adaptiv, Executive Summary, KPI-Tabellen, Auffälligkeiten, Deep-Dive-Verweise).",
+    "assertions": [
+      "Nutzt den gewünschten Zeitraum (Oktober vs. September, MoM) statt WoW",
+      "Baut den Report mit Monat-über-Monat-Deltas",
+      "Behält die adaptive Struktur (nur verbundene Kanäle, Executive Summary, Deep-Dive-Verweise)"
+    ],
+    "files": ["SKILL.md"]
+  },
+  {
+    "id": "defer-tiefer-audit-statt-report",
+    "prompt": "Mach mir einen tiefen Google-Ads-Audit — warum verbrenne ich so viel Budget, wo sind die verschwendeten Suchbegriffe?",
+    "expected_output": "Erkennt, dass es um eine tiefe Ursachen-Diagnose (Wasted Spend, Suchbegriff-Hygiene) geht und nicht um Reporting, und verweist auf google-ads-audit — startet keinen Wochenreport und hijackt die Audit-Anfrage nicht mit einer KPI-Übersicht.",
+    "assertions": [
+      "Verweist auf google-ads-audit als den passenden Skill für die tiefe Diagnose",
+      "Startet keinen Wochenreport für eine reine Audit-/Ursachen-Frage",
+      "Ersetzt die Diagnose nicht durch eine KPI-Übersicht"
+    ],
+    "files": ["SKILL.md"]
+  }
+]

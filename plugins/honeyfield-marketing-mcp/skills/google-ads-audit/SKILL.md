@@ -149,7 +149,7 @@ Jede Schreib-Aktion bewegt echtes Geld oder echte Auslieferung. Regel: **erst Dr
 - Wettbewerb (DACH-Beifang): `dfs_serp_google_ads`
 
 ## Verwandte Skills
-`projekt-kontext` (Foundation, zuerst lesen) · `seo-audit` (organisch / Landingpage-Tiefe) · `geo-audit` (KI-Sichtbarkeit) · `wochenreport` (Reporting) · `tracking-check` (tiefe Tracking-Diagnose)
+`projekt-kontext` (Foundation, zuerst lesen) · `seo-audit` (organisch / Landingpage-Tiefe) · `geo-audit` (KI-Sichtbarkeit) · `wochenreport` (Reporting) · `tracking-check` (tiefe Tracking-Diagnose) · `ad-creative` (Anzeigentexte erstellen/ersetzen nach dem Audit)
 
 ## Referenzen
 - `references/google-ads-benchmarks.md` — QS-Komponenten-Deutung, Smart-Bidding-Conversion-Schwellen, Impression-Share-Diagnose-Matrix (Budget vs. Rank), Attributions-Fenster, primäre/sekundäre & „Jede/Eine”-Conversion-Mechanik, Ad-Strength- & Optimization-Score-Realität, Warnung gegen erfundene CTR/CPC-Benchmarks.

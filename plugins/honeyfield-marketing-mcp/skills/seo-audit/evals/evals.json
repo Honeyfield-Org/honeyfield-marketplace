@@ -1,0 +1,104 @@
+[
+  {
+    "id": "trigger-basic-seo-audit",
+    "prompt": "Könnt ihr mal unsere Website SEO-technisch durchchecken? Wir werden bei Google kaum gefunden.",
+    "expected_output": "Invoziert seo-audit (nicht geo-audit). Startet mit Schritt 0: list_workspaces, prüft die sources (search_console + dataforseo verbunden? ga4/clarity/business_profile?), kalibriert location/language auf den Zielmarkt und klärt lokal vs. national. Liefert evidenz-gestufte Befunde über die Phasen in Blocker-Reihenfolge (Auffindbarkeit vor Rankings), kein generischer Ratschlag.",
+    "assertions": [
+      "Aktiviert den seo-audit-Skill",
+      "Ruft list_workspaces auf und prüft die verbundenen sources, bevor Phasen laufen",
+      "Setzt location und language passend zum DACH-Zielmarkt auf dfs_*-Calls (Default Österreich beachten)",
+      "Arbeitet Blocker zuerst ab (Auffindbarkeit/Index vor Ranking-Bewertung)",
+      "Kennzeichnet jeden Befund nach Beleg-Stufe (gemessen / pro Seite geprüft / beratend)"
+    ],
+    "files": ["SKILL.md"]
+  },
+  {
+    "id": "traffic-drop-timeline",
+    "prompt": "Unser organischer Traffic ist vor ein paar Wochen eingebrochen. Was ist da los?",
+    "expected_output": "Verortet den Einbruch zeitlich über sc_performance mit der date-Dimension (längerer Zeitraum) und legt ihn gegen bekannte Google-Update-Termine, statt eine Hypothesenliste zu raten. Behandelt Helpful Content als Teil des Core-Algorithmus (seit März 2024, kein separater Recovery-Knopf) und erklärt, dass qualitätsbedingte Einbrüche site-weit wirken und sich nur langsam über spätere Core-Updates erholen.",
+    "assertions": [
+      "Nutzt sc_performance mit dimensions inkl. date über einen längeren Zeitraum, um den Einbruch exakt zu datieren",
+      "Legt den Zeitpunkt gegen bekannte Google-Update-Termine statt zu spekulieren",
+      "Behandelt Helpful Content als Teil des Core-Updates (kein separates System, kein Recovery-Schalter)",
+      "Macht eine datenbasierte Diagnose statt einer reinen Hypothesenliste"
+    ],
+    "files": ["SKILL.md"]
+  },
+  {
+    "id": "defer-to-google-ads-audit",
+    "prompt": "Wir verbrennen in Google Ads viel Geld für Suchbegriffe, die nichts bringen. Könnt ihr das aufräumen?",
+    "expected_output": "Erkennt, dass es um bezahlte Suche / Wasted Spend geht, und verweist auf google-ads-audit, statt einen SEO-Audit zu starten.",
+    "assertions": [
+      "Verweist auf google-ads-audit als den passenden Skill",
+      "Startet keinen SEO-Audit für eine reine Google-Ads-/Wasted-Spend-Frage"
+    ],
+    "files": ["SKILL.md"]
+  },
+  {
+    "id": "defer-to-geo-audit",
+    "prompt": "Werden wir eigentlich in ChatGPT und Perplexity empfohlen, oder immer nur die Konkurrenz?",
+    "expected_output": "Erkennt, dass es um KI-/Answer-Engine-Sichtbarkeit geht, und verweist auf geo-audit, statt den klassischen SEO-Audit zu fahren. Verkauft die beratende AEO-Einschätzung des SEO-Audits nicht als vollwertige KI-Sichtbarkeitsanalyse.",
+    "assertions": [
+      "Verweist auf geo-audit als den passenden Skill für KI-/Answer-Engine-Sichtbarkeit",
+      "Startet keinen vollständigen SEO-Audit für eine reine KI-Sichtbarkeitsfrage",
+      "Behandelt AEO/AI-Overviews im SEO-Kontext nur als beratend, nicht als gemessen"
+    ],
+    "files": ["SKILL.md"]
+  },
+  {
+    "id": "tool-reality-no-site-crawler",
+    "prompt": "Crawl bitte unsere komplette Website und gib mir alle SEO-Fehler über alle Seiten.",
+    "expected_output": "Stellt klar, dass es keinen seitenweiten Crawler gibt — geprüft wird URL-für-URL für die wichtigsten Seiten (Startseite + Schlüssel-Landingpages) via sc_url_inspection / dfs_onpage_instant. Verspricht keine site-weite Vollständigkeit und kennzeichnet On-Page-/Index-Befunde als pro Seite geprüft, nicht site-weit.",
+    "assertions": [
+      "Erklärt, dass kein seitenweiter Crawler verfügbar ist und nur Einzel-URLs geprüft werden",
+      "Wählt die wichtigsten Seiten gezielt aus, statt Vollständigkeit über alle URLs zu behaupten",
+      "Kennzeichnet die Index-/On-Page-Befunde als pro Seite geprüft (Beleg-Stufe), nicht als site-weit gemessen"
+    ],
+    "files": ["SKILL.md"]
+  },
+  {
+    "id": "tool-reality-onpage-issues-list",
+    "prompt": "Was sagt dfs_onpage_instant zu unserer Startseite — sind da Fehler?",
+    "expected_output": "Verlässt sich nicht blind auf die issues/checks-Liste von dfs_onpage_instant (erfasst negativ benannte Checks unzuverlässig), sondern urteilt anhand onpage_score + Rohfeldern (status_code, canonical, h1_count, title, word_count) selbst. Behandelt h1_count=0 als echtes Problem, mehrere H1 dagegen nicht als Ranking-Bug.",
+    "assertions": [
+      "Stützt das Urteil auf onpage_score + Rohfelder statt blind auf die issues/checks-Liste",
+      "Behandelt h1_count = 0 als Problem, mehrere H1 nur als Best-Practice-Hinweis (kein Ranking-Bug)",
+      "Behauptet keinen Befund, den die Rohdaten nicht hergeben"
+    ],
+    "files": ["SKILL.md"]
+  },
+  {
+    "id": "myth-avoidance-ranking-factors",
+    "prompt": "Wir haben auf mehreren Seiten doppelte H1s, dünne Meta-Descriptions und teilweise gleichen Text — straft Google uns dafür ab und kostet uns das Rankings?",
+    "expected_output": "Räumt die Mythen aus, statt sie als Befunde zu bestätigen: Mehrfach-H1 und Meta-Description sind keine Ranking-Faktoren, eine Duplicate-Content-Penalty existiert nicht (das Thema ist Signal-Splitting/Canonical, keine Strafe). Lenkt auf die echten Hebel (Canonical-Konsolidierung, Content-Mehrwert) und verliert keine Glaubwürdigkeit durch Folklore.",
+    "assertions": [
+      "Bestätigt Mehrfach-H1 und Meta-Description NICHT als Ranking-Faktor",
+      "Verneint eine Duplicate-Content-Penalty und benennt stattdessen Signal-Splitting/Canonical als das reale Thema",
+      "Nennt keinen der widerlegten Mythen als Befund"
+    ],
+    "files": ["SKILL.md"]
+  },
+  {
+    "id": "dach-local-gbp-gap",
+    "prompt": "Wir sind eine Physiotherapie-Praxis in Linz und tauchen bei der lokalen Google-Suche kaum auf. Woran liegt das?",
+    "expected_output": "Behandelt das fehlende oder nicht verbundene Google Business Profile als High-Impact-Befund (für lokale Sichtbarkeit oft der größte Einzelhebel, größer als On-Page), prüft via gbp_list_locations / gbp_get_profile und überspringt es nicht, nur weil die Quelle fehlt. Kalibriert auf Österreich (location=Austria, language=de) und zieht AT-Citations/NAP-Konsistenz heran.",
+    "assertions": [
+      "Prüft die GBP-Präsenz (gbp_list_locations / gbp_get_profile) und wertet ein fehlendes/nicht verbundenes GBP als High-Impact-Befund",
+      "Überspringt den lokalen Befund nicht, nur weil die Quelle nicht verbunden ist",
+      "Kalibriert location/language auf Österreich, nicht den Default",
+      "Berücksichtigt AT-spezifische Citations/NAP-Konsistenz"
+    ],
+    "files": ["SKILL.md", "references/dach-seo.md"]
+  },
+  {
+    "id": "operator-confirmation-required",
+    "prompt": "Unsere Sitemap ist nicht bei Google eingereicht. Reich sie einfach ein und richte gleich das fehlende Tracking ein.",
+    "expected_output": "Zeigt vor jeder Schreib-Aktion an, was genau passiert (welche Sitemap-URL via sc_submit_sitemap; welches GTM-Tag, mit dem Hinweis, dass es erst nach gtm_create_version + gtm_publish_version live ist), prüft den nötigen Schreib-Scope/Connector und führt erst nach ausdrücklicher Bestätigung aus — trotz des einfach.",
+    "assertions": [
+      "Führt keine Schreib-Aktion (sc_submit_sitemap / gtm_create_tag) ohne vorherige Ankündigung und Bestätigung aus",
+      "Weist darauf hin, dass ein GTM-Tag erst nach create_version + publish_version live ist",
+      "Besteht auf Bestätigung trotz der Aufforderung, einfach zu machen"
+    ],
+    "files": ["SKILL.md"]
+  }
+]
