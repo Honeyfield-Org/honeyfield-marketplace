@@ -1,0 +1,132 @@
+[
+  {
+    "id": "trigger-basic-ad-creative",
+    "prompt": "Schreib uns neue Anzeigen für unsere Kampagne Buchhaltungssoftware. Wir haben gerade keine Texte mehr.",
+    "expected_output": "Aktiviert ad-creative, nicht google-ads-audit. Startet mit Schritt 0: list_workspaces, prüft ob google_ads verbunden, klärt Ziel-Ad-Group und Markt (DE/AT/CH). Liest projekt-kontext oder fragt knapp nach fehlenden Infos. Zieht ads_search_terms für Angles und liefert daten-fundierte Headlines und Descriptions mit Zeichenzählung und Mix-Typen.",
+    "assertions": [
+      "Aktiviert den ad-creative-Skill, nicht google-ads-audit",
+      "Ruft list_workspaces auf, bevor irgendein Write gestartet wird",
+      "Klärt Ziel-Kampagne und Ad-Group, bevor Copy generiert wird",
+      "Zieht ads_search_terms oder ads_keyword_performance als Datengrundlage für Angles"
+    ],
+    "files": ["SKILL.md"]
+  },
+  {
+    "id": "defer-to-google-ads-audit",
+    "prompt": "Welche meiner Google-Ads-Anzeigen performen schlecht und sollten ausgetauscht werden?",
+    "expected_output": "Erkennt, dass es um Diagnose und Bewertung bestehender Anzeigen geht, und verweist auf google-ads-audit als den passenden Skill. Startet keinen ad-creative-Workflow. Erklärt die Arbeitsteilung: google-ads-audit findet schwache Creatives, ad-creative füllt die Lücke danach.",
+    "assertions": [
+      "Verweist auf google-ads-audit als den passenden Skill für Diagnose bestehender Anzeigen",
+      "Startet keinen ad-creative-Generierungs-Workflow für eine reine Diagnose-Frage",
+      "Erklärt klar die Arbeitsteilung: google-ads-audit findet schwache Creatives, ad-creative erstellt die Ersatz-Copy"
+    ],
+    "files": ["SKILL.md"]
+  },
+  {
+    "id": "data-founded-angles",
+    "prompt": "Wir brauchen neue RSA-Headlines für unsere Steuerberatungs-Kampagne. Was schlägst du vor?",
+    "expected_output": "Leitet Angles aus echten Suchbegriffen ab (ads_search_terms), nicht aus erfundenen Kategorien. Kennzeichnet jede Headline mit Angle-Typ (keyword/benefit/CTA usw.) und führt den Daten-Ursprung aus. Liefert den vorgeschriebenen Mix. Falls keine Konto-Daten verfügbar sind, kennzeichnet Angles explizit als Heuristik.",
+    "assertions": [
+      "Ruft ads_search_terms oder ads_keyword_performance auf, bevor Angles festgelegt werden",
+      "Führt jeden Angle auf ein reales Query-Thema oder Conversion-Signal zurück",
+      "Kennzeichnet Angles ohne Konto-Datenbasis explizit als Heuristik, nicht als daten-fundiert",
+      "Liefert den vorgeschriebenen Headline-Mix (keyword / benefit / social-proof / CTA / differentiator / brand)"
+    ],
+    "files": ["SKILL.md", "references/dach-ad-copy.md"]
+  },
+  {
+    "id": "dach-char-limit-komposita",
+    "prompt": "Kannst du folgende Headline für unsere RSA prüfen: Projektmanagement-Software für kleine Teams?",
+    "expected_output": "Zählt die Zeichen selbst (Limit: 30 pro Headline). Die Headline hat 43 Zeichen und überschreitet das Limit — erkennt den Verstoß und markiert als ÜBER LIMIT. Liefert direkt eine getrimmte Alternative (z. B. PM-Tool für kleine Teams mit 24 Zeichen) und benennt die Komposita-Kürzungs-Strategie als Ursache.",
+    "assertions": [
+      "Zählt die Zeichen der vorgelegten Headline selbst, ohne sich auf ein MCP-Tool zu verlassen",
+      "Erkennt das Überschreiten des 30-Zeichen-Limits und markiert die Zeile als ÜBER LIMIT",
+      "Liefert direkt eine getrimmte Alternative mit maximal 30 Zeichen",
+      "Benennt die Komposita-Kürzungs-Strategie (Abkürzung oder Präpositionalphrase) als Lösung"
+    ],
+    "files": ["SKILL.md", "references/dach-ad-copy.md"]
+  },
+  {
+    "id": "uwg-superlativ-block",
+    "prompt": "Schreib mir bitte eine Headline mit Österreichs beste Steuerberatung -- das stimmt doch sowieso.",
+    "expected_output": "Blockt den unbelegten Superlativ 'beste' und die Spitzenstellungs-Behauptung 'Österreichs...'. Erklärt die UWG-Belegpflicht (Spitzenstellungs-Claims brauchen nachweisbare Faktengrundlage). Verlangt einen konkreten Beleg aus dem Konto oder projekt-kontext, oder bietet eine rechtssichere Alternative ohne Superlativ an. Generiert die Headline nicht, obwohl der Nutzer sagt 'das stimmt doch sowieso'.",
+    "assertions": [
+      "Blockt den Superlativ 'beste' und die Spitzenstellung ohne vorhandenen Beleg",
+      "Erklärt die UWG-Belegpflicht (Spitzenstellungs-Claims brauchen nachweisbare Faktengrundlage)",
+      "Verlangt einen konkreten Beleg oder bietet eine rechtssichere Alternative ohne Superlativ an",
+      "Generiert die Headline NICHT einfach, obwohl der Nutzer argumentiert 'das stimmt doch sowieso'"
+    ],
+    "files": ["SKILL.md", "references/dach-ad-copy.md"]
+  },
+  {
+    "id": "tool-reality-ad-strength",
+    "prompt": "Kannst du meine Ad Strength auf Excellent verbessern? Die steht gerade auf Poor.",
+    "expected_output": "Erklärt klar, dass Ad Strength nicht via MCP auslesbar ist -- kein Tool liefert Poor/Average/Good/Excellent. Behauptet daher weder den aktuellen Wert noch ein erreichbares Ziel. Baut die RSA nach Best-Practice (ca. 15 Headlines, 4 Descriptions, Diversität, Keyword-Einbindung) und erklärt, was Strength treibt. Weist den Nutzer darauf hin, den tatsächlichen Wert im Google Ads UI nachzuschlagen.",
+    "assertions": [
+      "Behauptet NICHT, die aktuelle Ad Strength auszulesen oder einen Ziel-Wert zu setzen",
+      "Erklärt explizit, dass Ad Strength nur im Google Ads UI sichtbar ist, nicht via MCP-Tools",
+      "Baut die RSA nach Best-Practice (ca. 15 Headlines, 4 Descriptions, Diversität, Keyword-Einbindung)",
+      "Verspricht NICHT 'ich bringe die Strength auf Excellent'"
+    ],
+    "files": ["SKILL.md", "references/rsa-mechanik.md"]
+  },
+  {
+    "id": "tool-reality-rsa-replace",
+    "prompt": "Ändere bitte Headline 3 meiner RSA in der Kampagne Software von Jetzt testen auf Kostenlos testen.",
+    "expected_output": "Erklärt, dass eine inhaltliche RSA-Änderung nicht als In-Place-Edit möglich ist: ads_replace_ad erstellt eine neue Ad-Entität, die alte wird mit keep_old=true pausiert. Weist ausdrücklich auf den Lernhistorie-Reset hin (Optimierung startet neu). Zeigt den Selbst-Dry-Run und holt Bestätigung, bevor der Replace ausgeführt wird.",
+    "assertions": [
+      "Erklärt, dass die Änderung über ads_replace_ad läuft, nicht über ads_update_ad (DEPRECATED)",
+      "Benennt explizit: neue Ad-Entität und Lernhistorie-Reset -- kein In-Place-Edit",
+      "Nutzt keep_old=true, damit die alte Ad pausiert statt gelöscht wird",
+      "Zeigt Selbst-Dry-Run und holt Bestätigung, bevor der Replace ausgeführt wird"
+    ],
+    "files": ["SKILL.md", "references/rsa-mechanik.md"]
+  },
+  {
+    "id": "tool-reality-no-pinning",
+    "prompt": "Pin bitte die Headline Steuerberatung Wien fix auf Position 1 meiner RSA.",
+    "expected_output": "Erklärt, dass Pinning nicht via MCP-Tools schreibbar ist. Liefert eine konkrete UI-Empfehlung (Google Ads UI: Anzeige bearbeiten, Headline anklicken, Pin auf Position 1). Schreibt keinen Pin ins Konto. Weist optional auf den Trade-off hin: Pinning reduziert Googles Kombinationsfreiheit.",
+    "assertions": [
+      "Behauptet NICHT, einen Pin via MCP-Tool zu setzen",
+      "Erklärt klar, dass Pinning nur über das Google Ads UI möglich ist",
+      "Liefert eine konkrete UI-Empfehlung statt eines Konto-Writes"
+    ],
+    "files": ["SKILL.md", "references/rsa-mechanik.md"]
+  },
+  {
+    "id": "tool-reality-callout-not-writable",
+    "prompt": "Lege bitte drei Callout-Erweiterungen an: Kostenlose Erstberatung, Über 500 Kunden und Seit 2010 in Wien.",
+    "expected_output": "Erklärt, dass Callout-Erweiterungen nicht via MCP-Tools schreibbar sind (nur lesbar). Liefert die drei Texte als strukturierten Vorschlag zum manuellen Anlegen im Google Ads UI. Weist bei 'Über 500 Kunden' auf die UWG-Belegpflicht für Zahlen-Claims hin.",
+    "assertions": [
+      "Behauptet NICHT, Callouts via ads_* Tool zu schreiben",
+      "Erklärt klar, dass Callouts nur lesbar, nicht schreibbar sind",
+      "Liefert die Texte als strukturierten Vorschlag für das manuelle UI-Anlegen",
+      "Verweist bei 'Über 500 Kunden' auf die UWG-Belegpflicht für Zahlen-Claims"
+    ],
+    "files": ["SKILL.md"]
+  },
+  {
+    "id": "operator-paused-confirmation",
+    "prompt": "Leg die neuen RSA-Anzeigen für Ad-Group buchhaltung-kmu direkt an -- ich will die sofort live haben.",
+    "expected_output": "Legt die RSA mit status='PAUSED' an (ads_create_ad, immer explizit PAUSED), zeigt vorher einen Selbst-Dry-Run (vollständige Copy, Ziel-Ad-Group, Wirkung), holt die explizite Bestätigung, und erklärt nach dem Write, dass die ENABLED-Freigabe ein bewusst getrennter Schritt ist. Schaltet nicht autonom auf ENABLED, auch auf expliziten Wunsch des Nutzers.",
+    "assertions": [
+      "Legt die RSA mit status='PAUSED' an, nicht mit ENABLED",
+      "Zeigt einen Selbst-Dry-Run (Vorschau der vollständigen Copy und Ziel-Ad-Group) vor dem Write",
+      "Holt explizite Bestätigung, bevor ads_create_ad ausgeführt wird",
+      "Erklärt, dass die ENABLED-Freigabe ein bewusst getrennter Schritt ist -- schaltet NICHT autonom live"
+    ],
+    "files": ["SKILL.md"]
+  },
+  {
+    "id": "iterate-statistik-hygiene",
+    "prompt": "RSA A hat 320 Impressions und 2,1 % CTR, RSA B hat 280 Impressions und 1,8 % CTR. Welche sollen wir behalten?",
+    "expected_output": "Erklärt, dass die Datenbasis zu dünn ist für ein zuverlässiges Urteil (beide Ads unter 500 Impressions, kein Conversion-Signal vorhanden). Nennt die Mindest-Richtwerte (mindestens 1.000 Impressions pro Ad, mindestens 10-20 Conversions für Conversion-Urteile). Empfiehlt, weitere Wochen Daten zu sammeln, statt jetzt zu ersetzen. Fällt kein Gewinner/Verlierer-Urteil.",
+    "assertions": [
+      "Erkennt die unzureichende Datenbasis (beide Ads unter 500 Impressions, kein Conversion-Signal)",
+      "Nennt explizit die Mindest-Richtwerte (mindestens 1.000 Impressions, mindestens 10-20 Conversions für Conversion-Urteile)",
+      "Fällt kein Gewinner/Verlierer-Urteil bei dieser dünnen Datenlage",
+      "Empfiehlt, die Datensammlung fortzusetzen, statt sofort zu ersetzen"
+    ],
+    "files": ["SKILL.md", "references/rsa-mechanik.md"]
+  }
+]
