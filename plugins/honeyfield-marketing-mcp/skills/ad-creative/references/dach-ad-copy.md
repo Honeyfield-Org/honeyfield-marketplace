@@ -152,41 +152,41 @@ Deutsch bildet lange Komposita. Im 30-Zeichen-Limit ist oft kein Platz mehr für
 
 | Kompositum | Zeichen | Status |
 |---|---|---|
-| „Buchhaltungs­software­Vergleich" | 31 | Zu lang — Google lehnt ab |
-| „Projektmanagement-Software" | 27 | Fast am Limit, kein Kontext |
-| „Lohnbuchhaltungs­software" | 25 | Verbraucht fast alles |
-| „Steuerberatungs­gesellschaft" | 27 | Kein CTA-Spielraum |
+| „Haftpflichtversicherungsvergleich" | 33 | Zu lang — Google lehnt ab |
+| „Projektmanagement-Software" | 26 | Fast am Limit, kein Kontext |
+| „Lohnbuchhaltungssoftware" | 24 | Verbraucht fast alles |
+| „Steuerberatungsgesellschaft" | 27 | Kein CTA-Spielraum |
 | „PM-Tool" | 7 | ✓ Viel Luft |
-| „Software für Buchhaltung" | 25 | ✓ Präposition schafft Platz |
+| „Software für Buchhaltung" | 24 | ✓ Präposition schafft Platz |
 
 ### Komposita-Kürzungs-Strategien (mit Beispielen)
 
 **Strategie 1 — Kurzform / Abkürzung (wenn zielgruppenüblich):**
 ```
-"Projektmanagement-Software" (27) → "PM-Tool" (7)
-"Lohnbuchhaltungssoftware" (25)  → "Lohnabrechnung-Tool" (19)
-"Customer-Relationship-Mgmt."   → "CRM-Software" (13)
+"Projektmanagement-Software" (26) → "PM-Tool" (7)
+"Lohnbuchhaltungssoftware" (24)  → "Lohnabrechnung-Tool" (19)
+"Customer-Relationship-Mgmt."   → "CRM-Software" (12)
 ```
 
 **Strategie 2 — Präpositionalphrase statt Kompositum:**
 ```
 "Buchhaltungssoftware für KMU" (28)  ✓
 "Beratung für Startups" (21)         ✓
-"Lösung für Lohnabrechnung" (26)     ✓
+"Lösung für Lohnabrechnung" (25)     ✓
 ```
 
 **Strategie 3 — Verb-Phrase (aktiver, mehr Platz):**
 ```
-"Buchhaltung automatisieren" (25)  ✓
+"Buchhaltung automatisieren" (26)  ✓
 "Projekte einfach verwalten" (26)  ✓
 "Lohn schnell abrechnen" (22)      ✓
 ```
 
 **Strategie 4 — Anglizismus wenn Zielgruppe es kennt:**
 ```
-"Accounting-Software" (20)  — nur B2B / internationale Zielgruppe
+"Accounting-Software" (19)  — nur B2B / internationale Zielgruppe
 "HR-Tool" (7)               — in HR-Kontext standard
-"SaaS-Lösung" (12)          — Tech-affine Zielgruppe
+"SaaS-Lösung" (11)          — Tech-affine Zielgruppe
 ```
 
 ### DKI-Fallstrick

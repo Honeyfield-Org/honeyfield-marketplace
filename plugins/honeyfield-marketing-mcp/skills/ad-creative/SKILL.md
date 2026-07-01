@@ -63,7 +63,7 @@ Jede Headline thematisch **unique** (keine Paraphrasen voneinander — Redundanz
 
 **3. DACH-Zeichen-Disziplin (hart, vor jeder Ausgabe).**
 - 30 Zeichen/Headline, 90/Description, 15/Path — **selbst zählen** (Umlaute/ß = je 1 Zeichen, Leerzeichen zählen mit).
-- Deutsche Komposita kürzen, wo möglich: „PM-Tool” (7) statt „Projektmanagement-Software” (27); Präpositionalphrase („Software für KMU”) oder Verb-Phrase („Buchhaltung automatisieren”) schaffen Platz für CTA/Kontext.
+- Deutsche Komposita kürzen, wo möglich: „PM-Tool” (7) statt „Projektmanagement-Software” (26); Präpositionalphrase („Software für KMU”) oder Verb-Phrase („Buchhaltung automatisieren”) schaffen Platz für CTA/Kontext.
 - DKI `{KeyWord:Fallback}` kann das Limit sprengen — Fallback ≤30 prüfen **und** die längste realistische Keyword-Ersetzung abschätzen. DKI nie blind einsetzen.
 
 **4. Themen-Cluster → Ad-Group-Bezug.** Headlines am Keyword-Thema der Ad-Group ausrichten. Keyword-Einbindung + Diversität + genug Unique Headlines treiben die Ad Strength — der Wert selbst bleibt nur im UI sichtbar (nie behaupten).
@@ -95,13 +95,13 @@ Jede Text-Zeile trägt ihre Prüfung sichtbar: **Text · `(Zeichen)` · Status �
 
 ```
 Headlines (Ad-Group: pm-software · Angle-Mix):
-   1. Projektmanagement einfach         (27) ✓  [keyword]
-   2. In 5 Minuten startklar            (24) ✓  [benefit]
-   3. Die beste PM-Software überhaupt   (30) ⚠ UWG: unbelegter Superlativ → „PM-Software für Teams” (23) [differentiator]
-   4. Projektmanagement-Software testen (35) ⚠ ÜBER LIMIT → „PM-Software testen” (18) [CTA]
+   1. Projektmanagement einfach         (25) ✓  [keyword]
+   2. In 5 Minuten startklar            (22) ✓  [benefit]
+   3. Die beste PM-Software überhaupt   (31) ⚠ ÜBER LIMIT + UWG: unbelegter Superlativ → „PM-Software für Teams” (21) [differentiator]
+   4. Projektmanagement-Software testen (33) ⚠ ÜBER LIMIT → „PM-Software testen” (18) [CTA]
    ...
 Descriptions:
-   1. Aufgaben, Termine, Team an einem Ort — jetzt kostenlos testen.  (61) ✓
+   1. Aufgaben, Termine, Team an einem Ort — jetzt kostenlos testen.  (62) ✓
    ...
 ```
 
