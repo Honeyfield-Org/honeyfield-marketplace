@@ -6,10 +6,27 @@ Referenz für `wochenreport`. Pro Kanal: welche KPIs, welche Tools, was ein auff
 
 ---
 
-## Beleg-Stufen (wie in den Audits)
+## Beleg-Stufen (Rahmen wie in den Audits; Mittelstufe je Domäne verschieden)
 - **Gemessen:** harte Zahlen aus dem Konto/der Property (Ads-Spend, GSC-Klicks, GA4-Sessions).
+- **Mit Tracking-Vorbehalt:** abhängige KPIs (Conversions, CPA, ROAS), solange das Conversion-Tracking unklar ist — nicht als belastbar verkaufen.
 - **Beratend:** GEO/AI-Sichtbarkeit (GA4-Referrer = Näherung, kein Fetch-Beweis).
 Jede Report-Zeile trägt die Stufe implizit über die Quelle; AI-Traffic explizit als Näherung kennzeichnen.
+
+---
+
+## Zeitraum-Mechanik (Pflicht vor jedem Δ)
+
+Viele Tools nehmen nur `days` — das Fenster endet **heute**, eine Vorperiode ist damit nicht direkt abrufbar (`ads_campaign_performance`, `ads_impression_share`, `ga4_conversions`, `sc_top_queries`). Perioden wirklich trennen können nur `ga4_report` (`start_date`/`end_date`), `sc_performance` (`dimensions=["date"]`) und `ads_conversion_performance` (Tagesverlauf). Deshalb:
+
+- **Woche = ISO-Kalenderwoche Mo–So** (DACH-Konvention „KW"). Default: letzte abgeschlossene KW vs. die davor.
+- **GA4-Deltas:** `ga4_report` mit `start_date`/`end_date` — zwei exakte Fenster abrufen. Für Vergleiche nicht `ga4_conversions` nutzen (nur `days`).
+- **SEO-Deltas:** `sc_performance` mit `dimensions=["date"]`, days=14 (WoW) bzw. days≈60 (MoM) — Wochen/Monate aus den Tageszeilen selbst splitten.
+- **Ads-Conversions:** Tagesverlauf aus `ads_conversion_performance` in die zwei Perioden splitten.
+- **Additive Ads-KPIs** (Spend, Klicks, Impressions): notfalls per Differenz ableiten — days=14 minus days=7 = Vorwoche. **CTR/CPC aus den additiven Werten je Periode neu berechnen — nie Raten differenzieren.**
+- **`ads_impression_share`:** Snapshot ohne belastbare Vorperiode — als Grenze kennzeichnen (Beleg-Stufe), kein Pseudo-Δ bauen.
+- **MoM für Ads-KPIs ist eingeschränkt:** sauber nur über Tagesverlauf-Tools (`ads_conversion_performance`); für days-only-Tools MoM als Näherung kennzeichnen oder weglassen.
+
+Kein Δ ohne saubere Perioden-Trennung — überlappende `days`-Fenster als Vergleich zu präsentieren wäre ein Pseudo-Delta, keine „echte Zahl aus den Tools".
 
 ---
 
@@ -21,11 +38,26 @@ Jede Report-Zeile trägt die Stufe implizit über die Quelle; AI-Traffic explizi
 | Conversions | `ads_conversion_performance` | −25 % | `tracking-check` zuerst (Tracking?), dann `google-ads-audit` |
 | CPA | abgeleitet (Spend/Conv) | +40 % | `google-ads-audit` |
 | ROAS / Conv-Value | `ads_conversion_performance` | −25 % | `google-ads-audit` |
-| Impression Share | `ads_impression_share` | −10 %-Punkte | `google-ads-audit` (Lost IS Budget vs. Rank) |
+| Impression Share | `ads_impression_share` | Snapshot ohne Vorperiode — −10 %-Punkte nur, wenn eine Vorwochen-Messung (früherer Report) vorliegt | `google-ads-audit` (Lost IS Budget vs. Rank) |
 | Klicks / CTR | `ads_campaign_performance` | ±30 % | `google-ads-audit` |
 
+**Beleg-Stufe:** Conversions, CPA und ROAS tragen **„mit Tracking-Vorbehalt"**, solange das Tracking-Gate (unten) nicht grün ist.
 **Pacing-Check:** `budget_pacing` — liegt der Monats-Spend auf Kurs? Über-/Unter-Pacing als Auffälligkeit.
-**Anomalie-Assist:** `anomaly_check` kann statistische Ausreißer vorschlagen — als Hinweis nutzen, nicht als alleinige Wahrheit.
+
+---
+
+## Social Ads (Quelle: `meta_ads` / `linkedin_ads` verbunden)
+
+| KPI | Tool | Auffällig ab | Deep-Dive |
+|---|---|---|---|
+| Spend | `meta_campaign_performance` / `linkedin_campaign_performance` | ±30 % ohne Budget-Änderung | — (kein Social-Ads-Audit-Skill) |
+| Klicks / Impressionen | `meta_campaign_performance` / `linkedin_campaign_performance` | ±30 % | — |
+| Conversions | `meta_campaign_performance` / `linkedin_campaign_performance` | −25 % | `tracking-check` zuerst (kommen Events an?) |
+
+- Kampagnen-Inventar: `linkedin_list_campaigns` (Name, Status, Budget).
+- **Ehrlich bleiben:** für Social Ads existiert (noch) kein Audit-Skill — Auffälligkeiten berichten und markieren, keinen Deep-Dive versprechen.
+- **Read-only hart:** `linkedin_update_campaign_budget` / `linkedin_update_campaign_status` sind Schreib-Tools — im Report **nie** nutzen.
+- Für Δs gilt die Zeitraum-Mechanik oben: nur vergleichen, was sauber in zwei Perioden trennbar ist — sonst als Snapshot kennzeichnen.
 
 ---
 
@@ -39,6 +71,19 @@ Jede Report-Zeile trägt die Stufe implizit über die Quelle; AI-Traffic explizi
 | Top-Query-Bewegung | `sc_top_queries` | Top-Query fällt aus Top-10 | `seo-audit` |
 
 **Traffic-Einbruch:** Zeitlich verorten (date-Dimension), gegen bekannte Google-Update-Termine legen → dann `seo-audit`.
+
+---
+
+## Local / Google Business Profile (Quelle: `business_profile` verbunden)
+
+| KPI | Tool | Auffällig ab | Deep-Dive |
+|---|---|---|---|
+| Anrufe | `gbp_performance` | −25 % | `seo-audit` (deckt `gbp_*` ab) |
+| Website-Klicks | `gbp_performance` | −25 % | `seo-audit` |
+| Routenanfragen | `gbp_performance` | −25 % | `seo-audit` |
+| Impressionen (Maps/Suche) | `gbp_performance` | −25 % | `seo-audit` |
+
+Für lokale Kunden (Praxis, Bäckerei, Handwerk) sind das Kern-Zahlen — oft wichtiger als Website-KPIs. Niedrig-Volumen-Regel gilt hier besonders (wenige Anrufe/Woche = Rauschen).
 
 ---
 
@@ -62,7 +107,10 @@ Jede Report-Zeile trägt die Stufe implizit über die Quelle; AI-Traffic explizi
 
 ## Tracking-Health (Gate, kurz — nicht die Tiefe)
 
-- Kurzer Plausibilitäts-Check: kommen Conversions überhaupt an? `ads_conversion_performance` (`last_gap_days`) + `ga4_conversions`. Wenn Conversions bei 0 / großer Ads-vs-GA4-Klaffung → **oben im Report als Blocker markieren** und auf `tracking-check` verweisen (ohne den würde jede andere Zahl im Report auf Sand stehen).
+Plausibilitäts-Check über `ads_conversion_performance` (`last_gap_days`) + `ga4_conversions`. Konkrete Gate-Schwellen:
+- `last_gap_days` > 7 (trotz laufendem Spend) = **Verdacht** — im Report kennzeichnen.
+- Conversions bei 0 trotz Spend **oder** Ads-vs-GA4-Klaffung > Faktor 2 = **Blocker** — ganz oben im Report markieren, auf `tracking-check` verweisen.
+- Solange das Gate nicht grün ist: Conversions/CPA/ROAS mit Beleg-Stufe **„mit Tracking-Vorbehalt"** ausweisen.
 
 ---
 

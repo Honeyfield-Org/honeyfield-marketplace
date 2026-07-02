@@ -119,14 +119,14 @@ Consent Mode v2 muss im **Browser-Container** (Client-Side GTM) implementiert bl
 
 ## F — compliance-Flag-Verknüpfung
 
-Flags aus `projekt-kontext` (Frontmatter `compliance:`) sind harte Leitplanken:
+`compliance:` aus `projekt-kontext` (Frontmatter) ist eine **flache Liste** mit kanonischem Vokabular — verbindlich definiert in `projekt-kontext` → `references/dach-compliance.md`, Exact-Match, harte Leitplanke. Länder-Unterscheidung kommt aus dem Stable Key `maerkte:`, nicht aus eigenen Flags:
 
-| Flag | Implikation für Consent-Layer |
+| Flag / Key | Implikation für Consent-Layer |
 |---|---|
-| `dsgvo: strict` | Kein Tracking vor expliziter Einwilligung; keine Pay-or-OK-Empfehlung; Erwähnung TDDDG §25 zwingend |
-| `ttdsg: true` / `tdddg: true` | §25 TDDDG-Hinweis obligatorisch; GTM-Pre-Consent-Laderisiko benennen |
-| `ch_only: true` | nDSG-Hinweis: kein gesetzlicher Banner-Zwang, aber Google EU-UCP für CH-Traffic seit 31.07.2024 beachten |
-| `at: true` | §165 TKG AT + DSB-Leitlinien 2024 benennen |
-| `no_remarketing: true` | `ad_personalization` = denied hardcoded empfehlen; Remarketing-Audiences deaktivieren |
+| `DSGVO` | Kein Tracking vor expliziter Einwilligung; keine Pay-or-OK-Empfehlung; Erwähnung TDDDG §25 zwingend |
+| `TTDSG` | §25 TDDDG-Hinweis obligatorisch (DE: TDDDG, AT: §165 TKG); GTM-Pre-Consent-Laderisiko benennen |
+| `maerkte: [CH]` (nur CH) | nDSG-Hinweis: kein gesetzlicher Banner-Zwang, aber Google EU-UCP für CH-Traffic seit 31.07.2024 beachten |
+| `AT` in `maerkte:` | §165 TKG AT + DSB-Leitlinien 2024 benennen |
+| `no_remarketing` (Zusatz-Flag) | `ad_personalization` = denied hardcoded empfehlen; Remarketing-Audiences deaktivieren |
 
-Fehlt `compliance`-Block im `projekt-kontext`: Default = DSGVO-konservativ behandeln (DACH = DE-Standard).
+Fehlt `compliance:` im `projekt-kontext`: Default = DSGVO-konservativ behandeln (DACH = DE-Standard).

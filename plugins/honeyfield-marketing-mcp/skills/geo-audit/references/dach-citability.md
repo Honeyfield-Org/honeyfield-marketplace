@@ -77,4 +77,4 @@ So findest du die Drittplattform-Zielliste datengetrieben:
 
 Tool-/Intern-Referrer aus dem Gesamt-Nenner rausrechnen: `tagassistant.google.com`, `ads.google.com`, `*.lightning.force.com`, `*.officeapps.live.com`, `(not set)`, `(data not available)`.
 
-Persistieren: optional als Custom Dimension `ai_source` + GA4-Channel-Group „AI Referral" (UTM-Konvention), damit der Traffic dauerhaft segmentierbar ist. In GA4 DebugView verifizieren. **Caveat:** GA4-Referrer ist Näherung, kein Fetch-Beweis (Crawler-Fetches erzeugen oft keine Session).
+Persistieren (optional, damit der Traffic dauerhaft segmentierbar ist): Custom Dimension `ai_source` ist via `ga4_create_custom_dimension` anlegbar (Schreib-Aktion → erst Preview, dann Bestätigung, s. Schreib-Guardrails des Plugins); die GA4-Channel-Group „AI Referral" (UTM-Konvention) ist per Tool NICHT anlegbar — nur im GA4-UI, als Empfehlung ausgeben. In GA4 DebugView verifizieren. **Caveat:** GA4-Referrer ist Näherung, kein Fetch-Beweis (Crawler-Fetches erzeugen oft keine Session).

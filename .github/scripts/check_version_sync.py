@@ -11,8 +11,9 @@ Harte Invariante, die dieser Check erzwingt:
   fuer jedes Plugin in marketplace.json:
     marketplace.json plugins[].version  ==  <source>/.claude-plugin/plugin.json version
 
-Zusaetzlicher Soft-Check: metadata.version (Katalog-Version) sollte mindestens so
-hoch sein wie die hoechste Plugin-Version — sonst hinkt der Katalog hinterher.
+Zusaetzlicher harter Check (fuehrt ebenfalls zu exit 1): metadata.version
+(Katalog-Version) muss mindestens so hoch sein wie die hoechste Plugin-Version —
+sonst hinkt der Katalog hinterher.
 """
 import json
 import os
@@ -66,7 +67,7 @@ def main():
         if pv is not None:
             plugin_versions.append((pv, pj_version))
 
-    # Soft-Check: Katalog-Version darf nicht hinter der hoechsten Plugin-Version liegen.
+    # Harter Check: Katalog-Version darf nicht hinter der hoechsten Plugin-Version liegen.
     meta_version = mp.get("metadata", {}).get("version")
     meta_sv = parse_semver(meta_version)
     if meta_sv is not None and plugin_versions:

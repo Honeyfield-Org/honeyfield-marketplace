@@ -2,7 +2,7 @@
 
 > **Nutzungshinweis:** Nur die geschäftstyp-relevante Sektion gegen den Kunden halten (aus `projekt-kontext`) — nicht die ganze Library.
 
-Grundlage: Coreys Event-Library (US-SaaS), DACH-lokalisiert + erweitert um Lead-Gen / lokale Dienstleister. GA4 Enhanced E-Commerce Naming als Standard.
+Grundlage: bewährte SaaS-Event-Library, DACH-lokalisiert + erweitert um Lead-Gen / lokale Dienstleister. GA4 Enhanced E-Commerce Naming als Standard.
 
 ---
 

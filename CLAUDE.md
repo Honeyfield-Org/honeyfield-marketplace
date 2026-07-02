@@ -3,18 +3,18 @@
 Marketplace-Repo. Plugins unter `plugins/<plugin>/`; Skills unter `plugins/<plugin>/skills/<skill>/SKILL.md` (+ optional `references/`, `evals/`), auto-discovered. **Die Konventionen unten gelten für das Plugin `honeyfield-marketing-mcp`** — weitere Plugins können eigene definieren.
 
 ## `honeyfield-marketing-mcp` — Pflicht für jeden Skill: Projekt-Kontext zuerst
-Jeder Skill **im Plugin `honeyfield-marketing-mcp`** (Audit wie Creation) **muss** früh — in Schritt 0 / „Vorbereitung" — diesen Absatz enthalten (letzter Satz an die Aufgabe anpassbar):
+Jeder Kontext-konsumierende Skill **im Plugin `honeyfield-marketing-mcp`** (alle außer `projekt-kontext` selbst) **muss** früh — in Schritt 0 / „Vorbereitung" — diesen Absatz enthalten (Kernstruktur und `compliance`-Satz wörtlich; aufgabenspezifische Einschübe — welche Kontext-Felder für die Aufgabe zählen, knappe Fallback-Fragen — und ein angepasster letzter Satz sind erlaubt):
 
 > **Projekt-Kontext zuerst.** Liegt für dieses Projekt ein Projekt-Kontext vor — als **Projektwissen** in diesem Claude-Projekt oder als `projekt-kontext.md` im Arbeitsverzeichnis —, nutze ihn, bevor du fragst, und frage nur nach, was dort fehlt oder für diese Aufgabe spezifisch ist. Beachte gesetzte `compliance`-Flags als harte Leitplanke. Fehlt der Kontext, biete an, ihn per `projekt-kontext` anzulegen.
 
-Der `projekt-kontext`-Skill erzeugt/pflegt dieses Fundament-Dokument (Frontmatter mit Stable Keys + Prosa). So muss kein Skill Markt/Marke/Ziele/Recht erneut abfragen. Speicherung ist plattformabhängig: **Claude.ai** → Projektwissen (manuell ablegen), **Claude Code** → `projekt-kontext.md` im Repo.
+Der `projekt-kontext`-Skill erzeugt/pflegt dieses Fundament-Dokument (Frontmatter mit Stable Keys + Prosa). So muss kein Skill Markt/Marke/Ziele/Recht erneut abfragen. Speicherung ist plattformabhängig: **Claude.ai** → Projektwissen (manuell ablegen), **Claude Code** → `projekt-kontext.md` im Repo. Ausnahme: `projekt-kontext` selbst (Foundation) — dort ersetzt Schritt 1 (Existenz prüfen, updaten statt neu) den Absatz; der wörtliche Absatz wäre zirkulär.
 
 ## Skill-Konventionen (`honeyfield-marketing-mcp`)
-- **Sprache:** Deutsch, imperativ, terse, daten-first, ehrlich über Grenzen. DACH-kalibriert (DE/AT/CH).
+- **Sprache:** Deutsch, imperativ, terse, daten-first, ehrlich über Grenzen. DACH-kalibriert (DE/AT/CH). **Persona-Ausnahme:** Die Eröffnung eines Skills (Rollen-/Zielabsätze vor der ersten Sektion) darf die Rolle in zweiter Person setzen („Du bist ein …-Spezialist”) — etabliertes Muster über alle Skills des Plugins; ab der ersten Sektion gilt Imperativ/Infinitiv.
 - **Frontmatter:** `name` (kebab-case), `description` (mit Trigger-Phrasen **und** Abgrenzung zu Schwester-Skills), `metadata.version`.
 - **YAML-Footgun:** deutsche Anführungszeichen in der `description` immer als Paar „…" (öffnend U+201E, **schließend U+201D**) — **niemals** ASCII-`"` als Schließzeichen (bricht den YAML-Parser; der Skill triggert dann still nicht). Alternativ als `\"` escapen.
 - **`description`-Länge: hartes Limit 1024 Zeichen.** Länger → **Claude Web verwirft den Skill still beim Einlesen** (Claude Code ist toleranter und lädt ihn trotzdem, also fällt es lokal nicht auf — der Skill kommt beim Kunden nie an). Ziel ~950 Zeichen mit Marge. `check_skill_frontmatter.py` erzwingt das Limit (CI). Genau dieser Fall ließ `google-ads-audit` in Claude Web verschwinden, obwohl auf `main` + valide.
-- **MCP-Tools** mit Bare-Name in Backticks nennen (`ads_*`, `ga4_*`, `sc_*`, `dfs_*`, `gbp_*`, `gtm_*`, `clarity_*`, `list_workspaces`). Vollständiges Tool-Inventar nach Domäne mit R/W-Markierung: `plugins/honeyfield-marketing-mcp/references/tool-map.md`. Muster für Schreib-Aktionen (read→preview→confirm, Hochrisiko-/irreversibel-Liste): `references/write-guardrails.md`.
+- **MCP-Tools** mit Bare-Name in Backticks nennen (u.a. `ads_*`, `ga4_*`, `sc_*`, `dfs_*`, `gbp_*`, `gtm_*`, `clarity_*`, `list_workspaces` — nur Beispiele, nicht vollständig). Einzige vollständige Quelle — Tool-Inventar nach Domäne mit R/W-Markierung: `plugins/honeyfield-marketing-mcp/references/tool-map.md`. Muster für Schreib-Aktionen (read→preview→confirm, Hochrisiko-/irreversibel-Liste): `references/write-guardrails.md`.
 - **Skill-Struktur nach Typ.** Gemeinsam für alle: Beleg-Stufen, Schritt 0 (Projekt-Kontext-Absatz + `list_workspaces`/`sources`-Check + Markt-Kalibrierung), DACH-Layer, `evals/`, „Verwandte Skills". Der Aufbau danach hängt vom Typ ab:
   - **Audit-Skills** (`google-ads-audit`, `seo-audit`, `geo-audit`, `tracking-check`): → Phasen (Blocker zuerst) → DACH-Layer → Mythen → Output-Format → **Operator** (Schreib-Aktionen nur mit Dry-Run + Bestätigung) → Grenzen → Tools nach Phase → Verwandte Skills → Referenzen.
   - **Creation-Skills** (`ad-creative`): **Modi** statt Blocker-Phasen (z.B. neu generieren / aus Performance iterieren) → Ehrlichkeits-Modell aus der Tool-Reality → Output → **Operator** (schreibt nur nach Bestätigung, z.B. Anzeigen als `PAUSED`) → Grenzen.
@@ -35,7 +35,8 @@ Wie ein neuer Skill geschnitten wird (Entscheidung 2026-06-30, abgeleitet vom Re
 - `python3 .github/scripts/check_skill_frontmatter.py` — echter YAML-Parse aller Skills (läuft auch in CI `validate.yml`).
 - `python3 .github/scripts/check_version_sync.py` — `plugin.json`-Version == marketplace-Plugin-Eintrag für jedes Plugin (läuft auch in CI). Der Guard gegen den Sync-Drift.
 - `python3 -m json.tool plugins/honeyfield-marketing-mcp/skills/<skill>/evals/evals.json` — Evals valides JSON.
-- `claude plugin validate plugins/honeyfield-marketing-mcp/` — Manifest.
+- `python3 -m json.tool plugins/<plugin>/.mcp.json` — MCP-Config valides JSON (CI prüft alle `plugins/*/.mcp.json`; `honeyfield-eurlex-mcp`/`honeyfield-ris-mcp` bestehen nur aus `.mcp.json` + `plugin.json`).
+- `claude plugin validate plugins/<plugin>/` — Manifest, für **jedes** geänderte Plugin (CI loopt über alle `plugins/*/`).
 - Beim Anlegen eines Skills, der Kontext konsumiert: prüfen, dass der Projekt-Kontext-Absatz drin ist und keine alten `kunden-kontext`-Referenzen übrig sind.
 - **Inhaltliche Plugin-Änderung** (neuer/geänderter Skill, References, MCP-Config)? → Version in **allen drei Feldern** erhöht (siehe „Release & Org-Marketplace-Sync") — sonst synct der Org-Marketplace nicht.
 
@@ -50,5 +51,5 @@ Der Org-Marketplace in Claude.ai synct **von `main`** und erkennt ein Update **n
 3. **Sync zieht von `main`, nicht vom Feature-Branch.** Ein Skill, der nur auf einem Feature-Branch / in einem offenen PR liegt, taucht in Claude Web **nie** auf — egal wie oft man „Update" drückt. Erst nach `main` mergen, dann syncen.
 
 Verifikation vor „fertig":
-- `python3 .github/scripts/check_version_sync.py` → erzwingt `plugin.json` `version` == marketplace-Plugin-Eintrag für **jedes** Plugin (und warnt, wenn `metadata.version` hinterherhinkt). Läuft auch in CI `validate.yml`. Dieser Check fängt genau den Drift, der dazu führte, dass `google-ads-audit` beim Client nie ankam.
+- `python3 .github/scripts/check_version_sync.py` → erzwingt `plugin.json` `version` == marketplace-Plugin-Eintrag für **jedes** Plugin (und schlägt fehl, wenn `metadata.version` hinterherhinkt). Läuft auch in CI `validate.yml`. Dieser Check fängt genau den Drift, der dazu führte, dass `google-ads-audit` beim Client nie ankam.
 - `git ls-tree -r main --name-only -- plugins/<plugin>/skills/` → was liegt wirklich auf `main`?

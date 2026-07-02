@@ -1,8 +1,8 @@
 ---
 name: google-ads-audit
-description: "Datengetriebener Google-Ads-Audit für einen Kunden-Account, kalibriert auf den DACH-Markt (DE/AT/CH). Nutze diesen Skill, wenn der Nutzer einen „Google-Ads-Audit”, eine „Ads-Analyse” oder einen „Ads-Check” will oder Performance-/Spend-Probleme diagnostizieren möchte. Auch bei: „warum performen meine Ads schlecht”, „wo verbrenne ich Budget”, „Wasted Spend / verschwendete Suchbegriffe”, „CPA/ROAS zu schlecht”, „Conversions eingebrochen”, „Impression Share verloren”, „Negatives/Suchbegriffe aufräumen” oder vage „mein Google Ads läuft nicht”. Zieht echte Daten aus dem Konto über den Marketing-Ops-MCP (+ GA4-Cross-Check fürs Conversion-Tracking) und kann behebbare Probleme — Negatives setzen, Keywords/Anzeigen pausieren, Budget und Gebote anpassen — nach Bestätigung direkt umsetzen. Für wöchentliches Reporting nutze `wochenreport`; für organisches Ranking / Landingpage-Tiefe `seo-audit`; für KI-Sichtbarkeit `geo-audit`."
+description: "Datengetriebener Google-Ads-Audit für einen Kunden-Account, kalibriert auf den DACH-Markt (DE/AT/CH). Nutze diesen Skill, wenn der Nutzer einen „Google-Ads-Audit”, eine „Ads-Analyse” oder einen „Ads-Check” will oder Performance-/Spend-Probleme diagnostizieren möchte. Auch bei: „warum performen meine Ads schlecht”, „wo verbrenne ich Budget”, „Wasted Spend / verschwendete Suchbegriffe”, „CPA/ROAS zu schlecht”, „Conversions eingebrochen”, „Impression Share verloren”, „Negatives/Suchbegriffe aufräumen” oder vage „mein Google Ads läuft nicht”. Zieht echte Daten aus dem Konto über den Marketing-Ops-MCP (+ GA4-Cross-Check fürs Conversion-Tracking) und kann behebbare Probleme — Negatives setzen, Keywords/Anzeigen pausieren, Budget und Gebote anpassen — nach Bestätigung direkt umsetzen. Für Reporting nutze `wochenreport`; für organisches Ranking `seo-audit`; für KI-Sichtbarkeit `geo-audit`; für tiefe Tracking-Diagnose `tracking-check`; für neue Anzeigentexte `ad-creative`."
 metadata:
-  version: 0.1.1
+  version: 0.2.0
 ---
 
 # Google-Ads-Audit
@@ -30,7 +30,7 @@ Was die Daten NICHT bedeuten — sonst entstehen False-Findings:
 ## Schritt 0 — Vorbereitung (immer zuerst)
 **Workspace + Datenquellen klären.** Rufe `list_workspaces` auf, prüfe die `sources` des Ziel-Workspace. `google_ads` muss verbunden sein (sonst läuft nichts); `ga4` ist für den Tracking-Cross-Check (Phase 1) nötig — fehlt es, den Cross-Check als Lücke benennen. Bei Namens-Kollision per Slug disambiguieren, nicht per Anzeigename.
 
-**Projekt-Kontext zuerst.** Liegt für dieses Projekt ein Projekt-Kontext vor — als **Projektwissen** in diesem Claude-Projekt oder als `projekt-kontext.md` im Arbeitsverzeichnis —, nutze ihn (Branche, Zielmarkt, Geschäftsziel, Ziel-CPA/-ROAS, Brand-Begriffe, Saisonalität), bevor du fragst; achte besonders auf die Brand-Begriffe für den Brand/Non-Brand-Split (Phase 3). Beachte gesetzte `compliance`-Flags als harte Leitplanke (z. B. HWG → keine Heil-/Wirkversprechen in Anzeigen-Empfehlungen). Fehlt der Kontext, biete an, ihn per `projekt-kontext` anzulegen, oder frage knapp: welches Konto/Workspace, Zielmarkt (DE/AT/CH), Geschäftsziel (Leads vs. Sales vs. Awareness), Ziel-CPA oder -ROAS, Brand-Begriffe.
+**Projekt-Kontext zuerst.** Liegt für dieses Projekt ein Projekt-Kontext vor — als **Projektwissen** in diesem Claude-Projekt oder als `projekt-kontext.md` im Arbeitsverzeichnis —, nutze ihn, bevor du fragst, und frage nur nach, was dort fehlt oder für diese Aufgabe spezifisch ist. Beachte gesetzte `compliance`-Flags als harte Leitplanke. Fehlt der Kontext, biete an, ihn per `projekt-kontext` anzulegen, oder frage knapp: welches Konto/Workspace, Zielmarkt (DE/AT/CH), Geschäftsziel (Leads vs. Sales vs. Awareness), Ziel-CPA oder -ROAS, Brand-Begriffe. Für diesen Audit zählen v. a. Branche, Zielmarkt, Geschäftsziel, Ziel-CPA/-ROAS, Saisonalität und die Brand-Begriffe für den Brand/Non-Brand-Split (Phase 3); `compliance`-Beispiel: HWG → keine Heil-/Wirkversprechen in Anzeigen-Empfehlungen.
 
 **Zeitraum + Markt kalibrieren.** Standard-Analysefenster: die letzten ~30 Tage, dabei die jüngsten ~7 Tage separat als „noch nachlaufend (Attributions-Lag)” markieren. Währung in Kontowährung lesen (CH-Konten oft CHF). Für `dfs_*`-Beifänge (SERP-Wettbewerb) `location` + `language` zum Zielmarkt setzen: DE → `Germany`/`de`, AT → `Austria`/`de`, CH → `Switzerland`/`de`. Default ist AT/de — bei DE/CH ohne Angabe ziehst du sonst falsche SERPs.
 
@@ -48,7 +48,7 @@ Logik: „die Zahl ist nicht vertrauenswürdig” und „Geld leckt sichtbar” 
 
 ### 1 — Conversion-Tracking-Integrität (Gate, immer zuerst)
 - `ads_list_conversion_actions` → welche Actions, Status (aktiv? „keine letzten Conversions”?), **primär vs. sekundär**, Zählung **„Jede” vs. „Eine”** (Lead-Gen sollte „Eine” pro Klick zählen, E-Commerce „Jede”), Attributionsmodell, Conversion-Fenster, Enhanced Conversions an?
-- **Cross-Check gegen GA4:** `ga4_conversions` / `ga4_report` (Key-Events) für denselben Zeitraum → Größenordnung vergleichen. Faktor-2+-Diskrepanz = Tracking-Verdacht (Doppelzählung, fehlende/doppelte Imports, GCLID-/Auto-Tagging-Bruch), nicht als „GA4 ≠ Ads ist halt so” abtun.
+- **Cross-Check gegen GA4:** `ga4_conversions` / `ga4_report` (Key-Events) für denselben Zeitraum → Größenordnung vergleichen. Große Diskrepanz = Tracking-Verdacht (Schwelle in `references/google-ads-benchmarks.md`; Doppelzählung, fehlende/doppelte Imports, GCLID-/Auto-Tagging-Bruch), nicht als „GA4 ≠ Ads ist halt so” abtun.
 - Achten auf: mehrere primäre Actions, die dasselbe Ereignis doppelt zählen (z. B. „Kauf” UND „Warenkorb” beide primär); importierte GA4-Conversions **und** native Tags gleichzeitig; Actions ohne Conversions seit Wochen (Tracking gebrochen); „Jede/Eine” falsch fürs Geschäftsmodell.
 > Steht das Tracking nicht, ist der Audit hier zu Ende: erst Tracking fixen (ggf. `tracking-check`), dann Performance bewerten. Alles andere wäre Optimierung auf falsche Zahlen.
 
@@ -74,9 +74,11 @@ Logik: „die Zahl ist nicht vertrauenswürdig” und „Geld leckt sichtbar” 
 
 ### 5 — Gebotsstrategie & Impression Share
 - `ads_campaign_performance` → je Kampagne die Strategie (Maximize Conversions/Value, tCPA, tROAS, Maximize Clicks, Manual CPC) gegen das Geschäftsziel. **Mismatch** (z. B. Maximize Clicks bei Conversion-Ziel) = Befund.
-- **Conversion-Volumen für Smart Bidding:** `ads_conversion_performance` → genug Conversions, damit tCPA/tROAS verlässlich lernt? Konservativer Faustwert ~15–30 Conv./Monat für tCPA, mehr für tROAS (Schwellen in `references/google-ads-benchmarks.md`). Darunter ist Smart Bidding eher Raten.
-- **Lernphase:** kürzlich geänderte Strategie/Ziel → 1–2 Wochen instabil; in dieser Phase nicht hart beurteilen. Via `ads_change_history` prüfen, ob jüngst umgestellt wurde.
+- **Conversion-Volumen für Smart Bidding:** `ads_conversion_performance` → genug Conversions, damit tCPA/tROAS verlässlich lernt? tROAS braucht mehr als tCPA; Schwellen in `references/google-ads-benchmarks.md`. Darunter ist Smart Bidding eher Raten.
+- **Lernphase:** kürzlich geänderte Strategie/Ziel → instabile Phase, nicht hart beurteilen (Dauer in `references/google-ads-benchmarks.md`). Via `ads_change_history` prüfen, ob jüngst umgestellt wurde.
 - `ads_impression_share` → **Lost IS (Budget) vs. Lost IS (Rank)** ist die Schlüssel-Diagnose: viel Lost IS (Budget) → Budget/Effizienz; viel Lost IS (Rank) → QS/Gebot, **nicht** Budget. Search (Abs) Top IS → Positionsqualität. Diagnose-Matrix in `references/google-ads-benchmarks.md`.
+- `ads_list_experiments` → läuft ein Experiment auf der Kampagne? Traffic-Split verzerrt KPI-Vergleiche — Basis- und Test-Arm getrennt beurteilen, nicht als eine Kampagne. (`ads_change_history` reicht nur ~29 Tage zurück — länger laufende Experimente sieht nur dieses Tool.)
+- Bei hohem Lost IS (Rank) / CPC-Druck: `dfs_serp_google_ads` für die wichtigsten Ziel-Keywords → wer bietet mit, Anzeigen-Dichte als Wettbewerbs-Kontext (`location`/`language` wie in Schritt 0 kalibriert).
 > tCPA zu niedrig gesetzt erstickt das Volumen (hoher Lost IS Rank, „durch Gebotsstrategie begrenzt”) — sieht aus wie ein Rank-Problem, ist aber ein Ziel-Wert-Problem.
 
 ### 6 — Anzeigen, Assets & Segmente
@@ -91,8 +93,8 @@ Logik: „die Zahl ist nicht vertrauenswürdig” und „Geld leckt sichtbar” 
 
 ## DACH-Layer (immer, quer über alle Phasen)
 Diese Punkte hat ein US-/Englisch-Audit nicht. Details in `references/dach-ads.md`.
-1. **Standort-Targeting „Anwesenheit” vs. „Anwesenheit oder Interesse”:** Default ist „Anwesenheit oder Interesse” und zeigt Anzeigen auch Leuten, die nur *über* den Ort suchen (z. B. jemand in DE sucht „Hotel Wien”). Bei lokalem/regionalem DACH-Geschäft auf **„Anwesenheit”** — eine der größten stillen Wasted-Spend-Quellen.
-2. **Sprach-Targeting basiert auf der Google-Oberflächensprache, nicht der Suchsprache.** Nur „Deutsch” kann DACH-Nutzer mit englischer UI ausschließen; je nach Zielgruppe Englisch/alle ergänzen.
+1. **Standort-Targeting „Anwesenheit” vs. „Anwesenheit oder Interesse”:** Default ist „Anwesenheit oder Interesse” und zeigt Anzeigen auch Leuten, die nur *über* den Ort suchen (z. B. jemand in DE sucht „Hotel Wien”). Bei lokalem/regionalem DACH-Geschäft auf **„Anwesenheit”** — eine der größten stillen Wasted-Spend-Quellen. Targeting-Methode je Kampagne via `ads_get_geo_targeting` prüfen (Presence vs. POI); Umstellung über den Operator.
+2. **Sprach-Targeting basiert auf der Google-Oberflächensprache, nicht der Suchsprache.** Nur „Deutsch” kann DACH-Nutzer mit englischer UI ausschließen; je nach Zielgruppe Englisch/alle ergänzen. Die Einstellung ist per MCP nicht lesbar — im Ads-UI prüfen bzw. beim Kunden erfragen; Beleg-Stufe: beratend.
 3. **Währung & Markt getrennt:** DE/AT/CH als eigene Geo-Targets; Streuung über Landesgrenzen prüfen. Kontowährung beachten (CH oft CHF) — CPA/ROAS in Kontowährung lesen.
 4. **Deutsche Morphologie:** Komposita und Flexion streuen die Suchbegriffe; Close-Variants decken viel ab, aber die n-gram-Negative-Analyse (Phase 3) wiegt in DE schwerer als in EN.
 5. **Rechtliches (beratend, keine Rechtsberatung):** HWG (Heilmittel/Gesundheit), Preisangaben (PAngV — Grund-/Endpreis), Impressums-Erreichbarkeit auf Landingpages. Nur auf Vorhandensein/Plausibilität hinweisen, nicht rechtlich bewerten.
@@ -113,19 +115,20 @@ Diese Punkte hat ein US-/Englisch-Audit nicht. Details in `references/dach-ads.m
 2. **Befunde nach Phase**, jeder als:
    - **Problem** — was ist falsch
    - **Wirkung** — Hoch / Mittel / Niedrig
-   - **Beleg** — die echten Daten (z. B. „Suchbegriff ‚kostenlos vorlage', 312 € Spend · 0 Conversions · 84 Klicks in 30 Tagen”)
+   - **Beleg + Stufe** — die echten Daten **mit Beleg-Stufe** (gemessen / mit Tracking-Vorbehalt / beratend), z. B. „Suchbegriff ‚kostenlos vorlage', 312 € Spend · 0 Conversions · 84 Klicks in 30 Tagen (gemessen, `ads_search_terms`)”
    - **Fix** — konkrete Maßnahme
    - **Priorität** — 1–5
 3. **Maßnahmenplan in 4 Stufen:** Kritisch (Tracking gebrochen / Geld brennt) · High-Impact · Quick Wins · Langfristig.
 
-Der **Beleg** ist Pflicht und immer eine echte Zahl aus dem Konto — kein „könnte sein”. Conversion-basierte Belege immer mit Tracking-Vorbehalt aus Phase 1.
+Der **Beleg** ist Pflicht, trägt **immer** seine Stufe und ist eine echte Zahl aus dem Konto — kein „könnte sein”. Conversion-basierte Belege immer mit Tracking-Vorbehalt aus Phase 1.
 
 ## Danach: umsetzen (Operator) — immer vorher fragen, nie ungefragt schreiben
-Jede Schreib-Aktion bewegt echtes Geld oder echte Auslieferung. Regel: **erst Dry-Run zeigen (was genau, welche Ebene, welche Wirkung), dann einzeln bestätigen lassen, dann ausführen.** Nichts pauschal, nichts automatisch.
+Jede Schreib-Aktion bewegt echtes Geld oder echte Auslieferung. Regel: **erst Dry-Run zeigen (was genau, welche Ebene, welche Wirkung, reversibel ja/nein), dann einzeln bestätigen lassen, dann ausführen.** Nichts pauschal, nichts automatisch.
 - **Negatives setzen** → `ads_add_negative_keyword` / `ads_bulk_add_negative_keywords` / Shared-Liste via `ads_manage_shared_negative_list`. Vorher: Liste der Begriffe + Ziel-Ebene (Account-/Shared-Liste vs. Kampagne vs. Ad Group) + Match-Type zeigen und gegen aktive Keywords auf **Konflikte** prüfen.
 - **Keywords/Anzeigen pausieren** → `ads_update_keyword_status` / `ads_update_ad_status`. Vorher: betroffene Elemente + Begründung (z. B. Spend ohne Conversion über X Klicks) zeigen.
 - **Budget anpassen** → `ads_update_campaign_budget`. Höchstes Geld-Risiko: Betrag, Richtung und erwartete Wirkung (mit IS-Bezug aus Phase 5) explizit zeigen, dann fragen.
 - **Gebots-Modifier** → `ads_set_device_bid_modifier` u. ä. **Nur bei manuellem Bidding sinnvoll**; bei Smart Bidding höchstens −100 %-Ausschluss (s. Tool-Grenzen).
+- **Geo-Targeting umstellen** → `ads_update_geo_targeting`. Vorher: Kampagne, Einstellung alt → neu, erwartete Reichweiten-Wirkung zeigen, einzeln bestätigen.
 - **Tabu ohne ausführliche Rücksprache:** Kampagnen erstellen (`ads_create_campaign`), Gebotsstrategie umstellen (`ads_update_campaign_bidding_strategy` — startet eine Lernphase), `ads_apply_recommendation` pauschal anwenden.
 
 ## Grenzen (ehrlich benennen)
@@ -142,10 +145,10 @@ Jede Schreib-Aktion bewegt echtes Geld oder echte Auslieferung. Regel: **erst Dr
 - Budget: `ads_budget_status`, `budget_pacing`, `anomaly_check`
 - Suchbegriffe/Negatives: `ads_search_terms`, `ads_ai_max_search_terms`, `ads_list_negative_keywords`
 - Keywords/Struktur: `ads_keyword_quality`, `ads_list_keywords`, `ads_list_ad_groups`
-- Bidding/IS: `ads_campaign_performance`, `ads_conversion_performance`, `ads_impression_share`, `ads_change_history`
-- Anzeigen/Assets/Segmente: `ads_ad_performance`, `ads_list_ads`, `ads_list_assets`, `ads_device_performance`, `ads_geo_performance`, `ads_schedule_performance`, `ads_demographic_performance`
+- Bidding/IS: `ads_campaign_performance`, `ads_conversion_performance`, `ads_impression_share`, `ads_change_history`, `ads_list_experiments`
+- Anzeigen/Assets/Segmente: `ads_ad_performance`, `ads_list_ads`, `ads_list_assets`, `ads_device_performance`, `ads_geo_performance`, `ads_schedule_performance`, `ads_demographic_performance`, `ads_get_geo_targeting`
 - Empfehlungen: `ads_list_recommendations`
-- Umsetzen: `ads_add_negative_keyword`, `ads_bulk_add_negative_keywords`, `ads_manage_shared_negative_list`, `ads_update_keyword_status`, `ads_update_ad_status`, `ads_update_campaign_budget`, `ads_set_device_bid_modifier`
+- Umsetzen: `ads_add_negative_keyword`, `ads_bulk_add_negative_keywords`, `ads_manage_shared_negative_list`, `ads_update_keyword_status`, `ads_update_ad_status`, `ads_update_campaign_budget`, `ads_set_device_bid_modifier`, `ads_update_geo_targeting`
 - Wettbewerb (DACH-Beifang): `dfs_serp_google_ads`
 
 ## Verwandte Skills

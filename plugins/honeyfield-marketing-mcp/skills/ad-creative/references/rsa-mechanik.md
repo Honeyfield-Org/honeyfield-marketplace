@@ -26,18 +26,7 @@ Technisches Rückgrat für den `ad-creative`-Skill. On-demand laden, hält SKILL
 
 ## Headline-Mix (Verteilung der 15)
 
-Eine RSA mit 15 Headlines sollte folgende Kategorien-Verteilung anstreben:
-
-| Typ | Anzahl | Zweck |
-|---|---|---|
-| keyword | 3–4 | Direkter Keyword-Bezug, Relevanz-Signal |
-| benefit | 3–4 | Nutzen/Ergebnis für den Suchenden |
-| social-proof | 2–3 | Zahlen, Kunden, Bewertungen (nur mit Beleg) |
-| CTA | 2–3 | Handlungsaufforderung (Jetzt testen, Kostenlos starten) |
-| differentiator | 1–2 | USP, Alleinstellungsmerkmal |
-| brand | 1 | Markenname |
-
-Ziel: **kein Typ dominiert**, jede Headline ist thematisch unique (keine Paraphrasen von einander). Redundanz zwischen Headlines reduziert die Kombinationsvielfalt und damit die Optimierungs-Chancen.
+Kanonische Mix-Verteilung (Anzahl je Typ: keyword/benefit/social-proof/CTA/differentiator/brand) und Unique-Regel: **SKILL.md, Modus A Schritt 2** — hier bewusst nicht dupliziert.
 
 ---
 
@@ -143,7 +132,7 @@ Deutsche Eigenheiten, die Limits sprengen:
 2. Für jede Description: `len(text.strip()) <= 90`
 3. Für Paths: `len(path.strip()) <= 15`
 4. Headlines-Anzahl: 3 ≤ n ≤ 15; Descriptions: 2 ≤ n ≤ 4
-5. DKI-Texte: Default-Wert im Limit prüfen, **und** längste realistische Keyword-Ersetzung abschätzen
+5. DKI-Texte: Default-Wert im Limit prüfen, **und** längste realistische Keyword-Ersetzung prüfen — Ad-Group-Keywords per `ads_list_keywords` ziehen, das längste gegen das 30er-Limit rechnen
 
 ---
 
@@ -153,12 +142,14 @@ Deutsche Eigenheiten, die Limits sprengen:
 - `ads_create_ad` — neue RSA anlegen; default ENABLED → immer `status="PAUSED"` setzen
 - `ads_replace_ad` — inhaltliche Änderung; `keep_old=true` pausiert die alte (empfohlen)
 - `ads_update_ad_status` — einzige In-Place-Mutation (Status ENABLED/PAUSED)
-- `ads_create_sitelink` / `ads_update_sitelink` — Sitelinks neu anlegen / final_url in-place ändern
+- `ads_create_sitelink` / `ads_update_sitelink` — Sitelinks neu anlegen / final_url in-place ändern; **kein `status`-Parameter** (kein PAUSED — nach Anlage sofort aktiv, ohne `campaign_id` Konto-weit) und kein Remove-Tool via MCP
 
 **Read-Tools (Fundierung):**
 - `ads_list_ads` — liefert Copy + Status; **kein Ad-Strength-Wert**
+- `ads_list_assets` — Sitelinks/Callouts/Structured Snippets inkl. `asset_id` (Filter `asset_type`); Pflicht-Read vor jedem Sitelink-Write (Duplikate vermeiden, `asset_id` fürs Update). Promotion/Price deckt es nicht ab
 - `ads_ad_performance` — Ad-Level CTR/Conversions (keine per-Asset-Labels)
 - `ads_search_terms` / `ads_ai_max_search_terms` — reale Suchsprache der Nutzer
 - `ads_keyword_performance` — QS + Conversion-Signale der Ziel-Keywords
+- `ads_list_keywords` — alle Keywords der Ziel-Ad-Group (DKI-Längen-Check, auch impression-lose)
 
 **Kein Tool liefert:** Ad Strength, per-Asset-Labels (Best/Good/Low), Pinning-Status.

@@ -35,9 +35,9 @@
   {
     "id": "tool-reality-onpage-diff",
     "prompt": "Prüf, ob ChatGPT die Preise und Fakten auf unserer Produktseite überhaupt lesen kann.",
-    "expected_output": "Macht den Raw-vs-Rendered-Diff über curl-Roh-HTML + Token-Präsenz (steht der Preis im sichtbaren Body?). Nutzt dfs_onpage_instant nur für gerenderte Metriken und verlässt sich NICHT auf einen word_count-Vergleich.",
+    "expected_output": "Macht den Raw-vs-Rendered-Diff über das Roh-HTML aus einer Raw-Quelle (curl in Claude Code, Web-Fetch in Claude.ai) + Token-Präsenz (steht der Preis im sichtbaren Body?). Nutzt dfs_onpage_instant nur für gerenderte Metriken und verlässt sich NICHT auf einen word_count-Vergleich.",
     "assertions": [
-      "Holt das Roh-HTML per curl und prüft Token-/Schema-Präsenz im sichtbaren Body",
+      "Holt das Roh-HTML über eine Raw-Quelle (curl oder Web-Fetch) und prüft Token-/Schema-Präsenz im sichtbaren Body",
       "Behauptet keinen word_count-Diff aus dfs_onpage_instant (Feld kann null sein, kein Body)",
       "Behandelt per Klick injizierte Accordion-FAQ-Antworten als versteckten JS-Render-Fall"
     ],
@@ -88,5 +88,15 @@
       "Liefert eine priorisierte Drittplattform-Zielliste (Entity-Baseline zuerst)"
     ],
     "files": ["SKILL.md", "references/dach-citability.md"]
+  },
+  {
+    "id": "defer-to-wochenreport",
+    "prompt": "Erstell mir wieder den Wochenreport — wie hat sich unsere KI-Sichtbarkeit diese Woche entwickelt?",
+    "expected_output": "Erkennt die reine Reporting-Anfrage und verweist auf wochenreport (Kern-KPIs, Zeitraum-Vergleich), statt ein volles GEO-Phasen-Panel zu fahren.",
+    "assertions": [
+      "Verweist auf wochenreport für das regelmäßige Reporting",
+      "Startet keinen vollständigen GEO-Audit für eine reine Reporting-Anfrage"
+    ],
+    "files": ["SKILL.md"]
   }
 ]

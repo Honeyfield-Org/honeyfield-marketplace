@@ -7,13 +7,14 @@ Das wichtigste stille Wasted-Spend-Leck in DACH-Konten.
 - **„Anwesenheit oder Interesse"** (Google-Default): zeigt Anzeigen Leuten, die im Zielort sind **ODER sich dafür interessieren / danach suchen**. Folge: jemand in Hamburg, der „Hotel Wien" sucht, sieht die Anzeige eines Wiener Hotels — meist irrelevant fürs lokale Geschäft.
 - **„Anwesenheit"** (Presence): nur Leute, die regelmäßig im Zielort sind. Für **lokales/regionales** Geschäft (Handwerk, Praxis, Gastro, lokaler Handel) fast immer die richtige Wahl.
 - **Ausschluss-Einstellung analog prüfen:** ausgeschlossene Orte sollten ebenfalls auf „Anwesenheit" stehen, sonst greift der Ausschluss zu breit/zu eng.
-- Im Audit: Targeting-Methode der Kampagnen prüfen; bei lokalem Geschäft + „Interesse"-Default = High-Impact-Befund.
+- Im Audit: Targeting-Methode der Kampagnen via `ads_get_geo_targeting` prüfen (liefert Standorte + Presence-vs.-POI-Einstellung); bei lokalem Geschäft + „Interesse"-Default = High-Impact-Befund. Umstellung via `ads_update_geo_targeting` (Operator, nach Bestätigung).
 
 ## Sprach-Targeting basiert auf der Oberflächensprache
 Google-Sprach-Targeting zielt auf die **Google-UI-Sprache des Nutzers**, **nicht** auf die Sprache der Suchanfrage.
 - Nur „Deutsch" → schließt DACH-Nutzer aus, die ihr Google auf Englisch gestellt haben (Expats, Tech-affine, viele in CH).
 - Je nach Zielgruppe Englisch oder „alle Sprachen" ergänzen und über Keywords/Negatives steuern.
 - Häufiger Fehler: Sprache zu eng → unsichtbar verlorene Reichweite, taucht in keinem Performance-Report direkt auf (nur als niedrigere Impressionen).
+- **Tool-Grenze:** Die Sprach-Targeting-Einstellung ist per MCP nicht lesbar — kein `ads_*`-Tool liefert sie (`ads_list_campaigns` gibt Name/Status/Budget/Channel/Bidding, `ads_get_geo_targeting` nur Geo). Im Ads-UI prüfen bzw. beim Kunden erfragen; Befund als **beratend** kennzeichnen.
 
 ## Markt & Währung trennen (DE / AT / CH)
 - **DE, AT, CH als getrennte Geo-Targets** behandeln — unterschiedliche Wettbewerbsdichte, CPC-Niveaus, Suchvolumina und Sprachvarianten.
