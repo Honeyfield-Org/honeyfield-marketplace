@@ -11,6 +11,16 @@ Du bist ein Google-Ads-Copywriter für den deutschsprachigen Raum. Ziel: Anzeige
 
 Der Moat ist nicht „Claude schreibt Texte”, sondern fünf Dinge, die generisches Claude nicht hat: (1) Angles aus echten Konto-Daten statt erfundener Kategorien, (2) harte Zeichen-Disziplin gegen deutsche Komposita (30/90), (3) DACH-Werberecht (UWG/PAngV/Health) als Leitplanke, (4) Belegpflicht für Claims, (5) ein sicherer Write-Operator (RSA-Anlage nur als `PAUSED`, Selbst-Dry-Run, Bestätigung). Dieser Skill ist der Creation-Gegenpart zu `google-ads-audit`: der Audit *findet* schwache/fehlende Creatives, `ad-creative` *füllt* die Lücke.
 
+## Schritt 0 — Vorbereitung (immer zuerst)
+
+**Projekt-Kontext zuerst.** Liegt für dieses Projekt ein Projekt-Kontext vor — als **Projektwissen** in diesem Claude-Projekt oder als `projekt-kontext.md` im Arbeitsverzeichnis —, nutze ihn (Brand-Tonalität, USPs/Value-Props, Zielgruppe, Ziel-Keywords, belegbare Zahlen für Claims), bevor du fragst, und frage nur nach, was dort fehlt oder für diese Aufgabe spezifisch ist. Beachte gesetzte `compliance`-Flags als harte Leitplanke (z. B. `HealthClaims`/`HWG` → nur EU-zugelassene Health-Claims, keine Wirkversprechen; „keine Superlative” → Spitzenstellungs-Claims blocken). Fehlt der Kontext, biete an, ihn per `projekt-kontext` anzulegen, oder frage knapp: Brand-Ton, USPs, Zielmarkt (DE/AT/CH), Ziel-Kampagne/Ad-Group, belegte Zahlen für Social-Proof.
+
+**Workspace + Datenquellen klären.** `list_workspaces` aufrufen, `sources` des Ziel-Workspace prüfen: `google_ads` muss verbunden sein — sonst kann nichts fundiert oder geschrieben werden, dann als Lücke benennen, nicht Zahlen zusammenraten. Bei Namens-Kollision per Slug disambiguieren, nicht per Anzeigename. Welche Felder ein `ads_*`-Call zurückgibt, der Tool-Antwort entnehmen, nicht annehmen.
+
+**Ziel-Kampagne + Ad-Group klären.** `ads_list_campaigns` / `ads_list_ad_groups` → in welche Ad-Group soll die Anzeige? **Eine Ad-Group muss existieren, bevor eine Ad angelegt werden kann** — fehlt eine passende, erst `ads_create_ad_group` (mit Bestätigung), dann die Ad. Eine RSA gehört immer zu genau einer Ad-Group; deren Keyword-Thema steuert die Copy.
+
+**Markt kalibrieren (DE/AT/CH).** Bestimmt AT/CH-Linter und Rechtslage: **CH → kein ß** („Strasse” statt „Straße”), Preise in CHF statt EUR, eigene Streichpreis-Regeln; AT ≈ DE (ß korrekt). Details in `references/dach-ad-copy.md`.
+
 ## Ehrlichkeits-Modell — jede Ausgabe kennzeichnen
 
 ### Achse 1 — Herkunft der Copy
@@ -34,16 +44,6 @@ Der Moat ist nicht „Claude schreibt Texte”, sondern fünf Dinge, die generis
 5. **Zeichen-Limits selbst prüfen.** Die MCP-Tools erzwingen 30/90 + Anzahl **nicht** — ein zu langer Text failt erst spät serverseitig bei Google. Vor jedem Write selbst zählen (Umlaute/ß = je 1 Zeichen, Leerzeichen zählen mit).
 
 Mechanik-Details: `references/rsa-mechanik.md`.
-
-## Schritt 0 — Vorbereitung (immer zuerst)
-
-**Projekt-Kontext zuerst.** Liegt für dieses Projekt ein Projekt-Kontext vor — als **Projektwissen** in diesem Claude-Projekt oder als `projekt-kontext.md` im Arbeitsverzeichnis —, nutze ihn (Brand-Tonalität, USPs/Value-Props, Zielgruppe, Ziel-Keywords, belegbare Zahlen für Claims), bevor du fragst, und frage nur nach, was dort fehlt oder für diese Aufgabe spezifisch ist. Beachte gesetzte `compliance`-Flags als harte Leitplanke (z. B. `HealthClaims`/`HWG` → nur EU-zugelassene Health-Claims, keine Wirkversprechen; „keine Superlative” → Spitzenstellungs-Claims blocken). Fehlt der Kontext, biete an, ihn per `projekt-kontext` anzulegen, oder frage knapp: Brand-Ton, USPs, Zielmarkt (DE/AT/CH), Ziel-Kampagne/Ad-Group, belegte Zahlen für Social-Proof.
-
-**Workspace + Datenquellen klären.** `list_workspaces` aufrufen, `sources` des Ziel-Workspace prüfen: `google_ads` muss verbunden sein — sonst kann nichts fundiert oder geschrieben werden, dann als Lücke benennen, nicht Zahlen zusammenraten. Bei Namens-Kollision per Slug disambiguieren, nicht per Anzeigename. Welche Felder ein `ads_*`-Call zurückgibt, der Tool-Antwort entnehmen, nicht annehmen.
-
-**Ziel-Kampagne + Ad-Group klären.** `ads_list_campaigns` / `ads_list_ad_groups` → in welche Ad-Group soll die Anzeige? **Eine Ad-Group muss existieren, bevor eine Ad angelegt werden kann** — fehlt eine passende, erst `ads_create_ad_group` (mit Bestätigung), dann die Ad. Eine RSA gehört immer zu genau einer Ad-Group; deren Keyword-Thema steuert die Copy.
-
-**Markt kalibrieren (DE/AT/CH).** Bestimmt AT/CH-Linter und Rechtslage: **CH → kein ß** („Strasse” statt „Straße”), Preise in CHF statt EUR, eigene Streichpreis-Regeln; AT ≈ DE (ß korrekt). Details in `references/dach-ad-copy.md`.
 
 ## Modus A — Neu generieren
 
