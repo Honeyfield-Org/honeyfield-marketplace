@@ -91,5 +91,35 @@
       "Startet keinen Google-Ads-Audit für eine rein organische Ranking-Frage"
     ],
     "files": ["SKILL.md"]
+  },
+  {
+    "id": "defer-to-wochenreport",
+    "prompt": "Mach mir den wöchentlichen Performance-Report für den Kunden Müller.",
+    "expected_output": "Erkennt eine reine Reporting-Anfrage und verweist auf wochenreport, statt einen Google-Ads-Audit zu starten.",
+    "assertions": [
+      "Verweist auf wochenreport als den passenden Skill",
+      "Startet keinen Google-Ads-Audit für eine reine Reporting-Anfrage ohne Diagnose-Auftrag"
+    ],
+    "files": ["SKILL.md"]
+  },
+  {
+    "id": "defer-to-tracking-check",
+    "prompt": "GA4 zeigt 300 Conversions, Google Ads nur 90 — prüf mal unser gesamtes Tracking-Setup inkl. GTM.",
+    "expected_output": "Erkennt die Setup-Audit-Anfrage über den gesamten Measurement-Stack (GA4 + GTM + Consent) und verweist auf tracking-check, statt selbst das volle Tracking zu auditieren. Der GA4-Cross-Check innerhalb eines Ads-Audits bleibt hier, das Stack-Audit nicht.",
+    "assertions": [
+      "Verweist auf tracking-check als den passenden Skill für das Tracking-Setup-Audit über GA4 und GTM",
+      "Startet keinen vollständigen Google-Ads-Audit für die reine Tracking-Setup-Frage"
+    ],
+    "files": ["SKILL.md"]
+  },
+  {
+    "id": "defer-to-ad-creative",
+    "prompt": "Schreib mir 15 neue Headlines für die Kampagne Fenstersanierung.",
+    "expected_output": "Erkennt die Creation-Anfrage und verweist auf ad-creative, statt einen Audit zu starten oder die Headlines im Audit-Skill selbst zu generieren.",
+    "assertions": [
+      "Verweist auf ad-creative als den passenden Skill für neue Anzeigen-Copy",
+      "Startet keinen Google-Ads-Audit für eine reine Creation-Anfrage"
+    ],
+    "files": ["SKILL.md"]
   }
 ]

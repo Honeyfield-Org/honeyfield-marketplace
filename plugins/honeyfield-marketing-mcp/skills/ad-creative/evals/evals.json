@@ -23,6 +23,28 @@
     "files": ["SKILL.md"]
   },
   {
+    "id": "defer-to-seo-audit-landingpage",
+    "prompt": "Unsere Anzeigen sind ok, aber schreib mir bitte besseren Text für die Landingpage dahinter.",
+    "expected_output": "Erkennt, dass es um Landingpage-Text geht, nicht um Anzeigen-Copy, und verweist auf seo-audit als den passenden Skill. Startet keinen RSA-Workflow. Erklärt die Abgrenzung: ad-creative schreibt Anzeigen-Copy (RSA + Sitelinks), seo-audit deckt Landingpage-/organischen Text ab.",
+    "assertions": [
+      "Verweist auf seo-audit als den passenden Skill für Landingpage-Text",
+      "Startet keinen RSA-Generierungs-Workflow für eine Landingpage-Anfrage",
+      "Erklärt die Abgrenzung: Anzeigen-Copy (ad-creative) vs. Landingpage-Text (seo-audit)"
+    ],
+    "files": ["SKILL.md"]
+  },
+  {
+    "id": "grenze-meta-linkedin-creative",
+    "prompt": "Schreib mir gleich noch die Facebook- und LinkedIn-Anzeigen dazu und leg sie an.",
+    "expected_output": "Benennt die Grenze: Meta und LinkedIn haben keine Creative-Write-Tools über den MCP — der Skill schreibt nur Google Search (RSA + Sitelinks) ins Konto. Behauptet keinen Konto-Write für Meta/LinkedIn. Liefert allenfalls Text-Vorschläge als Beratung, klar als solche gekennzeichnet.",
+    "assertions": [
+      "Benennt explizit, dass Meta/LinkedIn keine Creative-Write-Tools über den MCP haben",
+      "Behauptet KEINEN Konto-Write für Facebook- oder LinkedIn-Anzeigen",
+      "Liefert allenfalls Text-Vorschläge als Beratung, ohne einen Konto-Write vorzutäuschen"
+    ],
+    "files": ["SKILL.md"]
+  },
+  {
     "id": "data-founded-angles",
     "prompt": "Wir brauchen neue RSA-Headlines für unsere Steuerberatungs-Kampagne. Was schlägst du vor?",
     "expected_output": "Leitet Angles aus echten Suchbegriffen ab (ads_search_terms), nicht aus erfundenen Kategorien. Kennzeichnet jede Headline mit Angle-Typ (keyword/benefit/CTA usw.) und führt den Daten-Ursprung aus. Liefert den vorgeschriebenen Mix. Falls keine Konto-Daten verfügbar sind, kennzeichnet Angles explizit als Heuristik.",

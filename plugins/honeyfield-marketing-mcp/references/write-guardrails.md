@@ -14,14 +14,17 @@ dann den exakten Diff zeigen, dann erst — nach expliziter Bestätigung — mut
 **Löschen / Entfernen**
 
 - `ads_remove_campaign`, `ads_remove_ad_group`, `ads_remove_ad`, `ads_remove_keyword`
+- `ads_replace_ad` / `ads_update_ad` — Default `keep_old=False` entfernt die alte Anzeige irreversibel; bevorzugt `keep_old=True` setzen (alte Ad wird nur pausiert)
 - `ads_remove_negative_keyword`, `ga4_delete_key_event`
 - `ga4_archive_custom_dimension`, `ga4_archive_custom_metric`
-- `gtm_remove_tag`, `sc_delete_sitemap`, `strapi_delete_entry`
+- `ga4_data_retention` im Setz-Modus (Verkürzung 14→2 Monate = älterer Event-Datenzugriff geht unwiederbringlich verloren)
+- `gtm_remove_tag`, `sc_delete_sitemap`, `strapi_delete_entry`, `strapi_delete_media`
 - `wp_delete_post`, `wp_delete_media` (`force=True` → endgültig statt Papierkorb)
 
 **Budget / Status / Bidding**
 
 - `ads_update_campaign_budget`, `ads_update_campaign_status` (pause/enable)
+- `linkedin_update_campaign_budget`, `linkedin_update_campaign_status`
 - `ads_update_campaign_bidding_strategy`
 
 **Conversions / Customer-Match (Daten-Upload / PII)**
@@ -32,6 +35,11 @@ dann den exakten Diff zeigen, dann erst — nach expliziter Bestätigung — mut
 
 - `gtm_publish_version`, `sc_submit_sitemap`, `strapi_publish_entry`
 - `wp_create_post` / `wp_update_post` mit `status='publish'` (Default `draft`) — geht sofort live
+
+**Live-Profil (GBP) — wirkt sofort auf das öffentliche Google-Profil**
+
+- `gbp_update_profile`, `gbp_update_attributes`, `gbp_manage_hours` / `gbp_manage_categories` (Setz-Modus)
+- `gbp_reply_review` — **ersetzt** eine bestehende Antwort; vorher `gbp_reviews` lesen und die alte Antwort im Preview zeigen
 
 ## Defaults
 

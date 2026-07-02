@@ -1,8 +1,8 @@
 ---
 name: seo-audit
-description: "Datengetriebener SEO-Audit für eine Kunden-Website, kalibriert auf den DACH-Markt (DE/AT/CH). Nutze diesen Skill, wenn der Nutzer einen „SEO-Audit\", eine „SEO-Analyse\", einen „SEO-Check\" oder eine Diagnose von Ranking- bzw. Sichtbarkeitsproblemen will. Auch bei: „warum ranke ich nicht\", „warum werden wir nicht gefunden\", „Traffic ist eingebrochen\", „Sichtbarkeit gesunken\", „seit dem Relaunch weg\", „nach dem Google-Update abgestürzt\", „technisches SEO prüfen\", „Core Web Vitals / Ladezeit\", „Indexierungsprobleme\", „stimmt was mit der Seite nicht\", oder vage „unser SEO ist schlecht\". Zieht echte Daten aus Search Console, DataForSEO, GA4 und Microsoft Clarity über den Marketing-Ops-MCP und kann gefundene Probleme auf Wunsch direkt beheben. Für reines wöchentliches Reporting nutze stattdessen `wochenreport`; für bezahlte Suche / Google Ads (Wasted Spend, verschwendete Suchbegriffe, Konto-Audit) `google-ads-audit`."
+description: "Datengetriebener SEO-Audit für eine Kunden-Website, kalibriert auf den DACH-Markt (DE/AT/CH). Nutze diesen Skill, wenn der Nutzer einen „SEO-Audit”, eine „SEO-Analyse”, einen „SEO-Check” oder eine Diagnose von Ranking- bzw. Sichtbarkeitsproblemen will. Auch bei: „warum ranke ich nicht”, „warum werden wir nicht gefunden”, „Traffic ist eingebrochen”, „Sichtbarkeit gesunken”, „seit dem Relaunch weg”, „nach dem Google-Update abgestürzt”, „technisches SEO prüfen”, „Core Web Vitals / Ladezeit”, „Indexierungsprobleme”, „stimmt was mit der Seite nicht”, oder vage „unser SEO ist schlecht”. Zieht echte Daten aus Search Console, DataForSEO, GA4 und Microsoft Clarity über den Marketing-Ops-MCP und kann gefundene Probleme auf Wunsch direkt beheben. Fürs wöchentliche Reporting nutze `wochenreport`; für bezahlte Suche (Wasted Spend, Konto-Audit) `google-ads-audit`; für KI-Sichtbarkeit (ChatGPT/Perplexity/AI Overviews) `geo-audit`."
 metadata:
-  version: 0.2.0
+  version: 0.3.0
 ---
 
 # SEO-Audit
@@ -14,7 +14,7 @@ Dieser Audit ist **datengetrieben**, nicht checklisten-basiert: Du rätst nicht,
 **Drei Beleg-Stufen — kennzeichne jeden Befund nach seiner Beweiskraft:**
 - **Gemessen** (harte Daten): Rankings/Sichtbarkeit, Core Web Vitals, Backlinks, Keyword-Lücken, lokale GBP-Daten → echte Zahlen.
 - **Pro Seite geprüft** (kein Crawler): Index-Status, On-Page, Canonical, Redirects, Duplicate → gilt nur für die geprüften URLs, nicht site-weit. Sag das dazu.
-- **Beratend** (kein Messtool): Schema/strukturierte Daten, E-E-A-T/Content-Qualität, hreflang-Tags, AEO/AI-Sichtbarkeit → begründete Empfehlung, niemals als gemessenen Befund verkaufen.
+- **Beratend** (kein Messtool): Schema/strukturierte Daten, E-E-A-T/Content-Qualität, hreflang-Tags, AEO/AI-Sichtbarkeit (tiefe KI-Sichtbarkeits-Diagnose: `geo-audit`) → begründete Empfehlung, niemals als gemessenen Befund verkaufen.
 
 ## Schritt 0 — Vorbereitung (immer zuerst)
 
@@ -60,7 +60,7 @@ Achten auf: schlechtes Mobil-LCP (häufigster Killer), CLS durch Cookie-Banner (
 
 ### 3 — On-Page
 - `dfs_onpage_instant` je Schlüsselseite → Title, Meta, `h1_count`, `word_count`, `onpage_score`.
-- **DACH-Title/Meta nach Pixelbreite, nicht Zeichen:** Title kappt bei ~569 px (≈65 Zeichen, aber deutsche Komposita/Breitbuchstaben fressen Platz) → wichtiges Keyword in die ersten ~30-40 Zeichen. Meta-Description Desktop ~990 px — sie ist **kein Ranking-Faktor** (nur CTR) und wird oft von Google umgeschrieben, also als CTR-Hebel behandeln.
+- **DACH-Title/Meta nach Pixelbreite, nicht Zeichen bewerten** — Grenzwerte + Komposita-Details: `references/dach-seo.md`; wichtiges Keyword nach vorn. Meta-Description ist **kein Ranking-Faktor** (nur CTR-Hebel) und wird oft von Google umgeschrieben.
 - `h1_count` = 0 → Problem (keine H1). Mehrere H1 sind nur ein Best-Practice-Hinweis, **kein Ranking-Bug** (Google straft Mehrfach-H1 nicht). Dünner `word_count` auf Geld-Seiten → Verdacht auf fehlende Content-Tiefe; aber Wortzahl ist kein Ranking-Faktor — „dünn" heißt fehlender Mehrwert, nicht wenige Wörter.
 > Verlass dich nicht blind auf die `issues`/`checks`-Liste von `dfs_onpage_instant` (erfasst negativ benannte Checks unzuverlässig) — nutze `onpage_score` + die Rohfelder und urteile selbst.
 
@@ -73,7 +73,7 @@ Achten auf: schlechtes Mobil-LCP (häufigster Killer), CLS durch Cookie-Banner (
 - `dfs_keyword_rankings` (Domain, location/language!) → wofür die Domain laut DataForSEO rankt, mit Volume.
 - `dfs_serp_google_organic` für die 3-5 Ziel-Keywords (location!) → wer real auf Seite 1 steht, wie die Konkurrenz aussieht.
 
-**Traffic-Einbruch?** `sc_performance` mit `dimensions=["date"]` (+ query/page) über einen längeren `days`-Zeitraum → den Einbruch zeitlich exakt verorten und gegen bekannte Google-Update-Termine legen. Datenbasierte Diagnose statt Hypothesenliste. „Helpful Content" ist seit dem März-2024-Core-Update Teil des Core-Algorithmus (kein separates System, kein Recovery-Knopf) — qualitätsbedingte Einbrüche wirken site-weit und erholen sich nur langsam über spätere Core-Updates. Termine: Google Search Status Dashboard; Scope-Details im Research-Doc (s. Referenzen).
+**Traffic-Einbruch?** `sc_performance` mit `dimensions=["date"]` (+ query/page) über einen längeren `days`-Zeitraum → den Einbruch zeitlich exakt verorten und gegen bekannte Google-Update-Termine legen. Datenbasierte Diagnose statt Hypothesenliste. „Helpful Content" ist seit dem März-2024-Core-Update Teil des Core-Algorithmus (kein separates System, kein Recovery-Knopf) — qualitätsbedingte Einbrüche wirken site-weit und erholen sich nur langsam über spätere Core-Updates. Termine: Google Search Status Dashboard.
 
 ### 5 — Content-Lücken
 - `dfs_keyword_ideas_for_domain` (Domain) + `dfs_related_keywords` (Seed aus den Top-Themen) → was die Domain targeten könnte.
@@ -95,16 +95,17 @@ Achten auf: schlechtes Mobil-LCP (häufigster Killer), CLS durch Cookie-Banner (
 ### Querschnitt — Lokale Sichtbarkeit (bei lokalem Geschäft)
 - **Schlüsselfrage zuerst:** Hat das lokale Geschäft überhaupt ein Google Business Profile? Prüfe via `gbp_list_locations` / `gbp_get_profile`. **Kein (oder nicht verbundenes) GBP bei einem lokalen Geschäft = High-Impact-Befund** — für lokale Sichtbarkeit ist das GBP oft der größte einzelne Hebel, größer als On-Page. Als kritischen Befund führen, nicht überspringen, nur weil die Quelle fehlt.
 - Wenn verbunden: `gbp_performance`, `gbp_reviews`, `gbp_search_keywords` → lokale Auffindbarkeit, Bewertungslage (Menge/Antwortrate), Fundbegriffe.
+- `gbp_local_seo_audit` → gemessener Profil-Check (Vollständigkeit, Kategorien, NAP-Konsistenz) statt manueller Prüfung; `gbp_local_rank` für die 3-5 wichtigsten lokalen Keywords → Local-Pack-Grid-Position als harter Beleg.
 - DACH-Citations + NAP-Konsistenz prüfen — Listen je Land in `references/dach-seo.md`.
 
 ## DACH-Layer (immer, quer über alle Phasen)
 Diese Punkte hat ein US-/Englisch-Audit nicht. Details + Listen: `references/dach-seo.md`.
 1. **Pixel-Snippets** statt Zeichenzählung (Komposita).
-2. **hreflang-Matrix** `de-DE / de-AT / de-CH`: Self-Reference vollständig, keine Cross-Country-Canonicals (drei Länder, eine Sprache → sonst Fehlausspielung, z.B. CHF-Preise an DE-Nutzer). Canonical via `sc_url_inspection`/`dfs_onpage_instant` prüfbar; hreflang-Tags selbst aus dem Seitenquelltext (kein eigenes Tool).
+2. **hreflang-Matrix** `de-DE / de-AT / de-CH`: Self-Reference vollständig, keine Cross-Country-Canonicals. Vollständige Regeln, Fehlausspielungs-Beispiel + was davon prüfbar ist: `references/dach-seo.md`.
 3. **Umlaut/ß in URLs** (`ä→ae`, `ß→ss`) + Punycode-Konsistenz bei Umlaut-Domains.
 4. **Impressum + Datenschutz** als Trust-Gate: vorhanden, ≤ 1 Klick, datiert? In DACH rechtlich verpflichtend (DDG/DSGVO) und starkes Trust-/E-E-A-T-Signal. *Keine Rechtsberatung — nur Vorhandensein/Erreichbarkeit prüfen.*
-5. **Lokale Citations** je Land (DE: Das Örtliche/11880 · AT: Herold/WKO · CH: local.ch/moneyhouse) + NAP-Konsistenz.
-6. **AEO / AI-Overviews (beratend):** AIO-Präsenz ist mit unseren Tools nicht messbar (auch GSC liefert keine AIO-Klickdaten). Reale Hebel: Marken-/Web-Erwähnungen, Answer-First-Struktur, eigene Daten/Zitate, Entity-Konsistenz (NAP + `sameAs`), Zitierfähigkeit über deutsche autoritative Quellen. **`llms.txt` nicht empfehlen** (kein Engine nutzt es). Alles als beratend kennzeichnen, nicht als gemessen.
+5. **Lokale Citations** je Land + NAP-Konsistenz (gemessen via `gbp_local_seo_audit`, wenn `business_profile` verbunden) — Listen je Land: `references/dach-seo.md`.
+6. **AEO / AI-Overviews (beratend):** AIO-Präsenz ist mit unseren Tools nicht messbar (auch GSC liefert keine AIO-Klickdaten). Reale Hebel: Marken-/Web-Erwähnungen, Answer-First-Struktur, eigene Daten/Zitate, Entity-Konsistenz (NAP + `sameAs`), Zitierfähigkeit über deutsche autoritative Quellen. **`llms.txt` nicht empfehlen** (kein Engine nutzt es). Alles als beratend kennzeichnen, nicht als gemessen. Für die tiefe KI-Sichtbarkeits-Analyse → `geo-audit`.
 7. **AT/CH-Linter:** auf CH-Seiten **kein ß** („ausser/Strasse"), Zahlenformat `1'234.56 CHF`, Austriazismen/Helvetismen im Keyword-Mapping (Jänner≠Januar, Velo≠Fahrrad).
 
 ## Mythen vermeiden (nicht als Problem nennen)
@@ -131,17 +132,17 @@ Veraltet oder widerlegt — nennst du das als Befund, verlierst du Glaubwürdigk
 Der **Beleg** ist Pflicht und immer eine echte Zahl aus den Tools — kein „könnte sein".
 
 ## Danach: umsetzen (Operator)
-Biete am Ende an, die sicher behebbaren Punkte direkt zu erledigen. **Immer vorher fragen, nie ungefragt schreiben.**
+Biete am Ende an, die sicher behebbaren Punkte direkt zu erledigen. **Immer vorher fragen, nie ungefragt schreiben.** Regel: erst Ist-Zustand lesen, dann exakten Preview zeigen (Aktion, Entität, alt → neu, Wirkung, reversibel ja/nein — Muster: `references/write-guardrails.md` im Plugin), dann einzeln bestätigen lassen, dann ausführen. `sc_submit_sitemap` und `gtm_publish_version` sind **Hochrisiko** (Einreichung bzw. sofort live auf der Kunden-Website) — nie gebündelt bestätigen.
 - Fehlende/nicht eingereichte Sitemap → `sc_submit_sitemap` (braucht Schreib-Scope).
-- Fehlendes Tracking/Schema → via `gtm_create_tag` (Hinweis: erst nach `gtm_create_version` + `gtm_publish_version` live; nur wenn `gtm` verbunden).
-- Unbeantwortete Rezensionen (Local) → `gbp_reply_review`.
-- On-Page-/Content-Fixes an der Website laufen über das CMS (separater Connector), nicht hier.
+- Fehlendes Schema-Markup → als Tag via `gtm_create_tag` (Hinweis: erst nach `gtm_create_version` + `gtm_publish_version` live; nur wenn `gtm` verbunden). Fehlendes Conversion-/Event-Tracking dagegen nur als Befund nennen — Tracking-Setup und -Fixes → `tracking-check`.
+- Unbeantwortete Rezensionen (Local) → `gbp_reply_review` — Antwort vorher im Wortlaut zeigen (erstellt oder **ersetzt** eine bestehende Antwort).
+- On-Page-Fixes (Title/Meta/Content) → via CMS, falls `strapi` oder `wordpress` als source verbunden: `strapi_update_entry` bzw. `wp_update_post` — read → preview → confirm; Achtung: `wp_update_post` mit `status="publish"` geht sofort live (Hochrisiko-Liste in `references/write-guardrails.md`).
 
 ## Grenzen (ehrlich benennen)
 - Kein seitenweiter Crawler — nur die geprüften Einzel-URLs.
 - Kein GSC-Gesamt-Coverage-Report — Indexierung URL-für-URL.
 - Momentaufnahmen, keine Rank-Historie (außer den GSC-Zeitreihen via `date`-Dimension).
-- AEO/AIO ist beratend (kein Messtool).
+- AEO/AIO ist beratend (kein Messtool) — für die tiefe KI-Sichtbarkeits-Diagnose → `geo-audit`.
 - Clarity: nur 1-3 Tage, max 10 Calls/Tag.
 - Backlinks global (kein location).
 
@@ -153,11 +154,11 @@ Biete am Ende an, die sicher behebbaren Punkte direkt zu erledigen. **Immer vorh
 - Content-Lücken: `dfs_keyword_ideas_for_domain`, `dfs_related_keywords`, `dfs_keyword_volume`
 - Backlinks: `dfs_backlink_summary`, `dfs_backlink_competitors`
 - Engagement: `ga4_top_pages`, `ga4_traffic_sources`, `ga4_report`, `clarity_get_insights`
-- Lokal: `gbp_performance`, `gbp_reviews`, `gbp_search_keywords`
-- Umsetzen: `sc_submit_sitemap`, `gtm_create_tag`, `gbp_reply_review`
+- Lokal: `gbp_performance`, `gbp_reviews`, `gbp_search_keywords`, `gbp_local_seo_audit`, `gbp_local_rank`
+- Umsetzen: `sc_submit_sitemap`, `gtm_create_tag`, `gbp_reply_review`, `strapi_update_entry`, `wp_update_post`
 
 ## Verwandte Skills
-`projekt-kontext` (Foundation, zuerst lesen) · `google-ads-audit` (bezahlte Suche / Ads) · `wochenreport` · `tracking-check`
+`projekt-kontext` (Foundation, zuerst lesen) · `google-ads-audit` (bezahlte Suche / Ads) · `geo-audit` (KI-Sichtbarkeit — Schwester-Skill) · `wochenreport` · `tracking-check` (Tracking-Setup und -Fixes)
 
 ## Referenzen
 - `references/dach-seo.md` — hreflang-Matrix, Citation-Listen je Land, Pixel-Snippet-Details, AEO-DACH, AT/CH-Linter, Impressum/Datenschutz-Checkliste.

@@ -1,9 +1,9 @@
 # Honeyfield Marketplace
 
 Öffentlicher Claude-Code-Plugin-Marketplace der Honeyfield GmbH. Bündelt die
-Honeyfield-MCP-Server als einzeln installierbare Plugins über das Gateway
-`mcp.honeyfield.at`. (Interne Plugins liegen separat im privaten
-`honeyfield-internal-marketplace`.)
+Honeyfield-MCP-Server als einzeln installierbare Plugins über die
+Honeyfield-Gateways (`mcp.honeyfield.at`, `mcp.ads.honeyfield.at`). (Interne
+Plugins liegen separat im privaten `honeyfield-internal-marketplace`.)
 
 ## Installation
 
@@ -20,13 +20,14 @@ Nach der Installation Claude Code neu starten; `/mcp` zeigt den Verbindungsstatu
 
 | Plugin | MCP-Server | Endpoint |
 |---|---|---|
-| `honeyfield-marketing-mcp` | Marketing-Ops — Google Ads, GA4, Search Console, Google Business Profile, GTM, Clarity, DataForSEO **+ Skills (Projekt-Kontext + Audits)** | `https://mcp.ads.honeyfield.at/mcp` |
+| `honeyfield-marketing-mcp` | Marketing-Ops — Google Ads, GA4, Search Console, Google Business Profile, GTM, Clarity, DataForSEO, LinkedIn/Meta Ads, Strapi- & WordPress-CMS **+ Skills (Projekt-Kontext + Audits + Ad-Creation + Wochenreport)** | `https://mcp.ads.honeyfield.at/mcp` |
 | `honeyfield-eurlex-mcp` | EUR-Lex — EU-Rechtsdatenbank (Suche, Volltext, Zitate, Konsolidierungen) | `https://mcp.honeyfield.at/eurlex/mcp` |
 | `honeyfield-ris-mcp` | RIS — österreichisches Rechtsinformationssystem (Bundes-/Landesrecht, Judikatur, Verordnungen) | `https://mcp.honeyfield.at/ris/mcp` |
 
 Jeder MCP ist ein eigenes Plugin — so installiert man nur, was man braucht.
 `honeyfield-marketing-mcp` bündelt die Marketing-Tools **und** die dazu passenden
-Skills (Projekt-Kontext-Fundament + Audits) in einem Plugin — ein Install, alles dabei.
+Skills (Projekt-Kontext-Fundament + Audits + Ad-Creation + Wochenreport) in einem
+Plugin — ein Install, alles dabei.
 
 ## Skills (honeyfield-marketing-mcp)
 
@@ -38,7 +39,7 @@ Skills (Projekt-Kontext-Fundament + Audits) in einem Plugin — ein Install, all
 | `google-ads-audit` | Google-Ads-Audit — Wasted Spend, verschwendete Suchbegriffe, Quality Score, Impression Share, Konto-Struktur; zieht echte Ads-Daten (+ GA4-Cross-Check) und kann nach Bestätigung direkt aufräumen. |
 | `tracking-check` | Measurement-Audit — prüft die Integrität des Conversion-/Event-Trackings (GA4, GTM, Google Ads) end-to-end, stuft jeden Befund nach Beweiskraft (gemessen / nur konfiguriert / nicht prüfbar) und behebt Sicheres nach Bestätigung. DACH-Consent-Layer (Consent Mode v2, TDDDG). |
 | `ad-creative` | Google-Ads-Copy-Generator — erstellt/iteriert Responsive Search Ads + Sitelinks daten-fundiert aus der Konto-Performance, hält die harten Zeichen-Limits gegen deutsche Komposita, prüft DACH-Werberecht (UWG/Preisangaben) und schreibt nach Bestätigung als pausierte Assets ins Konto. |
-| `wochenreport` | Cross-Kanal-Report-Hub — zieht die Kern-KPIs aus allen verbundenen Kanälen (Ads, SEO, GA4, AI-Sichtbarkeit) als Woche-über-Woche-Vergleich; read-only, verweist bei Auffälligkeiten auf den passenden Audit. |
+| `wochenreport` | Cross-Kanal-Report-Hub — zieht die Kern-KPIs aus allen verbundenen Kanälen (Google Ads, Meta/LinkedIn Ads, SEO, Local/GBP, GA4, AI-Sichtbarkeit) als Zeitraum-Vergleich (Woche-über-Woche / Monat-über-Monat); read-only, verweist bei Auffälligkeiten auf den passenden Audit. |
 
 Trigger z.B.: „mach einen SEO-Audit für example.at", „GEO-Audit für …", „Google-Ads-Audit für …". Jeder Skill liest zuerst den `projekt-kontext`, falls vorhanden. Weitere Trigger: „stimmt mein Conversion-Tracking?" (`tracking-check`), „schreib neue Anzeigen für Kampagne X" (`ad-creative`), „Wochenreport für Kunde Y" (`wochenreport`).
 

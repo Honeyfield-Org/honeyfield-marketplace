@@ -4,6 +4,14 @@ Zweck: Aus der Branche die richtigen `compliance:`-Flags ableiten und im Projekt
 
 **Keine Rechtsberatung** — nur den regulatorischen Rahmen markieren; im Zweifel an Fachanwalt/Kammer verweisen. Die Rechtslage ändert sich; Flags sind Orientierung, kein Rechtsrat. Länderunterschiede DE/AT/CH beachten.
 
+## Kanonisches Flag-Vokabular (verbindlich für alle Konsumenten)
+`compliance:` ist eine **flache YAML-Liste**. Gültig sind **exakt** die Flags aus den Tabellen dieser Datei — Schreibweise wie dort, Konsumenten-Skills matchen wörtlich (Exact-Match): `DSGVO`, `TTDSG`, `Impressum`, `PAngV`, `HWG`, `BRAO`, `RAO`, `StBerG`, `WpHG`, `Verbraucherkredit`, `GlüStV`, `GSpG`, `Jugendschutz`, `HealthClaims`, `UWG` + Zusatz-Flags unten. Keine eigenen Flag-Namen erfinden. **Länder-Unterscheidung läuft über den Stable Key `maerkte:`** (DE/AT/CH), nicht über eigene Flags.
+
+### Zusatz-Flags (optional, kundenspezifisch)
+| Flag | Was | Worauf achten |
+|---|---|---|
+| `no_remarketing` | Kunde untersagt Remarketing/Personalisierung | `ad_personalization` = denied empfehlen; keine Remarketing-Audiences anlegen |
+
 ## Gilt (fast) immer
 | Flag | Was | Worauf achten |
 |---|---|---|
@@ -25,7 +33,7 @@ Zweck: Aus der Branche die richtigen `compliance:`-Flags ableiten und im Projekt
 | Gewinnspiele / Rabattaktionen | `UWG` | Transparente Teilnahmebedingungen; keine Irreführung |
 
 ## Wie Skills die Flags nutzen
-- **google-ads-audit / Ads-Creation:** riskante/verbotene Formulierungen in Headlines/Descriptions/Sitelinks meiden; bei `HWG`/`HealthClaims` besonders streng.
+- **`google-ads-audit` / `ad-creative`:** riskante/verbotene Formulierungen in Headlines/Descriptions/Sitelinks meiden; bei `HWG`/`HealthClaims` besonders streng.
 - **tracking-check / Conversion-Bewertung:** bei `DSGVO`/`TTDSG` Conversions nur mit gültigem Consent als valide werten; Consent-Mode/fehlender Consent erklärt oft scheinbar „verlorene” Conversions.
 - **seo-audit:** `Impressum`/`PAngV` als Trust-/Pflicht-Check auf Landingpages.
 

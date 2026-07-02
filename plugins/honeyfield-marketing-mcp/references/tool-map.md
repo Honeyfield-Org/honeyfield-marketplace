@@ -1,6 +1,6 @@
 # Tool-Map — Honeyfield Marketing-Ops MCP
 
-Alle Tools nehmen workspace. Quelle = welche Workspace-source verbunden sein muss.
+Alle Tools außer `list_workspaces`, `ping`, `authenticate` und `complete_authentication` nehmen `workspace` (optional, wenn nur ein Workspace verbunden ist; bei gleichem Slug in mehreren Agenturen die Form `Agentur/slug` nutzen). Quelle = welche Workspace-source verbunden sein muss.
 Lege Schreib-Tools (W) nie ohne write-guardrails.md an.
 
 ---
@@ -11,6 +11,8 @@ Lege Schreib-Tools (W) nie ohne write-guardrails.md an.
 |---|---|---|---|
 | `list_workspaces` | Workspaces + verbundene sources auflisten | — | R |
 | `ping` | Connectivity-Check (liefert „pong") | — | R |
+| `authenticate` | OAuth-Flow zum MCP starten — nur Plugin-Kontext (Claude Code); in Claude Web ist der Connector vorauthentifiziert | — | — |
+| `complete_authentication` | OAuth-Flow abschließen — nur Plugin-Kontext (Claude Code) | — | — |
 
 ---
 
@@ -81,11 +83,11 @@ Lege Schreib-Tools (W) nie ohne write-guardrails.md an.
 | `ads_add_negative_keyword` | Negatives Keyword zu einer Kampagne hinzufügen | google_ads | W |
 | `ads_bulk_add_negative_keywords` | Mehrere negative Keywords in einer Kampagne anlegen (ein API-Call) | google_ads | W |
 | `ads_remove_negative_keyword` | Negatives Keyword von einer Kampagne entfernen | google_ads | W |
-| `ads_manage_shared_negative_list` | Geteilte Negativ-Keyword-Listen erstellen, befüllen, an Kampagnen anhängen | google_ads | W |
+| `ads_manage_shared_negative_list` | Geteilte Negativ-Keyword-Listen auflisten, erstellen, befüllen, an Kampagnen anhängen (`validate_only` = Dry-Run) | google_ads | R/W |
 | `ads_update_keyword_status` | Keyword aktivieren oder pausieren | google_ads | W |
 | `ads_update_keyword_bid` | CPC-Gebot eines Keywords ändern | google_ads | W |
 | `ads_remove_keyword` | Keyword entfernen (nicht rückgängig machbar) | google_ads | W |
-| `ads_create_ad` | Responsive Search Ad anlegen | google_ads | W |
+| `ads_create_ad` | Responsive Search Ad anlegen (**Standard: ENABLED** — für sichere Anlage explizit `status="PAUSED"` setzen) | google_ads | W |
 | `ads_replace_ad` | Anzeige ersetzen (Google erlaubt kein direktes In-Place-Editieren) | google_ads | W |
 | `ads_update_ad` | DEPRECATED — identisch mit ads_replace_ad, wird künftig entfernt | google_ads | W |
 | `ads_update_ad_status` | Anzeige aktivieren oder pausieren | google_ads | W |
@@ -149,7 +151,7 @@ Lege Schreib-Tools (W) nie ohne write-guardrails.md an.
 
 ---
 
-## Search Console (source: search_console)
+## Search Console (source: search_console) — enthält W ⚠ Guardrails
 
 | Tool | Was | Quelle | R/W |
 |---|---|---|---|
@@ -208,7 +210,7 @@ Lege Schreib-Tools (W) nie ohne write-guardrails.md an.
 
 ---
 
-## Google Business Profile (source: business_profile)
+## Google Business Profile (source: business_profile) — enthält W ⚠ Guardrails
 
 | Tool | Was | Quelle | R/W |
 |---|---|---|---|
@@ -229,7 +231,7 @@ Lege Schreib-Tools (W) nie ohne write-guardrails.md an.
 
 ---
 
-## Social Ads (source: meta_ads / linkedin_ads)
+## Social Ads (source: meta_ads / linkedin_ads) — enthält W ⚠ Guardrails
 
 | Tool | Was | Quelle | R/W |
 |---|---|---|---|
@@ -242,7 +244,7 @@ Lege Schreib-Tools (W) nie ohne write-guardrails.md an.
 
 ---
 
-## Strapi CMS (source: strapi)
+## Strapi CMS (source: strapi) — enthält W ⚠ Guardrails
 
 | Tool | Was | Quelle | R/W |
 |---|---|---|---|
@@ -260,7 +262,7 @@ Lege Schreib-Tools (W) nie ohne write-guardrails.md an.
 
 ---
 
-## WordPress CMS (source: wordpress)
+## WordPress CMS (source: wordpress) — enthält W ⚠ Guardrails
 
 | Tool | Was | Quelle | R/W |
 |---|---|---|---|

@@ -124,5 +124,38 @@
       "Ersetzt die Diagnose nicht durch eine KPI-Übersicht"
     ],
     "files": ["SKILL.md"]
+  },
+  {
+    "id": "defer-seo-einbruch-statt-report",
+    "prompt": "Unser organischer Traffic ist seit dem Google-Update eingebrochen — woran liegt das?",
+    "expected_output": "Erkennt die Ursachen-Frage zu organischem Ranking/Traffic (Google-Update) und verweist auf seo-audit — startet keinen Wochenreport und hijackt die Diagnose-Anfrage nicht mit einer KPI-Übersicht.",
+    "assertions": [
+      "Verweist auf seo-audit als den passenden Skill für den organischen Traffic-Einbruch",
+      "Startet keinen Wochenreport für eine reine Ursachen-Frage ohne Report-Wunsch",
+      "Ersetzt die Diagnose nicht durch eine KPI-Übersicht"
+    ],
+    "files": ["SKILL.md"]
+  },
+  {
+    "id": "defer-tracking-setup-statt-report",
+    "prompt": "GA4 zeigt doppelt so viele Conversions wie Google Ads, prüf bitte unser Tracking-Setup.",
+    "expected_output": "Erkennt die Tracking-Integritäts-Frage (Ads-vs-GA4-Diskrepanz, Setup-Prüfung) und verweist auf tracking-check — startet keinen Wochenreport für eine reine Setup-Frage.",
+    "assertions": [
+      "Verweist auf tracking-check als den passenden Skill für die Tracking-Diagnose",
+      "Startet keinen Wochenreport für eine reine Setup-/Tracking-Frage ohne Report-Wunsch",
+      "Ersetzt die Tracking-Diagnose nicht durch eine KPI-Übersicht"
+    ],
+    "files": ["SKILL.md"]
+  },
+  {
+    "id": "defer-ki-sichtbarkeit-statt-report",
+    "prompt": "ChatGPT und Perplexity empfehlen uns nie — warum tauchen wir bei den KI-Assistenten nicht auf?",
+    "expected_output": "Erkennt die GEO-/KI-Sichtbarkeits-Ursachen-Frage und verweist auf geo-audit — startet keinen Wochenreport und beantwortet die Frage nicht mit der GA4-AI-Referrer-Näherung.",
+    "assertions": [
+      "Verweist auf geo-audit als den passenden Skill für die KI-Sichtbarkeits-Diagnose",
+      "Startet keinen Wochenreport für eine reine Ursachen-Frage ohne Report-Wunsch",
+      "Ersetzt die Diagnose nicht durch die GA4-AI-Referrer-Näherung aus dem Report"
+    ],
+    "files": ["SKILL.md"]
   }
 ]

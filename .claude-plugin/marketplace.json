@@ -5,15 +5,15 @@
     "email": "vernes@honeyfield.at"
   },
   "metadata": {
-    "description": "Öffentlicher Honeyfield Marketplace: MCP-Plugins (Marketing-Ops mit Audit-Skills, EUR-Lex, RIS) über das Gateway mcp.honeyfield.at",
-    "version": "1.7.0"
+    "description": "Öffentlicher Honeyfield Marketplace: MCP-Plugins (Marketing-Ops mit 7 DACH-kalibrierten Skills, EUR-Lex, RIS) über die Honeyfield-Gateways mcp.ads.honeyfield.at (Marketing) und mcp.honeyfield.at (EUR-Lex, RIS)",
+    "version": "1.8.0"
   },
   "plugins": [
     {
       "name": "honeyfield-marketing-mcp",
       "source": "./plugins/honeyfield-marketing-mcp",
-      "description": "Honeyfield Marketing-Ops MCP + Skills — Google Ads, GA4, Search Console, Google Business Profile, GTM, Clarity, DataForSEO über mcp.ads.honeyfield.at; mit DACH-kalibriertem Projekt-Kontext-Fundament und Audit-Skills (SEO-, GEO-, Google-Ads-Audit)",
-      "version": "1.7.0",
+      "description": "Honeyfield Marketing-Ops MCP + Skills — Google Ads, Meta/LinkedIn Ads, GA4, Search Console, Google Business Profile, GTM, Clarity, DataForSEO, WordPress & Strapi über mcp.ads.honeyfield.at; mit DACH-kalibriertem Projekt-Kontext-Fundament, 4 Audit-Skills (Google Ads, SEO, GEO/KI-Sichtbarkeit, Tracking), Ad-Creative-Generator und Cross-Kanal-Wochenreport",
+      "version": "1.8.0",
       "author": {
         "name": "Honeyfield GmbH"
       }

@@ -26,7 +26,7 @@
   {
     "id": "auto-draft-quellen",
     "prompt": "Kannst du den Kontext selbst vorausfüllen, ich hab wenig Zeit?",
-    "expected_output": "Nutzt list_workspaces, GBP-Profil, Search-Console-Top-Queries und GA4-Top-Pages plus Homepage/Impressum (dfs_onpage_instant/curl), um eine V1 zu entwerfen, und legt sie dem Nutzer zur Korrektur vor. Erfindet keine Felder, sondern markiert Unbekanntes als offen.",
+    "expected_output": "Nutzt list_workspaces, GBP-Profil, Search-Console-Top-Queries und GA4-Top-Pages plus Homepage (dfs_onpage_instant) und Impressum/Über-uns via plattformabhängigem Web-Fetch, um eine V1 zu entwerfen, und legt sie dem Nutzer zur Korrektur vor. Erfindet keine Felder, sondern markiert jedes auto-befüllte Feld mit seiner Beleg-Stufe (Quelle/vermutet/offen).",
     "assertions": [
       "Zieht reale Daten aus verbundenen Quellen (GBP, Search Console, GA4, Website) für den Entwurf",
       "Legt den Entwurf zur Bestätigung vor, statt ihn als gesichert auszugeben",
@@ -65,6 +65,47 @@
       "Befüllt den Pflichtkern und lässt den optionalen Teil bewusst weg",
       "Erzwingt keine Personas/Brand-Voice, wenn der Nutzer sie nicht will",
       "Der erzeugte Kontext genügt trotzdem den Audit-Anforderungen (Markt, Marke, Ziele, Compliance)"
+    ],
+    "files": ["SKILL.md"]
+  },
+  {
+    "id": "defer-to-seo-audit",
+    "prompt": "Der neue Kunde ist eingerichtet — mach jetzt den SEO-Audit für seine Website.",
+    "expected_output": "Erkennt, dass der Kontext bereits steht und ein Audit gefragt ist: seo-audit triggert, nicht projekt-kontext. Kein erneutes Kontext-Interview.",
+    "assertions": [
+      "Aktiviert seo-audit, nicht projekt-kontext",
+      "Startet kein Kontext-Interview, wenn der Kontext bereits existiert"
+    ],
+    "files": ["SKILL.md"]
+  },
+  {
+    "id": "defer-to-wochenreport",
+    "prompt": "Wie liefen die Kampagnen vom Kunden diese Woche?",
+    "expected_output": "Erkennt die Reporting-Anfrage und verweist auf wochenreport — projekt-kontext triggert nicht, es gibt nichts anzulegen oder zu pflegen.",
+    "assertions": [
+      "Aktiviert wochenreport, nicht projekt-kontext",
+      "Legt keinen neuen Kontext an und startet kein Interview"
+    ],
+    "files": ["SKILL.md"]
+  },
+  {
+    "id": "handoff-onboarding-mit-ads-audit",
+    "prompt": "Neuer Kunde, Zahnarztpraxis — richte alles ein und prüf gleich das Google-Ads-Konto.",
+    "expected_output": "Legt zuerst den Projekt-Kontext an (Fundament, inkl. HWG-Flag), auditiert dann aber NICHT selbst: expliziter Handoff an google-ads-audit für den Konto-Check.",
+    "assertions": [
+      "Legt zuerst den Projekt-Kontext an (Fundament vor Audit)",
+      "Übergibt den Ads-Audit explizit an google-ads-audit, statt selbst zu auditieren",
+      "Setzt das HWG-Flag für die Zahnarztpraxis im Kontext"
+    ],
+    "files": ["SKILL.md", "references/dach-compliance.md"]
+  },
+  {
+    "id": "handoff-kontext-dann-seo-audit",
+    "prompt": "Leg den Kontext an und mach danach gleich den SEO-Audit.",
+    "expected_output": "Legt den Kontext an und übergibt den Audit-Teil explizit an seo-audit, statt selbst zu auditieren.",
+    "assertions": [
+      "Legt den Projekt-Kontext an",
+      "Übergibt den SEO-Audit explizit an seo-audit, statt ihn selbst durchzuführen"
     ],
     "files": ["SKILL.md"]
   }

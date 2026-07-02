@@ -73,9 +73,9 @@ In Google Ads fehlt oft der Kontext für Streichpreise — Preisvorteile in der 
 
 ---
 
-## 3. Health-Claims & HWG (compliance-Flag: `health` / `medical`)
+## 3. Health-Claims & HWG (compliance-Flags: `HealthClaims` / `HWG`)
 
-> Nur relevant wenn `compliance: [health]` oder `compliance: [medical]` im `projekt-kontext` gesetzt.
+> Nur relevant wenn `compliance: [HealthClaims]` oder `compliance: [HWG]` im `projekt-kontext` gesetzt.
 
 ### Health-Claims-Verordnung (EG) Nr. 1924/2006
 
@@ -108,7 +108,7 @@ Für Arzneimittel, Medizinprodukte, Behandlungen. Verboten in Werbung an Laien:
 
 **AT/CH — analoge Beschränkungen:** AT über Arzneimittelgesetz (AMG AT) + UWG AT, CH über Heilmittelgesetz (HMG) + Arzneimittel-Werbeverordnung (AWV) — vergleichbare Laienwerbe-Verbote; konkrete Zulässigkeit im Zweifel fachlich prüfen.
 
-**Skill-Verhalten:** Bei `compliance: [health]` oder `[medical]` jeden Claim gegen Verbotsliste prüfen; unsichere Claims blocken + Reframe anbieten. Zulässigkeit bleibt beim Kunden zu prüfen.
+**Skill-Verhalten:** Bei `compliance: [HealthClaims]` oder `[HWG]` jeden Claim gegen Verbotsliste prüfen; unsichere Claims blocken + Reframe anbieten. Zulässigkeit bleibt beim Kunden zu prüfen.
 
 ---
 
@@ -191,7 +191,7 @@ Deutsch bildet lange Komposita. Im 30-Zeichen-Limit ist oft kein Platz mehr für
 
 ### DKI-Fallstrick
 
-`{KeyWord:Fallback}` kann Limit sprengen — der Fallback muss ≤30 Zeichen haben, und Keywords aus der Ad Group müssen ebenfalls geprüft werden. DKI nie blind einsetzen.
+DKI kann das 30er-Limit sprengen — Prüf-Mechanik (Fallback ≤ 30, längste Keyword-Ersetzung via `ads_list_keywords`): `rsa-mechanik.md`, Validierungs-Routine. DKI nie blind einsetzen.
 
 ---
 
@@ -211,7 +211,7 @@ Deutsch bildet lange Komposita. Im 30-Zeichen-Limit ist oft kein Platz mehr für
 
 *Social-Proof-Zahlen nur mit Beleg aus `projekt-kontext` (§5 UWG).
 
-**Empfohlener Mix bei 15 Headlines (RSA):** 3–4 Keyword · 3–4 Benefit/Outcome · 2–3 Social Proof · 2–3 CTA · 1–2 Differentiator · 1 Brand. Angles nicht erfinden — aus `projekt-kontext` (USPs, Zielgruppe, Tonalität) ableiten.
+**Mix bei 15 Headlines (RSA):** kanonische Verteilung in SKILL.md, Modus A Schritt 2. Angles nicht erfinden — aus `projekt-kontext` (USPs, Zielgruppe, Tonalität) ableiten.
 
 ---
 
