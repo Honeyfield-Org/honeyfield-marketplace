@@ -20,7 +20,7 @@ Nach der Installation Claude Code neu starten; `/mcp` zeigt den Verbindungsstatu
 
 | Plugin | MCP-Server | Endpoint |
 |---|---|---|
-| `honeyfield-marketing-mcp` | Marketing-Ops — Google Ads, GA4, Search Console, Google Business Profile, GTM, Clarity, DataForSEO, LinkedIn/Meta Ads, Strapi- & WordPress-CMS **+ Skills (Projekt-Kontext + Audits + Ad-Creation + Content + Image + Wochenreport)** | `https://mcp.ads.honeyfield.at/mcp` |
+| `honeyfield-marketing-mcp` | Marketing-Ops — Google Ads, GA4, Search Console, Google Business Profile, GTM, Clarity, DataForSEO (SEO-, Backlink-, OnPage-Crawl- & LLM-Sichtbarkeits-Daten), LinkedIn/Meta Ads, Strapi- & WordPress-CMS **+ Skills (Projekt-Kontext + Audits + Ad-Creation + Content + Image + Wochenreport)** | `https://mcp.ads.honeyfield.at/mcp` |
 | `honeyfield-eurlex-mcp` | EUR-Lex — EU-Rechtsdatenbank (Suche, Volltext, Zitate, Konsolidierungen) | `https://mcp.honeyfield.at/eurlex/mcp` |
 | `honeyfield-ris-mcp` | RIS — österreichisches Rechtsinformationssystem (Bundes-/Landesrecht, Judikatur, Verordnungen) | `https://mcp.honeyfield.at/ris/mcp` |
 
@@ -29,13 +29,18 @@ Jeder MCP ist ein eigenes Plugin — so installiert man nur, was man braucht.
 Skills (Projekt-Kontext-Fundament + Audits + Creation-Skills für Ads, Content und
 Bilder + Wochenreport) in einem Plugin — ein Install, alles dabei.
 
+Der vollständige Tool-Katalog (219 Tools über 11 Quellen, je Tool mit Quelle und
+Read/Write-Kennzeichnung) steht in
+[`plugins/honeyfield-marketing-mcp/references/tool-map.md`](plugins/honeyfield-marketing-mcp/references/tool-map.md)
+— das ist die kanonische, modell-lesbare Referenz, die auch die Skills nutzen.
+
 ## Skills (honeyfield-marketing-mcp)
 
 | Skill | Zweck |
 |---|---|
 | `projekt-kontext` | Foundation-Skill — legt das Projekt-Kontext-Fundament eines Kunden (Markt, Marke, Ziele, rechtlicher Rahmen) an und pflegt es; alle anderen Skills lesen es zuerst, statt erneut zu fragen. Am Anfang eines Kunden-Projekts ausführen. |
-| `seo-audit` | Datengetriebener, DACH-kalibrierter SEO-Audit (DE/AT/CH) — zieht echte Daten aus Search Console, DataForSEO, GA4, Clarity und Google Business Profile, priorisiert Befunde nach Wirkung und kann behebbare Punkte direkt umsetzen. |
-| `geo-audit` | GEO-/AEO-Audit — prüft, ob KI-Assistenten (ChatGPT, Claude, Gemini, Perplexity, Google AI Overviews) die Website lesen, fetchen und zitieren können (Crawlbarkeit, Rendering, Schema), DACH-kalibriert. |
+| `seo-audit` | Datengetriebener, DACH-kalibrierter SEO-Audit (DE/AT/CH) — zieht echte Daten aus Search Console, DataForSEO, GA4, Clarity und Google Business Profile (inkl. seitenweitem Crawl, Keyword-Difficulty, Konkurrenz-Gap und Broken-Backlink-Liste), priorisiert Befunde nach Wirkung und kann behebbare Punkte direkt umsetzen. |
+| `geo-audit` | GEO-/AEO-Audit — prüft, ob KI-Assistenten (ChatGPT, Claude, Gemini, Perplexity, Google AI Overviews) die Website lesen, fetchen und zitieren können (Crawlbarkeit, Rendering, Schema), und misst Cross-Engine-Sichtbarkeit (Mentions/Citations in LLM-Antworten, Share-of-Voice) automatisiert über die DataForSEO-AI-Optimization-API; DACH-kalibriert. |
 | `google-ads-audit` | Google-Ads-Audit — Wasted Spend, verschwendete Suchbegriffe, Quality Score, Impression Share, Konto-Struktur; zieht echte Ads-Daten (+ GA4-Cross-Check) und kann nach Bestätigung direkt aufräumen. |
 | `tracking-check` | Measurement-Audit — prüft die Integrität des Conversion-/Event-Trackings (GA4, GTM, Google Ads) end-to-end, stuft jeden Befund nach Beweiskraft (gemessen / nur konfiguriert / nicht prüfbar) und behebt Sicheres nach Bestätigung. DACH-Consent-Layer (Consent Mode v2, TDDDG). |
 | `ad-creative` | Google-Ads-Copy-Generator — erstellt/iteriert Responsive Search Ads + Sitelinks daten-fundiert aus der Konto-Performance, hält die harten Zeichen-Limits gegen deutsche Komposita, prüft DACH-Werberecht (UWG/Preisangaben) und schreibt nach Bestätigung als pausierte Assets ins Konto. |
