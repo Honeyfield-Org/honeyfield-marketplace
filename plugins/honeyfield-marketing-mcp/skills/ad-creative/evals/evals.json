@@ -47,11 +47,11 @@
   {
     "id": "data-founded-angles",
     "prompt": "Wir brauchen neue RSA-Headlines für unsere Steuerberatungs-Kampagne. Was schlägst du vor?",
-    "expected_output": "Leitet Angles aus echten Suchbegriffen ab (ads_search_terms), nicht aus erfundenen Kategorien. Kennzeichnet jede Headline mit Angle-Typ (keyword/benefit/CTA usw.) und führt den Daten-Ursprung aus. Liefert den vorgeschriebenen Mix. Falls keine Konto-Daten verfügbar sind, kennzeichnet Angles explizit als Heuristik.",
+    "expected_output": "Leitet Angles aus echten Suchbegriffen ab (ads_search_terms), nicht aus erfundenen Kategorien. Kennzeichnet jede Headline mit Angle-Typ (keyword/benefit/CTA usw.) und führt den Daten-Ursprung aus. Liefert den vorgeschriebenen Mix. Falls keine Konto-Daten verfügbar sind, grounded es die Angles bei verbundenem dataforseo über dfs_keyword_suggestions/dfs_keyword_overview statt zu raten; ohne DataForSEO-Zugang kennzeichnet es Angles explizit als Heuristik.",
     "assertions": [
       "Ruft ads_search_terms oder ads_keyword_performance auf, bevor Angles festgelegt werden",
       "Führt jeden Angle auf ein reales Query-Thema oder Conversion-Signal zurück",
-      "Kennzeichnet Angles ohne Konto-Datenbasis explizit als Heuristik, nicht als daten-fundiert",
+      "Ohne Konto-Datenbasis: grounded die Angles bei verbundenem dataforseo über dfs_keyword_suggestions/dfs_keyword_overview, sonst kennzeichnet es sie explizit als Heuristik, nicht als daten-fundiert",
       "Liefert den vorgeschriebenen Headline-Mix (keyword / benefit / social-proof / CTA / differentiator / brand)"
     ],
     "files": ["SKILL.md", "references/dach-ad-copy.md"]

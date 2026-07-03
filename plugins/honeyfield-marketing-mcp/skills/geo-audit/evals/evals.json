@@ -35,9 +35,9 @@
   {
     "id": "tool-reality-onpage-diff",
     "prompt": "Prüf, ob ChatGPT die Preise und Fakten auf unserer Produktseite überhaupt lesen kann.",
-    "expected_output": "Macht den Raw-vs-Rendered-Diff über das Roh-HTML aus einer Raw-Quelle (curl in Claude Code, Web-Fetch in Claude.ai) + Token-Präsenz (steht der Preis im sichtbaren Body?). Nutzt dfs_onpage_instant nur für gerenderte Metriken und verlässt sich NICHT auf einen word_count-Vergleich.",
+    "expected_output": "Macht den Raw-vs-Rendered-Diff über das Roh-HTML aus einer Raw-Quelle (curl in Claude Code, dfs_raw_html plattformunabhängig) + Token-Präsenz (steht der Preis im sichtbaren Body?). Nutzt dfs_onpage_instant nur für gerenderte Metriken und verlässt sich NICHT auf einen word_count-Vergleich.",
     "assertions": [
-      "Holt das Roh-HTML über eine Raw-Quelle (curl oder Web-Fetch) und prüft Token-/Schema-Präsenz im sichtbaren Body",
+      "Holt das Roh-HTML über eine Raw-Quelle (curl, WebFetch oder dfs_raw_html) und prüft Token-/Schema-Präsenz im sichtbaren Body",
       "Behauptet keinen word_count-Diff aus dfs_onpage_instant (Feld kann null sein, kein Body)",
       "Behandelt per Klick injizierte Accordion-FAQ-Antworten als versteckten JS-Render-Fall"
     ],
@@ -46,10 +46,10 @@
   {
     "id": "tool-reality-ai-overview",
     "prompt": "Tauchen wir in den Google AI Overviews für unsere Kategorie auf?",
-    "expected_output": "Erkennt, dass der MCP-Wrapper dfs_serp_google_organic keinen ai_overview-Block liefert. Markiert AI-Overview als Lücke oder nutzt die Raw-DataForSEO-/advanced-API. Erfindet keine AI-Overview-Quellen aus den organischen Treffern.",
+    "expected_output": "Nutzt den ai_overview-Block, den dfs_serp_google_organic direkt mitliefert (present + sources) — kein Umweg über eine Raw-API mehr. Wertet present:false als echtes Nicht-Vorhandensein für Query/Markt, nicht als Tool-Lücke, und prüft vorher Query-Formulierung sowie location/language. Erfindet keine AI-Overview-Quellen, wenn ai_overview fehlt.",
     "assertions": [
-      "Fabriziert keine ai_overview-Daten aus den organischen dfs_serp-Treffern",
-      "Benennt die AI-Overview-Prüfung als Lücke des MCP-Wrappers oder verweist auf die Raw-/advanced-API"
+      "Liest ai_overview.present und ai_overview.sources direkt aus dfs_serp_google_organic, ohne Raw-API-Umweg",
+      "Fabriziert keine ai_overview-Daten aus den organischen dfs_serp-Treffern, wenn ai_overview fehlt oder present:false ist"
     ],
     "files": ["SKILL.md", "references/geo-mechanik.md"]
   },
@@ -88,6 +88,18 @@
       "Liefert eine priorisierte Drittplattform-Zielliste (Entity-Baseline zuerst)"
     ],
     "files": ["SKILL.md", "references/dach-citability.md"]
+  },
+  {
+    "id": "cross-engine-adapter-cascade",
+    "prompt": "Sind wir in ChatGPT sichtbar, oder wird da nur die Konkurrenz genannt?",
+    "expected_output": "Phase 7: probiert zuerst dfs_llm_mentions/dfs_llm_mentions_metrics (Weg B, Default). Liefert der Call subscription_required, degradiert es auf das manuelle Capture-Protokoll (Weg A), statt den Check auszulassen. Kennzeichnet den Befund mit Weg + Konfidenz und leitet keinen Score aus einer Einzelabfrage ab.",
+    "assertions": [
+      "Versucht zuerst dfs_llm_mentions/dfs_llm_mentions_metrics (Weg B) für Phase 7",
+      "Fällt bei subscription_required auf das manuelle Capture-Protokoll (Weg A) zurück, statt den Check ganz auszulassen",
+      "Kennzeichnet den Cross-Engine-Befund mit Weg (B oder A) und Konfidenz",
+      "Leitet aus keiner Einzelabfrage einen Score ab"
+    ],
+    "files": ["SKILL.md", "references/llm-mentions-adapter.md"]
   },
   {
     "id": "defer-to-wochenreport",

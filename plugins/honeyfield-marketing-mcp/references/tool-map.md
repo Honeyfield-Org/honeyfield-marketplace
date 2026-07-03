@@ -200,7 +200,7 @@ Lege Schreib-Tools (W) nie ohne write-guardrails.md an.
 
 | Tool | Was | Quelle | R/W |
 |---|---|---|---|
-| `dfs_serp_google_organic` | Top-N organische Google-Ergebnisse für ein Keyword | dataforseo | R |
+| `dfs_serp_google_organic` | Top-N organische Google-Ergebnisse für ein Keyword inkl. SERP-Features, AI-Overview-Präsenz + Quellen und People-Also-Ask | dataforseo | R |
 | `dfs_keyword_rankings` | Wofür rankt eine Domain aktuell? (DataForSEO Labs) | dataforseo | R |
 | `dfs_serp_google_ads` | Paid Ads auf einem Keyword in der Google SERP | dataforseo | R |
 | `dfs_keyword_volume` | Search Volume + CPC für eine Keyword-Liste (max 1 000) | dataforseo | R |
@@ -210,6 +210,25 @@ Lege Schreib-Tools (W) nie ohne write-guardrails.md an.
 | `dfs_backlink_competitors` | Domains mit ähnlichem Backlink-Profil | dataforseo | R |
 | `dfs_onpage_instant` | Live On-Page Audit (Title, Meta, H1, Score, Issues) | dataforseo | R |
 | `dfs_lighthouse_live` | Google Lighthouse Audit (Performance, Accessibility, SEO) | dataforseo | R |
+| `dfs_keyword_overview` | Volumen, CPC, Difficulty und Haupt-Intent für eine Keyword-Liste in einem Call (max 700) | dataforseo | R |
+| `dfs_domain_intersection` | Ranking-Schnittmenge zweier Domains — oder Gap-Modus: wofür Domain 2 rankt, Domain 1 nicht | dataforseo | R |
+| `dfs_competitors_domain` | Domains mit den meisten gemeinsamen Rankings — echte SEO-Konkurrenten statt Branchen-Raten | dataforseo | R |
+| `dfs_keyword_suggestions` | Keyword-Vorschläge zu einem Seed-Keyword inkl. Volumen, CPC, Difficulty | dataforseo | R |
+| `dfs_backlinks_list` | Konkrete Backlink-Liste einer Domain, filterbar nach broken/dofollow/lost | dataforseo | R |
+| `dfs_llm_mentions` | Marken-/Themen-Erwähnungen in LLM-Antworten je Keyword (Subscription-gated) | dataforseo | R |
+| `dfs_llm_mentions_metrics` | Aggregierte Mentions pro Engine, Gesamt-Citations + Share-of-Voice über LLM-Engines (Subscription-gated) | dataforseo | R |
+| `dfs_llm_top_domains` | Meistzitierte Domains in LLM-Antworten zu einer Keyword-Liste (Subscription-gated) | dataforseo | R |
+| `dfs_llm_responses` | Rohe LLM-Antwort + Zitate zu einem Prompt (ChatGPT/Claude/Gemini/Perplexity, Subscription-gated) | dataforseo | R |
+| `dfs_onpage_crawl` | Seitenweiten Crawl einer Domain starten (asynchron, `max_crawl_pages` Pflicht — Kosten skalieren pro Seite) | dataforseo | R |
+| `dfs_onpage_crawl_results` | Crawl-Ergebnisse abrufen (Summary, Pages, Links, Redirects, Duplicate Content u.a.) | dataforseo | R |
+| `dfs_reviews` | Rezensionen von Trustpilot oder Google abrufen (task-basiert, ggf. Folge-Call mit task_id) | dataforseo | R |
+| `dfs_serp_bing_organic` | Organische Bing-Ergebnisse für ein Keyword — Bing-Index-Präsenz prüfen | dataforseo | R |
+| `dfs_domain_technologies` | Eingesetzter Tech-Stack einer Domain (Analytics, Tag-Manager, Advertising-Pixel, CMS) | dataforseo | R |
+| `dfs_raw_html` | Rohes HTML einer URL abrufen (z.B. für JSON-LD-Check im Quelltext) | dataforseo | R |
+| `dfs_content_parsing` | Strukturierter Seiteninhalt einer URL (Headings, Absätze) | dataforseo | R |
+| `dfs_historical_rank_overview` | Monatliche Ranking-Historie einer Domain (organische Keywords, ETV, Top3/Top10) | dataforseo | R |
+| `dfs_keyword_trends` | Google-Trends-Verlauf für bis zu 5 Keywords über einen Zeitraum | dataforseo | R |
+| `dfs_google_ads_advertisers` | Werbetreibende auf einem Keyword laut Google Ads Transparency Center | dataforseo | R |
 
 ---
 

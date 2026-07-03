@@ -2,7 +2,7 @@
 name: tracking-check
 description: "Datengetriebener Tracking- und Conversion-Audit für einen Kunden, kalibriert auf DACH (DE/AT/CH). Nutze diesen Skill, wenn geprüft werden soll, ob das Conversion- und Event-Tracking korrekt läuft: „stimmt mein Tracking”, „Conversions werden nicht gezählt”, „GA4 und Google Ads weichen ab”, „feuern meine Events / Tags”, „Conversion-Tracking prüfen”, „doppelte Conversions”, „Cookie-/Consent-Tracking DSGVO-konform”, „GTM-Setup prüfen”, „Tracking eingerichtet, aber nichts kommt an”. Zieht echte Daten aus GA4, Google Tag Manager und Google Ads über den Marketing-Ops-MCP, belegt jeden Befund nach Beweiskraft (gemessen / nur konfiguriert / nicht prüfbar) und behebt Sicheres nach Bestätigung. Für bezahlte Such-Performance nutze `google-ads-audit`; für organisches Ranking `seo-audit`; für KI-Sichtbarkeit `geo-audit`; fürs wöchentliche Reporting `wochenreport`."
 metadata:
-  version: 0.2.0
+  version: 0.3.0
 ---
 
 # Tracking-Check
@@ -14,7 +14,7 @@ Dieser Skill ist das **Fundament unter `google-ads-audit` und `seo-audit`**: ste
 ## Beleg-Stufen — jeden Befund nach Beweiskraft kennzeichnen
 - **Gemessen:** Daten fließen real — Event-/Conversion-Counts, letztes Conversion-Datum / `last_gap_days`. Belastbar für genau das, was sie messen.
 - **Nur konfiguriert:** verdrahtet bzw. gesetzt, Datenfluss **unbewiesen** — GTM-Config, Conversion-Action-Inventar, gesetzter GA4↔Ads-Link, Settings-Gets (Enhanced Measurement / Data Retention). Existiert, beweist aber nicht, dass Daten ankommen.
-- **Nicht prüfbar:** Tool-Grenze, nur beratend — ob Consent Mode v2 *korrekt greift*, sGTM-Gesundheit, Attributionsmodell, Page-Snippet-Installation, echte Doppelzählung.
+- **Nicht prüfbar:** Tool-Grenze, nur beratend — ob Consent Mode v2 *korrekt greift*, sGTM-Gesundheit, Attributionsmodell, echte Doppelzählung. (Page-Snippet-Installation ist **prüfbar mit Einschränkung**, kein „nicht prüfbar" mehr — siehe Footgun #8 in `references/tracking-tool-grenzen.md` §B.)
 
 > Grundsatz: **Config ohne Daten = Verdacht, nicht Befund.** Jeder Befund im Report trägt eine dieser drei Stufen. Vollständiges Tool-Mapping je Stufe in `references/tracking-tool-grenzen.md` §A.
 
@@ -72,7 +72,7 @@ Logik: „die Zahl lebt nicht” vor „die Zahl ist inkonsistent” vor „Fein
 - **„Feuert” nie aus Config allein** — die GTM-API hat kein Browser-Firing-Signal. Config + Counts > 0 = belegt; Config ohne Counts = Verdacht.
 - **Workspace-Draft ≠ Live** — immer Live (`gtm_container_info` / `gtm_get_version`) gegen Draft vergleichen, Quelle benennen.
 - **`ga4_realtime_users` ist kein Firing-Beweis** (nur aggregierte aktive User) — für Event-Smoketest `ga4_list_key_events` / `ga4_report`.
-- **Doppelzählung · Attributionsmodell · Consent-v2-Korrektheit · sGTM-Gesundheit · Page-Snippet-Installation** = nicht prüfbar — höchstens als Verdacht/Tool-Grenze. Kein Tool liest Seiten-HTML (ggf. On-Page-Crawl via `seo-audit`). Vollständige Footgun-Liste in `references/tracking-tool-grenzen.md`.
+- **Doppelzählung · Attributionsmodell · Consent-v2-Korrektheit · sGTM-Gesundheit** = nicht prüfbar — höchstens als Verdacht/Tool-Grenze. **Page-Snippet-Installation** ist jetzt prüfbar mit Einschränkung: `dfs_domain_technologies` (Domain-Tech-Stack, erkennt GA4/GTM/Pixel — domain-level, ggf. lagged, bestätigt Präsenz, nicht Feuern pro Seite) bzw. `dfs_raw_html` (Roh-HTML einer konkreten URL); für den seitenweiten Nachweis ggf. On-Page-Crawl via `seo-audit`. Vollständige Footgun-Liste in `references/tracking-tool-grenzen.md`.
 
 ## Output-Format
 1. **Kurz-Fazit:** Gesamtbild in 2–3 Sätzen + Top-3–5-Blocker + schnellste Quick Wins.
@@ -98,7 +98,7 @@ Regel: erst zeigen (was genau, welche Ebene, welche Wirkung), einzeln bestätige
 
 ## Grenzen (ehrlich benennen)
 - Tag-Firing, Consent-v2-Korrektheit, sGTM-Gesundheit, Attributionsmodell, echte Doppelzählung → **nicht prüfbar** über die MCP-Tools (Browser / Tag-Assistant nötig).
-- Kein Tool liest Seiten-HTML — Snippet-Installation out of scope.
+- **Snippet-Installation prüfbar mit Einschränkung** — `dfs_domain_technologies` (Domain-Tech-Stack) bzw. `dfs_raw_html` (Roh-HTML einer URL) bestätigen Präsenz, nicht Feuern auf jeder Seite.
 - **Kein Setup-from-scratch** (GA4-Property/Stream/Container von Null) — bewusst out of scope dieses Audits.
 - Momentaufnahme; GA4↔Ads-Kreuzcheck ist Größenordnung, kein exakter Abgleich (Attribution / Zeitzone).
 - Nur verbundene Quellen liefern Daten — fehlt `ga4` / `gtm` / `google_ads`, ist die betroffene Phase eine Lücke.
@@ -108,7 +108,7 @@ Regel: erst zeigen (was genau, welche Ebene, welche Wirkung), einzeln bestätige
 - Phase 1 (Gate): `anomaly_check`, `ads_list_conversion_actions`, `ads_conversion_performance`, `ga4_conversions`, `ga4_list_key_events`; bei totem Tracking `ads_change_history`
 - Phase 2 (Config): `ga4_list_key_events`, `ads_list_conversion_actions`, `ga4_list_custom_dimensions`, `ga4_list_custom_metrics`
 - Phase 3 (GA4↔Ads): `ga4_manage_google_ads_links`, `ga4_conversions`, `ads_conversion_performance`
-- Phase 4 (GTM): `gtm_container_info`, `gtm_get_version`, `gtm_list_tags`, `gtm_list_triggers`, `gtm_list_variables`, `gtm_get_tag`, `ga4_list_data_streams`
+- Phase 4 (GTM): `gtm_container_info`, `gtm_get_version`, `gtm_list_tags`, `gtm_list_triggers`, `gtm_list_variables`, `gtm_get_tag`, `ga4_list_data_streams`; optional `dfs_domain_technologies` / `dfs_raw_html` (Snippet-Footgun, s.o.)
 - Phase 5 (Coverage): `ga4_list_key_events`, `ga4_report`
 - Phase 6 (Datenqualität): `ga4_enhanced_measurement`, `ga4_data_retention`
 - Consent-Layer: `gtm_list_tags`, `gtm_get_tag`

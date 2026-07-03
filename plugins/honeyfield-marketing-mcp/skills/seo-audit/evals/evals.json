@@ -27,12 +27,12 @@
   {
     "id": "trigger-competitor-content-gap",
     "prompt": "Unsere Mitbewerber tauchen bei Google ständig für Themen auf, bei denen wir gar nicht vorkommen. Könnt ihr rausfinden, wo die Konkurrenz rankt und wir nicht?",
-    "expected_output": "Fährt den Competitor-Content-Gap aus Phase 5: bestimmt die echten SEO-Konkurrenten als Schnittmenge aus dfs_serp_google_organic (Seite-1-Besetzung der Ziel-Keywords) und dfs_backlink_competitors — statt die vom Kunden genannten Firmen ungeprüft zu übernehmen. Zieht dfs_keyword_rankings je Konkurrenz-Domain mit denselben location/language-Parametern und difft gegen die eigenen GSC-/DFS-Rankings. Priorisiert die Lücken nach Intent (CPC als Kommerz-Proxy) und behauptet keine Keyword-Difficulty-Zahl — die gibt es in unseren Tools nicht.",
+    "expected_output": "Fährt den Competitor-Content-Gap aus Phase 5: bestimmt die echten SEO-Konkurrenten über dfs_competitors_domain (gemeinsame Rankings) mit dfs_serp_google_organic als Gegenprobe (Seite-1-Besetzung der Ziel-Keywords) — statt die vom Kunden genannten Firmen ungeprüft zu übernehmen. Zieht den Gap direkt über dfs_domain_intersection (intersections=false) je Konkurrenz-Domain mit denselben location/language-Parametern und sichert gegen die eigenen GSC-/DFS-Rankings ab. Priorisiert die Lücken nach Intent (dfs_keyword_overview.main_intent bzw. CPC als Kommerz-Proxy) und zitiert die Difficulty jetzt als gemessene Zahl aus dfs_keyword_overview statt einer Heuristik.",
     "assertions": [
-      "Bestimmt die SEO-Konkurrenten datenbasiert (dfs_serp_google_organic + dfs_backlink_competitors), statt Kundennennungen ungeprüft zu übernehmen",
-      "Zieht dfs_keyword_rankings der Konkurrenz-Domains mit denselben location/language-Parametern wie beim Kunden",
-      "Difft Konkurrenz-Rankings gegen die eigenen GSC-/DFS-Rankings und benennt Lücken mit Position und Volumen",
-      "Behauptet keine Keyword-Difficulty-Zahl, sondern nutzt CPC + SERP-Besetzung als gekennzeichnete Heuristik",
+      "Bestimmt die SEO-Konkurrenten datenbasiert (dfs_competitors_domain, ggf. mit dfs_serp_google_organic als Gegenprobe), statt Kundennennungen ungeprüft zu übernehmen",
+      "Zieht den Gap über dfs_domain_intersection (intersections=false) je Konkurrenz-Domain mit denselben location/language-Parametern wie beim Kunden",
+      "Sichert die Gap-Liste gegen die eigenen GSC-/DFS-Rankings ab und benennt Lücken mit Position und Volumen",
+      "Zitiert Keyword-Difficulty als gemessene Zahl aus dfs_keyword_overview, nicht als Heuristik oder aus fremden Tools",
       "Bucketet die Lücken nach Suchintent (informational/commercial/transactional)"
     ],
     "files": ["SKILL.md", "references/content-gap.md"]
@@ -83,14 +83,14 @@
     "files": ["SKILL.md"]
   },
   {
-    "id": "tool-reality-no-site-crawler",
+    "id": "tool-reality-site-crawl-cost-discipline",
     "prompt": "Crawl bitte unsere komplette Website und gib mir alle SEO-Fehler über alle Seiten.",
-    "expected_output": "Stellt klar, dass es keinen seitenweiten Crawler gibt — geprüft wird URL-für-URL für die wichtigsten Seiten (Startseite + Schlüssel-Landingpages) via sc_url_inspection / dfs_onpage_instant. Verspricht keine site-weite Vollständigkeit und kennzeichnet On-Page-/Index-Befunde als pro Seite geprüft, nicht site-weit. Interne-Verlinkungs-/Orphan-Aussagen entsprechend nur beratend.",
+    "expected_output": "Erkennt, dass ein seitenweiter Crawl jetzt über dfs_onpage_crawl möglich ist, aber kostenpflichtig (skaliert pro Seite) und asynchron läuft (Ergebnisse erst nach Minuten via dfs_onpage_crawl_results). Klärt vor dem Start max_crawl_pages passend zur tatsächlichen Site-Größe (nicht pauschal auf das Maximum 1000 setzen), statt den Crawl ungefragt breit zu fahren. Wertet die Ergebnisse sektionsweise aus (summary, non_indexable, redirect_chains, links site-weit; duplicate_content/duplicate_tags nur pro Seite mit zusätzlichem url=/tag_type=) statt einer unstrukturierten Fehlerliste.",
     "assertions": [
-      "Erklärt, dass kein seitenweiter Crawler verfügbar ist und nur Einzel-URLs geprüft werden",
-      "Wählt die wichtigsten Seiten gezielt aus, statt Vollständigkeit über alle URLs zu behaupten",
-      "Kennzeichnet die Index-/On-Page-Befunde als pro Seite geprüft (Beleg-Stufe), nicht als site-weit gemessen",
-      "Behauptet keine site-weite Orphan-/Verlinkungs-Analyse"
+      "Nennt dfs_onpage_crawl als Weg zu einem echten Site-Scan, statt pauschal einen Crawler abzulehnen",
+      "Weist auf Kosten (skaliert pro Seite) und asynchrone Laufzeit hin, bevor der Crawl gestartet wird",
+      "Klärt/begrenzt max_crawl_pages sinnvoll zur Site-Größe statt pauschal auf das Maximum zu setzen",
+      "Wertet die Crawl-Ergebnisse sektionsweise aus (z.B. summary/non_indexable/links), nicht als ungefilterten Dump"
     ],
     "files": ["SKILL.md"]
   },

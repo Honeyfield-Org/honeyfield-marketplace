@@ -31,10 +31,10 @@ On-Demand-Tiefe für den `seo-audit`-Skill. Nur laden, wenn der jeweilige Punkt 
 - **CH:** local.ch (#1), search.ch, moneyhouse.ch (Handelsregister), help.ch, cylex.ch.
 - NAP byte-genau konsistent („Str." vs. „Straße", `+43/+41/+49`). Qualität vor Menge (30 gute > 200 mittelmäßige).
 
-## AEO / AI-Overviews (DACH, beratend)
+## AEO / AI-Overviews (DACH, teils gemessen)
 - AI Overviews seit 03/2025 in DE live, wachsender Keyword-Anteil; CTR auf Position 1 sinkt bei AIO deutlich.
 - Was zählt: konsistente Entity-Daten (NAP + Geschäftszweck über Website/GBP/LinkedIn/Verzeichnisse), Zitierfähigkeit über deutsche autoritative/institutionelle Quellen, konkrete Service-/Prozess-/Preis-Transparenz statt generischer „Was ist X"-Texte.
-- Mit unseren Tools **nicht messbar** (kein AIO-/SERP-Feature-Tool) → als Empfehlung führen, nicht als Befund.
+- **AIO-Präsenz + Quellen sind jetzt gemessen** über `dfs_serp_google_organic` (`ai_overview.present`, `ai_overview.sources`) — für die Ziel-Keywords direkt prüfbar, ob und mit welchen Quellen Google eine AI-Overview ausspielt. Die tiefere Sichtbarkeits-*Diagnose* (zitiert die KI uns überhaupt, Share of Voice über Engines) bleibt beratend bzw. → `geo-audit`.
 
 ## AT/CH-Linter
 - **CH:** kein ß — immer `ss` („ausser", „Strasse"). Ein ß auf einer CH-Seite = Lokalisierungsfehler. Zahlen/Währung: `1'234.56 CHF` (Apostroph-Tausender, Punkt-Dezimal). CH oft mehrsprachig (de/fr/it) → hreflang je Sprache; Schweizer suchen meist auf Hochdeutsch, nicht Mundart.
@@ -42,4 +42,4 @@ On-Demand-Tiefe für den `seo-audit`-Skill. Nur laden, wenn der jeweilige Punkt 
 - ccTLD: `.de/.at/.ch` senden je ein starkes Länder-Signal; `.com` braucht hreflang + ggf. GSC-Land-Targeting.
 
 ## Marktzahlen mit Vorsicht
-Bing-Anteil DACH, AIO-Penetration etc. bewegen sich. Im Audit immer mit Datumsstempel führen, nicht als Konstante behaupten.
+Bing-Anteil DACH, AIO-Penetration etc. bewegen sich. Im Audit immer mit Datumsstempel führen, nicht als Konstante behaupten. Statt pauschaler Marktanteils-Zahlen: `dfs_serp_bing_organic` prüft die tatsächliche Bing-Präsenz der Domain für ein Ziel-Keyword direkt (gemessen statt geschätzt).
