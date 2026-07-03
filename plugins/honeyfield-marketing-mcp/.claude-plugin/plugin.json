@@ -1,6 +1,6 @@
 {
   "name": "honeyfield-marketing-mcp",
   "description": "Honeyfield Marketing-Ops MCP + Skills — Google Ads, Meta/LinkedIn Ads, GA4, Search Console, Google Business Profile, GTM, Clarity, DataForSEO, WordPress & Strapi über mcp.ads.honeyfield.at; mit DACH-kalibriertem Projekt-Kontext-Fundament, 5 Audit-Skills (Google Ads, Social Ads/Meta/LinkedIn, SEO, GEO/KI-Sichtbarkeit, Tracking), Ad-Creative-Generator, Content-Strategie (datenbasierte Themen-Ideen + Content-Briefs, read-only), Marketing-Plan-Hub (Gesamt-Plan + Kampagnen-Konzept, read-only) und Cross-Kanal-Wochenreport",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "author": { "name": "Honeyfield GmbH", "email": "vernes@honeyfield.at" }
 }
