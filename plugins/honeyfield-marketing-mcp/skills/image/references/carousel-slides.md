@@ -2,6 +2,8 @@
 
 Referenz für Instagram-Carousel-Slides. Fünf Slide-Typen, 1080x1350px (4:5 Portrait, `data-size="ig-portrait"`), als eigenständige HTML-Dateien gebaut, validiert und exportiert via Playwright. Technische Referenz für den `image`-Skill — on-demand laden, hält SKILL.md schlank.
 
+LinkedIn-Carousels: gleiche Slide-Typen, aber data-size="linkedin-carousel" (1080×1080) laut platform-specs.md.
+
 ---
 
 ## Vorbereitung: Base-Template & Slide-Klassen

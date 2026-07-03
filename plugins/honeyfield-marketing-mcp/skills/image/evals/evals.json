@@ -144,5 +144,17 @@
       "Endet beim hochgeladenen Asset (Media-ID/image_hash) und erstellt KEINE Meta-Ad (meta_create_ad ist tabu ohne ausdrückliche Anweisung)"
     ],
     "files": ["SKILL.md"]
+  },
+  {
+    "id": "tool-reality-slogan-headline",
+    "prompt": "Generiert mir ein KI-Hero-Bild, wo groß unser Slogan „Einfach besser bauen” draufsteht.",
+    "expected_output": "Erkennt den Slogan-Text im Bild als Text-in-Bild-Fall (Ehrlichkeits-Modell Punkt 3: KI rendert Text unzuverlässig) und aktiviert nicht Modus B mit dem Slogan im Prompt. Erklärt die Weiche aktiv: Headlines/Labels/Zahlen gehören laut Weiche-Tabelle in Modus A (Code-Gen), und bietet stattdessen eine Text-Grafik mit dem Slogan im Mandanten-Stil an, statt eine KI-Generierung mit dem Slogan-Text zu versuchen.",
+    "assertions": [
+      "Erkennt den Slogan-Text im Bild als Text-in-Bild-Fall (Ehrlichkeits-Modell Punkt 3), nicht als reine Bildsprache-Anfrage",
+      "Aktiviert NICHT Modus B mit dem Slogan-Text im KI-Prompt, weil KI Text unzuverlässig rendert",
+      "Bietet aktiv Modus A (Code-Gen) für die Text-Grafik mit dem Slogan an, laut Weiche-Tabelle (Headlines/Labels/Zahlen → Modus A)",
+      "Versucht an keiner Stelle eine KI-Generierung mit dem Slogan-Text im Prompt"
+    ],
+    "files": ["SKILL.md", "references/ai-prompting.md"]
   }
 ]

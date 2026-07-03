@@ -18,7 +18,7 @@ Zieldimensionen je Plattform, Format-Wahl, Web-Optimierung, OG-Images, Alt-Text.
 | Meta Ads | Feed quadratisch | 1080×1080 | `1:1` / `1K` | `twitter-square` |
 | Meta Ads | Feed/Link | 1200×628 | `16:9` / `1K` | `blog-featured` |
 
-Hinweise: Blog-Hero in `2K` (Primär-Visual), Social reicht `1K`. Meta-Ad-Bilder: max. **8 MB** (`meta_upload_ad_image` — Größe vor dem Upload prüfen). Krumme Plattform-Ratios (1.91:1) werden mit `16:9` generiert und beim Export/Zuschnitt exakt gesetzt (Code-Gen trifft die Pixel exakt via `data-size`).
+Hinweise: Blog-Hero in `2K` (Primär-Visual), Social reicht `1K`. Meta-Ad-Bilder: max. **8 MB** (`meta_upload_ad_image` — Größe vor dem Upload prüfen). Krumme Plattform-Ratios (1.91:1) werden mit `16:9` generiert und beim Export/Zuschnitt exakt gesetzt (Code-Gen trifft die Pixel exakt via `data-size` — Ausnahme Meta 1200×628: blog-featured liefert 1200×630, 2 px Toleranz ist plattformseitig irrelevant).
 
 ## Format-Guide
 

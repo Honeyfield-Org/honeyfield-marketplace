@@ -333,7 +333,7 @@ Playwright blockiert `file://`-URLs. Immer über HTTP servieren.
 
 ### Finalen PNG-Export bei exakten Canvas-Maßen
 
-`browser_run_code` nutzen, um genau das `.visual-canvas`-Element zu erfassen:
+`browser_run_code_unsafe` nutzen (Tool-Name je nach Playwright-Plugin-Version — verfügbare browser_*-Tools prüfen), um genau das `.visual-canvas`-Element zu erfassen:
 
 ```javascript
 async (page) => {

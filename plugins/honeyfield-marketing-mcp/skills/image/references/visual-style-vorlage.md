@@ -29,6 +29,7 @@ palette:
   bg: "#..."          # Hintergrund → --bg
   muted: "#..."       # Sekundär-Text → --muted
   grid: "#..."        # Grid-/Rahmenlinien → --grid
+  # -soft-Tönungen (--accent-soft/--bad-soft/--good-soft) nicht als Keys — je Grundfarbe als helle Tönung ableiten (ca. 8–12 % Deckung auf bg)
 fonts:
   heading: "<Google-Font-Name>"     # → --font-heading
   body: "<Google-Font-Name>"        # → --font-body

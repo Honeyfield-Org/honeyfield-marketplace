@@ -62,7 +62,7 @@ Für Text/Daten/Struktur. Patterns, Auswahl-Guide, Quality-Gate: `references/gra
 2. **Template kopieren:** `assets/base-template.html` (Skill-Verzeichnis) ins Arbeitsverzeichnis; CSS-Variablen + Fonts aus `visual-style.md` setzen; Signatur aus `signatur`-Key (leer → Element weglassen).
 3. **Bauen** nach den Patterns — Textur-/Noise-Layer nicht entfernen (außer `visual-style.md` verbietet die Optik), min. 14px Text, max. 3 Akzentfarben, Shadows auf allen Boxen.
 4. **Validieren (Pflicht):** `python3 -m http.server 8847` im Arbeitsverzeichnis → `browser_navigate` → `browser_take_screenshot` → gegen Quality-Gate prüfen → iterieren. **Nie eine Grafik liefern, die du nicht gesehen hast.**
-5. **Exportieren:** `.visual-canvas` als PNG in exakter Zielgröße (`browser_run_code`, `scale: 'css'`, absoluter Pfad); HTML-Quelle neben dem PNG behalten.
+5. **Exportieren:** `.visual-canvas` als PNG in exakter Zielgröße (`browser_run_code_unsafe`, `scale: 'css'`, absoluter Pfad); HTML-Quelle neben dem PNG behalten.
 
 ## Modus B — KI-Bild (fal.ai)
 
@@ -102,7 +102,7 @@ Nur anbieten, was Schritt 0 als verbunden gezeigt hat. Muster: `references/write
 
 - **Vorbereitung:** `list_workspaces`
 - **Modus S:** Website-Abruf (WebFetch/curl); optional `gbp_get_profile`
-- **Modus A:** Playwright (`browser_navigate`, `browser_take_screenshot`, `browser_run_code`) — lokales Plugin, nicht Teil des Marketing-MCP
+- **Modus A:** Playwright (`browser_navigate`, `browser_take_screenshot`, `browser_run_code_unsafe`) — lokales Plugin, nicht Teil des Marketing-MCP
 - **Modus B:** `scripts/generate_image.py` via Bash (kein MCP-Tool; `FAL_KEY` nötig)
 - **Operator:** `wp_list_media`, `wp_upload_media`, `strapi_list_media`, `strapi_upload_media`, `meta_upload_ad_image`
 - **Tabu ohne ausdrückliche Anweisung:** `wp_delete_media`, `strapi_delete_media`, `meta_create_ad`
