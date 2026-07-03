@@ -15,7 +15,7 @@ DataForSEOs **AI Optimization API** misst Marken-Sichtbarkeit über einen aggreg
 
 **Ohne aktives Abo** liefern alle vier Tools ein strukturiertes Degradations-Signal (`{"error": "subscription_required", "status_code": 40204, ...}`) statt eines harten API-Fehlers — sofort auf Weg A umschalten und den Befund entsprechend kennzeichnen (Konfidenz: Weg A statt Weg B).
 
-**Index-Lag:** 2–7 Tage — Befunde sind nie tagesaktuell; bei frisch veröffentlichtem Content entsprechend einordnen.
+**Index-Lag:** Index ist nicht tagesaktuell; die genaue Lag-Dauer ist nicht über die DataForSEO-Docs API-verifiziert — bei frisch veröffentlichtem Content und Stichtag-nahen Vergleichen entsprechend vorsichtig einordnen.
 
 **Wann aktivieren:** Wenn der laufende DataForSEO-Monatsverbrauch über alle Workspaces ohnehin Richtung $100 geht (dann ist der Top-up großteils vorgezogener Spend), oder für ein Flagship-Mandat, das echtes Cross-Engine-Tracking braucht. Für Einmal-Audits ohne aktives Abo reicht Weg A.
 

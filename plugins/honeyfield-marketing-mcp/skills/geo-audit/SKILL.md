@@ -94,7 +94,7 @@ Selbst-Citation ist unmöglich → es zählt, wer in den Category-Queries zitier
 - Ehrlich kennzeichnen: GA4-Referrer ≠ Fetch-Beweis; der harte Beweis sind Server-/Cloudflare-Logs (off-tool).
 
 ### 7 — Cross-Engine-Sichtbarkeit (Weg B Default, Weg A Fallback)
-- **Weg B — LLM-Mentions-Adapter (Default):** `dfs_llm_mentions`, `dfs_llm_mentions_metrics`, `dfs_llm_top_domains`, `dfs_llm_responses` — automatisiert, unterscheidet Citation (URL verlinkt) vs. Mention, Index-Lag 2–7 Tage. Braucht ein separates DataForSEO-AI-Optimization-Abo (~$100/Monat Mindest-Top-up); ohne aktives Abo liefern die Calls `subscription_required`.
+- **Weg B — LLM-Mentions-Adapter (Default):** `dfs_llm_mentions`, `dfs_llm_mentions_metrics`, `dfs_llm_top_domains`, `dfs_llm_responses` — automatisiert, unterscheidet Citation (URL verlinkt) vs. Mention, Index nicht tagesaktuell (Lag nicht API-verifiziert — bei Stichtag-nahen Vergleichen vorsichtig sein). Braucht ein separates DataForSEO-AI-Optimization-Abo (~$100/Monat Mindest-Top-up); ohne aktives Abo liefern die Calls `subscription_required`.
 - **Weg A — Manuelle Capture (Degradationspfad ohne Abo):** 20 Top-Queries × ChatGPT/Perplexity/Gemini, monatlich protokollieren (genannt/zitiert/abwesend + welche Konkurrenz).
 
 Beide Wege, Protokoll, Endpoints und Kosten in `references/llm-mentions-adapter.md`. Niemals aus einer Einzelabfrage einen „Score" ableiten — auch mit aktivem Adapter gilt: belastbar wird es erst über aggregiertes/wiederholtes Sampling.

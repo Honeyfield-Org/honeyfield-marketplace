@@ -102,10 +102,10 @@ Für lokale Kunden (Praxis, Bäckerei, Handwerk) sind das Kern-Zahlen — oft wi
 
 | KPI | Tool | WoW-Auffällig ab | Deep-Dive |
 |---|---|---|---|
-| Mentions / Citations / Share-of-Voice | `dfs_llm_mentions_metrics` (Marken-/Themen-Keywords) | Share-of-Voice −20 %-Punkte oder Mentions halbieren sich | `geo-audit` |
+| Mentions / Citations / Share-of-Voice | `dfs_llm_mentions_metrics` (max. 10 Marken-/Themen-Keywords pro Call) | Share-of-Voice −20 %-Punkte oder Mentions halbieren sich | `geo-audit` |
 
 - **Subscription-gated:** liefert `dfs_llm_mentions_metrics` `{"error": "subscription_required", ...}` (kein DataForSEO-AI-Optimization-Abo aktiv), auf die alte Näherung degradieren: `ga4_traffic_sources` (days≥28, nach `sessionSource`) → AI-Referrer (chatgpt.com, perplexity.ai, copilot.microsoft.com/copilot.com, gemini) grob quantifizieren. **Näherung, kein Fetch-/Zitat-Beweis** — als beratend kennzeichnen.
-- **Lag:** 2–7 Tage bei den `dfs_llm_*`-Zahlen — bei WoW-Vergleichen kurz vor dem Report-Stichtag entsprechend vorsichtig sein.
+- **Lag:** Index nicht tagesaktuell; die genaue Lag-Dauer ist nicht über die DataForSEO-Docs API-verifiziert — bei WoW-Vergleichen kurz vor dem Report-Stichtag entsprechend vorsichtig sein.
 - Auffällig: AI-Traffic/Mentions verschwinden oder verdoppeln sich → `geo-audit`.
 
 ---

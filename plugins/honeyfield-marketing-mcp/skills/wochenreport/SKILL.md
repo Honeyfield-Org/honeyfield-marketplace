@@ -20,7 +20,7 @@ Zwei Eigenschaften definieren diesen Skill:
 **Projekt-Kontext zuerst.** Liegt für dieses Projekt ein Projekt-Kontext vor — als **Projektwissen** in diesem Claude-Projekt oder als `projekt-kontext.md` im Arbeitsverzeichnis —, nutze ihn, bevor du fragst, und frage nur nach, was dort fehlt oder für diese Aufgabe spezifisch ist. Beachte gesetzte `compliance`-Flags als harte Leitplanke. Fehlt der Kontext, biete an, ihn per `projekt-kontext` anzulegen, oder frage knapp: welcher Kunde/Workspace, welcher Zeitraum, welche Ziel-KPIs.
 
 **Workspace + Datenquellen klären.** Rufe `list_workspaces` auf und prüfe die `sources` des Ziel-Workspace. **Der Report ist adaptiv:** Nimm nur die Kanäle auf, deren Quelle verbunden ist. Fehlt eine Quelle (z.B. kein `search_console`), nenne sie als Lücke im Report — rate keine Zahlen zusammen.
-- `google_ads` → Ads-Block · `meta_ads` / `linkedin_ads` → Social-Ads-Block · `search_console` → SEO-Block · `business_profile` → Local-Block · `ga4` → Web-Block + AI-Sichtbarkeit-Näherung.
+- `google_ads` → Ads-Block · `meta_ads` / `linkedin_ads` → Social-Ads-Block · `search_console` → SEO-Block · `business_profile` → Local-Block · `ga4` → Web-Block · `dataforseo` → AI-Sichtbarkeit als echte KPI (`dfs_llm_mentions_metrics`, unabhängig von `ga4`); ohne `dataforseo` (oder bei `subscription_required`) fällt AI-Sichtbarkeit auf die `ga4`-Referrer-Näherung zurück — fehlen beide Quellen, entfällt der Block ganz.
 
 **Zeitraum festlegen.** Default: letzte abgeschlossene **Woche** (ISO-KW, Mo–So) vs. Vorwoche (WoW). Auf Wunsch Monat vs. Vormonat (MoM) oder frei. **Attributions-Lag beachten:** die letzten 1–3 Tage sind unvollständig — entweder ausklammern oder als vorläufig kennzeichnen. Viele Tools nehmen nur `days` (Fenster endet heute) — wie die Vorperiode je Tool sauber zu beschaffen ist: **Zeitraum-Mechanik in `references/report-kpis.md` (Pflicht vor jedem Δ).**
 
@@ -36,7 +36,7 @@ Arbeite die verbundenen Kanäle durch und ziehe je die Kern-KPIs mit Zeitraum-Ve
 4. **SEO / Search Console** (`sc_performance`, `sc_top_queries`, `sc_top_pages`): Klicks, Impressionen, Ø-Position, Top-Query-Bewegung.
 5. **Local / Google Business Profile** (`gbp_performance`): Anrufe, Website-Klicks, Routenanfragen, Impressionen (Maps/Suche) — für lokale Kunden Kern-Zahlen.
 6. **Web / GA4** (`ga4_report`, `ga4_conversions`, `ga4_traffic_sources`): Sessions, Conversions/Key Events, Engagement, Traffic nach Quelle.
-7. **AI-Sichtbarkeit** (`dfs_llm_mentions_metrics`, Marken-/Themen-Keywords): Mentions/Citations/Share-of-Voice als WoW-KPI (Lag 2–7 Tage beachten). Ohne aktives DataForSEO-AI-Optimization-Abo (`subscription_required`) Degradation auf `ga4_traffic_sources` (`sessionSource`, days≥28) — grobe AI-Referrer-Menge, dann explizit als **beratend/Näherung** kennzeichnen.
+7. **AI-Sichtbarkeit** (`dfs_llm_mentions_metrics`, max. 10 Marken-/Themen-Keywords pro Call): Mentions/Citations/Share-of-Voice als WoW-KPI (Index nicht tagesaktuell, Lag nicht API-verifiziert — bei Stichtag-nahen WoW-Vergleichen vorsichtig sein). Ohne aktives DataForSEO-AI-Optimization-Abo (`subscription_required`) Degradation auf `ga4_traffic_sources` (`sessionSource`, days≥28) — grobe AI-Referrer-Menge, dann explizit als **beratend/Näherung** kennzeichnen.
 
 **Anomalie-Assist:** `anomaly_check` / `budget_pacing` können Ausreißer vorschlagen — als Hinweis nutzen, nicht als alleinige Wahrheit.
 

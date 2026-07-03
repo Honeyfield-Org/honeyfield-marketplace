@@ -10,9 +10,9 @@ Referenz für `tracking-check`. Auf diese Datei verweist SKILL.md — Begriffe (
 |---|---|---|
 | **Gemessen** | Daten fließen real | `ga4_list_key_events` (Per-Event-Counts), `ga4_conversions`, `ga4_report`, `ads_list_conversion_actions` (letztes Conversion-Datum), `ads_conversion_performance` (`last_gap_days`) |
 | **Nur konfiguriert** | verdrahtet bzw. gesetzt, Datenfluss **unbewiesen** | `gtm_get_tag`, `gtm_list_tags`/`_triggers`/`_variables`, `gtm_get_version`, `ads_list_conversion_actions` (Inventar), `ga4_list_custom_dimensions`/`_metrics`, `ga4_manage_google_ads_links` (list — Link gesetzt ≠ Import fließt), `ga4_enhanced_measurement`/`ga4_data_retention` (get — Setting ≠ ankommende Daten) |
-| **Nicht prüfbar** | Tool-Grenze, nur beratend | Consent-Mode-v2 *greift korrekt*, sGTM-Gesundheit, Attributionsmodell, Page-Snippet-Installation, echte Doppelzählung |
+| **Nicht prüfbar** | Tool-Grenze, nur beratend | Consent-Mode-v2 *greift korrekt*, sGTM-Gesundheit, Attributionsmodell, echte Doppelzählung |
 
-Jeder Befund im Audit trägt eine dieser drei Stufen. Config-ohne-Daten = **Verdacht**, nicht Befund.
+Jeder Befund im Audit trägt eine dieser drei Stufen. Config-ohne-Daten = **Verdacht**, nicht Befund. Page-Snippet-Installation ist **nicht** mehr pauschal „nicht prüfbar" — sie ist **prüfbar mit Einschränkung** über `dfs_domain_technologies` / `dfs_raw_html` (Präsenz-Nachweis, kein seitenweiter Feuer-Beweis), s. Footgun #8 unten.
 
 ---
 
