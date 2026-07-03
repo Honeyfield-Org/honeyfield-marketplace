@@ -85,7 +85,7 @@
   {
     "id": "tool-reality-site-crawl-cost-discipline",
     "prompt": "Crawl bitte unsere komplette Website und gib mir alle SEO-Fehler über alle Seiten.",
-    "expected_output": "Erkennt, dass ein seitenweiter Crawl jetzt über dfs_onpage_crawl möglich ist, aber kostenpflichtig (skaliert pro Seite) und asynchron läuft (Ergebnisse erst nach Minuten via dfs_onpage_crawl_results). Klärt vor dem Start max_crawl_pages passend zur tatsächlichen Site-Größe (nicht pauschal auf das Maximum 1000 setzen), statt den Crawl ungefragt breit zu fahren. Wertet die Ergebnisse sektionsweise aus (summary, non_indexable, redirect_chains, duplicate_content/duplicate_tags, links) statt einer unstrukturierten Fehlerliste.",
+    "expected_output": "Erkennt, dass ein seitenweiter Crawl jetzt über dfs_onpage_crawl möglich ist, aber kostenpflichtig (skaliert pro Seite) und asynchron läuft (Ergebnisse erst nach Minuten via dfs_onpage_crawl_results). Klärt vor dem Start max_crawl_pages passend zur tatsächlichen Site-Größe (nicht pauschal auf das Maximum 1000 setzen), statt den Crawl ungefragt breit zu fahren. Wertet die Ergebnisse sektionsweise aus (summary, non_indexable, redirect_chains, links site-weit; duplicate_content/duplicate_tags nur pro Seite mit zusätzlichem url=/tag_type=) statt einer unstrukturierten Fehlerliste.",
     "assertions": [
       "Nennt dfs_onpage_crawl als Weg zu einem echten Site-Scan, statt pauschal einen Crawler abzulehnen",
       "Weist auf Kosten (skaliert pro Seite) und asynchrone Laufzeit hin, bevor der Crawl gestartet wird",
