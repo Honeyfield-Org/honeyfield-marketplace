@@ -4,11 +4,11 @@ Phase 7. Cross-Engine-Citations (wird die Marke in ChatGPT/Claude/Gemini/Perplex
 
 ## Weg B — LLM-Mentions-Adapter (Default, automatisiert)
 
-DataForSEOs **AI Optimization API** misst Marken-Sichtbarkeit über einen aggregierten Index von ~200 Mio KI-Antworten — löst das Varianz-Problem durch große Stichprobe und unterscheidet **Citation (URL verlinkt) vs. Mention (genannt ohne URL)**. Vier Tools, alle read-only:
+DataForSEOs **AI Optimization API** misst Marken-Sichtbarkeit über einen aggregierten Index von ~200 Mio KI-Antworten — löst das Varianz-Problem durch große Stichprobe und unterscheidet **Citation (URL verlinkt) vs. Mention (genannt ohne URL)**. Vier Tools, alle read-only. `dfs_llm_mentions`/`_mentions_metrics`/`_top_domains` nehmen `keywords` entgegen — hartes API-Limit **max. 10 Keywords pro Call**:
 
 - **`dfs_llm_mentions(keywords, limit=20)`** — Mentions/Citations zu Keyword/Brand, pro Zeile `{prompt/topic, model/engine, type, url, domain, snippet}`. `type: "citation"` = URL verlinkt (zählt direkt für Off-site-Citability, Phase 5); `type: "mention"` = genannt ohne Link.
-- **`dfs_llm_mentions_metrics(keywords)`** — aggregierte Mentions-/Citation-Zählwerte + Share-of-Voice pro Engine.
-- **`dfs_llm_top_domains(keywords, limit=20)`** — meistzitierte Domains zum Thema, `{domain, citations, mentions}` — speist direkt die Off-site-Zielliste (Phase 5, s. `references/dach-citability.md`).
+- **`dfs_llm_mentions_metrics(keywords)`** — aggregierte Mentions pro Engine + Gesamt-Citations (nur als Summe, nicht per Engine) + client-seitig berechneter Share-of-Voice (aus den Per-Engine-Mentions).
+- **`dfs_llm_top_domains(keywords, limit=20)`** — meistzitierte Domains zum Thema, `{domain, citations}` (kein separates `mentions`-Feld — die Domain-Aggregation ist bereits die Citation-Menge) — speist direkt die Off-site-Zielliste (Phase 5, s. `references/dach-citability.md`).
 - **`dfs_llm_responses(prompt, model)`** — rohe LLM-Antwort + Zitate für einen einzelnen Prompt (`model` ∈ chatgpt/claude/gemini/perplexity): `{model, prompt, answer_text, citations: [{url, domain, title?}]}`. Ist eine Einzel-Stichprobe wie eine Capture — nie allein als Befund verkaufen, gegen `dfs_llm_mentions_metrics` gegenprüfen.
 
 **Status / Aktivierung:** Eigenes Abo nötig — **nicht** Teil des Standard-DataForSEO-Zugangs. Mindest-Top-up **~$100/Monat**, der als Guthaben auf JEDER DataForSEO-API ausgebbar bleibt (kein reiner Access-Fee; ungenutzt bleibt es liegen). Pro Request ~$0,10 + ~$0,001/Zeile. Aktivierung: DataForSEO-Dashboard → Plans & Subscriptions.

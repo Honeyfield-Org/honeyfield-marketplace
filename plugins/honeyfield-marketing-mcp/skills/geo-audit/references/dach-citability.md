@@ -61,7 +61,7 @@ Pitch-Qualität: <150 Wörter, klarer News-Hook, keine Buzzwords („revolution�
 
 Zwei Wege zur datengetriebenen Drittplattform-Zielliste, kombinierbar:
 
-**Direkt (bei aktivem LLM-Mentions-Abo):** `dfs_llm_top_domains(keywords=Category-Queries)` → liefert die Domains, die LLMs für das Thema tatsächlich zitieren (`{domain, citations, mentions}`), ohne Umweg über Backlink-Inferenz. Bei `subscription_required` auf den Backlink-Weg unten degradieren.
+**Direkt (bei aktivem LLM-Mentions-Abo):** `dfs_llm_top_domains(keywords=Category-Queries)` → liefert die Domains, die LLMs für das Thema tatsächlich zitieren (`{domain, citations}`, max. 10 Keywords/Call), ohne Umweg über Backlink-Inferenz. Bei `subscription_required` auf den Backlink-Weg unten degradieren.
 
 **Backlink-Inferenz (Fallback, immer verfügbar):**
 1. Aus der KI-/SERP-Antwort der Category-Query die genannten Marken/Domains extrahieren.
