@@ -2,7 +2,7 @@
 name: google-ads-audit
 description: "Datengetriebener Google-Ads-Audit für einen Kunden-Account, kalibriert auf den DACH-Markt (DE/AT/CH). Nutze diesen Skill, wenn der Nutzer einen „Google-Ads-Audit”, eine „Ads-Analyse” oder einen „Ads-Check” will oder Performance-/Spend-Probleme diagnostizieren möchte. Auch bei: „warum performen meine Ads schlecht”, „wo verbrenne ich Budget”, „Wasted Spend / verschwendete Suchbegriffe”, „CPA/ROAS zu schlecht”, „Conversions eingebrochen”, „Impression Share verloren”, „Negatives/Suchbegriffe aufräumen” oder vage „mein Google Ads läuft nicht”. Zieht echte Daten aus dem Konto über den Marketing-Ops-MCP (+ GA4-Cross-Check fürs Conversion-Tracking) und kann behebbare Probleme — Negatives setzen, Keywords/Anzeigen pausieren, Budget und Gebote anpassen — nach Bestätigung direkt umsetzen. Für Reporting nutze `wochenreport`; für organisches Ranking `seo-audit`; für KI-Sichtbarkeit `geo-audit`; für tiefe Tracking-Diagnose `tracking-check`; für neue Anzeigentexte `ad-creative`."
 metadata:
-  version: 0.2.0
+  version: 0.3.0
 ---
 
 # Google-Ads-Audit
@@ -78,7 +78,7 @@ Logik: „die Zahl ist nicht vertrauenswürdig” und „Geld leckt sichtbar” 
 - **Lernphase:** kürzlich geänderte Strategie/Ziel → instabile Phase, nicht hart beurteilen (Dauer in `references/google-ads-benchmarks.md`). Via `ads_change_history` prüfen, ob jüngst umgestellt wurde.
 - `ads_impression_share` → **Lost IS (Budget) vs. Lost IS (Rank)** ist die Schlüssel-Diagnose: viel Lost IS (Budget) → Budget/Effizienz; viel Lost IS (Rank) → QS/Gebot, **nicht** Budget. Search (Abs) Top IS → Positionsqualität. Diagnose-Matrix in `references/google-ads-benchmarks.md`.
 - `ads_list_experiments` → läuft ein Experiment auf der Kampagne? Traffic-Split verzerrt KPI-Vergleiche — Basis- und Test-Arm getrennt beurteilen, nicht als eine Kampagne. (`ads_change_history` reicht nur ~29 Tage zurück — länger laufende Experimente sieht nur dieses Tool.)
-- Bei hohem Lost IS (Rank) / CPC-Druck: `dfs_serp_google_ads` für die wichtigsten Ziel-Keywords → wer bietet mit, Anzeigen-Dichte als Wettbewerbs-Kontext (`location`/`language` wie in Schritt 0 kalibriert).
+- Bei hohem Lost IS (Rank) / CPC-Druck: `dfs_serp_google_ads` für die wichtigsten Ziel-Keywords → wer bietet mit, Anzeigen-Dichte als Wettbewerbs-Kontext; optional `dfs_google_ads_advertisers` (Google-Ads-Transparency-Center-Daten) als ergänzende Advertiser-Liste je Keyword (`location`/`language` wie in Schritt 0 kalibriert).
 > tCPA zu niedrig gesetzt erstickt das Volumen (hoher Lost IS Rank, „durch Gebotsstrategie begrenzt”) — sieht aus wie ein Rank-Problem, ist aber ein Ziel-Wert-Problem.
 
 ### 6 — Anzeigen, Assets & Segmente
@@ -149,7 +149,7 @@ Jede Schreib-Aktion bewegt echtes Geld oder echte Auslieferung. Regel: **erst Dr
 - Anzeigen/Assets/Segmente: `ads_ad_performance`, `ads_list_ads`, `ads_list_assets`, `ads_device_performance`, `ads_geo_performance`, `ads_schedule_performance`, `ads_demographic_performance`, `ads_get_geo_targeting`
 - Empfehlungen: `ads_list_recommendations`
 - Umsetzen: `ads_add_negative_keyword`, `ads_bulk_add_negative_keywords`, `ads_manage_shared_negative_list`, `ads_update_keyword_status`, `ads_update_ad_status`, `ads_update_campaign_budget`, `ads_set_device_bid_modifier`, `ads_update_geo_targeting`
-- Wettbewerb (DACH-Beifang): `dfs_serp_google_ads`
+- Wettbewerb (DACH-Beifang): `dfs_serp_google_ads`, optional `dfs_google_ads_advertisers` (Transparency-Center-Advertiser-Liste)
 
 ## Verwandte Skills
 `projekt-kontext` (Foundation, zuerst lesen) · `seo-audit` (organisch / Landingpage-Tiefe) · `geo-audit` (KI-Sichtbarkeit) · `wochenreport` (Reporting) · `tracking-check` (tiefe Tracking-Diagnose) · `ad-creative` (Anzeigentexte erstellen/ersetzen nach dem Audit)
