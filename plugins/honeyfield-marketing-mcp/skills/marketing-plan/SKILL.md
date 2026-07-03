@@ -2,7 +2,7 @@
 name: marketing-plan
 description: "Erstellt aus Projekt-Kontext + Live-MCP-Daten einen priorisierten, kundenfähigen Marketing-Plan oder ein Kampagnen-Konzept — vorwärtsgerichtet, jede Empfehlung einer AARRR-Stage zugeordnet, Current-State aus echten Daten (Search Console, GA4, Ads, GBP) statt Selbstauskunft, DACH-KMU-Budget-Logik, 90-Tage-Roadmap. Nutze diesen Skill bei: „Marketing-Plan erstellen”, „Gesamtkonzept”, „Kampagne planen”, „Kampagnen-Konzept”, „Marketing-Strategie”, „was machen wir als nächstes”, „wo investieren wir Budget”, „Quartals-/Jahresplanung”. Read-only Planungs-Hub: verweist zur Umsetzung auf die Topic-Skills, ändert nichts am Konto. Rückblickendes Reporting → `wochenreport`; Kanal-Tiefendiagnose → `google-ads-audit` / `social-ads-audit` / `seo-audit` / `geo-audit` / `tracking-check`; Anzeigentexte → `ad-creative`; Content-Themen → `content-strategie`. Kalibriert auf DACH (DE/AT/CH)."
 metadata:
-  version: 0.1.0
+  version: 0.1.1
 ---
 
 # Marketing-Plan
