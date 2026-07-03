@@ -20,14 +20,14 @@ Nach der Installation Claude Code neu starten; `/mcp` zeigt den Verbindungsstatu
 
 | Plugin | MCP-Server | Endpoint |
 |---|---|---|
-| `honeyfield-marketing-mcp` | Marketing-Ops — Google Ads, GA4, Search Console, Google Business Profile, GTM, Clarity, DataForSEO, LinkedIn/Meta Ads, Strapi- & WordPress-CMS **+ Skills (Projekt-Kontext + Audits + Ad-Creation + Wochenreport)** | `https://mcp.ads.honeyfield.at/mcp` |
+| `honeyfield-marketing-mcp` | Marketing-Ops — Google Ads, GA4, Search Console, Google Business Profile, GTM, Clarity, DataForSEO, LinkedIn/Meta Ads, Strapi- & WordPress-CMS **+ Skills (Projekt-Kontext + Audits + Ad-Creation + Content + Image + Wochenreport)** | `https://mcp.ads.honeyfield.at/mcp` |
 | `honeyfield-eurlex-mcp` | EUR-Lex — EU-Rechtsdatenbank (Suche, Volltext, Zitate, Konsolidierungen) | `https://mcp.honeyfield.at/eurlex/mcp` |
 | `honeyfield-ris-mcp` | RIS — österreichisches Rechtsinformationssystem (Bundes-/Landesrecht, Judikatur, Verordnungen) | `https://mcp.honeyfield.at/ris/mcp` |
 
 Jeder MCP ist ein eigenes Plugin — so installiert man nur, was man braucht.
 `honeyfield-marketing-mcp` bündelt die Marketing-Tools **und** die dazu passenden
-Skills (Projekt-Kontext-Fundament + Audits + Ad-Creation + Wochenreport) in einem
-Plugin — ein Install, alles dabei.
+Skills (Projekt-Kontext-Fundament + Audits + Creation-Skills für Ads, Content und
+Bilder + Wochenreport) in einem Plugin — ein Install, alles dabei.
 
 ## Skills (honeyfield-marketing-mcp)
 
@@ -39,9 +39,28 @@ Plugin — ein Install, alles dabei.
 | `google-ads-audit` | Google-Ads-Audit — Wasted Spend, verschwendete Suchbegriffe, Quality Score, Impression Share, Konto-Struktur; zieht echte Ads-Daten (+ GA4-Cross-Check) und kann nach Bestätigung direkt aufräumen. |
 | `tracking-check` | Measurement-Audit — prüft die Integrität des Conversion-/Event-Trackings (GA4, GTM, Google Ads) end-to-end, stuft jeden Befund nach Beweiskraft (gemessen / nur konfiguriert / nicht prüfbar) und behebt Sicheres nach Bestätigung. DACH-Consent-Layer (Consent Mode v2, TDDDG). |
 | `ad-creative` | Google-Ads-Copy-Generator — erstellt/iteriert Responsive Search Ads + Sitelinks daten-fundiert aus der Konto-Performance, hält die harten Zeichen-Limits gegen deutsche Komposita, prüft DACH-Werberecht (UWG/Preisangaben) und schreibt nach Bestätigung als pausierte Assets ins Konto. |
+| `content` | Content-Erstellung — findet Themen aus echten Suchdaten (GSC + DataForSEO), schreibt Artikel/Seiten in deutschem Schreibhandwerk mit QA-Panel, leitet Social-Text ab und publiziert nach Bestätigung Draft-first in WordPress/Strapi. |
+| `image` | Bild-Erstellung — Code-generierte Grafiken (Diagramme, Vergleiche, Carousels via HTML + Playwright) und KI-Bilder (fal.ai) im Visual-Stil des Mandanten (`visual-style.md`-Fundament pro Kunde); lädt fertige Bilder nach Bestätigung in die CMS-Mediathek oder als Meta-Ad-Image hoch. KI-Generierung braucht einen fal.ai-Key (siehe Setup unten). |
 | `wochenreport` | Cross-Kanal-Report-Hub — zieht die Kern-KPIs aus allen verbundenen Kanälen (Google Ads, Meta/LinkedIn Ads, SEO, Local/GBP, GA4, AI-Sichtbarkeit) als Zeitraum-Vergleich (Woche-über-Woche / Monat-über-Monat); read-only, verweist bei Auffälligkeiten auf den passenden Audit. |
 
-Trigger z.B.: „mach einen SEO-Audit für example.at", „GEO-Audit für …", „Google-Ads-Audit für …". Jeder Skill liest zuerst den `projekt-kontext`, falls vorhanden. Weitere Trigger: „stimmt mein Conversion-Tracking?" (`tracking-check`), „schreib neue Anzeigen für Kampagne X" (`ad-creative`), „Wochenreport für Kunde Y" (`wochenreport`).
+Trigger z.B.: „mach einen SEO-Audit für example.at", „GEO-Audit für …", „Google-Ads-Audit für …". Jeder Skill liest zuerst den `projekt-kontext`, falls vorhanden. Weitere Trigger: „stimmt mein Conversion-Tracking?" (`tracking-check`), „schreib neue Anzeigen für Kampagne X" (`ad-creative`), „schreib einen Blog-Artikel über …" (`content`), „Hero-Image für den Artikel" / „Grafik für LinkedIn" (`image`), „Wochenreport für Kunde Y" (`wochenreport`).
+
+### Setup: fal.ai-Key für den `image`-Skill
+
+Nur für die **KI-Bild-Generierung** (Modus B) nötig — Code-Gen-Grafiken funktionieren ohne. Key erstellen unter https://fal.ai/dashboard/keys, dann in **Claude Code** eine der zwei Optionen:
+
+```bash
+# Option 1 — global (alle Projekte): in ~/.zshrc
+export FAL_KEY="<key-id>:<key-secret>"
+```
+
+Option 2 — pro Projekt/Mandant (Kosten-Zuordnung): `<projekt>/.claude/settings.local.json`
+
+```json
+{ "env": { "FAL_KEY": "<key-id>:<key-secret>" } }
+```
+
+`settings.local.json` ist nicht eingecheckt — der Key landet nie im Repo. Jede Generierung kostet Geld (der Skill nennt die Kosten vor jedem Call und wartet auf Bestätigung). In **Claude Web** ist keine Generierung möglich — dort liefert der Skill ehrlich fertige Prompts + HTML-Vorlagen statt Bilder.
 
 ## Updates
 
@@ -71,4 +90,5 @@ Trigger z.B.: „mach einen SEO-Audit für example.at", „GEO-Audit für …", 
 | `marketplace add` schlägt fehl | GitHub-Auth prüfen (`gh auth status` / SSH-Key) |
 | MCP-Tools fehlen nach Install | Claude Code neu starten; `/mcp` zeigt den Verbindungsstatus |
 | Gateway nicht erreichbar | `curl -I https://mcp.honeyfield.at/eurlex/mcp` bzw. `https://mcp.ads.honeyfield.at/mcp` prüfen |
+| `image` bricht mit „FAL_KEY fehlt" ab | Key fehlt in der Umgebung — siehe „Setup: fal.ai-Key" oben; nach Option 2 Claude Code neu starten |
 | Plugin-Update / neuer Skill kommt nicht an | Erstens: Version in `plugin.json` **und** `marketplace.json` (Plugin-Eintrag + `metadata.version`) erhöht? Zweitens: Änderung nach `main` gemerged? Der Sync (auch Org-Auto-Sync in Claude Web) zieht von `main`, nicht vom Feature-Branch. Dann `/plugin marketplace update honeyfield-marketplace` und neu starten. |

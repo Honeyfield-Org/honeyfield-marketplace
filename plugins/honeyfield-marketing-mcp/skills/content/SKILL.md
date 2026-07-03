@@ -2,7 +2,7 @@
 name: content
 description: "Erstellt, plant und veröffentlicht Content für eine Kunden-Website und Social-Kanäle, daten-fundiert aus Search Console und DataForSEO und kalibriert auf DACH (DE/AT/CH). Nutze diesen Skill, wenn Content entsteht oder geplant wird: „Blog-Artikel schreiben”, „Artikel für die Website”, „Content-Plan”, „Redaktionsplan”, „Themen finden”, „worüber sollen wir schreiben”, „Vergleichsseite / Alternative-Page”, „LinkedIn-Post aus dem Artikel”, „Content wiederverwerten”, „Artikel publizieren”. Findet Themen aus echten Suchanfragen und Volumen, führt durch eine 5-Phasen-Schreibpipeline mit deutschem Schreibhandwerk und QA-Panel, und publiziert nach Bestätigung Draft-first in WordPress oder Strapi. Für die Diagnose von Ranking-/Sichtbarkeitsproblemen nutze `seo-audit`; für Google-Ads-Anzeigentexte `ad-creative`; für KI-Sichtbarkeit/Schema `geo-audit`; fürs Reporting `wochenreport`."
 metadata:
-  version: 0.1.0
+  version: 0.1.1
 ---
 
 # Content
@@ -94,14 +94,14 @@ Nur nach Schritt-0-Weiche: **welches CMS ist als source verbunden** (`wordpress`
 
 **Publish (bewusst getrennter, zweiter Schritt).** Erst auf **ausdrückliche** Bestätigung, nie im selben Zug wie die Anlage: WP → `wp_update_post` mit `status="publish"`; Strapi → `strapi_publish_entry`. Beides ist **Hochrisiko** (sofort öffentlich live) — exakten Preview zeigen (welche URL/welcher Entry, Wirkung „sofort öffentlich”, reversibel nur durch Depublizieren), einzeln bestätigen.
 
-**Tabu ohne ausdrückliche Anweisung:** ungefragt publishen (auch bei „mach das gleich live” erst Draft + Rückfrage); `wp_delete_post` / `strapi_delete_entry` (Löschen); `wp_upload_media` / `strapi_upload_media` (dieser Skill erzeugt keine Bilder — Media out of scope).
+**Tabu ohne ausdrückliche Anweisung:** ungefragt publishen (auch bei „mach das gleich live” erst Draft + Rückfrage); `wp_delete_post` / `strapi_delete_entry` (Löschen); `wp_upload_media` / `strapi_upload_media` (Media-Upload gehört zu `image` — dieser Skill erzeugt selbst keine Bilder).
 
 ## Grenzen (ehrlich benennen)
 
 - **Kein Social-Posting** — kein Publishing-Tool für LinkedIn/Twitter/Instagram/Reddit; Modus C liefert nur Text.
 - **Keine Social-Engagement-Messung** — kein Social-MCP; Reichweite/ER nicht auslesbar, Social-Empfehlungen beratend.
 - **Keine Keyword-Difficulty** — nie eine Difficulty-Zahl; CPC + SERP-Besetzung als gekennzeichnete Heuristik.
-- **Kein Bild/Video/Visual** — komplett out of scope (eigene Skills später); dieser Skill erzeugt und lädt keine Medien.
+- **Kein Bild/Video/Visual selbst** — Grafiken und KI-Bilder erstellt und lädt `image` (liefert Media-ID + Alt-Text zum Einbinden in den Draft); Video bleibt out of scope.
 - **CMS nur wenn verbunden** — WordPress/Strapi-Write nur bei verbundener source; sonst Text-Ausgabe.
 - **Kein seitenweiter Content-Audit** — für Ranking-/Sichtbarkeits-Diagnose und Content-Lücken-Findung → `seo-audit` (liefert die Gap-Liste, die hier zum Input wird).
 
@@ -111,10 +111,10 @@ Nur nach Schritt-0-Weiche: **welches CMS ist als source verbunden** (`wordpress`
 - **Modus B/C:** keine Pflicht-Tools (Schreiben/Ableiten aus Kontext + Artikel); optional Modus-A-Tools zur Beleg-Untermauerung
 - **Operator (WordPress):** `wp_list_posts`, `wp_get_post`, `wp_list_terms`, `wp_create_post` (`status="draft"`), `wp_update_post` (Publish = bewusst getrennt)
 - **Operator (Strapi):** `strapi_list_content_types`, `strapi_list_entries`, `strapi_get_entry`, `strapi_create_entry`, `strapi_publish_entry` (bewusst getrennt)
-- **Nicht verwenden ohne ausdrückliche Anweisung:** `wp_delete_post`, `strapi_delete_entry`, `wp_upload_media`, `strapi_upload_media`
+- **Nicht verwenden ohne ausdrückliche Anweisung:** `wp_delete_post`, `strapi_delete_entry`, `wp_upload_media`, `strapi_upload_media` (→ `image`)
 
 ## Verwandte Skills
-`projekt-kontext` (Foundation — Voice/Pillars/`compliance`, zuerst lesen) · `seo-audit` (findet Content-Lücken → defert die Erstellung hierhin; liefert die Gap-Liste als Input) · `ad-creative` (Google-Ads-Anzeigen-Copy) · `geo-audit` (KI-Sichtbarkeit + Schema-Tiefe) · `wochenreport` (Reporting)
+`projekt-kontext` (Foundation — Voice/Pillars/`compliance`, zuerst lesen) · `seo-audit` (findet Content-Lücken → defert die Erstellung hierhin; liefert die Gap-Liste als Input) · `ad-creative` (Google-Ads-Anzeigen-Copy) · `image` (Grafiken + KI-Bilder inkl. Media-Upload — liefert Hero-/Inline-Bilder zu Artikeln) · `geo-audit` (KI-Sichtbarkeit + Schema-Tiefe) · `wochenreport` (Reporting)
 
 ## Referenzen
 - `references/writing-principles.md` — deutsches Schreibhandwerk: Satzlängen/Verbklammer, Hamburger Modell, Mops-Regel, Nominalstil-Umbau, Orwell, KI-Deutsch-Marker, Anti-AI-Rewrite-Rule, Denglisch-Tabelle.

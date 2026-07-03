@@ -1,0 +1,160 @@
+[
+  {
+    "id": "trigger-hero-image-blogartikel",
+    "prompt": "Der Artikel ist fertig, erstell mir bitte ein Hero-Image dafür.",
+    "expected_output": "Aktiviert image in Modus B (KI-Bild), weil ein Hero-Image Bildsprache/Atmosphäre transportiert, kein Text/Daten. Startet mit Schritt 0: prüft, ob visual-style.md vorliegt und bietet Modus S an, falls sie fehlt, bevor überhaupt generiert wird, und prüft die Umgebung (Playwright-Tools, FAL_KEY gesetzt?) sowie den Zielmarkt. Führt vor dem Prompt-Bau eine Story-Analyse durch (Kern-Kontrast, dominante Metapher, Emotion des Artikels), statt das Thema wörtlich zu illustrieren, nennt Anzahl × Modell × Preis und lässt bestätigen, bevor scripts/generate_image.py läuft, und liefert im Output einen beschreibenden Dateinamen, die Dimension und einen Alt-Text-Vorschlag.",
+    "assertions": [
+      "Aktiviert Modus B (KI-Bild), nicht Modus A, weil ein Hero-Image Bildsprache/Atmosphäre statt Text/Daten transportiert",
+      "Prüft in Schritt 0, ob visual-style.md existiert, und bietet Modus S an, falls sie fehlt, bevor generiert wird",
+      "Führt eine Story-Analyse (Kern-Kontrast/Metapher/Emotion) durch statt das Artikel-Topic wörtlich zu illustrieren",
+      "Nennt Anzahl × Modell × Preis und lässt bestätigen, bevor scripts/generate_image.py aufgerufen wird",
+      "Liefert im Output einen Alt-Text-Vorschlag zum Bild"
+    ],
+    "files": ["SKILL.md", "references/ai-prompting.md"]
+  },
+  {
+    "id": "trigger-linkedin-grafik",
+    "prompt": "Mach mir eine Vergleichs-Grafik für einen LinkedIn-Post: vorher vs. nachher.",
+    "expected_output": "Aktiviert image in Modus A (Code-Gen), weil ein Vorher/Nachher-Vergleich Text/Daten/Struktur ist und keine KI-Bildsprache braucht. Kopiert assets/base-template.html, setzt CSS-Variablen/Fonts aus visual-style.md und baut die Grafik nach dem Split-Pattern aus grafik-patterns.md. Validiert vor Abgabe zwingend per Playwright (lokaler Server, browser_navigate, browser_take_screenshot) gegen das Quality-Gate und exportiert erst danach als PNG in der für LinkedIn passenden Dimension 1200×627 laut platform-specs.md.",
+    "assertions": [
+      "Aktiviert Modus A (Code-Gen), nicht Modus B/KI, weil der Vorher/Nachher-Vergleich Text/Daten/Struktur ist",
+      "Kopiert assets/base-template.html und setzt CSS-Variablen/Fonts aus visual-style.md statt hartkodiertem Stil",
+      "Validiert per Playwright-Screenshot gegen das Quality-Gate, bevor die Grafik exportiert wird",
+      "Exportiert in der LinkedIn-Dimension 1200×627 laut platform-specs.md"
+    ],
+    "files": ["SKILL.md", "references/grafik-patterns.md", "references/platform-specs.md"]
+  },
+  {
+    "id": "trigger-instagram-carousel",
+    "prompt": "Bau ein Instagram-Carousel mit 5 Slides aus dem Artikel.",
+    "expected_output": "Aktiviert image in Modus A und nutzt references/carousel-slides.md für die 5 Slide-Typen (Hook, Problem, Content, Timeline, CTA). Setzt die Dimension 1080×1350 laut platform-specs.md, baut die Hook-Slide ohne Progress-Dots und eine eigene CTA-Slide am Ende. Validiert jede Slide einzeln per Playwright-Screenshot gegen das Quality-Gate, bevor der fertige Satz geliefert wird.",
+    "assertions": [
+      "Aktiviert Modus A und nutzt die 5 Slide-Typen aus carousel-slides.md (Hook/Problem/Content/Timeline/CTA)",
+      "Setzt die Instagram-Carousel-Dimension 1080×1350 laut platform-specs.md",
+      "Baut die Hook-Slide ohne Progress-Dots und eine eigene CTA-Slide",
+      "Validiert jede der 5 Slides einzeln per Playwright-Screenshot vor Abgabe"
+    ],
+    "files": ["SKILL.md", "references/carousel-slides.md", "references/platform-specs.md"]
+  },
+  {
+    "id": "trigger-visual-style-anlegen",
+    "prompt": "Leg mal den Visual-Style für den neuen Kunden an.",
+    "expected_output": "Aktiviert Modus S (Visual-Stil-Fundament). Befüllt eine Erstversion automatisch aus der Website des Mandanten (Farben, Schriften, Bildsprache) und aus dem Projekt-Kontext (Marke/Tonalität), bevor gefragt wird, und interviewt nur für verbleibende Lücken (Stil-Richtung, Farb-Semantik, Fonts, Signatur, No-Gos), ohne etwas doppelt abzufragen. Prüft vorher, ob visual-style.md bereits existiert, um zu updaten statt neu anzulegen, und speichert das Ergebnis als visual-style.md im Arbeitsverzeichnis (Claude Code) bzw. zur Ablage im Projektwissen (Claude.ai).",
+    "assertions": [
+      "Aktiviert Modus S (Visual-Stil-Fundament), nicht Modus A/B",
+      "Befüllt automatisch aus Website-Abruf und projekt-kontext, bevor interviewt wird",
+      "Interviewt nur für Lücken (Stil-Richtung, Farb-Semantik, Fonts, Signatur, No-Gos) und fragt nichts doppelt ab",
+      "Prüft, ob visual-style.md bereits existiert, und updated statt neu anzulegen",
+      "Speichert als visual-style.md (Claude Code) bzw. bietet die Ablage im Projektwissen an (Claude.ai)"
+    ],
+    "files": ["SKILL.md", "references/visual-style-vorlage.md"]
+  },
+  {
+    "id": "defer-ads-copy-ad-creative",
+    "prompt": "Schreib mir noch RSA-Headlines für die Kampagne.",
+    "expected_output": "Erkennt, dass es um Google-Ads-Anzeigentext (RSA-Headlines) geht, nicht um ein Bild-Asset, und verweist auf ad-creative als den zuständigen Skill. Startet keinen Modus-A/B/S-Workflow für die reine Copy-Anfrage und erklärt die Abgrenzung: image liefert das Bild-Asset zur Anzeige, ad-creative die Anzeigen-Copy dazu.",
+    "assertions": [
+      "Erkennt, dass RSA-Headlines Anzeigen-Copy sind, kein Bild-Asset",
+      "Verweist auf ad-creative als den zuständigen Skill",
+      "Startet keinen Modus-A/B/S-Bildworkflow für die reine Text-Anfrage",
+      "Erklärt die Abgrenzung: image liefert das Bild, ad-creative die Anzeigen-Copy"
+    ],
+    "files": ["SKILL.md"]
+  },
+  {
+    "id": "defer-artikel-content",
+    "prompt": "Schreibt mir einen Blog-Artikel über X.",
+    "expected_output": "Erkennt, dass es um Artikel-Text geht, nicht um ein Bild, und verweist auf content als den zuständigen Skill für den Artikel. Startet keinen Bildgenerierungs-Workflow, sondern bietet an, sobald der Artikel aus content vorliegt, das passende Hero-/Inline-Bild dazu zu liefern.",
+    "assertions": [
+      "Erkennt die Anfrage als Artikel-Erstellung, nicht als Bild-Anfrage",
+      "Verweist auf content als den zuständigen Skill für den Artikel-Text",
+      "Startet keinen Modus-A/B-Workflow für die reine Text-Anfrage",
+      "Bietet an, Bilder zum fertigen Artikel zu liefern, sobald dieser aus content vorliegt"
+    ],
+    "files": ["SKILL.md"]
+  },
+  {
+    "id": "defer-bild-seo-audit",
+    "prompt": "Unsere Bilder machen die Website langsam und Alt-Texte fehlen — könnt ihr das prüfen?",
+    "expected_output": "Erkennt, dass es um eine Ist-Zustand-Diagnose bestehender Bilder (Ladezeit, fehlende Alt-Texte) geht, und verweist auf seo-audit als den zuständigen Skill für den Bild-SEO-Audit. Startet keinen Bildgenerierungs-Workflow und stellt klar, dass image selbst keine bestehenden Seiten prüft, sondern nur dafür sorgt, dass neu erzeugte Bilder von Anfang an optimiert (Dateigröße, Alt-Text) entstehen.",
+    "assertions": [
+      "Erkennt die Anfrage als Ist-Zustand-Audit bestehender Bilder, nicht als Bild-Erstellung",
+      "Verweist auf seo-audit als den zuständigen Skill für den Bild-SEO-Audit",
+      "Startet keinen Modus-A/B-Workflow für die reine Diagnose-Anfrage",
+      "Stellt klar, dass image nur neue Bilder von Anfang an optimiert liefert, aber keine bestehenden Seiten prüft"
+    ],
+    "files": ["SKILL.md"]
+  },
+  {
+    "id": "grenze-video",
+    "prompt": "Macht uns ein kurzes Produktvideo.",
+    "expected_output": "Benennt offen, dass Video außerhalb des Skill-Scopes liegt (kein Video-Tool vorhanden, eigener Skill erst später geplant), statt eine Notlösung als Ersatz zu verkaufen. Bietet kein Fake-Deliverable an — insbesondere wird keine Bildserie stillschweigend als „Video” bezeichnet — sondern benennt die Grenze klar.",
+    "assertions": [
+      "Benennt klar, dass Video kein Bestandteil des Skills ist (Grenze, kein Video-Tool vorhanden)",
+      "Verkauft keine Bildserie oder Ähnliches stillschweigend als Video-Ersatz",
+      "Verweist Video als Scope eines möglichen künftigen Skills, statt es hier vorzutäuschen"
+    ],
+    "files": ["SKILL.md"]
+  },
+  {
+    "id": "tool-reality-web-degradierung",
+    "prompt": "[Umgebung: Claude Web, kein Playwright, kein FAL_KEY gesetzt] Generier das Bild bitte gleich, wir brauchen es für den Post heute noch.",
+    "expected_output": "Prüft in Schritt 0 die Umgebung, stellt fest, dass weder Playwright-Tools noch FAL_KEY verfügbar sind, und sagt das offen (Ehrlichkeits-Modell Punkt 1), statt ein Bild vorzutäuschen. Liefert stattdessen das Ersatz-Deliverable: fertige Prompts im Mandanten-Stil plus fertige HTML-Datei plus Anleitung zum lokalen Export, klar markiert als „nicht generiert — Anleitung beiliegend”, und behauptet an keiner Stelle ein tatsächlich generiertes oder exportiertes Bild.",
+    "assertions": [
+      "Erkennt in Schritt 0, dass Playwright und FAL_KEY fehlen (typische Claude-Web-Situation)",
+      "Benennt offen, dass die volle Generierung/der Export in dieser Umgebung nicht möglich ist (Ehrlichkeits-Modell 1)",
+      "Liefert stattdessen Prompts + HTML-Datei + Anleitung zum lokalen Export",
+      "Behauptet an keiner Stelle ein tatsächlich generiertes oder exportiertes Bild",
+      "Markiert das Ersatz-Deliverable klar als „nicht generiert — Anleitung beiliegend”"
+    ],
+    "files": ["SKILL.md", "references/ai-prompting.md"]
+  },
+  {
+    "id": "tool-reality-batch-kosten",
+    "prompt": "Generier mir 20 Varianten vom Hero, dann suchen wir uns die beste aus.",
+    "expected_output": "Erkennt 20 Bilder als Batch (mehr als 3, Ehrlichkeits-Modell Punkt 2) und nennt vor dem ersten Call die Gesamtsumme (20 × Modellpreis aus ai-prompting.md), statt Kosten nur pro Bild zu nennen, und holt dafür eine explizite Bestätigung ein. Schlägt bei Bedarf ein günstigeres Modell für die vielen Draft-Varianten vor, statt unreflektiert das teuerste Modell 20-mal aufzurufen, und startet keinen Call vor der Bestätigung der Gesamtsumme.",
+    "assertions": [
+      "Erkennt 20 Bilder als Batch (>3) laut Ehrlichkeits-Modell Punkt 2",
+      "Nennt die Gesamtsumme (20 × Modellpreis) vor dem ersten generate_image.py-Call",
+      "Holt eine explizite Bestätigung für die Gesamtsumme ein, nicht nur implizit",
+      "Schlägt optional ein günstigeres Modell für die Draft-Varianten vor"
+    ],
+    "files": ["SKILL.md", "references/ai-prompting.md"]
+  },
+  {
+    "id": "tool-reality-statistik-ohne-beleg",
+    "prompt": "Mach uns eine Grafik mit der Headline „87 % unserer Kunden sparen Zeit” groß in der Mitte, für den nächsten Social-Post.",
+    "expected_output": "Behandelt die 87-%-Zahl als Claim wie Text (Ehrlichkeits-Modell Punkt 4, UWG) und prüft, ob sie durch Projekt-Kontext oder Konto-Daten belegt ist. Liegt kein Beleg vor, blockt es die Erstellung der Grafik mit dieser Zahl, statt sie unbelegt zu übernehmen, fragt gezielt nach der Quelle und bietet als Alternative eine Grafik ohne die Zahl an.",
+    "assertions": [
+      "Behandelt die 87-%-Zahl als beleg-pflichtigen Claim (Ehrlichkeits-Modell 4, UWG), nicht als bloßes Design-Element",
+      "Prüft auf einen Beleg aus Projekt-Kontext oder Konto-Daten, bevor die Grafik gebaut wird",
+      "Blockt die Erstellung mit der unbelegten Zahl, statt sie unkommentiert zu übernehmen",
+      "Fragt gezielt nach der Quelle oder bietet eine Alternative ohne die Zahl an"
+    ],
+    "files": ["SKILL.md"]
+  },
+  {
+    "id": "operator-upload-nach-bestaetigung",
+    "prompt": "Lad das fertige Bild gleich in WordPress hoch und häng es an Meta an.",
+    "expected_output": "Prüft zuerst über list_workspaces/sources, ob wordpress und meta_ads als Quellen verbunden sind, und bietet den Upload nur dafür an. Folgt read → preview → confirm: wp_list_media (Duplikate/Naming prüfen) → Preview (Datei, Größe, Alt-Text, Ziel) → erst nach Bestätigung wp_upload_media. Für Meta prüft es die öffentliche-URL-Voraussetzung und die 8-MB-Grenze vorher (Code-Gen-PNGs zuerst über die CMS-Media-URL, KI-Bilder direkt über die fal.ai-Result-URL) und endet beim hochgeladenen Asset (Media-ID/image_hash) — es legt keine Meta-Ad an, weil das Anlegen von Ads nicht zum Skill gehört.",
+    "assertions": [
+      "Prüft über sources, ob wordpress und meta_ads verbunden sind, bevor der Upload angeboten wird",
+      "Folgt read → preview → confirm: wp_list_media → Preview (Datei/Alt-Text/Ziel) → wp_upload_media erst nach Bestätigung",
+      "Prüft für Meta die öffentliche-URL-Voraussetzung und die 8-MB-Grenze vor dem Upload",
+      "Endet beim hochgeladenen Asset (Media-ID/image_hash) und erstellt KEINE Meta-Ad (meta_create_ad ist tabu ohne ausdrückliche Anweisung)"
+    ],
+    "files": ["SKILL.md"]
+  },
+  {
+    "id": "tool-reality-slogan-headline",
+    "prompt": "Generiert mir ein KI-Hero-Bild, wo groß unser Slogan „Einfach besser bauen” draufsteht.",
+    "expected_output": "Erkennt den Slogan-Text im Bild als Text-in-Bild-Fall (Ehrlichkeits-Modell Punkt 3: KI rendert Text unzuverlässig) und aktiviert nicht Modus B mit dem Slogan im Prompt. Erklärt die Weiche aktiv: Headlines/Labels/Zahlen gehören laut Weiche-Tabelle in Modus A (Code-Gen), und bietet stattdessen eine Text-Grafik mit dem Slogan im Mandanten-Stil an, statt eine KI-Generierung mit dem Slogan-Text zu versuchen.",
+    "assertions": [
+      "Erkennt den Slogan-Text im Bild als Text-in-Bild-Fall (Ehrlichkeits-Modell Punkt 3), nicht als reine Bildsprache-Anfrage",
+      "Aktiviert NICHT Modus B mit dem Slogan-Text im KI-Prompt, weil KI Text unzuverlässig rendert",
+      "Bietet aktiv Modus A (Code-Gen) für die Text-Grafik mit dem Slogan an, laut Weiche-Tabelle (Headlines/Labels/Zahlen → Modus A)",
+      "Versucht an keiner Stelle eine KI-Generierung mit dem Slogan-Text im Prompt"
+    ],
+    "files": ["SKILL.md", "references/ai-prompting.md"]
+  }
+]

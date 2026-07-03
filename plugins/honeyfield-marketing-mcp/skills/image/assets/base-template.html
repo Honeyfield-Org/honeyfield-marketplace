@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Grafik — Base-Template</title>
+
+  <!-- Fonts pro Mandant anpassen (visual-style.md: fonts) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* ============================================
+       BASE-TEMPLATE — Struktur, Textur, Komponenten
+       Farben/Fonts: Platzhalter-Defaults — pro Mandant
+       aus visual-style.md befüllen (Modus S).
+       ============================================ */
+
+    :root {
+      /* Platzhalter-Defaults — aus visual-style.md des Mandanten befüllen */
+      /* Color Palette */
+      --fg: #2D2D2D;
+      --accent: #1A73E8;
+      --bad: #D93025;
+      --good: #188038;
+      --bg: #F8F5F0;
+      --muted: #6B6B6B;
+      --grid: #E0DCD4;
+
+      /* Light tints for box fills */
+      --accent-soft: #E8F0FE;
+      --bad-soft: #FDECEA;
+      --good-soft: #E6F4EA;
+
+      /* Typography */
+      --font-heading: 'JetBrains Mono', 'Fira Code', monospace;
+      --font-body: 'Inter', 'IBM Plex Sans', sans-serif;
+      --font-annotation: 'Caveat', 'Architect\'s Daughter', cursive;
+
+      /* Font Sizes -- minimum 14px for social media readability */
+      --text-sm: 14px;
+      --text-base: 16px;
+      --text-lg: 18px;
+      --text-xl: 24px;
+      --text-2xl: 32px;
+      --text-3xl: 40px;
+      --text-hero: 72px;
+    }
+
+    /* ============================================
+       RESET & BASE
+       ============================================ */
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    /* ============================================
+       CANVAS -- the root container for the visual
+       Set data-size attribute to control dimensions:
+       "twitter-landscape" (1200x675) -- default
+       "twitter-square" (1080x1080)
+       "linkedin-feed" (1200x627)
+       "linkedin-carousel" (1080x1080)
+       "blog-featured" (1200x630)
+       "ig-portrait" (1080x1350)
+       "ig-story" (1080x1920)
+       ============================================ */
+
+    .visual-canvas {
+      width: 1200px;
+      height: 675px;
+      background-color: var(--bg);
+      position: relative;
+      overflow: hidden;
+      font-family: var(--font-heading);
+      color: var(--fg);
+    }
+
+    .visual-canvas[data-size="twitter-landscape"] { width: 1200px; height: 675px; }
+    .visual-canvas[data-size="twitter-square"] { width: 1080px; height: 1080px; }
+    .visual-canvas[data-size="linkedin-feed"] { width: 1200px; height: 627px; }
+    .visual-canvas[data-size="linkedin-carousel"] { width: 1080px; height: 1080px; }
+    .visual-canvas[data-size="blog-featured"] { width: 1200px; height: 630px; }
+    .visual-canvas[data-size="ig-portrait"] { width: 1080px; height: 1350px; }
+    .visual-canvas[data-size="ig-story"] { width: 1080px; height: 1920px; }
+
+    /* ============================================
+       GRAPH PAPER BACKGROUND
+       ============================================ */
+
+    .visual-canvas::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(var(--grid) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+      background-size: 24px 24px;
+      opacity: 0.45;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ============================================
+       NOISE GRAIN TEXTURE -- subtle sketchbook feel
+       ============================================ */
+
+    .visual-canvas::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      opacity: 0.03;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    .visual-canvas > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ============================================
+       TYPOGRAPHY
+       ============================================ */
+
+    .title {
+      font-family: var(--font-heading);
+      font-size: var(--text-2xl);
+      font-weight: 700;
+      color: var(--fg);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .subtitle {
+      font-family: var(--font-body);
+      font-size: 15px;
+      color: var(--muted);
+      letter-spacing: 0.01em;
+    }
+
+    .label {
+      font-family: var(--font-heading);
+      font-size: var(--text-sm);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .annotation {
+      font-family: var(--font-annotation);
+      font-size: 20px;
+      color: var(--muted);
+    }
+
+    .body-text {
+      font-family: var(--font-body);
+      font-size: var(--text-base);
+      color: var(--fg);
+      line-height: 1.5;
+    }
+
+    .hero-number {
+      font-family: var(--font-heading);
+      font-weight: 700;
+      line-height: 1;
+      letter-spacing: -0.02em;
+    }
+
+    .tagline {
+      font-family: var(--font-heading);
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--fg);
+    }
+
+    .tagline .highlight {
+      color: var(--accent);
+    }
+
+    .signature {
+      font-family: var(--font-heading);
+      font-size: 11px;
+      color: var(--muted);
+      opacity: 0.45;
+    }
+
+    /* ============================================
+       BOX COMPONENTS -- with depth via box-shadow
+       ============================================ */
+
+    .box {
+      background: white;
+      border: 2px solid var(--fg);
+      border-radius: 8px;
+      padding: 12px 20px;
+      font-family: var(--font-heading);
+      font-weight: 600;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+
+    .box--accent {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: var(--accent-soft);
+      box-shadow: 0 2px 8px rgba(26,115,232,0.1);
+    }
+
+    .box--bad {
+      border-color: var(--bad);
+      color: var(--bad);
+      background: var(--bad-soft);
+      box-shadow: 0 2px 8px rgba(217,48,37,0.1);
+    }
+
+    .box--good {
+      border-color: var(--good);
+      color: var(--good);
+      background: var(--good-soft);
+      box-shadow: 0 2px 8px rgba(24,128,56,0.1);
+    }
+
+    .box--fg {
+      border-color: var(--fg);
+      color: var(--fg);
+      box-shadow: 0 2px 8px rgba(45,45,45,0.08);
+    }
+
+    /* Elevated variant -- for hero/key elements */
+    .box--elevated {
+      border-width: 2.5px;
+      box-shadow:
+        0 3px 12px rgba(26,115,232,0.15),
+        0 1px 3px rgba(26,115,232,0.08);
+    }
+
+    /* Solid filled variant -- for success/done states */
+    .box--solid-good {
+      border-color: var(--good);
+      background: var(--good);
+      color: white;
+      box-shadow:
+        0 3px 16px rgba(24,128,56,0.3),
+        0 1px 4px rgba(24,128,56,0.15);
+    }
+
+    .box--solid-bad {
+      border-color: var(--bad);
+      background: var(--bad);
+      color: white;
+      box-shadow:
+        0 3px 16px rgba(217,48,37,0.3),
+        0 1px 4px rgba(217,48,37,0.15);
+    }
+
+    .box--header {
+      font-size: var(--text-xl);
+      padding: 16px 32px;
+      font-weight: 700;
+    }
+
+    /* ============================================
+       LAYOUT HELPERS
+       ============================================ */
+
+    .flex { display: flex; }
+    .flex-col { flex-direction: column; }
+    .items-center { align-items: center; }
+    .justify-center { justify-content: center; }
+    .justify-between { justify-content: space-between; }
+    .gap-sm { gap: 8px; }
+    .gap-md { gap: 16px; }
+    .gap-lg { gap: 24px; }
+    .gap-xl { gap: 32px; }
+    .text-center { text-align: center; }
+    .w-full { width: 100%; }
+    .h-full { height: 100%; }
+    .p-md { padding: 24px; }
+    .p-lg { padding: 40px; }
+
+    .split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      position: relative;
+    }
+
+    .split-left, .split-right {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px 32px;
+    }
+
+    .divider {
+      position: absolute;
+      left: 50%;
+      top: 10%;
+      bottom: 10%;
+      width: 2px;
+      background: var(--grid);
+      transform: translateX(-50%);
+      z-index: 2;
+    }
+
+    .vs-badge {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      background: var(--bg);
+      border: 2px solid var(--fg);
+      border-radius: 50%;
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: var(--text-sm);
+      z-index: 3;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    /* ============================================
+       FLOW DIAGRAM HELPERS
+       ============================================ */
+
+    .flow-vertical {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+    }
+
+    .flow-arrow {
+      width: 2px;
+      height: 20px;
+      background: var(--muted);
+      position: relative;
+    }
+
+    .flow-arrow::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-top: 6px solid var(--muted);
+    }
+
+    .flow-arrow--accent { background: var(--accent); }
+    .flow-arrow--accent::after { border-top-color: var(--accent); }
+    .flow-arrow--bad { background: var(--bad); }
+    .flow-arrow--bad::after { border-top-color: var(--bad); }
+    .flow-arrow--good { background: var(--good); }
+    .flow-arrow--good::after { border-top-color: var(--good); }
+
+    .flow-horizontal {
+      display: flex;
+      align-items: center;
+      gap: 0;
+    }
+
+    .flow-arrow-h {
+      width: 32px;
+      height: 2px;
+      background: var(--fg);
+      position: relative;
+      opacity: 0.3;
+    }
+
+    .flow-arrow-h::after {
+      content: '';
+      position: absolute;
+      right: -5px;
+      top: 50%;
+      transform: translateY(-50%);
+      border-top: 5px solid transparent;
+      border-bottom: 5px solid transparent;
+      border-left: 7px solid var(--fg);
+      opacity: 0.3;
+    }
+
+    /* Colored arrows -- for active/important paths */
+    .flow-arrow-h--accent { background: var(--accent); opacity: 0.5; }
+    .flow-arrow-h--accent::after { border-left-color: var(--accent); opacity: 1; }
+    .flow-arrow-h--good { background: var(--good); opacity: 0.5; }
+    .flow-arrow-h--good::after { border-left-color: var(--good); opacity: 1; }
+
+    /* ============================================
+       SKETCH ELEMENTS (hand-drawn feel)
+       ============================================ */
+
+    .sketch-underline {
+      position: relative;
+      display: inline-block;
+    }
+
+    .sketch-underline::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: -4px;
+      right: -4px;
+      height: 3px;
+      background: currentColor;
+      opacity: 0.3;
+      border-radius: 2px;
+      transform: rotate(-0.5deg);
+    }
+
+    .sketch-circle {
+      border: 2px dashed var(--bad);
+      border-radius: 50%;
+      padding: 4px;
+    }
+
+    .sketch-strikethrough {
+      position: relative;
+      opacity: 0.7;
+    }
+
+    .sketch-strikethrough::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: -4px;
+      right: -4px;
+      height: 2px;
+      background: var(--bad);
+      transform: rotate(-1deg);
+      opacity: 0.6;
+    }
+
+    /* ============================================
+       BADGES & PILLS
+       ============================================ */
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 4px;
+      font-size: var(--text-sm);
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .badge--good { background: var(--good-soft); color: var(--good); border: 1px solid var(--good); }
+    .badge--bad { background: var(--bad-soft); color: var(--bad); border: 1px solid var(--bad); }
+    .badge--accent { background: var(--accent-soft); color: var(--accent); border: 1px solid var(--accent); }
+
+    /* Feedback pill -- for callout messages */
+    .feedback-pill {
+      display: inline-block;
+      font-family: var(--font-annotation);
+      font-size: 22px;
+      padding: 6px 24px;
+      border-radius: 24px;
+      border: 1.5px dashed;
+    }
+
+    .feedback-pill--bad {
+      color: var(--bad);
+      background: var(--bad-soft);
+      border-color: var(--bad);
+      opacity: 0.85;
+    }
+
+    .feedback-pill--accent {
+      color: var(--accent);
+      background: var(--accent-soft);
+      border-color: var(--accent);
+      opacity: 0.85;
+    }
+
+    .feedback-pill--good {
+      color: var(--good);
+      background: var(--good-soft);
+      border-color: var(--good);
+      opacity: 0.85;
+    }
+
+    /* ============================================
+       ICON HELPERS
+       ============================================ */
+
+    .icon-check::before { content: '\2714'; color: var(--good); }
+    .icon-cross::before { content: '\2718'; color: var(--bad); }
+    .icon-warning::before { content: '\26A0'; color: var(--bad); }
+    .icon-gear::before { content: '\2699'; }
+    .icon-arrow-loop::before { content: '\21BB'; color: var(--bad); }
+  </style>
+</head>
+<body style="background: #e0e0e0; display: flex; justify-content: center; align-items: center; min-height: 100vh;">
+
+  <!-- ==========================================
+       VISUAL CANVAS
+       Replace the content below with your graphic.
+       Set data-size for target platform dimensions.
+       ========================================== -->
+  <div class="visual-canvas" data-size="twitter-landscape">
+
+    <!-- Your visual content goes here -->
+    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; gap: 24px; padding: 40px;">
+      <h1 class="title">Base-Template</h1>
+      <p class="subtitle">Struktur-Check: Komponenten &amp; Textur</p>
+      <div style="display: flex; gap: 0; align-items: center;">
+        <div class="box box--fg">Schritt 1</div>
+        <div class="flow-arrow-h flow-arrow-h--accent"></div>
+        <div class="box box--accent box--elevated">Schritt 2</div>
+        <div class="flow-arrow-h flow-arrow-h--good"></div>
+        <div class="box box--solid-good">Fertig</div>
+      </div>
+      <p class="annotation">Annotation im Handschrift-Font</p>
+      <p class="tagline">Tagline mit <span class="highlight">Highlight</span>.</p>
+      <span class="signature"><!-- Signatur aus visual-style.md (signatur-Key); ohne Key: Element löschen --></span>
+    </div>
+
+  </div>
+
+</body>
+</html>
