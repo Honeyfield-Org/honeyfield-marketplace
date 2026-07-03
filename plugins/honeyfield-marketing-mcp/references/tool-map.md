@@ -177,6 +177,7 @@ Lege Schreib-Tools (W) nie ohne write-guardrails.md an.
 | `gtm_list_versions` | Versions-Historie des Containers | gtm | R |
 | `gtm_get_version` | Details einer Version inkl. aller Tags, Trigger, Variablen | gtm | R |
 | `gtm_get_tag` | Vollständige Tag-Definition (Parameter + Trigger-IDs) | gtm | R |
+| `gtm_workspace_status` | Offene Änderungen + Merge-Konflikte eines Workspace — Diagnose bei fehlgeschlagenem `gtm_create_version` | gtm | R |
 
 ---
 
@@ -190,6 +191,8 @@ Lege Schreib-Tools (W) nie ohne write-guardrails.md an.
 | `gtm_update_tag` | Tag ändern (Name, Parameter, Trigger, paused) | gtm | W |
 | `gtm_remove_tag` | Tag aus Workspace löschen | gtm | W |
 | `gtm_create_trigger` | Neuen Trigger anlegen (pageview, click, customEvent, …) | gtm | W |
+| `gtm_sync_workspace` | Workspace mit neuester Container-Version synchronisieren (bei merge_conflict); Rest-Konflikte werden gelistet | gtm | W |
+| `gtm_create_workspace` | Neuen Workspace aus neuester Container-Version anlegen — Recovery bei nicht mehr synchronisierbarem Workspace | gtm | W |
 
 ---
 
@@ -231,16 +234,69 @@ Lege Schreib-Tools (W) nie ohne write-guardrails.md an.
 
 ---
 
-## Social Ads (source: meta_ads / linkedin_ads) — enthält W ⚠ Guardrails
+## Meta Ads — Reporting (source: meta_ads)
 
 | Tool | Was | Quelle | R/W |
 |---|---|---|---|
-| `meta_campaign_performance` | Meta-Ads-Kampagnen-Performance (Impressionen, Klicks, Spend, Conversions) | meta_ads | R |
-| `linkedin_campaign_performance` | LinkedIn-Ads-Kampagnen-Performance (Impressionen, Klicks, Kosten, Conversions) | linkedin_ads | R |
+| `meta_list_ad_accounts` | Erreichbare Meta-Ad-Accounts auflisten (id, Name, Status, Währung) | meta_ads | R |
+| `meta_list_pages` | Facebook-Pages, die der Account bewerben darf — `page_id` ist Pflicht für `meta_create_ad` | meta_ads | R |
+| `meta_list_pixels` | Meta-Pixel (Datasets) auflisten inkl. „zuletzt gefeuert" — schnellster Tracking-Check | meta_ads | R |
+| `meta_pixel_stats` | Pixel-Event-Statistiken der letzten N Tage (Summen + Tagesverlauf) | meta_ads | R |
+| `meta_campaign_performance` | Kampagnen-Performance (Impressionen, Klicks, Spend, Conversions) | meta_ads | R |
+| `meta_adset_performance` | Adset-Performance der letzten N Tage, sortiert nach Spend | meta_ads | R |
+| `meta_ad_performance` | Performance einzelner Anzeigen der letzten N Tage, sortiert nach Spend | meta_ads | R |
+| `meta_list_campaigns` | Kampagnen auflisten (Status, Ziel, Budgets in EUR) | meta_ads | R |
+| `meta_list_adsets` | Adsets auflisten, optional pro Kampagne (Status, Budget, Optimierungsziel, Targeting) | meta_ads | R |
+| `meta_list_ads` | Ads auflisten, optional pro Adset (Status + Creative) | meta_ads | R |
+| `meta_list_audiences` | Custom Audiences inkl. Customer-Match-Listen (IDs für Adset-Targeting) | meta_ads | R |
+| `meta_video_status` | Verarbeitungsstatus eines hochgeladenen Ad-Videos (`ready` = nutzbar) | meta_ads | R |
+
+---
+
+## Meta Ads — Mutation (source: meta_ads) ⚠ Guardrails
+
+| Tool | Was | Quelle | R/W |
+|---|---|---|---|
+| `meta_create_pixel` | Neues Pixel (Dataset) anlegen — liefert Pixel-ID + Einbau-Code | meta_ads | W |
+| `meta_create_campaign` | Neue Kampagne anlegen (Standard: PAUSED) — `daily_budget` gesetzt = CBO, optional `bid_strategy` | meta_ads | W |
+| `meta_update_campaign` | Kampagne ändern: Name, Status, Tagesbudget in EUR (Budget nur bei CBO) | meta_ads | W |
+| `meta_delete_campaign` | Kampagne endgültig löschen inkl. Adsets/Ads — zum Stoppen besser Status PAUSED/ARCHIVED | meta_ads | W |
+| `meta_create_adset` | Neues Adset anlegen (Standard: PAUSED) — Budget (erkennt CBO selbst) + Zielgruppe, Bidding, DSA-Angaben (EU-Pflicht), `advantage_audience` | meta_ads | W |
+| `meta_update_adset` | Adset ändern: Name, Status, Budget, Bidding, DSA-Angaben (EU-Pflicht), `advantage_audience`, Targeting (wird gemerged) | meta_ads | W |
+| `meta_update_ad_status` | Ad-Status ändern (ACTIVE/PAUSED/ARCHIVED/DELETED) | meta_ads | W |
+| `meta_upload_ad_image` | Bild von öffentlicher URL in die Bildbibliothek laden (max. 8 MB) — liefert `image_hash` | meta_ads | W |
+| `meta_upload_ad_video` | Video von öffentlicher URL laden — asynchron, Status via `meta_video_status` | meta_ads | W |
+| `meta_create_ad` | Neue Ad anlegen (Bild ODER Video) — Creative + Ad in einem Schritt (Standard: PAUSED) | meta_ads | W |
+
+---
+
+## LinkedIn Ads — Reporting (source: linkedin_ads)
+
+Hierarchie: Campaign Group (≈ Meta-Kampagne) → Campaign (Budget + Targeting, ≈ Meta-Adset) → Creative (≈ Meta-Ad, referenziert einen Page-Post).
+
+| Tool | Was | Quelle | R/W |
+|---|---|---|---|
 | `linkedin_list_accounts` | Verbundene LinkedIn-Ad-Accounts auflisten | linkedin_ads | R |
-| `linkedin_list_campaigns` | LinkedIn-Kampagnen auflisten (Name, Status, Budget) | linkedin_ads | R |
-| `linkedin_update_campaign_budget` | Tages-/Gesamtbudget einer LinkedIn-Kampagne ändern | linkedin_ads | W |
-| `linkedin_update_campaign_status` | LinkedIn-Kampagne aktivieren/pausieren | linkedin_ads | W |
+| `linkedin_list_campaign_groups` | Kampagnengruppen auflisten (Name, Status, Gesamtbudget) | linkedin_ads | R |
+| `linkedin_list_campaigns` | Kampagnen auflisten (Name, Status, Typ, Tagesbudget) | linkedin_ads | R |
+| `linkedin_list_creatives` | Creatives (Anzeigen) auflisten, optional pro Kampagne — Status + Post-URN | linkedin_ads | R |
+| `linkedin_list_audiences` | Matched Audiences (DMP-Segmente): Retargeting- und Kontaktlisten | linkedin_ads | R |
+| `linkedin_campaign_performance` | Kampagnen-Performance (Impressionen, Klicks, Kosten, Conversions) | linkedin_ads | R |
+| `linkedin_creative_performance` | Performance einzelner Anzeigen, sortiert nach Kosten | linkedin_ads | R |
+
+---
+
+## LinkedIn Ads — Mutation (source: linkedin_ads) ⚠ Guardrails
+
+| Tool | Was | Quelle | R/W |
+|---|---|---|---|
+| `linkedin_create_campaign_group` | Neue Kampagnengruppe anlegen (Standard: DRAFT) | linkedin_ads | W |
+| `linkedin_update_campaign_group` | Kampagnengruppe ändern (Name, Status) | linkedin_ads | W |
+| `linkedin_create_campaign` | Neue Kampagne anlegen (Standard: DRAFT) — Budget, Geo-/Sprach-Targeting, Auto-Bidding | linkedin_ads | W |
+| `linkedin_update_campaign_status` | Kampagne aktivieren/pausieren/archivieren | linkedin_ads | W |
+| `linkedin_update_campaign_budget` | Tagesbudget einer Kampagne ändern | linkedin_ads | W |
+| `linkedin_create_ad_from_post` | Bestehenden Page-Post als Anzeige schalten (Sponsored Content) — Dark Posts gehen mangels `w_organization_social` nicht | linkedin_ads | W |
+| `linkedin_update_creative_status` | Creative-Status ändern (ACTIVE/PAUSED/DRAFT/ARCHIVED) | linkedin_ads | W |
 
 ---
 
