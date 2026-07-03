@@ -71,7 +71,7 @@ Jede Headline thematisch **unique** (keine Paraphrasen voneinander — Redundanz
 
 **4. Themen-Cluster → Ad-Group-Bezug.** Headlines am Keyword-Thema der Ad-Group ausrichten. Keyword-Einbindung + Diversität + genug Unique Headlines treiben die Ad Strength — der Wert selbst bleibt nur im UI sichtbar (nie behaupten).
 
-**5. Copy-QA (vor jeder Ausgabe — gilt auch für Modus B).** Seven-Sweeps-Pass + Streichwort-/Nominalstil-Quick-Pass über alle Headlines und Descriptions; Expert-Panel-Scoring bei Launch-/High-Stakes-Anzeigen. Methodik: `references/copy-qa.md` im Plugin (geteilt mit `content`).
+**5. Copy-QA (vor jeder Ausgabe — gilt auch für Modus B).** Seven-Sweeps-Pass + Streichwort-/Nominalstil-Quick-Pass über alle Headlines und Descriptions; Expert-Panel-Scoring bei Launch-/High-Stakes-Anzeigen. Methodik: `references/copy-qa.md` im Plugin (geteilt mit `content-strategie`).
 
 ## Modus B — Aus Performance iterieren
 
@@ -142,5 +142,5 @@ Jede Schreib-Aktion bewegt echte Auslieferung. Regel: **erst Zeichen-/Anzahl-Val
 ## Referenzen
 - `references/rsa-mechanik.md` — RSA-Struktur & Limits (15/4, 30/90), Ad-Strength-Best-Practices (was Strength treibt, obwohl nicht auslesbar), Replace-Mechanik + Lernhistorie-Reset, Pinning (beratend/UI), Statistik-Hygiene für Modus B, Zeichen-Zähl-Tipps.
 - `references/dach-ad-copy.md` — DACH-Werberecht (UWG/PAngV/Health-Claims + Verbotsliste + neutrale Reframes), Komposita-/Zeichen-Disziplin, AT/CH-Linter, Angle-Kategorien (Fallback-Heuristik).
-- `references/copy-qa.md` im Plugin (geteilt mit `content`) — Seven Sweeps, Expert-Panel-Scoring, Streichwort- + Nominalstil-Quick-Pass.
-- `references/psychology.md` im Plugin (geteilt mit `content`) — Challenge→Models-Index + Kompakt-Definitionen für die Angle-Begründung; beratend, UWG-Leitplanken beachten.
+- `references/copy-qa.md` im Plugin (geteilt mit `content-strategie`) — Seven Sweeps, Expert-Panel-Scoring, Streichwort- + Nominalstil-Quick-Pass.
+- `references/psychology.md` im Plugin — Challenge→Models-Index + Kompakt-Definitionen für die Angle-Begründung; beratend, UWG-Leitplanken beachten.
