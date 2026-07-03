@@ -1,8 +1,8 @@
 ---
 name: seo-audit
-description: "Datengetriebener SEO-Audit für eine Kunden-Website, kalibriert auf den DACH-Markt (DE/AT/CH). Nutze diesen Skill, wenn der Nutzer einen „SEO-Audit”, eine „SEO-Analyse”, einen „SEO-Check” oder eine Diagnose von Ranking- bzw. Sichtbarkeitsproblemen will. Auch bei: „warum ranke ich nicht”, „warum werden wir nicht gefunden”, „Traffic ist eingebrochen”, „Sichtbarkeit gesunken”, „seit dem Relaunch weg”, „nach dem Google-Update abgestürzt”, „technisches SEO prüfen”, „Core Web Vitals / Ladezeit”, „Indexierungsprobleme”, „stimmt was mit der Seite nicht”, oder vage „unser SEO ist schlecht”. Zieht echte Daten aus Search Console, DataForSEO, GA4 und Microsoft Clarity über den Marketing-Ops-MCP und kann gefundene Probleme auf Wunsch direkt beheben. Fürs wöchentliche Reporting nutze `wochenreport`; für bezahlte Suche (Wasted Spend, Konto-Audit) `google-ads-audit`; für KI-Sichtbarkeit (ChatGPT/Perplexity/AI Overviews) `geo-audit`."
+description: "Datengetriebener SEO-Audit für eine Kunden-Website, kalibriert auf den DACH-Markt (DE/AT/CH). Nutze diesen Skill, wenn der Nutzer einen „SEO-Audit”, eine „SEO-Analyse”, einen „SEO-Check” oder eine Diagnose von Ranking- bzw. Sichtbarkeitsproblemen will. Auch bei: „warum ranke ich nicht”, „warum werden wir nicht gefunden”, „Traffic ist eingebrochen”, „Sichtbarkeit gesunken”, „seit dem Relaunch weg”, „nach dem Google-Update abgestürzt”, „technisches SEO prüfen”, „Core Web Vitals / Ladezeit”, „Indexierungsprobleme”, „wo rankt die Konkurrenz, wir nicht”, „stimmt was mit der Seite nicht”, oder vage „unser SEO ist schlecht”. Zieht echte Daten aus Search Console, DataForSEO, GA4 und Microsoft Clarity über den Marketing-Ops-MCP und kann gefundene Probleme auf Wunsch direkt beheben. Fürs wöchentliche Reporting nutze `wochenreport`; für bezahlte Suche (Wasted Spend, Konto-Audit) `google-ads-audit`; für KI-Sichtbarkeit (ChatGPT/Perplexity/AI Overviews) `geo-audit`."
 metadata:
-  version: 0.3.0
+  version: 0.4.0
 ---
 
 # SEO-Audit
@@ -13,8 +13,8 @@ Dieser Audit ist **datengetrieben**, nicht checklisten-basiert: Du rätst nicht,
 
 **Drei Beleg-Stufen — kennzeichne jeden Befund nach seiner Beweiskraft:**
 - **Gemessen** (harte Daten): Rankings/Sichtbarkeit, Core Web Vitals, Backlinks, Keyword-Lücken, lokale GBP-Daten → echte Zahlen.
-- **Pro Seite geprüft** (kein Crawler): Index-Status, On-Page, Canonical, Redirects, Duplicate → gilt nur für die geprüften URLs, nicht site-weit. Sag das dazu.
-- **Beratend** (kein Messtool): Schema/strukturierte Daten, E-E-A-T/Content-Qualität, hreflang-Tags, AEO/AI-Sichtbarkeit (tiefe KI-Sichtbarkeits-Diagnose: `geo-audit`) → begründete Empfehlung, niemals als gemessenen Befund verkaufen.
+- **Pro Seite geprüft** (kein Crawler): Index-Status, On-Page, Canonical, Redirects, Duplicate, Schema-Präsenz → gilt nur für die geprüften URLs, nicht site-weit. Sag das dazu.
+- **Beratend** (kein Messtool): Schema-Tiefe/strukturierte Daten (Presence pro Seite prüfbar, Tiefe → `geo-audit`), E-E-A-T/Content-Qualität, hreflang-Tags, interne Verlinkungs-Strategie, Conversion-Ursachen, AEO/AI-Sichtbarkeit (tiefe KI-Sichtbarkeits-Diagnose: `geo-audit`) → begründete Empfehlung, niemals als gemessenen Befund verkaufen.
 
 ## Schritt 0 — Vorbereitung (immer zuerst)
 
@@ -29,7 +29,7 @@ Dieser Audit ist **datengetrieben**, nicht checklisten-basiert: Du rätst nicht,
 - Österreich → `location="Austria"`, `language="de"`
 - Schweiz → `location="Switzerland"`, `language="de"`
 
-Der Default ist Österreich/Deutsch. Bei einem DE- oder CH-Kunden ohne explizite Angabe ziehst du sonst falsche SERPs und Suchvolumina.
+Der Default ist Österreich/Deutsch. Bei einem DE- oder CH-Kunden ohne explizite Angabe ziehst du sonst falsche SERPs und Suchvolumina. Das gilt auch für alle **Konkurrenz-Calls** in Phase 5.
 
 ## Prioritäts-Reihenfolge (Blocker zuerst)
 Arbeite in dieser Reihenfolge und spiegle sie im Report. Logik: „kann nicht ranken" vor „rankt schlecht".
@@ -37,7 +37,7 @@ Arbeite in dieser Reihenfolge und spiegle sie im Report. Logik: „kann nicht ra
 2. **Technik & Performance** (CWV, Ladezeit, mobil)
 3. **On-Page** (Title/Meta/H1/Content je Schlüsselseite)
 4. **Sichtbarkeit & Rankings** (was rankt wo, Quick Wins, Kannibalisierung)
-5. **Content-Lücken** (wofür könnte/sollte gerankt werden)
+5. **Content-Lücken** (Selbst-Gap + Markt-Gap gegen Konkurrenten)
 6. **Autorität** (Backlinks)
 
 Quer dazu: **DACH-Layer** (immer) und **Lokale Sichtbarkeit** (nur bei lokalem Geschäft + `business_profile` verbunden).
@@ -50,6 +50,8 @@ Quer dazu: **DACH-Layer** (immer) und **Lokale Sichtbarkeit** (nur bei lokalem G
 - `dfs_onpage_instant` (Startseite) → `status_code`, `canonical`, `h1_count`.
 
 Achten auf: nicht indexierte Schlüsselseiten, falsche/fehlende Canonicals, Mobile-Usability-Fehler, fehlende/fehlerhafte Sitemap, Soft-404 (Status 200 auf leerer/„nicht gefunden"-Seite), Redirect-Ketten/-Loops, und nicht-konsolidierte http/https/www-Varianten (mehrere gleichzeitig als 200 erreichbar = Duplicate-Risiko).
+- **URL-/Architektur-Muster** (ablesbar an den URLs aus `sc_top_pages`/Sitemap — pro gesehene URL, kein Crawl): Datums-URLs auf Evergreen-Content, Over-Nesting (>3 Pfad-Ebenen), IDs statt sprechender Slugs, alte Pfad-Varianten ohne 301-Konsolidierung.
+- **Interne Verlinkung** (Hub-and-Spoke, verwaiste Seiten): ohne Crawler nur **beratend** — prüfe die Schlüsselseiten auf ein-/ausgehende interne Links und empfiehl die Hub-Struktur; behaupte keine site-weite Orphan-Liste.
 > Es gibt keinen seitenweiten Crawler — prüfe URL-für-URL die wichtigsten Seiten, nicht die ganze Site.
 
 ### 2 — Technik & Performance
@@ -62,6 +64,7 @@ Achten auf: schlechtes Mobil-LCP (häufigster Killer), CLS durch Cookie-Banner (
 - `dfs_onpage_instant` je Schlüsselseite → Title, Meta, `h1_count`, `word_count`, `onpage_score`.
 - **DACH-Title/Meta nach Pixelbreite, nicht Zeichen bewerten** — Grenzwerte + Komposita-Details: `references/dach-seo.md`; wichtiges Keyword nach vorn. Meta-Description ist **kein Ranking-Faktor** (nur CTR-Hebel) und wird oft von Google umgeschrieben.
 - `h1_count` = 0 → Problem (keine H1). Mehrere H1 sind nur ein Best-Practice-Hinweis, **kein Ranking-Bug** (Google straft Mehrfach-H1 nicht). Dünner `word_count` auf Geld-Seiten → Verdacht auf fehlende Content-Tiefe; aber Wortzahl ist kein Ranking-Faktor — „dünn" heißt fehlender Mehrwert, nicht wenige Wörter.
+- **Schema-Presence-Check (pro Seite geprüft):** Ist auf den Schlüsselseiten JSON-LD vorhanden und parsebar, und welche Typen? (Seitenquelltext prüfen; `dfs_onpage_instant` erkennt Schema nur eingeschränkt.) Hier nur drei Urteile: fehlt komplett / vorhanden aber kaputt / vorhanden. Entity-Tiefe (`@graph`/`@id`, `sameAs`) und der Schema-Fix-Operator gehören zu `geo-audit` — dorthin verweisen, nicht selbst bauen.
 > Verlass dich nicht blind auf die `issues`/`checks`-Liste von `dfs_onpage_instant` (erfasst negativ benannte Checks unzuverlässig) — nutze `onpage_score` + die Rohfelder und urteile selbst.
 
 ### 4 — Sichtbarkeit & Rankings (das Herzstück, echte GSC-Daten)
@@ -75,10 +78,20 @@ Achten auf: schlechtes Mobil-LCP (häufigster Killer), CLS durch Cookie-Banner (
 
 **Traffic-Einbruch?** `sc_performance` mit `dimensions=["date"]` (+ query/page) über einen längeren `days`-Zeitraum → den Einbruch zeitlich exakt verorten und gegen bekannte Google-Update-Termine legen. Datenbasierte Diagnose statt Hypothesenliste. „Helpful Content" ist seit dem März-2024-Core-Update Teil des Core-Algorithmus (kein separates System, kein Recovery-Knopf) — qualitätsbedingte Einbrüche wirken site-weit und erholen sich nur langsam über spätere Core-Updates. Termine: Google Search Status Dashboard.
 
-### 5 — Content-Lücken
-- `dfs_keyword_ideas_for_domain` (Domain) + `dfs_related_keywords` (Seed aus den Top-Themen) → was die Domain targeten könnte.
-- `dfs_keyword_volume` (Liste) → nach Volumen priorisieren.
+### 5 — Content-Lücken (Selbst-Gap + Markt-Gap)
+**Selbst-Gap (eigene Domain):**
+- `dfs_keyword_ideas_for_domain` (Domain) + `dfs_related_keywords` (Seed aus den Top-Themen) → was die Domain targeten könnte; `dfs_keyword_volume` (Liste) → Volumen + CPC.
 - Gegen die GSC-Rankings halten: hohes Volumen + kein/schlechtes Ranking = Lücke. **DACH:** Komposita vs. Phrase prüfen („Kinderfahrrad" UND „Fahrrad für Kinder").
+
+**Competitor-Content-Gap (Markt-Gap): wo ranken Konkurrenten, wir nicht?**
+- Konkurrenten bestimmen (nicht raten): Schnittmenge aus `dfs_serp_google_organic` (wer steht für die Ziel-Keywords auf Seite 1) und `dfs_backlink_competitors` (ähnliches Linkprofil) → 2-3 echte SEO-Konkurrenten.
+- `dfs_keyword_rankings` je Konkurrenz-Domain (gleiche `location`/`language`!) → gegen die eigenen GSC-/DFS-Rankings diffen: „Keyword X: Konkurrent Position 4, wir nicht in den Top 100."
+- Discovery-Kette, Diff-Format und Snapshot-Schema fürs Wiederholungs-Diffing: `references/content-gap.md`.
+
+**Priorisieren (beide Gaps):**
+- **Intent-Bucketing:** informational / commercial / transactional — Zuordnung über Query-Muster, CPC als Kommerz-Proxy. **Keyword-Difficulty haben wir nicht** — nie eine Difficulty-Zahl behaupten; Ersatz-Heuristik (CPC + SERP-Besetzung, beratend): `references/content-gap.md`.
+- **Opportunity-Matrix** für Netto-Neu-Themen: Volumen × CPC-Wert × Pillar-Fit → High Opportunity / Quick Wins / Strategic / Skip. Abgrenzung: Striking-Distance (Phase 4) priorisiert *bestehende* Rankings mit GSC-Beleg — das bleibt der stärkste Hebel; die Matrix priorisiert *neue* Themen auf Schätzdaten.
+- **Fragen-Mining:** W-Fragen via `dfs_related_keywords` (Frage-Seeds) als Answer-First-Content-Input (AEO-Brücke, DACH-Layer 6). PAA nur auswerten, wenn `dfs_serp_google_organic` SERP-Features liefert — sonst beratend.
 
 ### 6 — Autorität (Backlinks)
 - `dfs_backlink_summary` (Domain) → Profil + `broken_backlinks`.
@@ -91,6 +104,7 @@ Achten auf: schlechtes Mobil-LCP (häufigster Killer), CLS durch Cookie-Banner (
 - `ga4_top_pages` + `ga4_traffic_sources` → organischen Traffic isolieren, welche Landingpages tragen.
 - `ga4_report` mit `dimensions=["landingPage","sessionMedium"]`, `metrics=["sessions","engagementRate","conversions"]` → Qualität des organischen Traffics je Einstiegsseite.
 - `clarity_get_insights` (nur wenn `clarity` verbunden; max 10 Calls/Tag, 1-3 Tage) mit `dimensions=["Page"]` → Rage/Dead Clicks: warum eine gut rankende Seite nicht konvertiert.
+- **Conversion-Diagnose** (Seite rankt und hat Traffic, konvertiert aber nicht) — in Impact-Reihenfolge prüfen, nicht querbeet: 1. Value-Prop-Klarheit → 2. Headline → 3. CTA → 4. visuelle Hierarchie → 5. Trust/Social Proof → 6. Einwandbehandlung → 7. Friction. Formular-Faustregel: 3 Felder = Baseline; 4-6 Felder ≈ −10-25 % Conversion; 7+ ≈ −25-50 %. Das Symptom ist **gemessen** (Clarity Rage/Dead-Clicks, GA4 `engagementRate`/`conversions`), die Ursachen-Zuordnung ist **beratend** — so kennzeichnen.
 
 ### Querschnitt — Lokale Sichtbarkeit (bei lokalem Geschäft)
 - **Schlüsselfrage zuerst:** Hat das lokale Geschäft überhaupt ein Google Business Profile? Prüfe via `gbp_list_locations` / `gbp_get_profile`. **Kein (oder nicht verbundenes) GBP bei einem lokalen Geschäft = High-Impact-Befund** — für lokale Sichtbarkeit ist das GBP oft der größte einzelne Hebel, größer als On-Page. Als kritischen Befund führen, nicht überspringen, nur weil die Quelle fehlt.
@@ -117,7 +131,8 @@ Veraltet oder widerlegt — nennst du das als Befund, verlierst du Glaubwürdigk
 - **`rel=next/prev`** → tot; paginierte Seiten self-canonical, nicht auf Seite 1 kanonisieren.
 - **PageRank-Verlust durch Redirects** → Mythos; bei Redirects zählen Ketten/Loops/Latenz, nicht „verlorene Linkkraft".
 - **`llms.txt`** → kein AI-Engine nutzt es.
-- **„3-Klick-Regel", „E-E-A-T-Score"** → Folklore bzw. kein direkter Faktor; E-E-A-T über Proxies (Trust-Signale, Autoren, Marken-Erwähnungen).
+- **„3-Klick-Regel", „E-E-A-T-Score"** → Folklore bzw. kein direkter Faktor; E-E-A-T über Proxies (Trust-Signale, Autoren, Marken-Erwähnungen). (Die 3-Klick-Regel ist als *Ranking-Regel* Folklore — flache, logische Architektur bleibt trotzdem sinnvoll, nur ohne die Zahl als Beleg.)
+- **Keyword-Difficulty-Scores** aus fremden Tools zitieren → wir messen keine Difficulty; CPC + SERP-Besetzung als gekennzeichnete Heuristik nutzen (`references/content-gap.md`).
 
 ## Output-Format
 1. **Kurz-Fazit:** Gesamteinschätzung in 2-3 Sätzen + Top 3-5 Probleme + schnellste Quick Wins.
@@ -134,14 +149,17 @@ Der **Beleg** ist Pflicht und immer eine echte Zahl aus den Tools — kein „k�
 ## Danach: umsetzen (Operator)
 Biete am Ende an, die sicher behebbaren Punkte direkt zu erledigen. **Immer vorher fragen, nie ungefragt schreiben.** Regel: erst Ist-Zustand lesen, dann exakten Preview zeigen (Aktion, Entität, alt → neu, Wirkung, reversibel ja/nein — Muster: `references/write-guardrails.md` im Plugin), dann einzeln bestätigen lassen, dann ausführen. `sc_submit_sitemap` und `gtm_publish_version` sind **Hochrisiko** (Einreichung bzw. sofort live auf der Kunden-Website) — nie gebündelt bestätigen.
 - Fehlende/nicht eingereichte Sitemap → `sc_submit_sitemap` (braucht Schreib-Scope).
-- Fehlendes Schema-Markup → als Tag via `gtm_create_tag` (Hinweis: erst nach `gtm_create_version` + `gtm_publish_version` live; nur wenn `gtm` verbunden). Fehlendes Conversion-/Event-Tracking dagegen nur als Befund nennen — Tracking-Setup und -Fixes → `tracking-check`.
+- Fehlendes Schema-Markup → als Tag via `gtm_create_tag` (Hinweis: erst nach `gtm_create_version` + `gtm_publish_version` live; nur wenn `gtm` verbunden). Für sauberes Entity-Schema (`@graph`/`@id`) im Seiten-Code → `geo-audit` (besitzt den Schema-Operator). Fehlendes Conversion-/Event-Tracking dagegen nur als Befund nennen — Tracking-Setup und -Fixes → `tracking-check`.
 - Unbeantwortete Rezensionen (Local) → `gbp_reply_review` — Antwort vorher im Wortlaut zeigen (erstellt oder **ersetzt** eine bestehende Antwort).
+- Lückenhaftes/falsches GBP-Profil (Local) → `gbp_update_profile`, `gbp_manage_categories`, `gbp_manage_hours`, `gbp_update_attributes` — Änderungen erscheinen direkt im öffentlichen Profil: Ist-Zustand lesen, exakten Preview (alt → neu) zeigen, jede Änderung einzeln bestätigen lassen.
 - On-Page-Fixes (Title/Meta/Content) → via CMS, falls `strapi` oder `wordpress` als source verbunden: `strapi_update_entry` bzw. `wp_update_post` — read → preview → confirm; Achtung: `wp_update_post` mit `status="publish"` geht sofort live (Hochrisiko-Liste in `references/write-guardrails.md`).
 
 ## Grenzen (ehrlich benennen)
-- Kein seitenweiter Crawler — nur die geprüften Einzel-URLs.
+- Kein seitenweiter Crawler — nur die geprüften Einzel-URLs. Interne-Verlinkungs-/Orphan-Aussagen sind deshalb beratend.
 - Kein GSC-Gesamt-Coverage-Report — Indexierung URL-für-URL.
-- Momentaufnahmen, keine Rank-Historie (außer den GSC-Zeitreihen via `date`-Dimension).
+- Momentaufnahmen, keine Rank-Historie (außer den GSC-Zeitreihen via `date`-Dimension) — fürs Wiederholungs-Diffing das Snapshot-Schema aus `references/content-gap.md` nutzen.
+- **Keine Keyword-Difficulty** und kein direktes Domain-Intersection-Tool — der Konkurrenz-Diff wird aus zwei Ranking-Listen selbst gebildet, Wettbewerbshärte über CPC + SERP-Besetzung geschätzt (beratend).
+- **DataForSEO-Calls kosten pro Aufruf** — Keyword-/SERP-/Backlink-Calls auf die 3-5 Ziel-Keywords und 2-3 Konkurrenz-Domains fokussieren, nicht breit streuen.
 - AEO/AIO ist beratend (kein Messtool) — für die tiefe KI-Sichtbarkeits-Diagnose → `geo-audit`.
 - Clarity: nur 1-3 Tage, max 10 Calls/Tag.
 - Backlinks global (kein location).
@@ -151,14 +169,15 @@ Biete am Ende an, die sicher behebbaren Punkte direkt zu erledigen. **Immer vorh
 - Technik: `dfs_lighthouse_live`
 - On-Page: `dfs_onpage_instant`
 - Rankings: `sc_performance`, `sc_top_queries`, `sc_top_pages`, `dfs_keyword_rankings`, `dfs_serp_google_organic`
-- Content-Lücken: `dfs_keyword_ideas_for_domain`, `dfs_related_keywords`, `dfs_keyword_volume`
+- Content-Lücken: `dfs_keyword_ideas_for_domain`, `dfs_related_keywords`, `dfs_keyword_volume`, `dfs_keyword_rankings`, `dfs_serp_google_organic`, `dfs_backlink_competitors`
 - Backlinks: `dfs_backlink_summary`, `dfs_backlink_competitors`
 - Engagement: `ga4_top_pages`, `ga4_traffic_sources`, `ga4_report`, `clarity_get_insights`
 - Lokal: `gbp_performance`, `gbp_reviews`, `gbp_search_keywords`, `gbp_local_seo_audit`, `gbp_local_rank`
-- Umsetzen: `sc_submit_sitemap`, `gtm_create_tag`, `gbp_reply_review`, `strapi_update_entry`, `wp_update_post`
+- Umsetzen: `sc_submit_sitemap`, `gtm_create_tag`, `gbp_reply_review`, `gbp_update_profile`, `gbp_manage_categories`, `gbp_manage_hours`, `gbp_update_attributes`, `strapi_update_entry`, `wp_update_post`
 
 ## Verwandte Skills
-`projekt-kontext` (Foundation, zuerst lesen) · `google-ads-audit` (bezahlte Suche / Ads) · `geo-audit` (KI-Sichtbarkeit — Schwester-Skill) · `wochenreport` · `tracking-check` (Tracking-Setup und -Fixes)
+`projekt-kontext` (Foundation, zuerst lesen) · `google-ads-audit` (bezahlte Suche / Ads) · `geo-audit` (KI-Sichtbarkeit + Schema-Tiefe — Schwester-Skill) · `wochenreport` · `tracking-check` (Tracking-Setup und -Fixes)
 
 ## Referenzen
 - `references/dach-seo.md` — hreflang-Matrix, Citation-Listen je Land, Pixel-Snippet-Details, AEO-DACH, AT/CH-Linter, Impressum/Datenschutz-Checkliste.
+- `references/content-gap.md` — Competitor-Discovery-Kette, Snapshot-Schema fürs Wiederholungs-Diffing, Intent-Bucketing, Difficulty-Substitution (CPC + SERP-Besetzung), Opportunity-Matrix, Fragen-Mining.

@@ -2,7 +2,7 @@
 name: ad-creative
 description: "Generiert und optimiert Google-Ads-Anzeigen-Copy (Responsive Search Ads + Sitelinks), daten-fundiert aus der Konto-Performance und kalibriert auf DACH (DE/AT/CH). Nutze diesen Skill, wenn Anzeigen oder Text-Assets erstellt oder erneuert werden sollen: „neue Anzeigen schreiben”, „RSA erstellen”, „Headlines/Descriptions generieren”, „bessere Anzeigentexte”, „Anzeigen austauschen”, „Sitelinks anlegen”, „Ad-Copy für Kampagne X”, „mehr Headlines für die RSA”. Leitet Angles aus echten Suchbegriffen ab, hält die harten Google-Zeichen-Limits gegen deutsche Komposita, prüft DACH-Werberecht (UWG/Preisangaben) über `compliance`-Flags und schreibt Anzeigen nach Bestätigung als pausierte Assets ins Konto. Für die Diagnose bestehender Anzeigen (welche sind schwach, Wasted Spend) nutze `google-ads-audit`; für Landingpage-Text `seo-audit`; fürs Reporting `wochenreport`."
 metadata:
-  version: 0.2.0
+  version: 0.3.0
 ---
 
 # Ad-Creative
@@ -52,6 +52,7 @@ Mechanik-Details: `references/rsa-mechanik.md`.
 - `ads_keyword_performance` → QS + Conversion-Signale der Ziel-Keywords der Ad-Group.
 - Optional (wenn `dataforseo` als source verbunden): `dfs_serp_google_ads` auf 1–2 Ziel-Keywords → welche Claims/Angles die Konkurrenz in der SERP fährt → Differentiator-Headlines bewusst dagegen schärfen statt sie zu doppeln.
 - Daraus **3–5 Angles** ableiten, jeder auf ein reales Query-Thema / Conversion-Signal zurückführbar. Fehlen Konto-Daten (neue Kampagne, kein Verlauf) → Angles aus `projekt-kontext` + Angle-Kategorien (`references/dach-ad-copy.md`) ableiten und **als Heuristik kennzeichnen**.
+- Für die **Begründung** eines Angles (warum sollte er ziehen — Verlustaversion? Social Proof? Status-quo-Bias beim Wechsel?) → Challenge→Models-Index in `references/psychology.md` im Plugin. Psychologie liefert die Hypothese, die Konto-Daten entscheiden — nie ein Model als Beweis verkaufen.
 
 **2. RSA-Copy bauen.** Ziel: **15 Headlines + 4 Descriptions** (Google braucht den Kombinationsspielraum). Headline-Mix anstreben:
 - 3–4 keyword — direkter Keyword-Bezug, Relevanz-Signal
@@ -69,6 +70,8 @@ Jede Headline thematisch **unique** (keine Paraphrasen voneinander — Redundanz
 - DKI `{KeyWord:Fallback}` kann das Limit sprengen — Fallback ≤30 prüfen **und** die längste realistische Keyword-Ersetzung prüfen: Keywords der Ziel-Ad-Group per `ads_list_keywords` ziehen, das längste gegen das 30er-Limit rechnen. DKI nie blind einsetzen.
 
 **4. Themen-Cluster → Ad-Group-Bezug.** Headlines am Keyword-Thema der Ad-Group ausrichten. Keyword-Einbindung + Diversität + genug Unique Headlines treiben die Ad Strength — der Wert selbst bleibt nur im UI sichtbar (nie behaupten).
+
+**5. Copy-QA (vor jeder Ausgabe — gilt auch für Modus B).** Seven-Sweeps-Pass + Streichwort-/Nominalstil-Quick-Pass über alle Headlines und Descriptions; Expert-Panel-Scoring bei Launch-/High-Stakes-Anzeigen. Methodik: `references/copy-qa.md` im Plugin (geteilt mit `content`).
 
 ## Modus B — Aus Performance iterieren
 
@@ -139,3 +142,5 @@ Jede Schreib-Aktion bewegt echte Auslieferung. Regel: **erst Zeichen-/Anzahl-Val
 ## Referenzen
 - `references/rsa-mechanik.md` — RSA-Struktur & Limits (15/4, 30/90), Ad-Strength-Best-Practices (was Strength treibt, obwohl nicht auslesbar), Replace-Mechanik + Lernhistorie-Reset, Pinning (beratend/UI), Statistik-Hygiene für Modus B, Zeichen-Zähl-Tipps.
 - `references/dach-ad-copy.md` — DACH-Werberecht (UWG/PAngV/Health-Claims + Verbotsliste + neutrale Reframes), Komposita-/Zeichen-Disziplin, AT/CH-Linter, Angle-Kategorien (Fallback-Heuristik).
+- `references/copy-qa.md` im Plugin (geteilt mit `content`) — Seven Sweeps, Expert-Panel-Scoring, Streichwort- + Nominalstil-Quick-Pass.
+- `references/psychology.md` im Plugin (geteilt mit `content`) — Challenge→Models-Index + Kompakt-Definitionen für die Angle-Begründung; beratend, UWG-Leitplanken beachten.

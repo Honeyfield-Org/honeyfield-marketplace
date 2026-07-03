@@ -25,6 +25,43 @@
     "files": ["SKILL.md"]
   },
   {
+    "id": "trigger-competitor-content-gap",
+    "prompt": "Unsere Mitbewerber tauchen bei Google ständig für Themen auf, bei denen wir gar nicht vorkommen. Könnt ihr rausfinden, wo die Konkurrenz rankt und wir nicht?",
+    "expected_output": "Fährt den Competitor-Content-Gap aus Phase 5: bestimmt die echten SEO-Konkurrenten als Schnittmenge aus dfs_serp_google_organic (Seite-1-Besetzung der Ziel-Keywords) und dfs_backlink_competitors — statt die vom Kunden genannten Firmen ungeprüft zu übernehmen. Zieht dfs_keyword_rankings je Konkurrenz-Domain mit denselben location/language-Parametern und difft gegen die eigenen GSC-/DFS-Rankings. Priorisiert die Lücken nach Intent (CPC als Kommerz-Proxy) und behauptet keine Keyword-Difficulty-Zahl — die gibt es in unseren Tools nicht.",
+    "assertions": [
+      "Bestimmt die SEO-Konkurrenten datenbasiert (dfs_serp_google_organic + dfs_backlink_competitors), statt Kundennennungen ungeprüft zu übernehmen",
+      "Zieht dfs_keyword_rankings der Konkurrenz-Domains mit denselben location/language-Parametern wie beim Kunden",
+      "Difft Konkurrenz-Rankings gegen die eigenen GSC-/DFS-Rankings und benennt Lücken mit Position und Volumen",
+      "Behauptet keine Keyword-Difficulty-Zahl, sondern nutzt CPC + SERP-Besetzung als gekennzeichnete Heuristik",
+      "Bucketet die Lücken nach Suchintent (informational/commercial/transactional)"
+    ],
+    "files": ["SKILL.md", "references/content-gap.md"]
+  },
+  {
+    "id": "cro-conversion-diagnosis",
+    "prompt": "Unsere Leistungsseite rankt auf Position 3 und bekommt ordentlich Besucher, aber es kommen kaum Anfragen rein. Woran liegt das?",
+    "expected_output": "Erkennt das als Conversion-Problem einer gut rankenden Seite und nutzt den Engagement/UX-Querschnitt: misst das Symptom mit clarity_get_insights (Rage/Dead Clicks) und ga4_report (engagementRate/conversions je Landingpage) und arbeitet die Conversion-Diagnose in Impact-Reihenfolge ab (Value-Prop → Headline → CTA → Hierarchie → Trust → Einwände → Friction), inkl. Formular-Feldkosten-Faustregel. Kennzeichnet das Symptom als gemessen, die Ursachen-Zuordnung als beratend — und startet keinen kompletten 6-Phasen-Audit für eine reine Conversion-Frage.",
+    "assertions": [
+      "Zieht clarity_get_insights und/oder ga4_report als Daten-Anker für das Conversion-Symptom (sofern verbunden)",
+      "Arbeitet die 7 Dimensionen in Impact-Reihenfolge ab, statt unstrukturiert Vermutungen zu listen",
+      "Wendet die Formular-Feldkosten-Faustregel an, wenn ein Formular im Spiel ist",
+      "Kennzeichnet das Symptom als gemessen und die Ursachen-Zuordnung als beratend",
+      "Startet keinen vollständigen 6-Phasen-SEO-Audit für die reine Conversion-Frage"
+    ],
+    "files": ["SKILL.md"]
+  },
+  {
+    "id": "defer-schema-depth-to-geo-audit",
+    "prompt": "Unser JSON-LD ist unvollständig — der Organization fehlt sameAs und die @id-Verknüpfungen zwischen den Typen fehlen komplett. Könnt ihr das Schema sauber aufbauen und auf der Website einspielen?",
+    "expected_output": "Erkennt, dass es um Entity-Tiefe (@graph/@id, sameAs) und den Schema-Fix geht, und verweist auf geo-audit, das Schema inkl. Operator besitzt. Der seo-audit selbst macht nur den Presence-Check (vorhanden / kaputt / fehlt, pro Seite geprüft) und baut die Schema-Struktur nicht selbst.",
+    "assertions": [
+      "Verweist für Entity-Tiefe und Schema-Fix auf geo-audit als den zuständigen Skill",
+      "Beschränkt die eigene Schema-Aussage auf den Presence-Check (pro Seite geprüft), ohne Tiefen-Diagnose",
+      "Baut das JSON-LD nicht selbst im seo-audit und verkauft die Schema-Einschätzung nicht als gemessen"
+    ],
+    "files": ["SKILL.md"]
+  },
+  {
     "id": "defer-to-google-ads-audit",
     "prompt": "Wir verbrennen in Google Ads viel Geld für Suchbegriffe, die nichts bringen. Könnt ihr das aufräumen?",
     "expected_output": "Erkennt, dass es um bezahlte Suche / Wasted Spend geht, und verweist auf google-ads-audit, statt einen SEO-Audit zu starten.",
@@ -48,11 +85,12 @@
   {
     "id": "tool-reality-no-site-crawler",
     "prompt": "Crawl bitte unsere komplette Website und gib mir alle SEO-Fehler über alle Seiten.",
-    "expected_output": "Stellt klar, dass es keinen seitenweiten Crawler gibt — geprüft wird URL-für-URL für die wichtigsten Seiten (Startseite + Schlüssel-Landingpages) via sc_url_inspection / dfs_onpage_instant. Verspricht keine site-weite Vollständigkeit und kennzeichnet On-Page-/Index-Befunde als pro Seite geprüft, nicht site-weit.",
+    "expected_output": "Stellt klar, dass es keinen seitenweiten Crawler gibt — geprüft wird URL-für-URL für die wichtigsten Seiten (Startseite + Schlüssel-Landingpages) via sc_url_inspection / dfs_onpage_instant. Verspricht keine site-weite Vollständigkeit und kennzeichnet On-Page-/Index-Befunde als pro Seite geprüft, nicht site-weit. Interne-Verlinkungs-/Orphan-Aussagen entsprechend nur beratend.",
     "assertions": [
       "Erklärt, dass kein seitenweiter Crawler verfügbar ist und nur Einzel-URLs geprüft werden",
       "Wählt die wichtigsten Seiten gezielt aus, statt Vollständigkeit über alle URLs zu behaupten",
-      "Kennzeichnet die Index-/On-Page-Befunde als pro Seite geprüft (Beleg-Stufe), nicht als site-weit gemessen"
+      "Kennzeichnet die Index-/On-Page-Befunde als pro Seite geprüft (Beleg-Stufe), nicht als site-weit gemessen",
+      "Behauptet keine site-weite Orphan-/Verlinkungs-Analyse"
     ],
     "files": ["SKILL.md"]
   },
