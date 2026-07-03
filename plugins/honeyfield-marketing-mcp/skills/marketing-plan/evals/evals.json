@@ -1,0 +1,139 @@
+[
+  {
+    "id": "trigger-basic-gesamtplan",
+    "prompt": "Erstell mir einen Marketing-Plan für Kunde X.",
+    "expected_output": "Invoziert marketing-plan im Modus A (Gesamt-Plan, Default). Startet mit Schritt 0: Projekt-Kontext-Absatz, list_workspaces/sources-Check, Markt-Kalibrierung DE/AT/CH. Scort die Current-State-Rubric aus den verbundenen Quellen, baut daraus einen AARRR-Plan mit Priorisierung und liefert Budget-Einordnung + 90-Tage-Roadmap. Output ist ein kundenfähiges Markdown mit abgetrenntem internem Umsetzungs-Anhang.",
+    "assertions": [
+      "Aktiviert den marketing-plan-Skill im Modus A (Gesamt-Plan)",
+      "Startet mit Schritt 0: Projekt-Kontext zuerst, dann list_workspaces/sources-Check",
+      "Scort die Current-State-Rubric mit Beleg-Stufen (gemessen/mit Tracking-Vorbehalt/beratend)",
+      "Ordnet jede Empfehlung einer AARRR-Stage zu",
+      "Liefert Budget-Einordnung plus 90-Tage-Roadmap in 4 Blöcken"
+    ],
+    "files": ["SKILL.md", "references/current-state-rubric.md", "references/aarrr-dach.md"]
+  },
+  {
+    "id": "trigger-kampagne-modus-b",
+    "prompt": "Wir wollen eine Kampagne für die Frühjahrs-Aktion planen.",
+    "expected_output": "Erkennt ein einzelnes Kampagnenziel mit begrenztem Zeitfenster und wechselt in Modus B (Kampagnen-Konzept) statt den vollen Gesamt-Plan zu bauen. Scort die Rubric nur für die betroffenen Kanäle und liefert die Modus-B-Kurzform: Kampagnenziel & KPI, Zielgruppe & Botschaft, Kanal-Wahl mit Begründung aus der Rubric, Budget & Flighting, Messplan.",
+    "assertions": [
+      "Wählt Modus B (Kampagnen-Konzept), nicht den vollen Gesamt-Plan (Modus A)",
+      "Beschränkt die Rubric auf die für die Kampagne relevanten Kanäle/Dimensionen",
+      "Liefert die Modus-B-Kurzform-Sektionen (Ziel & KPI, Zielgruppe & Botschaft, Kanal-Wahl, Budget & Flighting, Messplan)",
+      "Begründet die Kanal-Wahl aus Rubric-Scores statt aus Bauchgefühl"
+    ],
+    "files": ["SKILL.md", "references/plan-template.md"]
+  },
+  {
+    "id": "trigger-budget-frage",
+    "prompt": "Wo sollen wir nächstes Quartal Budget investieren?",
+    "expected_output": "Erkennt eine vorwärtsgerichtete Priorisierungs-/Budget-Frage und invoziert marketing-plan statt wochenreport. Baut die Current-State-Rubric, priorisiert Empfehlungen nach Impact × Machbarkeit und liefert die Budget-Einordnung nach der DACH-KMU-Logik aus den References.",
+    "assertions": [
+      "Aktiviert marketing-plan statt wochenreport bei einer reinen Budget-/Investitions-Frage",
+      "Priorisiert Empfehlungen nach Impact × Machbarkeit aus den Rubric-Scores",
+      "Zieht die DACH-KMU-Budget-Logik heran (Referenz budget-dach-kmu.md)",
+      "Kennzeichnet Budget-Aussagen als beratend"
+    ],
+    "files": ["SKILL.md", "references/budget-dach-kmu.md"]
+  },
+  {
+    "id": "trigger-gesamtkonzept",
+    "prompt": "Mach mir ein Gesamtkonzept fürs Marketing.",
+    "expected_output": "Erkennt die vage Gesamt-Anfrage als Modus A (Gesamt-Plan, Default) und durchläuft alle drei Phasen (Rubric → AARRR-Plan → Budget & Roadmap), statt in eine einzelne Topic-Skill-Tiefe abzutauchen. Liefert das volle kundenfähige 9-Sektionen-Format.",
+    "assertions": [
+      "Wählt Modus A (Gesamt-Plan) als Default bei einer vagen Gesamt-Anfrage",
+      "Durchläuft alle drei Phasen (Rubric, AARRR-Plan, Budget & Roadmap)",
+      "Liefert das kundenfähige 9-Sektionen-Format statt der Kampagnen-Kurzform",
+      "Verweist Umsetzungs-Details in den internen Anhang, statt sie im Hauptteil zu vermischen"
+    ],
+    "files": ["SKILL.md", "references/plan-template.md", "references/aarrr-dach.md"]
+  },
+  {
+    "id": "defer-wochenreport",
+    "prompt": "Wie lief die letzte Woche?",
+    "expected_output": "Erkennt die rückblickende Reporting-Frage und verweist auf wochenreport, statt einen Marketing-Plan zu bauen — kein Rubric-Scoring, keine Roadmap für eine reine Rückblicks-Frage.",
+    "assertions": [
+      "Verweist auf wochenreport als den passenden Skill",
+      "Baut keinen Marketing-Plan (keine Rubric, keine Roadmap) für eine reine Rückblicks-Frage",
+      "Erkennt die Trigger-Grenze „wie lief” (Reporting) vs. „was machen wir als nächstes” (Planung)"
+    ],
+    "files": ["SKILL.md"]
+  },
+  {
+    "id": "defer-google-ads-audit",
+    "prompt": "Warum performt Google Ads schlecht?",
+    "expected_output": "Erkennt eine Ursachen-Diagnose-Frage zu einem einzelnen Kanal und verweist auf google-ads-audit — baut keinen Gesamt-Plan und diagnostiziert das „Warum” nicht selbst im Rubric-Scoring.",
+    "assertions": [
+      "Verweist auf google-ads-audit für die Kanal-Tiefendiagnose",
+      "Diagnostiziert die Ursache nicht selbst (Rubric-Score sagt wo, nicht warum)",
+      "Baut keinen vollständigen Marketing-Plan für eine reine Diagnose-Frage"
+    ],
+    "files": ["SKILL.md"]
+  },
+  {
+    "id": "defer-ad-creative",
+    "prompt": "Schreib die Anzeigentexte für die Kampagne.",
+    "expected_output": "Erkennt eine Creation-Aufgabe (Copywriting) und verweist auf ad-creative — der Plan-Skill erstellt kein Anzeigentext-Deliverable selbst.",
+    "assertions": [
+      "Verweist auf ad-creative für die Anzeigentexte",
+      "Erstellt selbst keine Anzeigentexte",
+      "Bleibt bei read-only Planungs-Empfehlungen, statt das Creation-Deliverable zu übernehmen"
+    ],
+    "files": ["SKILL.md"]
+  },
+  {
+    "id": "defer-content-strategie",
+    "prompt": "Welche Blog-Themen sollen wir angehen?",
+    "expected_output": "Erkennt eine Themen-Findungs-Frage (Ideation) und verweist auf content-strategie, statt selbst einen Themen-Backlog zu bauen.",
+    "assertions": [
+      "Verweist auf content-strategie für die Themen-Findung",
+      "Baut keinen Content-Ideen-Backlog selbst",
+      "Behandelt Content im Plan höchstens als AARRR-Empfehlung mit Verweis, nicht als eigene Tiefe"
+    ],
+    "files": ["SKILL.md"]
+  },
+  {
+    "id": "defer-projekt-kontext",
+    "prompt": "Leg den Kunden-Kontext an.",
+    "expected_output": "Erkennt die Foundation-Anfrage und verweist auf projekt-kontext, statt selbst ein Kontext-Dokument zu erstellen — marketing-plan konsumiert den Projekt-Kontext nur, legt ihn nicht an.",
+    "assertions": [
+      "Verweist auf projekt-kontext als den anlegenden Skill",
+      "Erstellt selbst keinen Projekt-Kontext",
+      "Benennt, dass marketing-plan den Projekt-Kontext nur liest/konsumiert (Foundation-Beziehung)"
+    ],
+    "files": ["SKILL.md"]
+  },
+  {
+    "id": "tool-reality-kein-operator",
+    "prompt": "Setz den Plan gleich um.",
+    "expected_output": "Bleibt read-only: führt keine Schreib-Tools aus (keine Kampagnen-/Anzeigen-/Keyword-Änderungen) und verweist für die Umsetzung auf die zuständigen Topic-Skills laut internem Umsetzungs-Anhang.",
+    "assertions": [
+      "Führt keine Schreib-/Operator-Aktion aus",
+      "Verweist für die Umsetzung auf die passenden Topic-Skills (aus dem internen Anhang)",
+      "Benennt explizit die read-only-Natur des Skills"
+    ],
+    "files": ["SKILL.md"]
+  },
+  {
+    "id": "tool-reality-fehlende-social-quelle",
+    "prompt": "Bau den Plan für Workspace Y — der hat kein Meta Ads verbunden, nur Google Ads und GA4.",
+    "expected_output": "Markiert die Social-Ads-Reife-Dimension als benannte Lücke („Meta Ads nicht verbunden”) statt einen Score zu raten oder mit 0 zu füllen. Die übrigen, verbundenen Dimensionen (Paid-Search-Effizienz, Messbarkeit/Analytics) werden normal weiter gescort.",
+    "assertions": [
+      "Kennzeichnet die Social-Ads-Reife-Dimension als Lücke, nicht als geratenen oder 0-Score",
+      "Erfindet keine Social-Ads-Zahlen ohne verbundene Quelle",
+      "Scort die übrigen, verbundenen Dimensionen unverändert weiter"
+    ],
+    "files": ["SKILL.md", "references/current-state-rubric.md"]
+  },
+  {
+    "id": "tool-reality-dfs-subscription-degradiert",
+    "prompt": "Bau den Gesamt-Plan — wie stehen wir bei der KI-Sichtbarkeit da? (dfs_llm_mentions_metrics liefert subscription_required)",
+    "expected_output": "Erkennt, dass die AI-Sichtbarkeits-Dimension ohne DFS-Daten nicht als „gemessen” geführt werden kann, und degradiert sie ehrlich auf beratend bzw. benennt sie als Lücke, statt einen geratenen Score als belastbar auszugeben.",
+    "assertions": [
+      "Erkennt subscription_required als fehlenden Daten-Zugang für die AI-Sichtbarkeits-Dimension",
+      "Degradiert die Dimension auf beratend (oder benennt sie als Lücke), statt einen falschen 'gemessen'-Score zu vergeben",
+      "Verkauft keine geratene AI-Sichtbarkeits-Zahl als belastbar"
+    ],
+    "files": ["SKILL.md", "references/current-state-rubric.md"]
+  }
+]
