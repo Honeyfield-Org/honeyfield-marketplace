@@ -389,7 +389,7 @@ NIE ohne Screenshot-Review liefern. Der ganze Sinn von Playwright ist visuelle V
 
 **Problem**: Hardcodierte SVG-Koordinaten brechen, wenn sich Box-Größen oder -Positionen ändern.
 
-**Fix**: JavaScript nutzen, um SVG-Pfeile dynamisch anhand tatsächlicher Element-Positionen zu zeichnen (siehe Pattern „Dynamische SVG-Feedback-Pfeile" oben).
+**Fix**: JavaScript nutzen, um SVG-Pfeile dynamisch anhand tatsächlicher Element-Positionen zu zeichnen (siehe Pattern „Dynamische SVG-Feedback-Pfeile” oben).
 
 ### Klammern nicht auf Höhe ihrer Loop-Boxen
 

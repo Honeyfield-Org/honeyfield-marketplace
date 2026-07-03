@@ -106,7 +106,7 @@ Der Arbeitspferd-Typ. Vermittelt eine Idee pro Slide. Große Hintergrund-Nummer 
 ```
 
 **Regeln:**
-- `.content-number`: Groß (120px), `--accent`, 15% Opazität Hintergrund-Element. „01", „02", „03" usw. nutzen
+- `.content-number`: Groß (120px), `--accent`, 15% Opazität Hintergrund-Element. „01”, „02”, „03” usw. nutzen
 - `.content-headline`: 3-7 Wörter, fett
 - `.content-body`: 15-30 Wörter unterstützender Text. Nur eine Idee.
 - `.content-annotation` (optional): `var(--font-annotation)`, bringt Persönlichkeit
@@ -239,7 +239,7 @@ In jede Slide unten rechts einfügen:
 ## Slide-Design-Regeln (alle Slides)
 
 - Canvas: **1080x1350px** (4:5 Portrait, `data-size="ig-portrait"`)
-- Textur (Grid + Noise-Grain): siehe `grafik-patterns.md` → „Textur & Tiefe" (Default des Base-Templates; Grid-Nutzung abhängig von `visual-style.md`)
+- Textur (Grid + Noise-Grain): siehe `grafik-patterns.md` → „Textur & Tiefe” (Default des Base-Templates; Grid-Nutzung abhängig von `visual-style.md`)
 - Handle-Branding unten rechts (subtil, gemäß `visual-style.md`)
 - Minimum 14px Schriftgröße für allen Text
 - Box-Shadows auf allen geboxten Elementen (nie flach)
