@@ -23,7 +23,7 @@ DACH: Vergleichende Werbung ist zulässig, aber nur bei **belegbaren Faktenvergl
 - **Intent:** recherchiert Optionen, früher in der Journey.
 - **URL:** `/alternativen/[wettbewerber]-alternativen`. **Keywords:** „[Wettbewerber] Alternativen”, „beste [Wettbewerber] Alternativen”, „Tools wie [Wettbewerber]”.
 - **Aufbau:** Warum Alternativen gesucht werden → Worauf achten (Kriterien-Framework) → Liste der Alternativen (du zuerst, aber echte Optionen) → Vergleichstabelle → Detail je Alternative → Empfehlung nach Use Case → CTA.
-- **Wichtig:** **4–7 echte Alternativen** aufnehmen. Genuin hilfreich zu sein baut Vertrauen und rankt besser.
+- **Wichtig:** **4–7 echte Alternativen** aufnehmen — mit `dfs_competitors_domain` ermitteln, nicht aus dem Gedächtnis raten. Genuin hilfreich zu sein baut Vertrauen und rankt besser.
 
 ### 3. Du vs. [Wettbewerber]
 - **Intent:** vergleicht dich direkt mit einem bestimmten Wettbewerber.
@@ -47,4 +47,4 @@ DACH: Vergleichende Werbung ist zulässig, aber nur bei **belegbaren Faktenvergl
 
 ## Recherche & Pflege
 
-Je Wettbewerber sammeln: Positionierung/Zielgruppe, Preise (alle Stufen), Feature-Bewertung, Stärken/Schwächen, „am besten für / nicht ideal für”, häufige Beschwerden (aus echten Bewertungen), Migrations-Notizen. Eine **zentrale Quelle je Wettbewerber** pflegen, damit Updates auf alle Seiten durchschlagen. Preise quartalsweise verifizieren, jährlich voll aktualisieren.
+Je Wettbewerber sammeln: Positionierung/Zielgruppe, Preise (alle Stufen), Feature-Bewertung, Stärken/Schwächen, „am besten für / nicht ideal für”, häufige Beschwerden über `dfs_reviews` (platform `trustpilot`/`google` — echte Bewertungen statt Vermutung; Business-Data-Tool ist task-basiert: liefert es `{status: "pending", task_id}`, mit der `task_id` erneut abrufen statt das Ergebnis zu erfinden), Migrations-Notizen. Eine **zentrale Quelle je Wettbewerber** pflegen, damit Updates auf alle Seiten durchschlagen. Preise quartalsweise verifizieren, jährlich voll aktualisieren.

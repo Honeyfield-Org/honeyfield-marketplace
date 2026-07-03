@@ -2,7 +2,7 @@
 name: content
 description: "Erstellt, plant und veröffentlicht Content für eine Kunden-Website und Social-Kanäle, daten-fundiert aus Search Console und DataForSEO und kalibriert auf DACH (DE/AT/CH). Nutze diesen Skill, wenn Content entsteht oder geplant wird: „Blog-Artikel schreiben”, „Artikel für die Website”, „Content-Plan”, „Redaktionsplan”, „Themen finden”, „worüber sollen wir schreiben”, „Vergleichsseite / Alternative-Page”, „LinkedIn-Post aus dem Artikel”, „Content wiederverwerten”, „Artikel publizieren”. Findet Themen aus echten Suchanfragen und Volumen, führt durch eine 5-Phasen-Schreibpipeline mit deutschem Schreibhandwerk und QA-Panel, und publiziert nach Bestätigung Draft-first in WordPress oder Strapi. Für die Diagnose von Ranking-/Sichtbarkeitsproblemen nutze `seo-audit`; für Google-Ads-Anzeigentexte `ad-creative`; für KI-Sichtbarkeit/Schema `geo-audit`; fürs Reporting `wochenreport`."
 metadata:
-  version: 0.1.1
+  version: 0.2.0
 ---
 
 # Content
@@ -24,11 +24,11 @@ Der Moat ist nicht „Claude schreibt Texte”, sondern fünf Dinge, die generis
 ## Ehrlichkeits-Modell — jede Ausgabe kennzeichnen
 
 Kennzeichne Themen, Prognosen und Empfehlungen nach ihrer Beweiskraft:
-- **Gemessen:** GSC-Queries/Impressionen/CTR/Position, DFS-Suchvolumen + CPC, DFS-verwandte Keywords → echte Zahlen. Themen-Priorisierung, die darauf fußt, ist belegt.
-- **Beratend:** Plattform-Empfehlungen (LinkedIn/Blog-Heuristiken), Erfolgs-Prognosen, Intent-Zuordnung, Voice-Fit → begründete Empfehlung, nie als gemessen verkaufen.
+- **Gemessen:** GSC-Queries/Impressionen/CTR/Position, DFS-Suchvolumen + CPC, DFS-verwandte Keywords, DFS-Keyword-Difficulty + Intent (`dfs_keyword_overview`) → echte Zahlen. Themen-Priorisierung, die darauf fußt, ist belegt.
+- **Beratend:** Plattform-Empfehlungen (LinkedIn/Blog-Heuristiken), Erfolgs-Prognosen, Voice-Fit, Buyer-Stage-Modifier als Plausibilisierung des gemessenen Intents → begründete Empfehlung, nie als gemessen verkaufen.
 
 Load-bearing (nicht verletzen):
-1. **Keine Keyword-Difficulty.** Kein Tool liefert einen Difficulty-Score — nie eine Difficulty-Zahl behaupten. Wettbewerbshärte nur beratend über CPC + SERP-Besetzung schätzen.
+1. **Keyword-Difficulty korrekt zitieren.** `dfs_keyword_overview` liefert eine echte Difficulty-Zahl — als solche zitieren (mit Tool-Quelle), keine fremden Tool-Scores (Ahrefs/SEMrush o. Ä.) unterschieben. CPC + SERP-Besetzung bleiben ergänzendes qualitatives Signal, kein Ersatz.
 2. **Keine Social-Engagement-Daten.** Es gibt keinen Social-MCP — Reichweite/Impressions/ER eines Posts sind nicht messbar. Alle Social-Empfehlungen (Länge, Format, Timing, Algorithmus) sind **beratend**, nicht datenvalidiert.
 3. **Kein Social-Posting.** Es gibt kein Social-Publishing-Tool. Modus C erstellt nur **Text** — nichts wird auf LinkedIn/Twitter/o. Ä. veröffentlicht.
 4. **Belegpflicht für Claims (UWG).** Superlative/Zahlen („Nr. 1”, „führend”, „10.000 Kunden”) nur mit Beleg aus `projekt-kontext` oder Konto — sonst blocken und Alternative anbieten. Details: `references/copy-qa.md` im Plugin (Sweep 4) + `compliance`-Flags.
@@ -39,14 +39,16 @@ Diagnostiziert **nicht** Rankings (das ist `seo-audit`) — findet und priorisie
 
 **1. Fundieren (nicht erfinden).**
 - `sc_top_queries` / `sc_top_pages` → was die Domain heute schon zieht, welche Themen Traffic tragen.
-- `dfs_keyword_ideas_for_domain` (Domain) + `dfs_related_keywords` (Seeds aus den Top-Themen / aus Pillars) → was fehlt; `dfs_keyword_volume` (Liste, location/language!) → Volumen + CPC.
+- `dfs_keyword_ideas_for_domain` (Domain) + `dfs_related_keywords` (Seeds aus den Top-Themen / aus Pillars) + `dfs_keyword_suggestions` (Seed-Keyword → Longtail-Erweiterung) → was fehlt; `dfs_keyword_volume` (Liste, location/language!) → Volumen + CPC.
+- `dfs_keyword_overview` auf die Themen-Shortlist → Suchvolumen, CPC, echte **Keyword-Difficulty** und **Intent** (`main_intent`) je Thema.
+- `dfs_serp_google_organic.people_also_ask` (Kern-Keywords) → echte Nutzerfragen als zusätzlicher Themen-Input, besonders für Awareness-Content (Ratgeber/Glossar).
 - **DACH:** Komposita UND Phrase prüfen („Kinderfahrrad” und „Fahrrad für Kinder”).
 
-**2. Gap-Input übernehmen (Schnittstelle zu `seo-audit`).** Kommt eine **Content-Lücken-Liste aus `seo-audit` Phase 5** (Selbst-Gap + Competitor-Gap), nimm sie als Input und diagnostiziere nicht neu. Ergänze nur, was für die Erstellung fehlt (Volumen/CPC pro Thema, Intent, Pillar-Fit), und geh in die Priorisierung.
+**2. Gap-Input übernehmen (Schnittstelle zu `seo-audit`).** Kommt eine **Content-Lücken-Liste aus `seo-audit` Phase 5** (Selbst-Gap + Competitor-Gap), nimm sie als Input und diagnostiziere nicht neu. Ergänze nur, was für die Erstellung fehlt (Volumen/CPC via `dfs_keyword_volume`, Difficulty/Intent via `dfs_keyword_overview`, Pillar-Fit), und geh in die Priorisierung.
 
 **3. Priorisieren.** 40/30/20/10-Score (Customer Impact / Content-Market-Fit / Search Potential / Resources) + Buyer-Stage-Keyword-Modifier (Awareness→Consideration→Decision→Implementation). Volljustierung, deutsche Modifier-Beispiele und die Verzahnung mit dem Gap-Input: `references/priorisierung.md`.
 
-**Output Modus A:** priorisierte Themen-Tabelle (Thema · Volumen · CPC · Buyer-Stage · Content-Typ · Beleg-Stufe · Score), Pillar-Zuordnung, klare Empfehlung was zuerst.
+**Output Modus A:** priorisierte Themen-Tabelle (Thema · Volumen · CPC · Difficulty · Buyer-Stage · Content-Typ · Beleg-Stufe · Score), Pillar-Zuordnung, klare Empfehlung was zuerst.
 
 ## Modus B — Artikel & Seiten erstellen
 
@@ -63,7 +65,7 @@ Interview-Loop, Struktur-Templates (Kontrast/Journey/Pattern-Reveal), Critical P
 
 **Schreibhandwerk (hart, im Draft + Polish).** Schneider-Satzlängen (Ziel 11–14 Wörter, hart 18), Verbklammer ≤6 Wörter, Hamburger Verständlichkeitsmodell (Einfachheit zuerst), Mops-Regel (Konkretheit), Nominalstil-Umbau, Orwell-Regeln, **KI-Deutsch-Marker als Pflicht-Streichungen** („Nicht nur X, sondern auch Y”, Trikolon-Adjektive, Em-Dashes, „Es ist entscheidend…”), Denglisch-Kalibrierung. Voller Katalog: `references/writing-principles.md`.
 
-**Comparison-/Alternative-Pages** als eigener Content-Typ (Consideration/Decision-Intent): 4 Formate (X-Alternative / Alternatives-Liste mit 4–7 **echten** Alternativen / You-vs-X / X-vs-Y), Essential Sections (TL;DR, Absatz-Vergleich statt nur Tabelle, ehrliche „Für wen”-Sektion, Migration), Ehrlichkeits-Grundsatz (Konkurrenz-Stärken anerkennen). `references/comparison-pages.md`.
+**Comparison-/Alternative-Pages** als eigener Content-Typ (Consideration/Decision-Intent): 4 Formate (X-Alternative / Alternatives-Liste mit 4–7 **echten** Alternativen (`dfs_competitors_domain` statt aus dem Gedächtnis geraten) / You-vs-X / X-vs-Y), Essential Sections (TL;DR, Absatz-Vergleich statt nur Tabelle, ehrliche „Für wen”-Sektion, Migration), Ehrlichkeits-Grundsatz (Konkurrenz-Stärken anerkennen, Beschwerden aus echten Bewertungen via `dfs_reviews`). `references/comparison-pages.md`.
 
 **Argument-Psychologie (beratend).** Zum Begründen von Angles/Argumenten — Model begründet eine *Hypothese*, nie ein Beweis. `references/psychology.md` im Plugin.
 
@@ -100,15 +102,15 @@ Nur nach Schritt-0-Weiche: **welches CMS ist als source verbunden** (`wordpress`
 
 - **Kein Social-Posting** — kein Publishing-Tool für LinkedIn/Twitter/Instagram/Reddit; Modus C liefert nur Text.
 - **Keine Social-Engagement-Messung** — kein Social-MCP; Reichweite/ER nicht auslesbar, Social-Empfehlungen beratend.
-- **Keine Keyword-Difficulty** — nie eine Difficulty-Zahl; CPC + SERP-Besetzung als gekennzeichnete Heuristik.
+- **Keyword-Difficulty** via `dfs_keyword_overview` (CPC + SERP-Besetzung als ergänzendes, qualitatives Signal).
 - **Kein Bild/Video/Visual selbst** — Grafiken und KI-Bilder erstellt und lädt `image` (liefert Media-ID + Alt-Text zum Einbinden in den Draft); Video bleibt out of scope.
 - **CMS nur wenn verbunden** — WordPress/Strapi-Write nur bei verbundener source; sonst Text-Ausgabe.
 - **Kein seitenweiter Content-Audit** — für Ranking-/Sichtbarkeits-Diagnose und Content-Lücken-Findung → `seo-audit` (liefert die Gap-Liste, die hier zum Input wird).
 
 ## Tools nach Modus
 - **Vorbereitung:** `list_workspaces`
-- **Modus A (Fundierung):** `sc_top_queries`, `sc_top_pages`, `dfs_keyword_ideas_for_domain`, `dfs_related_keywords`, `dfs_keyword_volume` (+ optional `dfs_serp_google_organic` für die SERP-Besetzung als Difficulty-Proxy)
-- **Modus B/C:** keine Pflicht-Tools (Schreiben/Ableiten aus Kontext + Artikel); optional Modus-A-Tools zur Beleg-Untermauerung
+- **Modus A (Fundierung):** `sc_top_queries`, `sc_top_pages`, `dfs_keyword_ideas_for_domain`, `dfs_related_keywords`, `dfs_keyword_suggestions`, `dfs_keyword_volume`, `dfs_keyword_overview` (Difficulty + Intent) + optional `dfs_serp_google_organic` (People-Also-Ask als Themen-Input, SERP-Besetzung als Sekundärsignal), `dfs_keyword_trends` (Trend-Richtung, max. 5 Keywords/Call)
+- **Modus B/C:** keine Pflicht-Tools (Schreiben/Ableiten aus Kontext + Artikel); optional Modus-A-Tools zur Beleg-Untermauerung, für Comparison-/Alternative-Pages zusätzlich `dfs_competitors_domain` (echte Alternativen) und `dfs_reviews` (Beschwerden aus echten Bewertungen, task-basiert)
 - **Operator (WordPress):** `wp_list_posts`, `wp_get_post`, `wp_list_terms`, `wp_create_post` (`status="draft"`), `wp_update_post` (Publish = bewusst getrennt)
 - **Operator (Strapi):** `strapi_list_content_types`, `strapi_list_entries`, `strapi_get_entry`, `strapi_create_entry`, `strapi_publish_entry` (bewusst getrennt)
 - **Nicht verwenden ohne ausdrückliche Anweisung:** `wp_delete_post`, `strapi_delete_entry`, `wp_upload_media`, `strapi_upload_media` (→ `image`)

@@ -15,13 +15,13 @@
   {
     "id": "trigger-content-plan-themen",
     "prompt": "Wir wissen nie, worüber wir bloggen sollen. Könnt ihr uns einen Content-Plan mit Themen machen, die wirklich gesucht werden?",
-    "expected_output": "Aktiviert content in Modus A (Themen finden & priorisieren). Fundiert die Themen mit echten Daten: sc_top_queries/sc_top_pages (was schon zieht) plus dfs_keyword_ideas_for_domain/dfs_related_keywords/dfs_keyword_volume (was fehlt), jeweils mit location/language auf den DACH-Zielmarkt kalibriert. Priorisiert per 40/30/20/10-Score und ordnet Buyer-Stages zu. Behauptet keine Keyword-Difficulty-Zahl und kennzeichnet Volumen/CPC als gemessen, die Priorisierungs-Gewichtung als beratend.",
+    "expected_output": "Aktiviert content in Modus A (Themen finden & priorisieren). Fundiert die Themen mit echten Daten: sc_top_queries/sc_top_pages (was schon zieht) plus dfs_keyword_ideas_for_domain/dfs_related_keywords/dfs_keyword_suggestions/dfs_keyword_volume (was fehlt) und dfs_keyword_overview (echte Keyword-Difficulty + Intent), jeweils mit location/language auf den DACH-Zielmarkt kalibriert. Priorisiert per 40/30/20/10-Score und ordnet Buyer-Stages zu. Zitiert die Difficulty-Zahl aus dfs_keyword_overview statt einer SERP-Proxy-Schätzung und kennzeichnet Volumen/CPC/Difficulty/Intent als gemessen, die Priorisierungs-Gewichtung als beratend.",
     "assertions": [
       "Aktiviert content in Modus A (Themen-Findung), nicht einen SEO-Audit",
       "Zieht GSC-Queries UND DataForSEO-Volumen/verwandte Keywords als Datengrundlage",
       "Setzt location/language passend zum DACH-Zielmarkt auf dfs_*-Calls (Default Österreich beachten)",
       "Priorisiert per 40/30/20/10-Score und ordnet Buyer-Stage-Modifier zu",
-      "Behauptet keine Keyword-Difficulty-Zahl und trennt gemessene Zahlen von beratender Gewichtung"
+      "Nutzt dfs_keyword_overview für eine echte Keyword-Difficulty-Zahl (keine SERP-Proxy-Schätzung) und trennt gemessene Zahlen von beratender Gewichtung"
     ],
     "files": ["SKILL.md", "references/priorisierung.md"]
   },
