@@ -55,7 +55,7 @@ python3 <skill-verzeichnis>/scripts/generate_image.py \
   --output "pfad/beschreibender-name.png"
 ```
 
-`FAL_KEY` muss in der Shell-Umgebung gesetzt sein (`export FAL_KEY="<key-id>:<key-secret>"`). Das Script gibt neben dem lokalen Pfad die **fal.ai-Result-URL** aus — sie ist öffentlich und direkt für `meta_upload_ad_image` verwendbar (Operator).
+`FAL_KEY` muss in der Umgebung gesetzt sein — global via Shell-Config (`export FAL_KEY="<key-id>:<key-secret>"`) oder pro Projekt via `.claude/settings.local.json` (`env`-Block). Das Script gibt neben dem lokalen Pfad die **fal.ai-Result-URL** aus — sie ist öffentlich und direkt für `meta_upload_ad_image` verwendbar (Operator).
 
 ## Workflow-Regeln
 

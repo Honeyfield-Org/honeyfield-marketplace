@@ -21,7 +21,7 @@ Der Moat ist nicht „Claude macht ein Bild”, sondern: (1) ein Visual-Stil-Fun
 
 **Umgebung prüfen (bestimmt die verfügbaren Modi).**
 - Playwright-Tools (`browser_navigate`, `browser_take_screenshot`) verfügbar? → Modus A voll (mit Export). 
-- `FAL_KEY` gesetzt? (`echo ${FAL_KEY:+gesetzt}`) → Modus B verfügbar.
+- `FAL_KEY` gesetzt? (`echo ${FAL_KEY:+gesetzt}`) → Modus B verfügbar. Fehlt er: Setup anbieten — global `export FAL_KEY="<key-id>:<key-secret>"` in der Shell-Config, oder pro Projekt in `.claude/settings.local.json` im `env`-Block (nicht eingecheckt; erlaubt Mandanten-eigene Keys zur Kosten-Zuordnung). Key erstellen: https://fal.ai/dashboard/keys
 - Fehlt eins/beides (typisch: Claude Web) → Ehrlichkeits-Modell Punkt 1.
 
 **Markt kalibrieren (DE/AT/CH).** Text in Grafiken folgt dem Zielmarkt: CH → kein ß („Strasse”), CHF statt €; Zahlen-/Datumsformate des Zielmarkts. Sprache der Bild-Texte = Sprache der Zielgruppe aus dem Projekt-Kontext.
