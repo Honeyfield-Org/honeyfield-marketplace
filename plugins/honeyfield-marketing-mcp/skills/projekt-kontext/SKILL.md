@@ -2,7 +2,7 @@
 name: projekt-kontext
 description: "Erstellt und pflegt den Projekt-Kontext eines Kunden — das Fundament-Dokument, das alle anderen Marketing-Skills (seo-audit, google-ads-audit, geo-audit, …) zuerst lesen, damit sie Markt, Marke, Ziele und rechtlichen Rahmen kennen, ohne erneut zu fragen. Nutze diesen Skill am Anfang eines neuen Kunden-Projekts und bei: „Projekt-Kontext anlegen/aufsetzen”, „Kunden-Kontext”, „Kontext erstellen/updaten”, „neues Kunden-Onboarding”, „Kunde einrichten”, „festhalten wer der Kunde ist / was die Firma macht”, „Marke/Branche/Zielmarkt/Compliance hinterlegen”. Befüllt eine Erstversion automatisch aus verbundenen Quellen (Website/Impressum, Google Business Profile, Search Console, GA4) und verfeinert sie im Interview. Speichert das Ergebnis als `projekt-kontext.md` (Claude Code) bzw. zur Ablage im Projektwissen (Claude.ai). Kalibriert auf den DACH-Markt (DE/AT/CH). Für Audits/Reports selbst den jeweiligen Skill nutzen — hier entsteht nur das Fundament."
 metadata:
-  version: 0.2.0
+  version: 0.3.0
 ---
 
 # Projekt-Kontext
@@ -31,7 +31,7 @@ Wenn ja → **updaten, nicht neu**: gezielt Felder ergänzen/korrigieren, `stand
 | `gbp_get_profile` / `gbp_location_info` | lokales Geschäft?, Kategorie → Branche, Standort → Markt; bei lokalen Geschäften `gbp_search_keywords` → reale lokale Suchbegriffe |
 | `sc_top_queries` / `ga4_top_pages` | reale Money-Keywords, Schlüsselseiten, Brand-Queries → Brand-Begriffe |
 | `dfs_keyword_rankings` (braucht nur die Domain) | Money-Keywords / Kern-Themen, wenn SC/GA4 (noch) nicht verbunden |
-| `dfs_serp_google_organic` / `dfs_backlink_competitors` | Konkurrenz-Domains |
+| `dfs_competitors_domain` (primär) + `dfs_serp_google_organic` / `dfs_backlink_competitors` (Ergänzung) | Konkurrenz-Domains |
 
 Keine Fetch-Möglichkeit für Impressum/„Über uns”? → diese Felder im Interview (Weg B) erfragen, nicht still leer lassen.
 
