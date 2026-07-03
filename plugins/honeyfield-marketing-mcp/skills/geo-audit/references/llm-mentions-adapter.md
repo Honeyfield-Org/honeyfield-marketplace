@@ -1,6 +1,6 @@
 # Cross-Engine-Messung — LLM-Mentions-Adapter (Weg B, Default) + Manuelle Capture (Weg A, Fallback)
 
-Phase 7. Cross-Engine-Citations (wird die Marke in ChatGPT/Claude/Gemini/Perplexity genannt/zitiert?) laufen per Default über die DataForSEO-LLM-Mentions-Tools (Weg B, pay-as-you-go über das normale DataForSEO-Guthaben). Schlägt der Zugriff fehl (`subscription_required`, z. B. Guthaben aufgebraucht), auf manuelle Capture (Weg A) degradieren. Niemals aus einer Einzelabfrage einen „Score" ableiten — die Antworten variieren stark (Personalisierung, Session, Modellversion). Belastbar wird es nur über **wiederholtes Sampling / aggregierte Daten**. Jeder Befund trägt den Stempel: **welcher Weg + welche Konfidenz**.
+Phase 7. Cross-Engine-Citations (wird die Marke in ChatGPT/Claude/Gemini/Perplexity genannt/zitiert?) laufen per Default über die DataForSEO-LLM-Mentions-Tools (Weg B, pay-as-you-go über das normale DataForSEO-Guthaben). Schlägt der Zugriff fehl (`subscription_required`, z. B. Guthaben aufgebraucht), auf manuelle Capture (Weg A) degradieren. Niemals aus einer Einzelabfrage einen „Score” ableiten — die Antworten variieren stark (Personalisierung, Session, Modellversion). Belastbar wird es nur über **wiederholtes Sampling / aggregierte Daten**. Jeder Befund trägt den Stempel: **welcher Weg + welche Konfidenz**.
 
 ## Weg B — LLM-Mentions-Adapter (Default, automatisiert)
 
@@ -24,11 +24,11 @@ DataForSEOs **AI Optimization API** misst Marken-Sichtbarkeit über einen aggreg
 Der Mensch fährt die echten Prompts in der echten Web-App. Das ist die einzige echte Consumer-UI-Ground-Truth — nutzen, wenn Weg B `subscription_required` liefert oder kein DataForSEO-Zugang besteht.
 
 **Protokoll:**
-1. 15–20 reale Käufer-Prompts definieren (branded + Category, z. B. „Wer ist [Marke]?", „beste [Kategorie] Tools in Österreich", „[Marke] vs [Konkurrent]").
+1. 15–20 reale Käufer-Prompts definieren (branded + Category, z. B. „Wer ist [Marke]?”, „beste [Kategorie] Tools in Österreich”, „[Marke] vs [Konkurrent]”).
 2. Jeden Prompt über ChatGPT, Claude, Perplexity, Gemini laufen lassen — in **frischer/Incognito-Session** (Personalisierung minimieren).
 3. Pro Antwort protokollieren: **genannt / zitiert (mit Link) / abwesend**, welche **Konkurrenz** stattdessen, **Ton** (positiv/neutral/negativ), zitierte **Quell-Domains**.
 4. Monatlich wiederholen → Month-over-Month-Trend. Spreadsheet genügt.
-5. Optional: Chrome-Extension „ChatGPT Search Capture" (RESONEO) / Console-Script exportiert `result_source`/`turn_use_case`/Citations als JSON → der Skill liest das JSON ein und wertet es strukturiert aus.
+5. Optional: Chrome-Extension „ChatGPT Search Capture” (RESONEO) / Console-Script exportiert `result_source`/`turn_use_case`/Citations als JSON → der Skill liest das JSON ein und wertet es strukturiert aus.
 
 Die zitierten Quell-Domains aus Schritt 3 fließen direkt in Phase 5 (Off-site-Zielliste) — dieselbe Rolle wie `dfs_llm_top_domains` bei Weg B.
 

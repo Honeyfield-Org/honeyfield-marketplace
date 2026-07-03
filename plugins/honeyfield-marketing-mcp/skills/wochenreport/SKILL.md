@@ -58,7 +58,7 @@ Für jede Auffälligkeit: **benennen (mit Zahl + Δ), einordnen (Kontext/Fallstr
 3. **Auffälligkeiten:** je Befund kurz — was, wie groß, wahrscheinlicher Kontext, **empfohlener Deep-Dive (welcher Audit-Skill)**.
 4. **Was gut lief** (kurz — Reports sind oft zu negativ; nenne die positiven Bewegungen belegt).
 
-Halte den Report scanbar (Tabellen, kurze Bullets). Jede Zahl ist echt aus den Tools — kein „ungefähr".
+Halte den Report scanbar (Tabellen, kurze Bullets). Jede Zahl ist echt aus den Tools — kein „ungefähr”.
 
 ## Grenzen (ehrlich benennen)
 - **Read-only** — dieser Skill ändert nie etwas; Fixes laufen über die Audit-Skills.

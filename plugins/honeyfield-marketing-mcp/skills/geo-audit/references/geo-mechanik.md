@@ -17,7 +17,7 @@ Konsequenzen für den Audit:
 
 ## Index-Backend pro Engine (zentrale Lücke vieler Audits)
 
-„In AI sichtbar werden" ist pro Engine eine andere Crawl-/Index-Baustelle:
+„In AI sichtbar werden” ist pro Engine eine andere Crawl-/Index-Baustelle:
 
 | Engine | Such-Backend | Konsequenz |
 |---|---|---|
@@ -34,7 +34,7 @@ Relevante User-Agents: `GPTBot`, `ChatGPT-User`, `OAI-SearchBot` (OpenAI), `Clau
 
 - **GPTBot** = Training UND Search zugleich, nicht trennbar → Blocken kostet Citations.
 - **OAI-SearchBot / ChatGPT-User** = Live-/Search-Fetch → niemals blocken, wenn man zitiert werden will.
-- **CCBot** (Common Crawl) = nur Training, **keine** Citations → kann gefahrlos geblockt werden (die einzige sichere „Content-Diebstahl"-Antwort).
+- **CCBot** (Common Crawl) = nur Training, **keine** Citations → kann gefahrlos geblockt werden (die einzige sichere „Content-Diebstahl”-Antwort).
 - **Google-Extended** blockt nur Gemini-Training, nicht die Google-Suche/AIO.
 
 Bot-Status-Test: Schlüssel-URL je Bot-UA abrufen, z. B.
@@ -42,7 +42,7 @@ Bot-Status-Test: Schlüssel-URL je Bot-UA abrufen, z. B.
 
 ## Princeton-GEO-Hebel (Fix-Priorisierung)
 
-Quantifizierter Sichtbarkeits-Boost (Princeton/„GEO", KDD 2024) — als Sortierlogik der Fix-Liste:
+Quantifizierter Sichtbarkeits-Boost (Princeton/„GEO”, KDD 2024) — als Sortierlogik der Fix-Liste:
 
 | Methode | Boost |
 |---|---|
@@ -54,12 +54,12 @@ Quantifizierter Sichtbarkeits-Boost (Princeton/„GEO", KDD 2024) — als Sortie
 | Fachbegriffe / Vokabular | +15–18 % |
 | **Keyword-Stuffing** | **−10 % (schadet aktiv)** |
 
-Beste Kombi: **Fluency + Statistics**. Niedrig rankende Sites profitieren überproportional (bis +115 % mit Citations). → Bei der Fix-Empfehlung „Statistik mit Quelle ergänzen" über „Ton verbessern" stellen.
+Beste Kombi: **Fluency + Statistics**. Niedrig rankende Sites profitieren überproportional (bis +115 % mit Citations). → Bei der Fix-Empfehlung „Statistik mit Quelle ergänzen” über „Ton verbessern” stellen.
 
 ## Content-Answer-Fit & Freshness
 
-- **Content-Answer-Fit:** Wie gut Stil/Struktur dem Antwortformat der Engine gleicht, korreliert laut ZipTie (~400k Seiten) stark mit Citation-Wahrscheinlichkeit — deutlich stärker als Domain-Authority. Heuristik: „Schreib so, wie die KI die Frage beantworten würde."
-- **Freshness:** Content mit sichtbarem Update <30 Tage wird bei ChatGPT ~3,2× häufiger zitiert. Sichtbares „Zuletzt aktualisiert"-Datum, Quartals-Refresh kompetitiver Seiten.
+- **Content-Answer-Fit:** Wie gut Stil/Struktur dem Antwortformat der Engine gleicht, korreliert laut ZipTie (~400k Seiten) stark mit Citation-Wahrscheinlichkeit — deutlich stärker als Domain-Authority. Heuristik: „Schreib so, wie die KI die Frage beantworten würde.”
+- **Freshness:** Content mit sichtbarem Update <30 Tage wird bei ChatGPT ~3,2× häufiger zitiert. Sichtbares „Zuletzt aktualisiert”-Datum, Quartals-Refresh kompetitiver Seiten.
 
 ## Extractability-Detailcheck (Phase 3)
 
@@ -67,7 +67,7 @@ Pass/Fail pro Schlüsselseite — kann eine Passage als Antwort herausgelöst we
 - [ ] Definition / direkte Antwort im **ersten Absatz** (answer-first, nicht vergraben).
 - [ ] **Self-contained Antwortblöcke**, 40–60 Wörter, ohne Kontext verständlich.
 - [ ] Statistiken **mit Quelle**.
-- [ ] **Tabellen** für „X vs Y"-Vergleiche (statt Prosa).
+- [ ] **Tabellen** für „X vs Y”-Vergleiche (statt Prosa).
 - [ ] FAQ in natürlicher Frage-Sprache (als Claim-Struktur, nicht für Rich Results).
 - [ ] Heading-Struktur matcht typische Query-Muster.
 - [ ] Autoren-Attribution mit Credentials (E-E-A-T-Proxy).
@@ -75,20 +75,20 @@ Pass/Fail pro Schlüsselseite — kann eine Passage als Antwort herausgelöst we
 ## Mythen & Anti-Patterns (nicht als Befund/Fix verkaufen)
 
 - **FAQ-/HowTo-Schema für Rich Results** → tot (FAQ ~Aug 2023 nur noch Behörden/Health, HowTo ~Sep 2023 entfernt). Für GEO behält strukturiertes Q&A Rest-Wert als **maschinenlesbare Claim-Struktur** (LLMs extrahieren Frage→Antwort leichter) — so framen, nicht als Snippet-Taktik.
-- **Separater „AI-Content"** → fällt unter „scaled content abuse" (Spam-Policy).
-- **Content-Chunking** → Google explizit: „Don't break your content into tiny pieces for AI."
+- **Separater „AI-Content”** → fällt unter „scaled content abuse” (Spam-Policy).
+- **Content-Chunking** → Google explizit: „Don't break your content into tiny pieces for AI.”
 - **Mass-Generation / dünne programmatische Seiten** → ignoriert.
 - **Gefakte/gespammte Mentions** → Cross-Reference, De-Ranking.
 - **AI-Bots pauschal blocken** → schneidet Citations ab (Ausnahme CCBot).
 - **JS-only Rendering** → unsichtbar für nicht-rendernde Crawler.
 - **Keyword-Stuffing** → −10 %.
 
-**Google-vs-Multi-Platform-Dualität:** Google sagt offiziell, es brauche keine Spezial-Files/kein AI-Markup. Non-Google-Engines belohnen Struktur aber sehr wohl. Sicherer Default, der beide Lager bedient: **„write for people, organize for clarity."** Strukturelle Hacks nicht überversprechen.
+**Google-vs-Multi-Platform-Dualität:** Google sagt offiziell, es brauche keine Spezial-Files/kein AI-Markup. Non-Google-Engines belohnen Struktur aber sehr wohl. Sicherer Default, der beide Lager bedient: **„write for people, organize for clarity.”** Strukturelle Hacks nicht überversprechen.
 
 ## llms.txt / OKF — nüchterne Einordnung
 
-Aktuell crawlt kein Engine `llms.txt` aktiv für Citations. Höchstens als „Signpost"-Wette (vergleichbar mit früher Schema.org-Adoption), nicht als Hebel. **Skip**, wenn: <10 Seiten, Closed-Platform (Wix/Squarespace-Lock-in), keine laufende Schema-/Content-Pflege. Nicht als Pflicht-Fix empfehlen.
+Aktuell crawlt kein Engine `llms.txt` aktiv für Citations. Höchstens als „Signpost”-Wette (vergleichbar mit früher Schema.org-Adoption), nicht als Hebel. **Skip**, wenn: <10 Seiten, Closed-Platform (Wix/Squarespace-Lock-in), keine laufende Schema-/Content-Pflege. Nicht als Pflicht-Fix empfehlen.
 
 ## Google AI Overview via DataForSEO
 
-`dfs_serp_google_organic` liefert den `ai_overview`-Block jetzt direkt mit: `{present: bool, sources: [{title, url, domain}]}`. Intern läuft der Call mit `load_async_ai_overview: true` — ohne dieses Flag fehlen asynchron nachgeladene Overviews (false „nicht präsent"); das Tool setzt es bereits, kein separater Folge-Call durch den Skill nötig. `present: false` heißt: keine AI Overview für diese Query in diesem Markt/Moment — vor dem Befund Query-Formulierung und Markt (`location`/`language`) gegenprüfen, nicht vorschnell als „Site fehlt" werten. ~$0,0035/Call (advanced-Endpoint), keine Zusatz-Subscription nötig.
+`dfs_serp_google_organic` liefert den `ai_overview`-Block jetzt direkt mit: `{present: bool, sources: [{title, url, domain}]}`. Intern läuft der Call mit `load_async_ai_overview: true` — ohne dieses Flag fehlen asynchron nachgeladene Overviews (false „nicht präsent”); das Tool setzt es bereits, kein separater Folge-Call durch den Skill nötig. `present: false` heißt: keine AI Overview für diese Query in diesem Markt/Moment — vor dem Befund Query-Formulierung und Markt (`location`/`language`) gegenprüfen, nicht vorschnell als „Site fehlt” werten. ~$0,0035/Call (advanced-Endpoint), keine Zusatz-Subscription nötig.

@@ -4,7 +4,7 @@ Phase 5 (Off-site-Citability) + Operator (Zielliste). Das SOTA-Material aus gene
 
 ## Mess-Loop (Weg B Default, manueller Fallback — Phase 5/7)
 
-Default: `dfs_llm_mentions`/`dfs_llm_top_domains` (Weg B, s. `llm-mentions-adapter.md`) liefert das automatisiert, pay-as-you-go über das normale DataForSEO-Guthaben. Schlägt der Zugriff fehl (`subscription_required`, z. B. Guthaben aufgebraucht), monatlich manuell ChatGPT/Claude/Perplexity fragen: „Was sind die besten [Kategorie]-Tools/-Anbieter?" und protokollieren, wo die Marke auftaucht (Weg A). Das ist der direkte Citability-Check. Details/Protokoll: `llm-mentions-adapter.md`.
+Default: `dfs_llm_mentions`/`dfs_llm_top_domains` (Weg B, s. `llm-mentions-adapter.md`) liefert das automatisiert, pay-as-you-go über das normale DataForSEO-Guthaben. Schlägt der Zugriff fehl (`subscription_required`, z. B. Guthaben aufgebraucht), monatlich manuell ChatGPT/Claude/Perplexity fragen: „Was sind die besten [Kategorie]-Tools/-Anbieter?” und protokollieren, wo die Marke auftaucht (Weg A). Das ist der direkte Citability-Check. Details/Protokoll: `llm-mentions-adapter.md`.
 
 ## Priorität A — Entity-Baseline (kategorie-unabhängig, global, DACH-tauglich)
 
@@ -15,9 +15,9 @@ Speist die Trainings-/Knowledge-Korpora der Modelle direkt. **Immer** als Ziel, 
 - **Dun & Bradstreet** (Business-Credibility, feeds AI-Korpora).
 - Verknüpfen über `sameAs` in der Organization-Schema (siehe `schema-templates.md`).
 
-## Priorität B — Review-Sites / Verzeichnisse (höchste Zitathäufigkeit bei „beste X"-Queries)
+## Priorität B — Review-Sites / Verzeichnisse (höchste Zitathäufigkeit bei „beste X”-Queries)
 
-KI-Engines ziehen bei „bestes [Kategorie]"-Fragen stark aus High-DR-Verzeichnissen.
+KI-Engines ziehen bei „bestes [Kategorie]”-Fragen stark aus High-DR-Verzeichnissen.
 
 **Global (in DACH genutzt):** G2, Capterra, AlternativeTo (als Alternative zu den Top-Konkurrenten listen), SaaSHub, Software Advice, TrustRadius. **Schwelle: ~10 Reviews** — darunter sind Profile wirkungslos.
 
@@ -26,13 +26,13 @@ KI-Engines ziehen bei „bestes [Kategorie]"-Fragen stark aus High-DR-Verzeichni
 - **ProvenExpert** — Bewertungs-Aggregator, stark in DE.
 - **Trusted Shops** — E-Commerce-Trust (Shop-Kunden).
 - **Capterra.de / GetApp.de** — deutsche Varianten.
-- **WLW (Visable) / „Wer liefert was"** — B2B-Industrie/Beschaffung DACH.
+- **WLW (Visable) / „Wer liefert was”** — B2B-Industrie/Beschaffung DACH.
 - **Cylex (cylex.de), Das Örtliche, Gelbe Seiten** — lokale Verzeichnisse.
 - **OpenPR (openpr.de), Tupalo, EU-Business** — europäisch/deutsch.
 
 Für DACH **abwerten/skippen:** US-Local-Directories (Manta, MerchantCircle, iBegin, 2FindLocal), reine US-PR-Wire-Sites.
 
-## Priorität C — „Best of"-Listicles via Outreach
+## Priorität C — „Best of”-Listicles via Outreach
 
 Oft wertvoller als Verzeichnisse: dofollow-Link + redaktioneller Trust + In-Market-Traffic + **AI-Citation-Gewicht**. Such-Patterns zum Auffinden der Quellen, die die KI zitiert (eingedeutscht):
 - `"beste [Kategorie] Tools 2026"`
@@ -50,12 +50,12 @@ Für Tools wie Honeyfield selbst relevant — LLMs ziehen daraus bei MCP-/Agent-
 
 ## Earn-Mechaniken (verdiente Drittnennungen, nach Hebel)
 
-1. **Original-Research / Daten-Story** (höchster Hebel): „Wir haben 10.000 X analysiert und Y gefunden" wird zur **Primärquelle** für alle, die über das Thema schreiben. Sprachneutral, voll DACH-tauglich.
+1. **Original-Research / Daten-Story** (höchster Hebel): „Wir haben 10.000 X analysiert und Y gefunden” wird zur **Primärquelle** für alle, die über das Thema schreiben. Sprachneutral, voll DACH-tauglich.
 2. **Reddit / Hacker News** (Claude/Perplexity indexieren stark) — eher für EN-Visibility; DACH-Pendant: Fachforen, LinkedIn-DE, t3n-/Heise-Kommentarräume.
 3. **Inbound Press-Requests:** Connectively (ex-HARO), Qwoted, Help A B2B Writer (EN/US). DACH: themenrelevante LinkedIn-Calls, dpa-Anfragen.
 4. **DACH-Fachpresse für Erwähnungen:** t3n, Heise, Golem, Gründerszene, OMR, **The Decoder** (deutsches AI-Outlet).
 
-Pitch-Qualität: <150 Wörter, klarer News-Hook, keine Buzzwords („revolutionär/disruptiv").
+Pitch-Qualität: <150 Wörter, klarer News-Hook, keine Buzzwords („revolutionär/disruptiv”).
 
 ## Competitor-Citation-Methodik (DataForSEO, im Stack)
 
@@ -81,4 +81,4 @@ Zwei Wege zur datengetriebenen Drittplattform-Zielliste, kombinierbar:
 
 Tool-/Intern-Referrer aus dem Gesamt-Nenner rausrechnen: `tagassistant.google.com`, `ads.google.com`, `*.lightning.force.com`, `*.officeapps.live.com`, `(not set)`, `(data not available)`.
 
-Persistieren (optional, damit der Traffic dauerhaft segmentierbar ist): Custom Dimension `ai_source` ist via `ga4_create_custom_dimension` anlegbar (Schreib-Aktion → erst Preview, dann Bestätigung, s. Schreib-Guardrails des Plugins); die GA4-Channel-Group „AI Referral" (UTM-Konvention) ist per Tool NICHT anlegbar — nur im GA4-UI, als Empfehlung ausgeben. In GA4 DebugView verifizieren. **Caveat:** GA4-Referrer ist Näherung, kein Fetch-Beweis (Crawler-Fetches erzeugen oft keine Session).
+Persistieren (optional, damit der Traffic dauerhaft segmentierbar ist): Custom Dimension `ai_source` ist via `ga4_create_custom_dimension` anlegbar (Schreib-Aktion → erst Preview, dann Bestätigung, s. Schreib-Guardrails des Plugins); die GA4-Channel-Group „AI Referral” (UTM-Konvention) ist per Tool NICHT anlegbar — nur im GA4-UI, als Empfehlung ausgeben. In GA4 DebugView verifizieren. **Caveat:** GA4-Referrer ist Näherung, kein Fetch-Beweis (Crawler-Fetches erzeugen oft keine Session).
