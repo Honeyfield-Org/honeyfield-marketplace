@@ -1,0 +1,107 @@
+[
+  {
+    "id": "trigger-content-ideen",
+    "prompt": "Uns gehen die Blog-Themen aus. Was sollen wir als Nächstes für unsere Website schreiben?",
+    "expected_output": "Aktiviert content-strategie. Startet mit Schritt 0: list_workspaces, prüft sources (search_console + dataforseo), liest projekt-kontext für Pillars/Zielgruppe oder fragt knapp nach. Fundiert Themen aus echten Daten (sc_top_queries/sc_performance für Bestands-Chancen, dfs_keyword_ideas_for_domain/dfs_related_keywords/dfs_keyword_volume für die Markt-Erweiterung, location/language auf den Zielmarkt kalibriert), priorisiert mit dem 40/30/20/10-Score und liefert ein Ideen-Backlog mit Beleg-Stufen — schreibt aber keinen Artikel.",
+    "assertions": [
+      "Aktiviert den content-strategie-Skill",
+      "Ruft list_workspaces auf und prüft die sources, bevor Themen-Calls laufen",
+      "Fundiert Themen aus GSC- und DataForSEO-Daten statt aus einem freien Brainstorm",
+      "Setzt location und language passend zum DACH-Zielmarkt auf dfs_*-Calls (Default Österreich beachten)",
+      "Liefert ein priorisiertes Ideen-Backlog mit Beleg-Stufen (gemessen / geschätzt / beratend)",
+      "Schreibt keinen Artikel und published nichts"
+    ],
+    "files": ["SKILL.md", "references/priorisierung.md"]
+  },
+  {
+    "id": "trigger-redaktionsplan",
+    "prompt": "Erstell uns bitte einen Redaktionsplan fürs nächste Quartal — was sollen wir in welcher Reihenfolge bloggen?",
+    "expected_output": "Aktiviert content-strategie. Baut den Plan auf einem datenbasierten, priorisierten Backlog auf (Score, Buyer-Stage, Striking-Distance vor Netto-Neu) statt Themen zu erfinden, begründet die Reihenfolge (Score, Saison, Verlinkungs-Abhängigkeiten) und macht keine Kalender-/Traffic-Garantien — Frequenz und Termine bestimmt der Kunde.",
+    "assertions": [
+      "Aktiviert den content-strategie-Skill für die Redaktionsplan-Anfrage",
+      "Priorisiert datenbasiert (Score + Buyer-Stage) statt Themen frei zu erfinden",
+      "Priorisiert Striking-Distance-Themen mit GSC-Beleg vor Netto-Neu-Themen",
+      "Begründet die Reihenfolge und verspricht keine Kalender- oder Traffic-Garantien"
+    ],
+    "files": ["SKILL.md", "references/priorisierung.md"]
+  },
+  {
+    "id": "trigger-content-brief",
+    "prompt": "Wir wollen das Thema Angebotsverfolgung für Handwerksbetriebe angehen. Bereite das bitte so auf, dass unsere Texterin loslegen kann.",
+    "expected_output": "Aktiviert content-strategie und erstellt einen vollständigen Content-Brief: Ziel-Query-Set mit Volumen (dfs_keyword_volume/dfs_keyword_overview, Komposita- UND Phrase-Varianten), gemessene Suchintention (main_intent), Gliederungs-Vorschlag, W-Fragen aus people_also_ask, interne Verlinkung aus dem Bestand (sc_top_pages bzw. CMS-Read) und Belegpflicht-/Compliance-Hinweise (UWG, compliance-Flags). Schreibt den Artikel nicht selbst.",
+    "assertions": [
+      "Erstellt einen Content-Brief statt eines fertigen Artikels",
+      "Belegt das Query-Set mit Volumen-/Intent-Daten und deckt Komposita- und Phrase-Varianten ab",
+      "Nimmt W-Fragen aus people_also_ask in den Brief auf",
+      "Gibt interne Verlinkungs-Hinweise auf Basis des Bestands (sc_top_pages bzw. wp_list_posts/strapi_list_entries)",
+      "Nennt Belegpflicht-/Compliance-Hinweise (UWG-Superlative, compliance-Flags) im Brief"
+    ],
+    "files": ["SKILL.md"]
+  },
+  {
+    "id": "defer-artikel-schreiben",
+    "prompt": "Super Ideen! Schreib mir den ersten Artikel doch bitte gleich fertig und stell ihn als Entwurf in unser WordPress.",
+    "expected_output": "Lehnt freundlich ab und erklärt den Produktzuschnitt: content-strategie erstellt keine Artikel und schreibt nichts ins CMS — die Umsetzung liegt beim Kunden. Bietet stattdessen den vollständigen Content-Brief zum Thema an, mit dem ein Texter ohne Rückfragen starten kann. Ruft kein wp_create_post oder anderes Write-Tool auf.",
+    "assertions": [
+      "Lehnt das Artikel-Schreiben freundlich ab und erklärt die bewusste Produktentscheidung (Umsetzung beim Kunden)",
+      "Bietet als Alternative einen Content-Brief an",
+      "Ruft kein CMS-Write-Tool auf (kein wp_create_post, kein strapi_create_entry)",
+      "Erfindet keinen Workaround, um doch zu publizieren"
+    ],
+    "files": ["SKILL.md"]
+  },
+  {
+    "id": "defer-to-ad-creative",
+    "prompt": "Wir brauchen neue Anzeigentexte für unsere Google-Ads-Kampagne. Könnt ihr da Vorschläge machen?",
+    "expected_output": "Erkennt, dass es um Google-Ads-Anzeigen-Copy geht, und verweist auf ad-creative, statt Content-Themen zu suchen.",
+    "assertions": [
+      "Verweist auf ad-creative als den passenden Skill für Anzeigen-Copy",
+      "Startet keine Content-Themen-Findung für eine Ads-Copy-Anfrage"
+    ],
+    "files": ["SKILL.md"]
+  },
+  {
+    "id": "defer-to-seo-audit-ranking",
+    "prompt": "Unsere Ratgeber-Seite rankt einfach nicht, obwohl der Text gut ist. Warum werden wir da nicht gefunden?",
+    "expected_output": "Erkennt die Ranking-Diagnose-Frage und verweist auf seo-audit (Technik, On-Page, Autorität), statt neue Themen zu suchen — content-strategie findet Themen, diagnostiziert aber keine Ranking-Ursachen.",
+    "assertions": [
+      "Verweist auf seo-audit als den passenden Skill für die Ranking-Diagnose",
+      "Diagnostiziert die Ranking-Ursache nicht selbst im content-strategie-Skill"
+    ],
+    "files": ["SKILL.md"]
+  },
+  {
+    "id": "defer-competitor-gap-to-seo-audit",
+    "prompt": "Findet mal raus, für welche Keywords unsere Konkurrenten ranken und wir gar nicht vorkommen.",
+    "expected_output": "Erkennt den Competitor-Content-Gap als Besitz von seo-audit (Phase 5) und verweist dorthin, statt die Gap-Analyse selbst zu fahren. Liegt bereits eine Gap-Liste aus seo-audit vor, nimmt content-strategie sie als Input, ergänzt Volumen/Intent/Pillar-Fit und priorisiert — ohne neu zu diagnostizieren.",
+    "assertions": [
+      "Verweist für die Competitor-Gap-Analyse auf seo-audit, statt sie zu duplizieren",
+      "Konsumiert eine vorhandene Gap-Liste als Input und ergänzt nur Volumen/Intent/Priorisierung",
+      "Fährt keine eigene dfs_domain_intersection-Analyse im content-strategie-Skill"
+    ],
+    "files": ["SKILL.md"]
+  },
+  {
+    "id": "tool-reality-no-gsc",
+    "prompt": "Wir haben noch keine Search Console angebunden — könnt ihr trotzdem Content-Ideen für unsere Domain finden?",
+    "expected_output": "Erkennt über list_workspaces, dass search_console fehlt, benennt die Lücke ehrlich (keine Aussage möglich, was heute schon zieht) und fährt den DFS-only-Pfad: dfs_keyword_ideas_for_domain + dfs_related_keywords/dfs_keyword_suggestions + dfs_keyword_volume/dfs_keyword_overview mit korrekter location/language. Kennzeichnet alle Zahlen als Datenbank-Schätzwerte und erfindet keine GSC-Bestands-Daten.",
+    "assertions": [
+      "Prüft die sources via list_workspaces und benennt die fehlende Search Console als Lücke",
+      "Fährt den DFS-only-Pfad statt abzubrechen oder GSC-Daten zu erfinden",
+      "Kennzeichnet die DFS-Zahlen als Schätzwerte (Datenbank), nicht als gemessene Konto-Daten",
+      "Empfiehlt, Search Console zu verbinden, statt die Lücke zu verschweigen"
+    ],
+    "files": ["SKILL.md"]
+  },
+  {
+    "id": "tool-reality-volume-estimates",
+    "prompt": "Wenn wir die Top-3-Themen aus eurem Backlog umsetzen, wie viele Besucher bringt uns das pro Monat?",
+    "expected_output": "Verkauft DFS-Suchvolumen nicht als Traffic-Prognose: Volumen/CPC/Difficulty sind Datenbank-Modellwerte zum Vergleichen und Priorisieren, keine Garantie — realer Traffic hängt von Ranking-Position, CTR und Umsetzungsqualität ab. Gibt höchstens eine als beratend gekennzeichnete Einordnung, keine gemessene Prognose.",
+    "assertions": [
+      "Kennzeichnet Suchvolumen als Schätzwert und leitet daraus keine garantierte Besucherzahl ab",
+      "Erklärt, wovon realer Traffic zusätzlich abhängt (Position, CTR, Umsetzung)",
+      "Kennzeichnet jede Einordnung als beratend statt als gemessen"
+    ],
+    "files": ["SKILL.md"]
+  }
+]

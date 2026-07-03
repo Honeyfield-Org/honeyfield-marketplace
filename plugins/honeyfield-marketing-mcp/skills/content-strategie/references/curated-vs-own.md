@@ -1,6 +1,6 @@
 # Kuratiert vs. Eigen — Modus-Kalibrierung
 
-Zwei Content-Modi mit unterschiedlichen Regeln. Vor dem Schreiben festlegen, welcher Modus läuft — sonst greift man zu Heuristiken aus dem anderen Modus und schwächt den Text.
+Zwei Content-Modi mit unterschiedlichen Regeln. Je Thema im Brief empfehlen, welcher Modus gilt — die Empfehlung bestimmt, welches Material der Kunde beisteuern muss; falsche Kalibrierung schwächt den Text.
 
 ## Definition
 
@@ -23,7 +23,7 @@ Zwei Content-Modi mit unterschiedlichen Regeln. Vor dem Schreiben festlegen, wel
 
 Modus-unabhängig — Verstöße schwächen jeden Text:
 - Stimme und Rhythmus (Voice aus `projekt-kontext`).
-- Floskeln raus (`writing-principles.md`, DE-LinkedIn-Floskeln).
+- Floskeln raus (Streichwort-Pass in `references/copy-qa.md` im Plugin).
 - Konkretheit > Abstraktion (Mops-Regel).
 - **Don't sell** — auch kuratierter Content wird salesy, wenn die Quelle als „musst-du-haben” verkauft wird.
 - Kein Jargon ohne Übersetzung. Aktive Stimme, kurze Verbklammer.
@@ -58,11 +58,11 @@ Fehlt jeder der drei Layer: nicht posten.
 
 **Sowing/Reaping.** Eigener Content braucht echte Arbeit (sowing), bevor das Schreiben (reaping) wertvoll wird. Bei dünnem Sowing wirkt der Text hohl, egal wie gut formuliert.
 
-## Modus-Check vor dem Schreiben
+## Modus-Check (für die Empfehlung im Brief)
 
 1. **Was ist die Quelle des Werts?** Fremdes Material → kuratiert. Eigene Erfahrung/Daten → eigen.
 2. **Wenn die Quelle wegfiele, hätte ich noch einen Text?** Nein → kuratiert, klar markieren. Ja → eigen, Quelle nur als Anlass.
 
-Beim Polish:
+Als Qualitäts-Hinweise für den Kunden in den Brief aufnehmen:
 - Kuratiert: Gefiltert/übersetzt/verortet? Authority sparsam? Eigen-Layer am Ende deutlich?
 - Eigen: Konkrete Erfahrung drin? Wird verschwiegen, was nicht funktioniert hat? Trägt der Text auch ohne Authority?
