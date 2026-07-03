@@ -52,7 +52,7 @@ Quer dazu: **DACH-Layer** (immer) und **Lokale Sichtbarkeit** (nur bei lokalem G
 
 Achten auf: nicht indexierte Schlüsselseiten, falsche/fehlende Canonicals, Mobile-Usability-Fehler, fehlende/fehlerhafte Sitemap, Soft-404 (Status 200 auf leerer/„nicht gefunden"-Seite), Redirect-Ketten/-Loops, und nicht-konsolidierte http/https/www-Varianten (mehrere gleichzeitig als 200 erreichbar = Duplicate-Risiko).
 - **URL-/Architektur-Muster** (ablesbar an den URLs aus `sc_top_pages`/Sitemap — pro gesehene URL ohne Crawl, site-weit mit `dfs_onpage_crawl`): Datums-URLs auf Evergreen-Content, Over-Nesting (>3 Pfad-Ebenen), IDs statt sprechender Slugs, alte Pfad-Varianten ohne 301-Konsolidierung.
-- **Interne Verlinkung** (Hub-and-Spoke, verwaiste Seiten): standardmäßig nur **beratend** — prüfe die Schlüsselseiten auf ein-/ausgehende interne Links und empfiehl die Hub-Struktur; mit `dfs_onpage_crawl_results(section="links")` wird die Orphan-/Hub-Analyse site-weit **gemessen**.
+- **Interne Verlinkung** (Hub-and-Spoke, verwaiste Seiten): standardmäßig nur **beratend** — prüfe die Schlüsselseiten auf ein-/ausgehende interne Links und empfiehl die Hub-Struktur; mit `dfs_onpage_crawl_results(task_id, section="links")` wird die Orphan-/Hub-Analyse site-weit **gemessen**.
 > Standard bleibt URL-für-URL für die wichtigsten Seiten (schnell, günstig). Für einen echten Site-Scan `dfs_onpage_crawl` einsetzen — gezielt bei Verdacht auf site-weite Probleme, nicht als Default (Kosten/Dauer beachten).
 
 ### 2 — Technik & Performance
@@ -158,7 +158,7 @@ Biete am Ende an, die sicher behebbaren Punkte direkt zu erledigen. **Immer vorh
 
 ## Grenzen (ehrlich benennen)
 - Seitenweiter Crawl ist jetzt möglich (`dfs_onpage_crawl`), aber kostenpflichtig/asynchron — ohne explizit angeforderten Crawl bleibt es bei geprüften Einzel-URLs; Interne-Verlinkungs-/Orphan-Aussagen sind dann weiterhin beratend.
-- Kein GSC-Gesamt-Coverage-Report (Googles eigene Index-Entscheidung bleibt URL-für-URL via `sc_url_inspection`) — technische Indexierbarkeit site-weit (robots/noindex) ist über `dfs_onpage_crawl_results(section="non_indexable")` separat prüfbar, ersetzt aber nicht GSCs Coverage-Urteil.
+- Kein GSC-Gesamt-Coverage-Report (Googles eigene Index-Entscheidung bleibt URL-für-URL via `sc_url_inspection`) — technische Indexierbarkeit site-weit (robots/noindex) ist über `dfs_onpage_crawl_results(task_id, section="non_indexable")` separat prüfbar, ersetzt aber nicht GSCs Coverage-Urteil.
 - Domain-Rank-Historie über `dfs_historical_rank_overview` (Monatswerte, Domain-Aggregat) — auf Einzel-Keyword-Ebene liefert das Tool keine Historie, dafür bleibt Snapshot-Diffing nötig (`references/content-gap.md`).
 - **DataForSEO-Calls kosten pro Aufruf** — Keyword-/SERP-/Backlink-Calls auf die 3-5 Ziel-Keywords und 2-3 Konkurrenz-Domains fokussieren, nicht breit streuen; Crawls zusätzlich über `max_crawl_pages` deckeln.
 - AEO/AIO: Präsenz + Quellen sind gemessen (`dfs_serp_google_organic.ai_overview`); die tiefe KI-Sichtbarkeits-Diagnose bleibt bei `geo-audit`.
@@ -181,4 +181,4 @@ Biete am Ende an, die sicher behebbaren Punkte direkt zu erledigen. **Immer vorh
 
 ## Referenzen
 - `references/dach-seo.md` — hreflang-Matrix, Citation-Listen je Land, Pixel-Snippet-Details, AEO-DACH, AT/CH-Linter, Impressum/Datenschutz-Checkliste.
-- `references/content-gap.md` — Competitor-Discovery-Kette, Snapshot-Schema fürs Wiederholungs-Diffing, Intent-Bucketing, Difficulty-Substitution (CPC + SERP-Besetzung), Opportunity-Matrix, Fragen-Mining.
+- `references/content-gap.md` — Competitor-Discovery-Kette, Snapshot-Schema fürs Wiederholungs-Diffing, Intent-Bucketing, Keyword-Difficulty via `dfs_keyword_overview` (CPC + SERP-Besetzung als Sekundärsignal), Opportunity-Matrix, Fragen-Mining.
