@@ -39,7 +39,11 @@ dann den exakten Diff zeigen, dann erst — nach expliziter Bestätigung — mut
 **Live-Profil (GBP) — wirkt sofort auf das öffentliche Google-Profil**
 
 - `gbp_update_profile`, `gbp_update_attributes`, `gbp_manage_hours` / `gbp_manage_categories` (Setz-Modus)
-- `gbp_reply_review` — **ersetzt** eine bestehende Antwort; vorher `gbp_reviews` lesen und die alte Antwort im Preview zeigen
+- `gbp_manage_open_info` (Setz-Modus) — `CLOSED_PERMANENTLY` lehnt das Tool selbst ab (Dashboard-Aufgabe)
+- `gbp_reply_review` — **ersetzt** eine bestehende Antwort; vorher `gbp_reviews` lesen und die alte Antwort im Preview zeigen. „Alle offenen beantworten" NUR nach vollständigem Scan: erst `gbp_reviews` mit `unanswered_only=True` + hohem `max_pages` durchpaginieren (bis `next_page_token` leer ist) und alle `review_id` als Snapshot sammeln, DANACH erst antworten — nie Lesen und Antworten verschränken (eine Antwort bumpt `updateTime` und verschiebt die Sortierung)
+- `gbp_delete_reply` — löscht eine bestehende Antwort (Review gilt danach wieder als unbeantwortet)
+- `gbp_create_post`, `gbp_upload_media` — veröffentlichen sofort öffentlich sichtbaren Content (Post bzw. Foto) im Business-Profil
+- `gbp_delete_post`, `gbp_delete_media` — entfernen veröffentlichten Content endgültig
 
 ## Defaults
 

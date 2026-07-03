@@ -31,7 +31,7 @@ Was die Tools NICHT sehen — sonst entstehen False-Findings (alle im Live-Test 
 **Workspace + Datenquellen klären.** Rufe `list_workspaces` auf, prüfe die `sources` des Ziel-Workspace. Führe nur Phasen aus, deren Quelle verbunden ist; fehlt eine, nenne das als Lücke und rate die Daten nicht zusammen.
 - Phase 1–3 brauchen nur den Raw-Fetcher (s. Plattform-Weiche unten); die `dfs_*`-Checks brauchen DataForSEO.
 - `ga4`/`search_console` → Phase 6 (Fetch & AI-Traffic); `search_console` zusätzlich → Google-Index-Status in Phase 1. Ohne sie: die jeweilige Messung als Lücke benennen.
-- `business_profile` → gemessener NAP-Check in Phase 4 (nur bei lokalem Geschäft). Ohne es: NAP-Check als beratend kennzeichnen.
+- `business_profile` → `gbp_get_profile` liefert die Ist-NAP-Daten (Name/Adresse/Telefon) als Vergleichsbasis für Phase 4 (nur bei lokalem Geschäft); `gbp_local_seo_audit` misst Profil-Vollständigkeit, keine NAP-/Citation-Konsistenz über externe Quellen. Der Abgleich mit externen Verzeichnissen bleibt beratend.
 - **DataForSEO ist domain-parametrisiert, nicht workspace-gebunden.** Hat der Ziel-Workspace `dataforseo:false`, nutze einen Schwester-Workspace mit `dataforseo:true` als Credential-Träger (`workspace=` darauf setzen) — `domain`/`keyword` bleiben das Ziel. Sonst wird Phase 5 fälschlich als undurchführbar markiert.
 - **Bei Namens-Kollision per Slug disambiguieren**, nicht per Anzeigename (zwei Workspaces können denselben Namen haben).
 
@@ -79,7 +79,7 @@ Zwischen „lesbar" und „zitierbar": kann eine KI eine **self-contained Passag
 - **Schema** im Roh-HTML parsen (JSON-LD-Typen) — `curl`/`grep` in Claude Code, `dfs_raw_html` plattformunabhängig (schließt die Claude.ai-Lücke aus Schritt 0). Empfohlen: `@id`-Knoten, die Organization/Person/WebSite kreuz-referenzieren — **die `@id`-Verknüpfung zählt mehr als die physische Bündelung in ein `@graph`-Array** (separate Snippets mit `@id`-Cross-Refs sind fast gleichwertig). Kerntypen + Templates in `references/schema-templates.md`.
 - **`sameAs`** → Wikidata/Wikipedia/LinkedIn/Crunchbase (nicht nur Social) = Entity-Reconciliation gegen den Knowledge-Graph der Modelle.
 - **Accuracy:** Schema muss dem **sichtbaren** Content entsprechen. Sonderfall: Antworten/Fakten nur im JSON-LD, aber nicht im sichtbaren Body = JS-Render-Gap **und** Accuracy-Schwäche — nicht als „Schema vorhanden = ok" werten.
-- **NAP-Konsistenz** + **konsistente Marken-/Produkt-Positionierung** über die wichtigsten Quellen. Bei lokalem Geschäft und verbundenem `business_profile`: NAP **gemessen** prüfen via `gbp_local_seo_audit` (+ `gbp_get_profile` für die Ist-Daten); sonst den NAP-Check als beratend kennzeichnen. (Entity-Mismatch — Site/Directories beschreiben eine andere Kategorie als das strategische Produkt — ist ein High-Impact-Befund; siehe Phase 5.)
+- **NAP-Konsistenz** + **konsistente Marken-/Produkt-Positionierung** über die wichtigsten Quellen. `gbp_local_seo_audit` misst **keine** NAP-/Citation-Konsistenz über externe Quellen (reiner GBP-Profil-Vollständigkeits-Score) — bei lokalem Geschäft und verbundenem `business_profile` liefert `gbp_get_profile` die Ist-Daten (Name/Adresse/Telefon) als Vergleichsbasis, der Abgleich mit externen Verzeichnissen bleibt beratend. (Entity-Mismatch — Site/Directories beschreiben eine andere Kategorie als das strategische Produkt — ist ein High-Impact-Befund; siehe Phase 5.)
 
 ### 5 — Off-site-Citability (Herzstück)
 Selbst-Citation ist unmöglich → es zählt, wer in den Category-Queries zitiert wird.

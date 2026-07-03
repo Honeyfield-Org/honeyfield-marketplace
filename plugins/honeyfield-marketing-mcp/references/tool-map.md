@@ -232,24 +232,32 @@ Lege Schreib-Tools (W) nie ohne write-guardrails.md an.
 
 ---
 
-## Google Business Profile (source: business_profile) — enthält W ⚠ Guardrails
+## Google Business Profile (source: business_profile, außer `gbp_local_rank`: dataforseo) — enthält W ⚠ Guardrails
 
 | Tool | Was | Quelle | R/W |
 |---|---|---|---|
-| `gbp_list_locations` | Alle Standorte des verbundenen Google-Kontos | business_profile | R |
+| `gbp_list_locations` | Alle Standorte des verbundenen Google-Kontos — paginiert vollständig über Accounts und Standorte; bei Erreichen der Seiten-Obergrenze (50 je Schleife) zusätzliches Warn-Element `{"warning": "truncated", ...}` am Listenende | business_profile | R |
 | `gbp_location_info` | Stammdaten des Standorts (Name, Adresse, Telefon, Kategorie, Öffnungszeiten) | business_profile | R |
 | `gbp_get_profile` | Vollständiges Business-Profil inkl. Attribute und Sonderöffnungszeiten | business_profile | R |
-| `gbp_performance` | Impressionen (Maps/Suche), Anrufe, Website-Klicks, Routenanfragen | business_profile | R |
+| `gbp_performance` | Impressionen (Maps/Suche), Anrufe, Website-Klicks, Routenanfragen, Buchungen, Essensbestellungen, Menü-Klicks — Zeitraum via `days` (rollierend) oder `start_date`+`end_date`; `metrics` filtert auf eine Teilmenge; `include_time_series=True` liefert Tageswerte statt nur Summen | business_profile | R |
 | `gbp_search_keywords` | Suchbegriffe, über die Nutzer das Profil gefunden haben | business_profile | R |
-| `gbp_reviews` | Rezensionen: Durchschnittswertung + neueste Bewertungen inkl. Antworten | business_profile | R |
-| `gbp_reply_review` | Auf eine Rezension antworten (erstellt oder ersetzt bestehende Antwort) | business_profile | W |
-| `gbp_get_review_link` | Direkten Bewertungs-Link (Kurz-URL) für einen Standort abrufen | business_profile | R |
-| `gbp_local_rank` | Lokales Grid-Ranking für Keywords rund um den Standort (Local-Pack-Position) | business_profile | R |
-| `gbp_local_seo_audit` | Lokaler SEO-Check des Profils (Vollständigkeit, Kategorien, NAP-Konsistenz) | business_profile | R |
-| `gbp_manage_categories` | Primär- und Zusatzkategorien des Standorts lesen/setzen | business_profile | R/W |
-| `gbp_manage_hours` | Reguläre + Sonderöffnungszeiten lesen/setzen | business_profile | R/W |
-| `gbp_update_attributes` | Profil-Attribute setzen (z.B. Service-Optionen, Barrierefreiheit, Zahlungsarten) | business_profile | W |
-| `gbp_update_profile` | Profildaten aktualisieren (Beschreibung, Website, Telefon) | business_profile | W |
+| `gbp_reviews` | Rezensionen: Durchschnittswertung + Bewertungen inkl. Antworten. Fenster: max. 50/Seite (API-Cap, `limit` wird gedeckelt); kein serverseitiges Unbeantwortet-Filter — `unanswered_only=True` + `max_pages` paginiert durch und liefert nur unbeantwortete Reviews plus `pages_scanned`/`next_page_token` (kann dabei bis zu eine Seite mehr als `limit` enthalten); `order_by` (`updateTime desc`, `rating` oder `rating desc`) und `page_token` für Sortierung/Fortsetzung. **Antworten bumpt `updateTime`** — bei `updateTime desc` springt ein gerade beantwortetes Review nach oben: nie Lesen und Antworten verschränken, erst per `unanswered_only` vollständigen Snapshot sammeln, dann antworten | business_profile | R |
+| `gbp_reply_review` | Auf eine Rezension antworten (erstellt oder **ersetzt** bestehende Antwort; `comment` max. 4096 Bytes UTF-8) | business_profile | W |
+| `gbp_delete_reply` | Löscht die Antwort auf eine Rezension (gilt danach wieder als unbeantwortet) | business_profile | W |
+| `gbp_update_profile` | Stammdaten aktualisieren: `title`, `description`, `website_uri`, `phone` (nur gesetzte Felder) | business_profile | W |
+| `gbp_manage_categories` | Primär-/Zusatzkategorien suchen (`search_term`), lesen (`get`) oder setzen (`set`) | business_profile | R/W |
+| `gbp_update_attributes` | Attribute lesen (`get`) oder setzen (`set`) — Wertformen: URL (String/Liste), Bool, `{'enum': 'WERT'}`, `{'set': […], 'unset': […]}` (Mehrfachauswahl), `None` löscht das Attribut | business_profile | R/W |
+| `gbp_manage_hours` | Reguläre + Sonderöffnungszeiten **setzen** — kein Lese-Modus, Ist-Zustand über `gbp_get_profile` | business_profile | W |
+| `gbp_manage_open_info` | Öffnungsstatus (openInfo) lesen (`get`) oder setzen (`set`, nur `OPEN` oder `CLOSED_TEMPORARILY`) — `CLOSED_PERMANENTLY` wird bewusst abgelehnt (gehört ins Google-Dashboard) | business_profile | R/W |
+| `gbp_get_review_link` | „Bewertung schreiben"-Link des Standorts; ohne `newReviewUri` Fallback auf die lange `writereview`-URL (kein Kurzlink) | business_profile | R |
+| `gbp_local_seo_audit` | Profil-Vollständigkeits-Score (Kategorien, Beschreibung, Öffnungszeiten, Attribute, Reviews, Fotos ≥3, Post ≤30 Tage) — **kein NAP-/Citation-Abgleich**; Review-/Foto-/Post-Checks laufen unbewertet, wenn die v4-API nicht freigeschaltet ist | business_profile | R |
+| `gbp_local_rank` | Tatsächliche Position im Google-Maps/Local-Pack für ein Keyword + Standort — **Einzelpunkt-Abfrage, kein Grid** | dataforseo | R |
+| `gbp_list_posts` | Local Posts des Standorts (Update/Angebot/Veranstaltung) mit Status und CTA, paginiert | business_profile | R |
+| `gbp_create_post` | Neuen Local Post veröffentlichen (STANDARD/EVENT/OFFER) — sofort öffentlich sichtbar | business_profile | W |
+| `gbp_delete_post` | Löscht einen Local Post | business_profile | W |
+| `gbp_list_media` | Hochgeladene Fotos/Medien des Standorts, paginiert | business_profile | R |
+| `gbp_upload_media` | Foto per Quell-URL hochladen — sofort öffentlich sichtbar | business_profile | W |
+| `gbp_delete_media` | Löscht ein hochgeladenes Foto/Medium | business_profile | W |
 
 ---
 
