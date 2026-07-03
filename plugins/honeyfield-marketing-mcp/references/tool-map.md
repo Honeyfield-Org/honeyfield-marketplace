@@ -216,7 +216,7 @@ Lege Schreib-Tools (W) nie ohne write-guardrails.md an.
 | `dfs_keyword_suggestions` | Keyword-Vorschläge zu einem Seed-Keyword inkl. Volumen, CPC, Difficulty | dataforseo | R |
 | `dfs_backlinks_list` | Konkrete Backlink-Liste einer Domain, filterbar nach broken/dofollow/lost | dataforseo | R |
 | `dfs_llm_mentions` | Marken-/Themen-Erwähnungen in LLM-Antworten je Keyword (Subscription-gated) | dataforseo | R |
-| `dfs_llm_mentions_metrics` | Aggregierte Mentions-/Citation-Kennzahlen über LLM-Engines (Subscription-gated) | dataforseo | R |
+| `dfs_llm_mentions_metrics` | Aggregierte Mentions pro Engine, Gesamt-Citations + Share-of-Voice über LLM-Engines (Subscription-gated) | dataforseo | R |
 | `dfs_llm_top_domains` | Meistzitierte Domains in LLM-Antworten zu einer Keyword-Liste (Subscription-gated) | dataforseo | R |
 | `dfs_llm_responses` | Rohe LLM-Antwort + Zitate zu einem Prompt (ChatGPT/Claude/Gemini/Perplexity, Subscription-gated) | dataforseo | R |
 | `dfs_onpage_crawl` | Seitenweiten Crawl einer Domain starten (asynchron, `max_crawl_pages` Pflicht — Kosten skalieren pro Seite) | dataforseo | R |
