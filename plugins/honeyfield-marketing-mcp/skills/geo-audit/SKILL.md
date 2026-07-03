@@ -14,8 +14,8 @@ Kernmechanik (Details in `references/geo-mechanik.md`): KI-Antworten unterscheid
 ## Beleg-Stufen — jeden Befund kennzeichnen
 
 - **Gemessen (deterministisch):** Rendering (raw-HTML vs. JS), robots.txt-Regeln, Schema im Roh-HTML, Index-Präsenz (Google via `sc_url_inspection`) → harte Fakten, 100 % belastbar. Der **Bot-UA-Status-Code-Check** zählt nur in Claude Code dazu — in Claude.ai plattformbedingte Lücke (s. Plattform-Weiche, Schritt 0).
-- **Gemessen (First-Party / SERP):** AI-Referrer in GA4, GSC-Queries, wem die zitierten Quellen der Category-Queries gehören (SERP + Backlinks), Google-AI-Overview-Präsenz, Cross-Engine-Mentions/Citations via LLM-Mentions-Adapter (bei aktivem Abo) → echte Zahlen.
-- **Beratend:** Extractability-/Content-Struktur, Entity-Empfehlungen, Cross-Engine-Citations ohne aktives LLM-Mentions-Abo (dann nur manuelle Capture, Weg A) → begründete Empfehlung, nie als gemessen verkaufen.
+- **Gemessen (First-Party / SERP):** AI-Referrer in GA4, GSC-Queries, wem die zitierten Quellen der Category-Queries gehören (SERP + Backlinks), Google-AI-Overview-Präsenz, Cross-Engine-Mentions/Citations via LLM-Mentions-Adapter (bei verbundenem DataForSEO-Zugang) → echte Zahlen.
+- **Beratend:** Extractability-/Content-Struktur, Entity-Empfehlungen, Cross-Engine-Citations ohne DataForSEO-Zugang oder bei `subscription_required` (dann nur manuelle Capture, Weg A) → begründete Empfehlung, nie als gemessen verkaufen.
 
 ## Tool-Limitation (kritisch, zuerst lesen)
 
@@ -24,7 +24,7 @@ Was die Tools NICHT sehen — sonst entstehen False-Findings (alle im Live-Test 
 - **`dfs_onpage_instant` liefert nur gerenderte Metriken (Title, `h1_count`, `onpage_score`, `checks_failed`) — KEINEN HTML-Body, und `word_count` ist oft `null`.** Der Raw-vs-Rendered-Diff läuft daher über das Roh-HTML — `curl` bleibt in Claude Code der schnellste Weg, `dfs_raw_html` liefert dasselbe plattformunabhängig (auch in Claude.ai) — + Token-/Schema-Präsenz (steht Preis/FAQ-Antwort/Nav im sichtbaren Body?), nicht über einen word_count-Vergleich.
 - **`dfs_backlink_*` braucht das separate DataForSEO-Backlinks-Add-on** — sonst `40204 Access denied`. Dann als Lücke benennen und das Citation-Mapping über das WebFetch-Drittpräsenz-Inventar substituieren (Phase 5).
 - **GSC liefert keine KI-Citation-Daten** — es gibt kein AI-spezifisches Search-Console-Reporting. AI-Referrer-Traffic ist in GA4 nur näherungsweise sichtbar; der härteste Fetch-Beweis sind Server-/Cloudflare-Logs (off-tool).
-- **Cross-Engine-Sichtbarkeit** (wird die Marke in ChatGPT/Claude/Gemini genannt?) ist per Default über `dfs_llm_mentions`/`dfs_llm_mentions_metrics`/`dfs_llm_top_domains` automatisiert messbar (LLM-Mentions-Adapter, `references/llm-mentions-adapter.md`) — aber Abo-pflichtig; liefert der Call `subscription_required`, nur über manuelle Capture (Weg A). Niemals aus einer Einzelabfrage einen „Score" ableiten.
+- **Cross-Engine-Sichtbarkeit** (wird die Marke in ChatGPT/Claude/Gemini genannt?) ist per Default über `dfs_llm_mentions`/`dfs_llm_mentions_metrics`/`dfs_llm_top_domains` automatisiert messbar (LLM-Mentions-Adapter, `references/llm-mentions-adapter.md`, pay-as-you-go über das normale DataForSEO-Guthaben) — liefert der Call `subscription_required` (Zugriffsproblem, z. B. Guthaben aufgebraucht, `40204`), nur über manuelle Capture (Weg A). Niemals aus einer Einzelabfrage einen „Score" ableiten.
 
 ## Schritt 0 — Vorbereitung (immer zuerst)
 
@@ -85,7 +85,7 @@ Zwischen „lesbar" und „zitierbar": kann eine KI eine **self-contained Passag
 Selbst-Citation ist unmöglich → es zählt, wer in den Category-Queries zitiert wird.
 - **Query-Mix (3–5):** mind. 1 reine Kategorie-Query, 1 „beste-[Kategorie]"-Query, 1 „[Konkurrent]-Alternative"-Query. **DE-Begriffe → DACH-SERPs, EN-Begriffe → US-SERPs** (bewusst wählen). Job-/Stellen-Begriffe meiden (verschmutzen die SERP).
 - **Wem gehört die Antwort?** `dfs_serp_google_organic` (location/language!) → welche Domains besitzen die Plätze; liefert `ai_overview.present`/`sources` direkt mit (kein Raw-API-Umweg mehr nötig, s. `references/geo-mechanik.md`).
-- **Citation-Quellen kartieren:** `dfs_backlinks_list(mode="all")` (Schwester-Workspace mit DataForSEO + Backlinks-Add-on) → konkrete Referring-URLs der zitierten Marken (granularer als `dfs_backlink_summary`'s Aggregat). Direkter, bei aktivem LLM-Mentions-Abo: `dfs_llm_top_domains` liefert die tatsächlich von LLMs zitierten Domains fürs Thema, ohne Umweg über Backlinks. Bei `40204`/`subscription_required` über das Drittpräsenz-Inventar substituieren.
+- **Citation-Quellen kartieren:** `dfs_backlinks_list(mode="all")` (Schwester-Workspace mit DataForSEO + Backlinks-Add-on) → konkrete Referring-URLs der zitierten Marken (granularer als `dfs_backlink_summary`'s Aggregat). Direkter, bei DataForSEO-Zugang: `dfs_llm_top_domains` liefert die tatsächlich von LLMs zitierten Domains fürs Thema, ohne Umweg über Backlinks. Bei `40204`/`subscription_required` über das Drittpräsenz-Inventar substituieren.
 - **Drittpräsenz-Inventar:** Ist die Marke auf der Entity-Baseline (Wikidata/Crunchbase/LinkedIn), den DACH-Review-Quellen (OMR/ProvenExpert/Capterra.at) und — bei AI-/MCP-Produkten — den **MCP-Registries** (Glama/PulseMCP/Smithery/mcpmarket)? **Jeden Treffer per WebFetch der Zielseite verifizieren, NIE aus dem WebSearch-Antworttext** (LLM-synthetisiert, erfindet Profile). Bei mehrdeutigem Markennamen per Domain/Standort/Rechtsform ankern. Vollständige Liste + Methodik in `references/dach-citability.md`.
 
 ### 6 — Fetch & AI-Traffic-Messung (nur wenn `ga4`/`search_console` verbunden)
@@ -94,8 +94,8 @@ Selbst-Citation ist unmöglich → es zählt, wer in den Category-Queries zitier
 - Ehrlich kennzeichnen: GA4-Referrer ≠ Fetch-Beweis; der harte Beweis sind Server-/Cloudflare-Logs (off-tool).
 
 ### 7 — Cross-Engine-Sichtbarkeit (Weg B Default, Weg A Fallback)
-- **Weg B — LLM-Mentions-Adapter (Default):** `dfs_llm_mentions`, `dfs_llm_mentions_metrics`, `dfs_llm_top_domains`, `dfs_llm_responses` — automatisiert, unterscheidet Citation (URL verlinkt) vs. Mention, Index nicht tagesaktuell (Lag nicht API-verifiziert — bei Stichtag-nahen Vergleichen vorsichtig sein). Braucht ein separates DataForSEO-AI-Optimization-Abo (~$100/Monat Mindest-Top-up); ohne aktives Abo liefern die Calls `subscription_required`.
-- **Weg A — Manuelle Capture (Degradationspfad ohne Abo):** 20 Top-Queries × ChatGPT/Perplexity/Gemini, monatlich protokollieren (genannt/zitiert/abwesend + welche Konkurrenz).
+- **Weg B — LLM-Mentions-Adapter (Default):** `dfs_llm_mentions`, `dfs_llm_mentions_metrics`, `dfs_llm_top_domains`, `dfs_llm_responses` — automatisiert, unterscheidet Citation (URL verlinkt) vs. Mention, Index nicht tagesaktuell (Lag nicht API-verifiziert — bei Stichtag-nahen Vergleichen vorsichtig sein). Pay-as-you-go über das normale DataForSEO-Guthaben (kein separates Abo mehr nötig); liefert ein Call `subscription_required` (Zugriffsproblem, z. B. Guthaben aufgebraucht, `40204`), auf Weg A degradieren.
+- **Weg A — Manuelle Capture (Fallback bei `subscription_required` oder ohne DataForSEO-Zugang):** 20 Top-Queries × ChatGPT/Perplexity/Gemini, monatlich protokollieren (genannt/zitiert/abwesend + welche Konkurrenz).
 
 Beide Wege, Protokoll, Endpoints und Kosten in `references/llm-mentions-adapter.md`. Niemals aus einer Einzelabfrage einen „Score" ableiten — auch mit aktivem Adapter gilt: belastbar wird es erst über aggregiertes/wiederholtes Sampling.
 
@@ -135,7 +135,7 @@ Regel: **erst den Ist-Zustand lesen, dann exakten Diff/Dry-Run zeigen, dann einz
 
 ## Grenzen (ehrlich benennen)
 - Kein seitenweiter Crawler — nur die geprüften Einzel-URLs.
-- Cross-Engine-Citations ohne aktives LLM-Mentions-Abo nicht automatisiert messbar (dann nur manuelle Capture).
+- Cross-Engine-Citations ohne DataForSEO-Zugang oder bei `subscription_required` nicht automatisiert messbar (dann nur manuelle Capture).
 - GA4-Referrer ≈ Näherung; kein AI-spezifisches GSC-Reporting; Fetch-Beweis = Server-Logs (off-tool).
 - Momentaufnahme, keine Historie.
 
@@ -143,9 +143,9 @@ Regel: **erst den Ist-Zustand lesen, dann exakten Diff/Dry-Run zeigen, dann einz
 - Crawler-Zugang/Index: `curl`/WebFetch (robots; Bot-UA nur via `curl`), `sc_url_inspection`, `sc_list_sitemaps`, `dfs_onpage_instant`, `dfs_serp_bing_organic` (Bing-Index-Check)
 - Parsability: `curl`/WebFetch (raw) + `dfs_raw_html` (plattformunabhängig) + `dfs_onpage_instant` (rendered)
 - Entity/Schema: `curl`/WebFetch/`dfs_raw_html` (JSON-LD parsen), `dfs_onpage_instant`, `gbp_local_seo_audit` + `gbp_get_profile` (Local)
-- Off-site: `dfs_serp_google_organic` (inkl. AI-Overview), `dfs_backlinks_list`, `dfs_backlink_competitors`, `dfs_backlink_summary`; bei aktivem LLM-Mentions-Abo zusätzlich `dfs_llm_top_domains`
+- Off-site: `dfs_serp_google_organic` (inkl. AI-Overview), `dfs_backlinks_list`, `dfs_backlink_competitors`, `dfs_backlink_summary`; bei DataForSEO-Zugang zusätzlich `dfs_llm_top_domains`
 - Fetch/Traffic: `ga4_traffic_sources`, `ga4_report`, `sc_top_queries`, `sc_top_pages`
-- Cross-Engine: `dfs_llm_mentions`, `dfs_llm_mentions_metrics`, `dfs_llm_top_domains`, `dfs_llm_responses` (Weg B, Abo-pflichtig) / manuelle Capture (Weg A)
+- Cross-Engine: `dfs_llm_mentions`, `dfs_llm_mentions_metrics`, `dfs_llm_top_domains`, `dfs_llm_responses` (Weg B, pay-as-you-go) / manuelle Capture (Weg A, Fallback bei `subscription_required`)
 - Umsetzen: `strapi_get_entry` → `strapi_update_entry` / `strapi_publish_entry` (CMS), `sc_list_sitemaps` → `sc_submit_sitemap`
 
 ## Verwandte Skills
@@ -155,4 +155,4 @@ Regel: **erst den Ist-Zustand lesen, dann exakten Diff/Dry-Run zeigen, dann einz
 - `references/geo-mechanik.md` — fetched/cited/mentioned, Index-Backends pro Engine, KI-Bot-Liste + robots-Nuancen, Princeton-Hebel-Tabelle, Extractability-Detailcheck, Freshness/Answer-Fit, Mythen & Anti-Patterns, llms.txt/OKF.
 - `references/dach-citability.md` — DACH-Drittplattform-Zielliste (Entity-Baseline, Review-Sites, Listicle-Such-Patterns, MCP-Registries, DACH-Presse), Competitor-Citation-Methodik, AI-Referrer-Domainliste für GA4.
 - `references/schema-templates.md` — `@graph`/`@id`-JSON-LD-Templates (Organization/Person/Product+Offer/Article/Breadcrumb), `sameAs`-Guidance, FAQ-als-Claim-Nuance, Validierungs-Checkliste.
-- `references/llm-mentions-adapter.md` — LLM-Mentions-Adapter (Weg B, Default: `dfs_llm_mentions`/`dfs_llm_mentions_metrics`/`dfs_llm_top_domains`/`dfs_llm_responses`, Kosten/Aktivierung) + manuelles Capture-Protokoll (Weg A, Fallback ohne Abo).
+- `references/llm-mentions-adapter.md` — LLM-Mentions-Adapter (Weg B, Default: `dfs_llm_mentions`/`dfs_llm_mentions_metrics`/`dfs_llm_top_domains`/`dfs_llm_responses`, pay-as-you-go, Kosten) + manuelles Capture-Protokoll (Weg A, Fallback bei `subscription_required`).

@@ -13,7 +13,7 @@ Zwei Eigenschaften definieren diesen Skill:
 - **Read-only.** Ein Report schreibt nichts ins Konto. Keine Schreib-Aktionen, kein Operator — nur lesen und zusammenstellen.
 - **Orchestrieren, nicht duplizieren.** Du ziehst die **Kern-KPIs** jedes Kanals (nicht die Audit-Tiefe) und machst sie zeitraum-vergleichbar. Fällt etwas auf, **markierst du es und verweist auf den zuständigen Audit-Skill** — du diagnostizierst die Ursache nicht selbst.
 
-**Drei Beleg-Stufen:** **gemessen** (harte Zahlen aus Konto/Property, inkl. AI-Sichtbarkeit über `dfs_llm_mentions_metrics` bei aktivem DataForSEO-AI-Optimization-Abo); **mit Tracking-Vorbehalt** (abhängige KPIs wie CPA/ROAS, solange das Conversion-Tracking unklar ist — nicht als belastbar verkaufen); **beratend** (AI-Sichtbarkeit über GA4-Referrer = Näherung, kein Beweis — Default ohne Abo, sonst Ergänzung). Kennzeichne, welcher Pfad greift.
+**Drei Beleg-Stufen:** **gemessen** (harte Zahlen aus Konto/Property, inkl. AI-Sichtbarkeit über `dfs_llm_mentions_metrics` bei verbundenem DataForSEO-Zugang, pay-as-you-go); **mit Tracking-Vorbehalt** (abhängige KPIs wie CPA/ROAS, solange das Conversion-Tracking unklar ist — nicht als belastbar verkaufen); **beratend** (AI-Sichtbarkeit über GA4-Referrer = Näherung, kein Beweis — Fallback bei `subscription_required` oder ohne `dataforseo`, sonst Ergänzung). Kennzeichne, welcher Pfad greift.
 
 ## Schritt 0 — Vorbereitung (immer zuerst)
 
@@ -36,7 +36,7 @@ Arbeite die verbundenen Kanäle durch und ziehe je die Kern-KPIs mit Zeitraum-Ve
 4. **SEO / Search Console** (`sc_performance`, `sc_top_queries`, `sc_top_pages`): Klicks, Impressionen, Ø-Position, Top-Query-Bewegung.
 5. **Local / Google Business Profile** (`gbp_performance`): Anrufe, Website-Klicks, Routenanfragen, Impressionen (Maps/Suche) — für lokale Kunden Kern-Zahlen.
 6. **Web / GA4** (`ga4_report`, `ga4_conversions`, `ga4_traffic_sources`): Sessions, Conversions/Key Events, Engagement, Traffic nach Quelle.
-7. **AI-Sichtbarkeit** (`dfs_llm_mentions_metrics`, max. 10 Marken-/Themen-Keywords pro Call): Mentions/Citations/Share-of-Voice als WoW-KPI (Index nicht tagesaktuell, Lag nicht API-verifiziert — bei Stichtag-nahen WoW-Vergleichen vorsichtig sein). Ohne aktives DataForSEO-AI-Optimization-Abo (`subscription_required`) Degradation auf `ga4_traffic_sources` (`sessionSource`, days≥28) — grobe AI-Referrer-Menge, dann explizit als **beratend/Näherung** kennzeichnen.
+7. **AI-Sichtbarkeit** (`dfs_llm_mentions_metrics`, max. 10 Marken-/Themen-Keywords pro Call): Mentions/Citations/Share-of-Voice als WoW-KPI (Index nicht tagesaktuell, Lag nicht API-verifiziert — bei Stichtag-nahen WoW-Vergleichen vorsichtig sein). Schlägt der Zugriff fehl (`subscription_required`, z. B. Guthaben aufgebraucht), Degradation auf `ga4_traffic_sources` (`sessionSource`, days≥28) — grobe AI-Referrer-Menge, dann explizit als **beratend/Näherung** kennzeichnen.
 
 **Anomalie-Assist:** `anomaly_check` / `budget_pacing` können Ausreißer vorschlagen — als Hinweis nutzen, nicht als alleinige Wahrheit.
 
@@ -65,7 +65,7 @@ Halte den Report scanbar (Tabellen, kurze Bullets). Jede Zahl ist echt aus den T
 - **Keine Ursachen-Diagnose** — der Report zeigt Bewegungen und wo man tiefer schaut, nicht warum (das ist Audit-Arbeit).
 - Delta-Fallstricke (niedriges Volumen = Rauschen, Attributions-Lag, Saison): `references/report-kpis.md`.
 - **Nicht jedes Tool liefert eine Vorperiode** — viele nehmen nur `days` (Fenster endet heute). Deltas nur nach der Zeitraum-Mechanik in `references/report-kpis.md` bilden; `ads_impression_share` bleibt Snapshot, MoM ist für Ads-KPIs nur über Tagesverlauf-Tools sauber.
-- AI-Sichtbarkeit ist bei aktivem AI-Optimization-Abo eine echte WoW-KPI (`dfs_llm_mentions_metrics`); ohne Abo bleibt sie Näherung über GA4-Referrer, kein Fetch-/Zitat-Beweis.
+- AI-Sichtbarkeit ist bei verbundenem DataForSEO-Zugang eine echte WoW-KPI (`dfs_llm_mentions_metrics`); schlägt der Zugriff fehl (`subscription_required`) oder fehlt `dataforseo`, bleibt sie Näherung über GA4-Referrer, kein Fetch-/Zitat-Beweis.
 - Für Social Ads (Meta/LinkedIn) existiert kein Audit-Skill — der Report kann berichten, aber keinen Deep-Dive empfehlen.
 - Nur verbundene Kanäle — fehlende Quellen sind Lücken, keine Nullen.
 
@@ -74,7 +74,7 @@ Halte den Report scanbar (Tabellen, kurze Bullets). Jede Zahl ist echt aus den T
 - Social Ads (read-only): `meta_campaign_performance`, `linkedin_campaign_performance`, `linkedin_list_campaigns`
 - SEO: `sc_performance`, `sc_top_queries`, `sc_top_pages`
 - Local: `gbp_performance`
-- Web/AI: `ga4_report`, `ga4_conversions`, `ga4_traffic_sources`, `dfs_llm_mentions_metrics` (AI-Sichtbarkeit, Subscription-gated — Fallback `ga4_traffic_sources`)
+- Web/AI: `ga4_report`, `ga4_conversions`, `ga4_traffic_sources`, `dfs_llm_mentions_metrics` (AI-Sichtbarkeit, pay-as-you-go — Fallback `ga4_traffic_sources` bei `subscription_required`)
 - Vorbereitung: `list_workspaces`
 
 ## Verwandte Skills

@@ -7,10 +7,10 @@ Referenz für `wochenreport`. Pro Kanal: welche KPIs, welche Tools, was ein auff
 ---
 
 ## Beleg-Stufen (Rahmen wie in den Audits; Mittelstufe je Domäne verschieden)
-- **Gemessen:** harte Zahlen aus dem Konto/der Property (Ads-Spend, GSC-Klicks, GA4-Sessions, GEO/AI-Sichtbarkeit über `dfs_llm_mentions_metrics` bei aktivem AI-Optimization-Abo).
+- **Gemessen:** harte Zahlen aus dem Konto/der Property (Ads-Spend, GSC-Klicks, GA4-Sessions, GEO/AI-Sichtbarkeit über `dfs_llm_mentions_metrics` bei verbundenem DataForSEO-Zugang, pay-as-you-go).
 - **Mit Tracking-Vorbehalt:** abhängige KPIs (Conversions, CPA, ROAS), solange das Conversion-Tracking unklar ist — nicht als belastbar verkaufen.
-- **Beratend:** GEO/AI-Sichtbarkeit über GA4-Referrer — Default ohne AI-Optimization-Abo (`subscription_required`), sonst Ergänzung zu `dfs_llm_mentions_metrics` (Näherung, kein Fetch-Beweis).
-Jede Report-Zeile trägt die Stufe implizit über die Quelle; AI-Traffic ohne Abo explizit als Näherung kennzeichnen.
+- **Beratend:** GEO/AI-Sichtbarkeit über GA4-Referrer — Fallback bei `subscription_required` oder ohne `dataforseo`, sonst Ergänzung zu `dfs_llm_mentions_metrics` (Näherung, kein Fetch-Beweis).
+Jede Report-Zeile trägt die Stufe implizit über die Quelle; AI-Traffic ohne DataForSEO-Zugang explizit als Näherung kennzeichnen.
 
 ---
 
@@ -98,13 +98,13 @@ Für lokale Kunden (Praxis, Bäckerei, Handwerk) sind das Kern-Zahlen — oft wi
 
 ---
 
-## GEO / AI-Sichtbarkeit (WoW-KPI bei aktivem Abo, sonst Näherung, nur wenn relevant)
+## GEO / AI-Sichtbarkeit (WoW-KPI bei DataForSEO-Zugang, sonst Näherung, nur wenn relevant)
 
 | KPI | Tool | WoW-Auffällig ab | Deep-Dive |
 |---|---|---|---|
 | Mentions / Citations / Share-of-Voice | `dfs_llm_mentions_metrics` (max. 10 Marken-/Themen-Keywords pro Call) | Share-of-Voice −20 %-Punkte oder Mentions halbieren sich | `geo-audit` |
 
-- **Subscription-gated:** liefert `dfs_llm_mentions_metrics` `{"error": "subscription_required", ...}` (kein DataForSEO-AI-Optimization-Abo aktiv), auf die alte Näherung degradieren: `ga4_traffic_sources` (days≥28, nach `sessionSource`) → AI-Referrer (chatgpt.com, perplexity.ai, copilot.microsoft.com/copilot.com, gemini) grob quantifizieren. **Näherung, kein Fetch-/Zitat-Beweis** — als beratend kennzeichnen.
+- **Pay-as-you-go, kein Abo:** `dfs_llm_mentions_metrics` läuft über das normale DataForSEO-Guthaben. Liefert der Call `{"error": "subscription_required", ...}` (Zugriffsproblem, z. B. Guthaben aufgebraucht), auf die alte Näherung degradieren: `ga4_traffic_sources` (days≥28, nach `sessionSource`) → AI-Referrer (chatgpt.com, perplexity.ai, copilot.microsoft.com/copilot.com, gemini) grob quantifizieren. **Näherung, kein Fetch-/Zitat-Beweis** — als beratend kennzeichnen.
 - **Lag:** Index nicht tagesaktuell; die genaue Lag-Dauer ist nicht über die DataForSEO-Docs API-verifiziert — bei WoW-Vergleichen kurz vor dem Report-Stichtag entsprechend vorsichtig sein.
 - Auffällig: AI-Traffic/Mentions verschwinden oder verdoppeln sich → `geo-audit`.
 
