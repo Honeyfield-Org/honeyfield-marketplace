@@ -1,6 +1,6 @@
 # Psychologie — Challenge → Models
 
-Index zum Begründen von Angles und Argumenten: `ad-creative` für die Angle-Wahl, `content` für die Artikel-Argumentation. On-demand laden.
+Index zum Begründen von Angles und Argumenten: `ad-creative` für die Angle-Wahl. On-demand laden.
 
 **Beratend, nicht entscheidend.** Ein Mental Model begründet eine **Hypothese**, warum ein Angle ziehen könnte — die Daten (CTR, Conversion, Search-Terms, GA4) entscheiden, ob er zieht. Nie ein Model als Beweis verkaufen. Mental Models nach Corey Haines' `marketingskills`, eingedeutscht.
 

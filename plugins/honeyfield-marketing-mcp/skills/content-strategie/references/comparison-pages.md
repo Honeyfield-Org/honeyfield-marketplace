@@ -1,6 +1,6 @@
 # Vergleichs- & Alternative-Seiten
 
-Ein eigener Content-Typ für Consideration-/Decision-Intent: Seiten, die das Produkt gegen Wettbewerber positionieren, für Kaufberatern rankbar und ehrlich. Nach Corey Haines' `competitors`, eingedeutscht. On-demand laden (in Modus B, wenn eine Vergleichsseite entsteht).
+Ein eigener Content-Typ für Consideration-/Decision-Intent: Seiten, die das Produkt gegen Wettbewerber positionieren, für Kaufberatern rankbar und ehrlich. Nach Corey Haines' `competitors`, eingedeutscht. On-demand laden, wenn eine Comparison-/Alternative-Idee gebrieft wird — liefert Format-Wahl und Gliederungs-Vorschlag für den Content-Brief.
 
 ## Ehrlichkeits-Grundsatz (zuerst)
 

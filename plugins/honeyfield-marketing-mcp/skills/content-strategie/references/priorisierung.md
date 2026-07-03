@@ -1,6 +1,6 @@
 # Themen-Priorisierung & Buyer-Stage
 
-Für Modus A. Jedes Thema fußt auf gemessenen Daten (GSC/DFS), die Gewichtung ist beratend. On-demand laden. Priorisierungs-Score nach Corey Haines' `marketingskills`, eingedeutscht.
+Für die Themen-Findung und Priorisierung. Jedes Thema fußt auf gemessenen bzw. geschätzten Daten (GSC/DFS), die Gewichtung ist beratend. On-demand laden. Priorisierungs-Score nach Corey Haines' `marketingskills`, eingedeutscht.
 
 ## 40/30/20/10-Score
 
@@ -59,7 +59,7 @@ Kommt eine Content-Lücken-Liste aus `seo-audit` Phase 5, ist die Diagnose schon
 
 ## Headline- & CTA-Formeln (eingedeutscht)
 
-Für Titel/H1 und CTAs. Nach Corey Haines' `copywriting`.
+Für Arbeitstitel-/H1-Vorschläge und CTA-Hinweise im Content-Brief. Nach Corey Haines' `copywriting`.
 
 **Headline-Formeln:**
 - „[Ergebnis erreichen] ohne [Schmerzpunkt]” — „Sauberes Reporting ohne Excel-Chaos”

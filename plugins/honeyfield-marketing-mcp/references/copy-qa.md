@@ -1,6 +1,6 @@
 # Copy-QA
 
-QA-Durchgang für jede Copy-Ausgabe — Ads-Copy (`ad-creative`) wie Artikel/Posts (`content`). On-demand laden, bevor Copy den Skill verlässt. Ziel: keine schwache, unbelegte oder rechtlich riskante Zeile geht raus.
+QA-Durchgang für jede Copy-Ausgabe — Ads-Copy (`ad-creative`); `content-strategie` nutzt Sweep 4 (Beleg es) für die Belegpflicht-Hinweise in Content-Briefs. On-demand laden, bevor Copy den Skill verlässt. Ziel: keine schwache, unbelegte oder rechtlich riskante Zeile geht raus.
 
 Seven Sweeps nach Joanna Wiebe / Copyhackers, adaptiert über Corey Haines' `marketingskills`. Nicht umschreiben, sondern schärfen — Kernaussage bleibt, jeder Sweep prüft eine Dimension.
 
@@ -59,4 +59,4 @@ Streckverben und Blähwörter zu klaren Verben. Deutsch sagt es kürzer:
 ## Wann welcher Skill lädt
 
 - **`ad-creative`:** vor der RSA-Ausgabe — Sweeps + Streichwort-/Nominalstil-Pass über jede Headline und Description, Expert-Panel bei Launch-Anzeigen.
-- **`content`:** in der Review-Phase der Artikel-Pipeline (nach dem Draft, vor dem Polish) — voller Seven-Sweeps-Loop, Expert-Panel bei Pillar-/Landing-Content.
+- **`content-strategie`:** beim Formulieren der Belegpflicht-Hinweise im Content-Brief — nur Sweep 4 (Beleg es / UWG); den vollen Loop fährt der Kunde bei der Umsetzung.
