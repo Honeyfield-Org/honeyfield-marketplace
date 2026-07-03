@@ -2,7 +2,7 @@
 name: ad-creative
 description: "Generiert und optimiert Google-Ads-Anzeigen-Copy (Responsive Search Ads + Sitelinks), daten-fundiert aus der Konto-Performance und kalibriert auf DACH (DE/AT/CH). Nutze diesen Skill, wenn Anzeigen oder Text-Assets erstellt oder erneuert werden sollen: „neue Anzeigen schreiben”, „RSA erstellen”, „Headlines/Descriptions generieren”, „bessere Anzeigentexte”, „Anzeigen austauschen”, „Sitelinks anlegen”, „Ad-Copy für Kampagne X”, „mehr Headlines für die RSA”. Leitet Angles aus echten Suchbegriffen ab, hält die harten Google-Zeichen-Limits gegen deutsche Komposita, prüft DACH-Werberecht (UWG/Preisangaben) über `compliance`-Flags und schreibt Anzeigen nach Bestätigung als pausierte Assets ins Konto. Für die Diagnose bestehender Anzeigen (welche sind schwach, Wasted Spend) nutze `google-ads-audit`; für Landingpage-Text `seo-audit`; fürs Reporting `wochenreport`."
 metadata:
-  version: 0.4.0
+  version: 0.5.0
 ---
 
 # Ad-Creative
@@ -127,7 +127,7 @@ Jede Schreib-Aktion bewegt echte Auslieferung. Regel: **erst Zeichen-/Anzahl-Val
 - **Sitelinks kennen kein PAUSED und kein Remove via MCP** — nach Anlage sofort aktiv (Kampagne bzw. Konto-weit); Rückbau nur im Google Ads UI.
 - **Kein Tool-Dry-Run** — der Skill simuliert die Vorschau selbst; die Tools validieren Zeichen/Anzahl nicht.
 - **RSA-Replace resettet die Lernhistorie** — jede inhaltliche Änderung = neue Ad-ID, Optimierung startet neu.
-- **Nur Google Search** — keine anderen Plattformen (Meta/LinkedIn haben keine Creative-Write-Tools über den MCP).
+- **Nur Google Search** — Meta-/LinkedIn-Anzeigen (Anlage via `meta_create_ad` / `linkedin_create_ad_from_post`) besitzt `social-ads-audit` als Teil seines Operators.
 
 ## Tools nach Modus
 - **Vorbereitung:** `list_workspaces`, `ads_list_campaigns`, `ads_list_ad_groups`, `ads_list_assets` (Asset-Ist-Stand + `asset_id` — Pflicht-Read vor jedem Sitelink-Write)
@@ -137,7 +137,7 @@ Jede Schreib-Aktion bewegt echte Auslieferung. Regel: **erst Zeichen-/Anzahl-Val
 - **Nicht verwenden:** `ads_update_ad` (DEPRECATED), `ads_remove_ad` (irreversibel)
 
 ## Verwandte Skills
-`projekt-kontext` (Foundation — Brand/USPs/`compliance`, zuerst lesen) · `google-ads-audit` (findet schwache/fehlende Creatives → defert die Erstellung hierhin) · `tracking-check` (Conversion-Tracking) · `wochenreport` (Reporting) · `seo-audit` (Landingpage-/organischer Text)
+`projekt-kontext` (Foundation — Brand/USPs/`compliance`, zuerst lesen) · `google-ads-audit` (findet schwache/fehlende Creatives → defert die Erstellung hierhin) · `social-ads-audit` (Meta-/LinkedIn-Anzeigen inkl. Anlage) · `tracking-check` (Conversion-Tracking) · `wochenreport` (Reporting) · `seo-audit` (Landingpage-/organischer Text)
 
 ## Referenzen
 - `references/rsa-mechanik.md` — RSA-Struktur & Limits (15/4, 30/90), Ad-Strength-Best-Practices (was Strength treibt, obwohl nicht auslesbar), Replace-Mechanik + Lernhistorie-Reset, Pinning (beratend/UI), Statistik-Hygiene für Modus B, Zeichen-Zähl-Tipps.

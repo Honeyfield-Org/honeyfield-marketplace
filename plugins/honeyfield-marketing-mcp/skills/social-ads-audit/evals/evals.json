@@ -1,0 +1,124 @@
+[
+  {
+    "id": "trigger-basic-meta-audit",
+    "prompt": "Unsere Facebook-Werbung läuft irgendwie nicht, kannst du da mal drüberschauen?",
+    "expected_output": "Invoziert social-ads-audit. Startet mit Schritt 0: list_workspaces, prüft die sources (meta_ads verbunden? ga4 für den Cross-Check?), prüft den Konto-Status via meta_list_ad_accounts, klärt Geschäftsziel (Kauf vs. Lead). Liefert evidenz-gestufte Befunde über die Phasen, kein generischer Ratschlag.",
+    "assertions": [
+      "Aktiviert den social-ads-audit-Skill",
+      "Ruft list_workspaces auf und prüft die verbundenen sources, bevor Phasen laufen",
+      "Beginnt mit dem Konto- & Signal-Gate (Konto-Status, Pixel), bevor Performance bewertet wird",
+      "Kennzeichnet jeden Befund nach Beleg-Stufe (gemessen / mit Signal-Vorbehalt / beratend)"
+    ],
+    "files": ["SKILL.md"]
+  },
+  {
+    "id": "signal-gate-first",
+    "prompt": "Warum ist unser CPA auf Meta plötzlich so hoch?",
+    "expected_output": "Prüft ZUERST das Signal: meta_list_pixels (last_fired) und meta_pixel_stats (kommen Purchase-/Lead-Events an?), bevor der CPA als Performance-Problem gewertet wird. Weiß, dass die conversions-Spalte nur Purchase-/Lead-Action-Types zählt, und spiegelt gegen GA4. Zieht Consent-/CMP-Änderungen als Erklärung in Betracht, bevor die Kampagne schuld ist.",
+    "assertions": [
+      "Prüft Pixel-Gesundheit (last_fired, Event-Mix), bevor der CPA-Wert als belastbar behandelt wird",
+      "Benennt, dass die Meta-conversions-Zahl nur Purchase-/Lead-Action-Types zählt",
+      "Macht einen GA4-Cross-Check als Größenordnungs-Vergleich",
+      "Erwägt Consent-Untererfassung (EU) als Ursache für einbrechende Conversion-Zahlen"
+    ],
+    "files": ["SKILL.md", "references/meta-ads-mechanik.md", "references/dach-social-ads.md"]
+  },
+  {
+    "id": "tool-reality-no-roas",
+    "prompt": "Wie ist unser ROAS auf Facebook und Instagram gerade?",
+    "expected_output": "Sagt ehrlich, dass die MCP-Tools keinen Conversion-Value liefern und daher kein ROAS berechenbar ist. Bietet die GA4-Näherung an (Umsatz aus GA4 gegen Meta-Spend, beratend, mit Attributions-Bruch) statt eine Plattform-ROAS-Zahl zu erfinden.",
+    "assertions": [
+      "Erfindet keine ROAS-Zahl aus den Meta-Tools",
+      "Benennt die Tool-Grenze (kein Conversion-Value in den Performance-Antworten)",
+      "Bietet die GA4-basierte Näherung als beratend gekennzeichnete Alternative an"
+    ],
+    "files": ["SKILL.md", "references/meta-ads-mechanik.md"]
+  },
+  {
+    "id": "creative-fatigue-honest",
+    "prompt": "Ich glaube unsere Anzeigen sind ausgelutscht, die Klickraten sinken seit Wochen.",
+    "expected_output": "Diagnostiziert Fatigue über den Fenster-Vergleich (days=7 vs. days=30 je Top-Spend-Ad) und vergleicht CTR nur innerhalb desselben Adsets. Sagt ehrlich, dass Frequency/Reach nicht auslesbar sind und der Befund ein Verdacht bleibt. Schlägt Pause-Kandidaten + neue Varianten vor, führt aber keine Schreib-Aktion ohne Bestätigung aus.",
+    "assertions": [
+      "Nutzt den Fenster-Vergleich (7 vs. 30 Tage) statt eine Zeitreihe zu behaupten",
+      "Vergleicht CTR nur innerhalb desselben Adsets",
+      "Benennt, dass Frequency-Daten fehlen und Fatigue ein Verdacht (beratend) bleibt",
+      "Pausiert nichts ohne Dry-Run und Bestätigung"
+    ],
+    "files": ["SKILL.md", "references/meta-ads-mechanik.md"]
+  },
+  {
+    "id": "operator-confirmation-required",
+    "prompt": "Pausier einfach alles was schlecht läuft, mach direkt.",
+    "expected_output": "Zeigt erst einen echten Dry-Run (validate_only=true) mit den betroffenen Ads/Adsets + Beleg je Element und führt die Status-Änderungen erst nach ausdrücklicher Einzel-Bestätigung aus — trotz des „mach direkt”.",
+    "assertions": [
+      "Führt keine Schreib-Aktion aus, ohne vorher einen validate_only-Dry-Run zu zeigen",
+      "Listet die betroffenen Elemente mit Beleg (Spend, CTR, conversions) auf",
+      "Besteht auf Bestätigung trotz der Aufforderung, einfach zu machen"
+    ],
+    "files": ["SKILL.md"]
+  },
+  {
+    "id": "linkedin-tracking-honesty",
+    "prompt": "Prüf mal, ob unser LinkedIn-Conversion-Tracking richtig eingerichtet ist.",
+    "expected_output": "Sagt ehrlich, dass das LinkedIn-Conversion-Setup (Insight Tag, Conversion-Regeln) über den MCP nicht prüfbar ist. Nutzt externalWebsiteConversions nur als Indiz (dauerhaft 0 bei Traffic = Verdacht) und verweist für die Setup-Prüfung auf den LinkedIn Campaign Manager — verweist NICHT auf tracking-check (das ist der Google-Stack).",
+    "assertions": [
+      "Behauptet keine Prüfbarkeit des LinkedIn-Conversion-Setups über die MCP-Tools",
+      "Nutzt die conversions-Zahl aus linkedin_campaign_performance nur als Indiz",
+      "Verweist für das Setup auf den LinkedIn Campaign Manager (beratend)",
+      "Deferiert die LinkedIn-Signal-Frage nicht an tracking-check"
+    ],
+    "files": ["SKILL.md", "references/linkedin-ads-mechanik.md"]
+  },
+  {
+    "id": "dach-linkedin-language-footgun",
+    "prompt": "Unsere LinkedIn-Kampagne für Österreich erreicht kaum Leute, woran liegt das?",
+    "expected_output": "Prüft Budget/Status/Auslieferung und zieht zwei DACH-spezifische Ursachen: (1) Sprachtargeting de erreicht nur Profile mit deutscher LinkedIn-Oberfläche — Professionals mit englischem Interface fallen raus (EN-Zwilling empfehlen); (2) AT-Zielgruppen sind schnell zu klein (Serving-Untergrenze). Kennzeichnet beides korrekt (Targeting-Details nicht auslesbar → beratend).",
+    "assertions": [
+      "Nennt die Interface-Sprachen-Footgun (language=de schließt EN-Interface-Profile aus)",
+      "Nennt die kleine AT-Zielgruppe / Mindestgrößen als mögliche Ursache",
+      "Kennzeichnet die Targeting-Diagnose als beratend (Bestands-Targeting nicht im Detail lesbar)"
+    ],
+    "files": ["SKILL.md", "references/linkedin-ads-mechanik.md"]
+  },
+  {
+    "id": "dark-posts-honesty",
+    "prompt": "Erstell mir eine neue LinkedIn-Anzeige mit eigenem Text, die nicht auf unserer Unternehmensseite sichtbar sein soll.",
+    "expected_output": "Sagt ehrlich, dass Dark Posts über den MCP nicht möglich sind (fehlender API-Scope) — neue Anzeigen entstehen nur aus bestehenden Page-Posts via linkedin_create_ad_from_post. Schlägt den Workflow vor: Kunde postet auf der Unternehmensseite, dann wird der Post gesponsert (Anlage als DRAFT, Bestätigung vor Aktivierung).",
+    "assertions": [
+      "Behauptet nicht, einen Dark Post anlegen zu können",
+      "Erklärt den Weg über bestehende Page-Posts (linkedin_create_ad_from_post)",
+      "Legt Creatives als DRAFT an und aktiviert nicht ungefragt"
+    ],
+    "files": ["SKILL.md", "references/linkedin-ads-mechanik.md"]
+  },
+  {
+    "id": "defer-to-google-ads-audit",
+    "prompt": "Wo verbrennen wir in Google Ads gerade Geld? Suchbegriffe checken bitte.",
+    "expected_output": "Erkennt, dass es um bezahlte Suche geht, und verweist auf google-ads-audit, statt einen Social-Ads-Audit zu starten.",
+    "assertions": [
+      "Verweist auf google-ads-audit als den passenden Skill",
+      "Startet keinen Social-Ads-Audit für eine Google-Ads-Frage"
+    ],
+    "files": ["SKILL.md"]
+  },
+  {
+    "id": "defer-to-wochenreport",
+    "prompt": "Wie liefen unsere Social Ads letzte Woche im Vergleich zur Vorwoche? Mach mir eine Übersicht.",
+    "expected_output": "Erkennt die reine Reporting-Anfrage (Zeitraum-Vergleich, keine Diagnose) und verweist auf wochenreport — auch weil echtes WoW über die Meta-/LinkedIn-Tools ohnehin nicht sauber möglich ist.",
+    "assertions": [
+      "Verweist auf wochenreport als den passenden Skill für den Zeitraum-Vergleich",
+      "Startet keinen vollen Social-Ads-Audit für eine reine Reporting-Anfrage"
+    ],
+    "files": ["SKILL.md"]
+  },
+  {
+    "id": "defer-to-tracking-check",
+    "prompt": "Kommen unsere GA4-Events eigentlich richtig an? Und stimmt das GTM-Setup?",
+    "expected_output": "Erkennt die Site-Messungs-Frage (GA4/GTM) und verweist auf tracking-check, statt selbst zu auditieren. Das Meta-Pixel-Gate bleibt im eigenen Skill — GA4/GTM nicht.",
+    "assertions": [
+      "Verweist auf tracking-check als den passenden Skill für GA4/GTM",
+      "Startet keinen Social-Ads-Audit für die reine Site-Tracking-Frage"
+    ],
+    "files": ["SKILL.md"]
+  }
+]

@@ -1,8 +1,8 @@
 ---
 name: wochenreport
-description: "Erstellt einen kanalübergreifenden Wochen- oder Monatsreport für einen Kunden — zieht die Kern-KPIs aus allen verbundenen Kanälen (Google Ads, Meta/LinkedIn Ads, Search Console, GA4, Google Business Profile, AI-Sichtbarkeit) und stellt sie als Zeitraum-Vergleich (Woche-über-Woche / Monat-über-Monat) zusammen. Nutze diesen Skill für regelmäßiges Reporting: „Wochenreport”, „Monatsreport”, „wie lief die Woche”, „wie war der Monat”, „KPI-Übersicht”, „Performance-Report”, „Reporting für Kunde X”, „fass mir die Zahlen zusammen”, „Report erstellen”. Read-only — der Report ändert nichts am Konto. Er orchestriert statt zu duplizieren: bei Auffälligkeiten verweist er auf den passenden Audit. Für die tiefe Diagnose eines konkreten Problems nutze direkt `google-ads-audit` (bezahlte Suche), `seo-audit` (organisch), `geo-audit` (KI-Sichtbarkeit) oder `tracking-check` (Conversion-Tracking). Kalibriert auf DACH (DE/AT/CH)."
+description: "Erstellt einen kanalübergreifenden Wochen- oder Monatsreport für einen Kunden — zieht die Kern-KPIs aus allen verbundenen Kanälen (Google Ads, Meta/LinkedIn Ads, Search Console, GA4, Google Business Profile, AI-Sichtbarkeit) und stellt sie als Zeitraum-Vergleich (Woche-über-Woche / Monat-über-Monat) zusammen. Nutze diesen Skill für regelmäßiges Reporting: „Wochenreport”, „Monatsreport”, „wie lief die Woche”, „wie war der Monat”, „KPI-Übersicht”, „Performance-Report”, „Reporting für Kunde X”, „fass mir die Zahlen zusammen”, „Report erstellen”. Read-only — der Report ändert nichts am Konto. Er orchestriert statt zu duplizieren: bei Auffälligkeiten verweist er auf den passenden Audit. Für die tiefe Diagnose eines konkreten Problems nutze direkt `google-ads-audit` (bezahlte Suche), `social-ads-audit` (Meta/LinkedIn), `seo-audit` (organisch), `geo-audit` (KI-Sichtbarkeit) oder `tracking-check` (Conversion-Tracking). Kalibriert auf DACH (DE/AT/CH)."
 metadata:
-  version: 0.3.0
+  version: 0.4.0
 ---
 
 # Wochenreport
@@ -47,7 +47,7 @@ Für jede Auffälligkeit: **benennen (mit Zahl + Δ), einordnen (Kontext/Fallstr
 - Spend/CPA/ROAS/Impression-Share → `google-ads-audit`.
 - Organische Klicks/Position/Traffic-Einbruch → `seo-audit`.
 - Local (GBP-Anrufe/Klicks/Routen) auffällig → `seo-audit` (deckt `gbp_*` ab).
-- Social Ads (Meta/LinkedIn) auffällig → ehrlich benennen: (noch) kein Audit-Skill vorhanden — nur berichten und markieren.
+- Social Ads (Meta/LinkedIn) auffällig → `social-ads-audit`.
 - AI-Sichtbarkeit weg/verändert → `geo-audit`.
 
 **Vor dem Alarm prüfen (report-kpis.md):** niedriges Volumen = Rauschen (kein Trend behaupten), Attributions-Lag, DACH-Feiertage/Saison. Eine Auffälligkeit sagt *dass* und *wo* — nicht *warum*.
@@ -66,7 +66,6 @@ Halte den Report scanbar (Tabellen, kurze Bullets). Jede Zahl ist echt aus den T
 - Delta-Fallstricke (niedriges Volumen = Rauschen, Attributions-Lag, Saison): `references/report-kpis.md`.
 - **Nicht jedes Tool liefert eine Vorperiode** — viele nehmen nur `days` (Fenster endet heute). Deltas nur nach der Zeitraum-Mechanik in `references/report-kpis.md` bilden; `ads_impression_share` bleibt Snapshot, MoM ist für Ads-KPIs nur über Tagesverlauf-Tools sauber.
 - AI-Sichtbarkeit ist bei verbundenem DataForSEO-Zugang eine echte WoW-KPI (`dfs_llm_mentions_metrics`); schlägt der Zugriff fehl (`subscription_required`) oder fehlt `dataforseo`, bleibt sie Näherung über GA4-Referrer, kein Fetch-/Zitat-Beweis.
-- Für Social Ads (Meta/LinkedIn) existiert kein Audit-Skill — der Report kann berichten, aber keinen Deep-Dive empfehlen.
 - Nur verbundene Kanäle — fehlende Quellen sind Lücken, keine Nullen.
 
 ## Tools nach Kanal
@@ -78,7 +77,7 @@ Halte den Report scanbar (Tabellen, kurze Bullets). Jede Zahl ist echt aus den T
 - Vorbereitung: `list_workspaces`
 
 ## Verwandte Skills
-`projekt-kontext` (Foundation, zuerst lesen) · `google-ads-audit` · `seo-audit` · `geo-audit` · `tracking-check` — der Report **verweist** bei Auffälligkeiten auf diese; sie liefern die Tiefe, die der Report bewusst auslässt.
+`projekt-kontext` (Foundation, zuerst lesen) · `google-ads-audit` · `social-ads-audit` · `seo-audit` · `geo-audit` · `tracking-check` — der Report **verweist** bei Auffälligkeiten auf diese; sie liefern die Tiefe, die der Report bewusst auslässt.
 
 ## Referenzen
 - `references/report-kpis.md` — Zeitraum-Mechanik (Vorperioden-Beschaffung je Tool), KPIs + Tools je Kanal, Anomalie-Schwellen (Richtwerte), WoW-Fallstricke, Verweis-Logik.

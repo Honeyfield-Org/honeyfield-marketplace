@@ -1,8 +1,8 @@
 ---
 name: tracking-check
-description: "Datengetriebener Tracking- und Conversion-Audit für einen Kunden, kalibriert auf DACH (DE/AT/CH). Nutze diesen Skill, wenn geprüft werden soll, ob das Conversion- und Event-Tracking korrekt läuft: „stimmt mein Tracking”, „Conversions werden nicht gezählt”, „GA4 und Google Ads weichen ab”, „feuern meine Events / Tags”, „Conversion-Tracking prüfen”, „doppelte Conversions”, „Cookie-/Consent-Tracking DSGVO-konform”, „GTM-Setup prüfen”, „Tracking eingerichtet, aber nichts kommt an”. Zieht echte Daten aus GA4, Google Tag Manager und Google Ads über den Marketing-Ops-MCP, belegt jeden Befund nach Beweiskraft (gemessen / nur konfiguriert / nicht prüfbar) und behebt Sicheres nach Bestätigung. Für bezahlte Such-Performance nutze `google-ads-audit`; für organisches Ranking `seo-audit`; für KI-Sichtbarkeit `geo-audit`; fürs wöchentliche Reporting `wochenreport`."
+description: "Datengetriebener Tracking- und Conversion-Audit für einen Kunden, kalibriert auf DACH (DE/AT/CH). Nutze diesen Skill, wenn geprüft werden soll, ob das Conversion- und Event-Tracking korrekt läuft: „stimmt mein Tracking”, „Conversions werden nicht gezählt”, „GA4 und Google Ads weichen ab”, „feuern meine Events / Tags”, „Conversion-Tracking prüfen”, „doppelte Conversions”, „Cookie-/Consent-Tracking DSGVO-konform”, „GTM-Setup prüfen”, „Tracking eingerichtet, aber nichts kommt an”. Zieht echte Daten aus GA4, Google Tag Manager und Google Ads über den Marketing-Ops-MCP, belegt jeden Befund nach Beweiskraft (gemessen / nur konfiguriert / nicht prüfbar) und behebt Sicheres nach Bestätigung. Für bezahlte Such-Performance nutze `google-ads-audit`; für Meta-Pixel-/Social-Ads-Signale `social-ads-audit`; für organisches Ranking `seo-audit`; für KI-Sichtbarkeit `geo-audit`; fürs wöchentliche Reporting `wochenreport`."
 metadata:
-  version: 0.3.0
+  version: 0.4.0
 ---
 
 # Tracking-Check
@@ -115,7 +115,7 @@ Regel: erst zeigen (was genau, welche Ebene, welche Wirkung), einzeln bestätige
 - Operator: `ga4_create_key_event`, `ga4_create_custom_dimension`, `ga4_create_custom_metric`, `ga4_enhanced_measurement`, `ga4_data_retention`, `ga4_manage_google_ads_links`, `ga4_manage_audiences`, `ads_create_conversion_action`, `ads_update_conversion_action`, `ads_upload_conversions`, `gtm_list_workspaces`, `gtm_create_trigger`, `gtm_create_tag`, `gtm_create_version`, `gtm_publish_version`
 
 ## Verwandte Skills
-`projekt-kontext` (Foundation, zuerst) · `google-ads-audit` (hält ein schlankes Tracking-Gate und **defert die Tiefe hierhin**) · `seo-audit` (organisches Ranking / On-Page; nutzt GTM punktuell) · `geo-audit` (KI-Sichtbarkeit) · `wochenreport` (Reporting / Zahlen über Zeit)
+`projekt-kontext` (Foundation, zuerst) · `google-ads-audit` (hält ein schlankes Tracking-Gate und **defert die Tiefe hierhin**) · `social-ads-audit` (besitzt das Meta-Pixel-/LinkedIn-Signal-Gate selbst — dieser Skill bleibt Site-Messung: GA4/GTM/Google Ads) · `seo-audit` (organisches Ranking / On-Page; nutzt GTM punktuell) · `geo-audit` (KI-Sichtbarkeit) · `wochenreport` (Reporting / Zahlen über Zeit)
 
 ## Referenzen
 - `references/tracking-tool-grenzen.md` — Beleg-Stufen-Mapping (gemessen / nur konfiguriert / nicht prüfbar) je Tool + vollständige Footgun-Tabelle (was die MCP-Tools können/nicht können) + Operator-Dry-Run-Lage.
