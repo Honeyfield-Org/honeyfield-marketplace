@@ -274,6 +274,8 @@ Lege Schreib-Tools (W) nie ohne write-guardrails.md an.
 
 ## Meta Ads — Mutation (source: meta_ads) ⚠ Guardrails
 
+Alle Meta-Schreib-Tools akzeptieren `validate_only=true` (echter API-Dry-Run; `meta_create_ad` simuliert lokal als `would_create`-Vorschau).
+
 | Tool | Was | Quelle | R/W |
 |---|---|---|---|
 | `meta_create_pixel` | Neues Pixel (Dataset) anlegen — liefert Pixel-ID + Einbau-Code | meta_ads | W |
@@ -306,6 +308,8 @@ Hierarchie: Campaign Group (≈ Meta-Kampagne) → Campaign (Budget + Targeting,
 ---
 
 ## LinkedIn Ads — Mutation (source: linkedin_ads) ⚠ Guardrails
+
+Alle LinkedIn-Schreib-Tools akzeptieren `validate_only=true` (Vorschau ohne API-Call).
 
 | Tool | Was | Quelle | R/W |
 |---|---|---|---|

@@ -50,12 +50,11 @@ Kein Δ ohne saubere Perioden-Trennung — überlappende `days`-Fenster als Verg
 
 | KPI | Tool | Auffällig ab | Deep-Dive |
 |---|---|---|---|
-| Spend | `meta_campaign_performance` / `linkedin_campaign_performance` | ±30 % ohne Budget-Änderung | — (kein Social-Ads-Audit-Skill) |
-| Klicks / Impressionen | `meta_campaign_performance` / `linkedin_campaign_performance` | ±30 % | — |
-| Conversions | `meta_campaign_performance` / `linkedin_campaign_performance` | −25 % | `tracking-check` zuerst (kommen Events an?) |
+| Spend | `meta_campaign_performance` / `linkedin_campaign_performance` | ±30 % ohne Budget-Änderung | `social-ads-audit` |
+| Klicks / Impressionen | `meta_campaign_performance` / `linkedin_campaign_performance` | ±30 % | `social-ads-audit` |
+| Conversions | `meta_campaign_performance` / `linkedin_campaign_performance` | −25 % | `social-ads-audit` (Signal-Gate: Pixel/Events) — Site-Messung via `tracking-check` |
 
 - Kampagnen-Inventar: `linkedin_list_campaigns` (Name, Status, Budget).
-- **Ehrlich bleiben:** für Social Ads existiert (noch) kein Audit-Skill — Auffälligkeiten berichten und markieren, keinen Deep-Dive versprechen.
 - **Read-only hart:** `linkedin_update_campaign_budget` / `linkedin_update_campaign_status` sind Schreib-Tools — im Report **nie** nutzen.
 - Für Δs gilt die Zeitraum-Mechanik oben: nur vergleichen, was sauber in zwei Perioden trennbar ist — sonst als Snapshot kennzeichnen.
 
