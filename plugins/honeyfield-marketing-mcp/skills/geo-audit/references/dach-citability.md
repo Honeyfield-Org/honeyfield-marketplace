@@ -59,10 +59,14 @@ Pitch-Qualität: <150 Wörter, klarer News-Hook, keine Buzzwords („revolution�
 
 ## Competitor-Citation-Methodik (DataForSEO, im Stack)
 
-So findest du die Drittplattform-Zielliste datengetrieben:
+Zwei Wege zur datengetriebenen Drittplattform-Zielliste, kombinierbar:
+
+**Direkt (bei aktivem LLM-Mentions-Abo):** `dfs_llm_top_domains(keywords=Category-Queries)` → liefert die Domains, die LLMs für das Thema tatsächlich zitieren (`{domain, citations, mentions}`), ohne Umweg über Backlink-Inferenz. Bei `subscription_required` auf den Backlink-Weg unten degradieren.
+
+**Backlink-Inferenz (Fallback, immer verfügbar):**
 1. Aus der KI-/SERP-Antwort der Category-Query die genannten Marken/Domains extrahieren.
 2. `dfs_backlink_competitors` (eigene Domain) → wer ein ähnliches/stärkeres Profil hat = Citation-Konkurrenz.
-3. `dfs_backlink_summary` (Konkurrenz-Domain) → deren **Top-Referring-Domains** = genau die Drittquellen, über die sie zitiert werden = deine Zielliste.
+3. `dfs_backlinks_list(target=Konkurrenz-Domain, mode="all")` → deren konkrete Referring-URLs = genau die Drittquellen, über die sie zitiert werden = deine Zielliste (granularer als `dfs_backlink_summary`'s Aggregat — für eine reine Zählung reicht Letzteres).
 4. Lücke = Drittquellen, auf denen die Konkurrenz steht und die Marke fehlt. Honesty-Regel für eigene Vergleichsseiten: KI-Engines cross-referenzieren Feature-Claims und de-ranken Seiten, die lügen.
 
 ## AI-Referrer-Domainliste (Phase 6 — GA4)

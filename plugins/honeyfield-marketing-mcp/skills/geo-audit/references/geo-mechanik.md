@@ -26,7 +26,7 @@ Konsequenzen für den Audit:
 | Perplexity | eigener Crawler + Google | Standard-SEO + eigener Index |
 | Google AI Overviews | Google-Index | klassisches SEO trägt direkt |
 
-Prüf-Schritt: Steht die Site in **Bing**? `curl "https://www.bing.com/search?q=site:domain.at"` ist meist Captcha-geblockt → scriptbarer Fallback `curl "https://html.duckduckgo.com/html/?q=site:domain.at"` (Bing-backed); Bing-direkt als manueller Check. Wenn nur GSC eingereicht wurde → High-Impact-Fix für ChatGPT/Copilot-Sichtbarkeit.
+Prüf-Schritt: Steht die Site in **Bing**? `dfs_serp_bing_organic(keyword="site:domain.at")` ist der saubere, deterministische Check (kein Captcha-Risiko). Ohne DataForSEO-Zugang: `curl "https://www.bing.com/search?q=site:domain.at"` ist meist Captcha-geblockt → scriptbarer Fallback `curl "https://html.duckduckgo.com/html/?q=site:domain.at"` (Bing-backed) oder manueller Bing-Check. Wenn nur GSC eingereicht wurde → High-Impact-Fix für ChatGPT/Copilot-Sichtbarkeit.
 
 ## KI-Bot-Liste + robots.txt-Nuancen
 
@@ -91,5 +91,4 @@ Aktuell crawlt kein Engine `llms.txt` aktiv für Citations. Höchstens als „Si
 
 ## Google AI Overview via DataForSEO
 
-**Wichtig (im Live-Test verifiziert):** Der MCP-Wrapper `dfs_serp_google_organic` liefert NUR organische Treffer — **keinen `ai_overview`-Block** (kein `type`-Feld, kein `asynchronous_ai_overview`). AI-Overview-Prüfung erfordert die **Raw-DataForSEO-API direkt**:
-`POST https://api.dataforseo.com/v3/serp/google/organic/live/advanced` mit `[{"keyword":"…","location_name":"Austria","language_name":"German"}]`. Im `items`-Array nach `type:"ai_overview"` suchen; Feld `asynchronous_ai_overview:true` → zitierte Quellen erst über einen Async-Folgecall. ~$0,0035/Call, kein AI-Optimization-Abo nötig. Solange der MCP-Wrapper das nicht exponiert: AI-Overview als Lücke benennen oder den Raw-Call nutzen.
+`dfs_serp_google_organic` liefert den `ai_overview`-Block jetzt direkt mit: `{present: bool, sources: [{title, url, domain}]}`. Intern läuft der Call mit `load_async_ai_overview: true` — ohne dieses Flag fehlen asynchron nachgeladene Overviews (false „nicht präsent"); das Tool setzt es bereits, kein separater Folge-Call durch den Skill nötig. `present: false` heißt: keine AI Overview für diese Query in diesem Markt/Moment — vor dem Befund Query-Formulierung und Markt (`location`/`language`) gegenprüfen, nicht vorschnell als „Site fehlt" werten. ~$0,0035/Call (advanced-Endpoint), keine Zusatz-Subscription nötig.
