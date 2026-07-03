@@ -2,9 +2,9 @@
 
 Phase 5 (Off-site-Citability) + Operator (Zielliste). Das SOTA-Material aus generischen Marketing-Skills ist US-zentrisch — diese DACH-Liste ist der Value-Add. Selbst-Citation ist unmöglich, also sind Drittquellen die einzige Adresse für Citations.
 
-## Mess-Loop (manuell, gehört zu Phase 5/7)
+## Mess-Loop (Weg B Default, manueller Fallback — Phase 5/7)
 
-Monatlich ChatGPT/Claude/Perplexity fragen: „Was sind die besten [Kategorie]-Tools/-Anbieter?" und protokollieren, wo die Marke auftaucht. Das ist der direkte Citability-Check. Details/Protokoll: `llm-mentions-adapter.md`.
+Default: `dfs_llm_mentions`/`dfs_llm_top_domains` (Weg B, s. `llm-mentions-adapter.md`) liefert das automatisiert. Ohne aktives Abo (`subscription_required`) monatlich manuell ChatGPT/Claude/Perplexity fragen: „Was sind die besten [Kategorie]-Tools/-Anbieter?" und protokollieren, wo die Marke auftaucht (Weg A). Das ist der direkte Citability-Check. Details/Protokoll: `llm-mentions-adapter.md`.
 
 ## Priorität A — Entity-Baseline (kategorie-unabhängig, global, DACH-tauglich)
 

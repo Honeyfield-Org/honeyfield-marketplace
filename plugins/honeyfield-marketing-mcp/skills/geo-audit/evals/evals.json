@@ -90,6 +90,18 @@
     "files": ["SKILL.md", "references/dach-citability.md"]
   },
   {
+    "id": "cross-engine-adapter-cascade",
+    "prompt": "Sind wir in ChatGPT sichtbar, oder wird da nur die Konkurrenz genannt?",
+    "expected_output": "Phase 7: probiert zuerst dfs_llm_mentions/dfs_llm_mentions_metrics (Weg B, Default). Liefert der Call subscription_required, degradiert es auf das manuelle Capture-Protokoll (Weg A), statt den Check auszulassen. Kennzeichnet den Befund mit Weg + Konfidenz und leitet keinen Score aus einer Einzelabfrage ab.",
+    "assertions": [
+      "Versucht zuerst dfs_llm_mentions/dfs_llm_mentions_metrics (Weg B) für Phase 7",
+      "Fällt bei subscription_required auf das manuelle Capture-Protokoll (Weg A) zurück, statt den Check ganz auszulassen",
+      "Kennzeichnet den Cross-Engine-Befund mit Weg (B oder A) und Konfidenz",
+      "Leitet aus keiner Einzelabfrage einen Score ab"
+    ],
+    "files": ["SKILL.md", "references/llm-mentions-adapter.md"]
+  },
+  {
     "id": "defer-to-wochenreport",
     "prompt": "Erstell mir wieder den Wochenreport — wie hat sich unsere KI-Sichtbarkeit diese Woche entwickelt?",
     "expected_output": "Erkennt die reine Reporting-Anfrage und verweist auf wochenreport (Kern-KPIs, Zeitraum-Vergleich), statt ein volles GEO-Phasen-Panel zu fahren.",
