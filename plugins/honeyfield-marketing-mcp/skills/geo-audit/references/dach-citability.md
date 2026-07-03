@@ -4,7 +4,7 @@ Phase 5 (Off-site-Citability) + Operator (Zielliste). Das SOTA-Material aus gene
 
 ## Mess-Loop (Weg B Default, manueller Fallback — Phase 5/7)
 
-Default: `dfs_llm_mentions`/`dfs_llm_top_domains` (Weg B, s. `llm-mentions-adapter.md`) liefert das automatisiert. Ohne aktives Abo (`subscription_required`) monatlich manuell ChatGPT/Claude/Perplexity fragen: „Was sind die besten [Kategorie]-Tools/-Anbieter?" und protokollieren, wo die Marke auftaucht (Weg A). Das ist der direkte Citability-Check. Details/Protokoll: `llm-mentions-adapter.md`.
+Default: `dfs_llm_mentions`/`dfs_llm_top_domains` (Weg B, s. `llm-mentions-adapter.md`) liefert das automatisiert, pay-as-you-go über das normale DataForSEO-Guthaben. Schlägt der Zugriff fehl (`subscription_required`, z. B. Guthaben aufgebraucht), monatlich manuell ChatGPT/Claude/Perplexity fragen: „Was sind die besten [Kategorie]-Tools/-Anbieter?" und protokollieren, wo die Marke auftaucht (Weg A). Das ist der direkte Citability-Check. Details/Protokoll: `llm-mentions-adapter.md`.
 
 ## Priorität A — Entity-Baseline (kategorie-unabhängig, global, DACH-tauglich)
 
@@ -61,7 +61,7 @@ Pitch-Qualität: <150 Wörter, klarer News-Hook, keine Buzzwords („revolution�
 
 Zwei Wege zur datengetriebenen Drittplattform-Zielliste, kombinierbar:
 
-**Direkt (bei aktivem LLM-Mentions-Abo):** `dfs_llm_top_domains(keywords=Category-Queries)` → liefert die Domains, die LLMs für das Thema tatsächlich zitieren (`{domain, citations}`, max. 10 Keywords/Call), ohne Umweg über Backlink-Inferenz. Bei `subscription_required` auf den Backlink-Weg unten degradieren.
+**Direkt (bei DataForSEO-Zugang):** `dfs_llm_top_domains(keywords=Category-Queries)` → liefert die Domains, die LLMs für das Thema tatsächlich zitieren (`{domain, citations}`, max. 10 Keywords/Call), ohne Umweg über Backlink-Inferenz. Bei `subscription_required` auf den Backlink-Weg unten degradieren.
 
 **Backlink-Inferenz (Fallback, immer verfügbar):**
 1. Aus der KI-/SERP-Antwort der Category-Query die genannten Marken/Domains extrahieren.
