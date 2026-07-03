@@ -106,16 +106,16 @@ Default-Modus. Vorwärtsgerichtet: „was als nächstes”, nicht „warum” (U
 > **Block 1 — Unblock (Woche 1–2):**
 > | Maßnahme | AARRR | Aufwand | Beleg-Stufe |
 > |---|---|---|---|
-> | Mobile Terminanfrage auf einen Schritt | Aktivierung | S | mit Tracking-Vorbehalt |
-> | Telefonnummer klickbar über der Falz | Aktivierung | S | beratend |
+> | Mobile Terminanfrage auf einen Schritt | Activation | S | mit Tracking-Vorbehalt |
+> | Telefonnummer klickbar über der Falz | Activation | S | beratend |
 >
 > **Block 2 — Foundation (Woche 3–4):**
-> | Unternehmensprofil: Kategorien + 3 Kern-Leistungen vervollständigen | Akquise | S | gemessen |
+> | Unternehmensprofil: Kategorien + 3 Kern-Leistungen vervollständigen | Acquisition | S | gemessen |
 > | Bewertungs-Ablauf nach Behandlung einführen | Referral | M | gemessen |
 >
 > **Block 3 — Velocity (Woche 5–8):**
-> | Lokale Leistungsseiten für Sportphysio + Rückentherapie | Akquise | M | gemessen |
-> | Conversion-Tracking der Terminanfrage sauber aufsetzen (schließt danach den Tracking-Vorbehalt der Anfrage-Zahlen) | Aktivierung | M | gemessen |
+> | Lokale Leistungsseiten für Sportphysio + Rückentherapie | Acquisition | M | gemessen |
+> | Conversion-Tracking der Terminanfrage sauber aufsetzen (schließt danach den Tracking-Vorbehalt der Anfrage-Zahlen) | Activation | M | gemessen |
 >
 > **Block 4 — Compound (Woche 9–12):**
 > | 10er-Behandlungspakete + Preis-Seite | Revenue | M | beratend |
@@ -126,7 +126,7 @@ Default-Modus. Vorwärtsgerichtet: „was als nächstes”, nicht „warum” (U
 **Zweck:** Operativer Abschluss. North-Star-Metrik (spezifisch für diesen Kunden, nicht „mehr Umsatz”), Leading Indicators je AARRR-Stage, und die offenen Punkte, die den Plan blockieren — nach Wirkung geordnet.
 
 > **North Star:** Neupatienten-Erstkontakte/Monat (Telefon + Website).
-> **Leading Indicators:** Profilaufrufe & Anrufe (Akquise, gemessen) · Terminanfrage-Rate der Website (Aktivierung, nach dem Tracking-Fix gemessen) · neue Bewertungen/Monat (Referral, gemessen).
+> **Leading Indicators:** Profilaufrufe & Anrufe (Acquisition, gemessen) · Terminanfrage-Rate der Website (Activation, nach dem Tracking-Fix gemessen) · neue Bewertungen/Monat (Referral, gemessen).
 > **Offene Entscheidungen (nach Wirkung):** 1) Wird eine Patienten-/E-Mail-Software angebunden? — blockiert die Retention-Messung. 2) Budget für bezahlte Suche ab Q2? 3) Durchschnittlicher Kundenwert unbekannt — blockiert die Budget-Formel (bis dahin nur Budget-Bänder, beratend).
 
 ---
@@ -160,8 +160,8 @@ Kurzform für ein Ziel, 1–2 Kanäle, ein Zeitfenster. Gleiche Kundenfähig-Reg
 
 **Zweck:** Budget aus Ziel-Anfragen × Ziel-Kosten rückrechnen; Laufzeit-Verteilung (Flighting) so, dass die Lernphase nicht abreißt.
 
-> **Budget:** 750 € für 6 Wochen (~18 €/Tag, beratend). Rechnung: 30 Anfragen × 25 € Ziel-Kosten = 750 € (beratend).
-> **Flighting:** durchgehend 6 Wochen statt Stop-and-Go — sonst startet die Lernphase jedes Mal neu.
+> **Budget:** 750 € über ~3,5 Wochen (~30 €/Tag, beratend). Rechnung: 30 Anfragen × 25 € Ziel-Kosten = 750 € (beratend).
+> **Flighting:** durchgehend ~3,5 Wochen statt Stop-and-Go — sonst startet die Lernphase jedes Mal neu; das 750-€-Budget nicht auf mehr Wochen strecken (unter ~30 €/Tag/Kanal verhungert der Kanal).
 
 ## 5 · Messplan
 
@@ -178,7 +178,7 @@ Kurzform für ein Ziel, 1–2 Kanäle, ein Zeitfenster. Gleiche Kundenfähig-Reg
 > **Woche 0:** Tracking-Fix + Landingpage „Rücken-Check” aufsetzen.
 > **Woche 1:** Kampagne live schalten.
 > **Woche 3:** erste Optimierung anhand der echten Suchbegriffe.
-> **Woche 6:** Auswertung + Entscheidung über Verlängerung.
+> **Woche 5:** Auswertung + Entscheidung über Verlängerung.
 
 ---
 

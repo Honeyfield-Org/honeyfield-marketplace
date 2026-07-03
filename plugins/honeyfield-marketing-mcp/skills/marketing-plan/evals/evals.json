@@ -10,7 +10,7 @@
       "Ordnet jede Empfehlung einer AARRR-Stage zu",
       "Liefert Budget-Einordnung plus 90-Tage-Roadmap in 4 Blöcken"
     ],
-    "files": ["SKILL.md", "references/current-state-rubric.md"]
+    "files": ["SKILL.md", "references/current-state-rubric.md", "references/aarrr-dach.md"]
   },
   {
     "id": "trigger-kampagne-modus-b",
@@ -46,7 +46,7 @@
       "Liefert das kundenfähige 9-Sektionen-Format statt der Kampagnen-Kurzform",
       "Verweist Umsetzungs-Details in den internen Anhang, statt sie im Hauptteil zu vermischen"
     ],
-    "files": ["SKILL.md", "references/plan-template.md"]
+    "files": ["SKILL.md", "references/plan-template.md", "references/aarrr-dach.md"]
   },
   {
     "id": "defer-wochenreport",
