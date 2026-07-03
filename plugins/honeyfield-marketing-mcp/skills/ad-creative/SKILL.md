@@ -2,7 +2,7 @@
 name: ad-creative
 description: "Generiert und optimiert Google-Ads-Anzeigen-Copy (Responsive Search Ads + Sitelinks), daten-fundiert aus der Konto-Performance und kalibriert auf DACH (DE/AT/CH). Nutze diesen Skill, wenn Anzeigen oder Text-Assets erstellt oder erneuert werden sollen: „neue Anzeigen schreiben”, „RSA erstellen”, „Headlines/Descriptions generieren”, „bessere Anzeigentexte”, „Anzeigen austauschen”, „Sitelinks anlegen”, „Ad-Copy für Kampagne X”, „mehr Headlines für die RSA”. Leitet Angles aus echten Suchbegriffen ab, hält die harten Google-Zeichen-Limits gegen deutsche Komposita, prüft DACH-Werberecht (UWG/Preisangaben) über `compliance`-Flags und schreibt Anzeigen nach Bestätigung als pausierte Assets ins Konto. Für die Diagnose bestehender Anzeigen (welche sind schwach, Wasted Spend) nutze `google-ads-audit`; für Landingpage-Text `seo-audit`; fürs Reporting `wochenreport`."
 metadata:
-  version: 0.3.0
+  version: 0.4.0
 ---
 
 # Ad-Creative
@@ -24,8 +24,8 @@ Der Moat ist nicht „Claude schreibt Texte”, sondern fünf Dinge, die generis
 ## Ehrlichkeits-Modell — jede Ausgabe kennzeichnen
 
 ### Achse 1 — Herkunft der Copy
-- **Daten-fundiert (primär):** Angles/Themen/Sprache aus `ads_search_terms`, `ads_ai_max_search_terms`, `ads_list_ads`, `ads_ad_performance`, `ads_keyword_performance` — jede auf ein reales Query-Thema oder Conversion-Signal zurückführbar.
-- **Heuristik (Fallback):** ohne Konto-Daten aus `projekt-kontext` + Angle-Kategorien generiert — **immer als Heuristik kennzeichnen**, nie als daten-fundiert verkaufen.
+- **Daten-fundiert (primär):** Angles/Themen/Sprache aus `ads_search_terms`, `ads_ai_max_search_terms`, `ads_list_ads`, `ads_ad_performance`, `ads_keyword_performance` — jede auf ein reales Query-Thema oder Conversion-Signal zurückführbar. Bei Cold-Start ohne Konto-Historie übernehmen `dfs_keyword_suggestions` (echte Long-Tail-Formulierungen) + `dfs_keyword_overview` (`main_intent`) diese Grounding-Rolle, wenn `dataforseo` verbunden ist.
+- **Heuristik (Fallback):** ohne Konto-Daten UND ohne `dataforseo`-Zugang aus `projekt-kontext` + Angle-Kategorien generiert — **immer als Heuristik kennzeichnen**, nie als daten-fundiert verkaufen.
 
 ### Achse 2 — Was ist via MCP schreibbar
 | Asset | Schreibbar? | Handhabung |
@@ -51,7 +51,7 @@ Mechanik-Details: `references/rsa-mechanik.md`.
 - `ads_search_terms` / `ads_ai_max_search_terms` → die reale Suchsprache der Nutzer: welche Begriffe/Themen konvertieren, welche Formulierungen tauchen auf.
 - `ads_keyword_performance` → QS + Conversion-Signale der Ziel-Keywords der Ad-Group.
 - Optional (wenn `dataforseo` als source verbunden): `dfs_serp_google_ads` auf 1–2 Ziel-Keywords → welche Claims/Angles die Konkurrenz in der SERP fährt → Differentiator-Headlines bewusst dagegen schärfen statt sie zu doppeln.
-- Daraus **3–5 Angles** ableiten, jeder auf ein reales Query-Thema / Conversion-Signal zurückführbar. Fehlen Konto-Daten (neue Kampagne, kein Verlauf) → Angles aus `projekt-kontext` + Angle-Kategorien (`references/dach-ad-copy.md`) ableiten und **als Heuristik kennzeichnen**.
+- Daraus **3–5 Angles** ableiten, jeder auf ein reales Query-Thema / Conversion-Signal zurückführbar. Fehlen Konto-Daten (neue Kampagne, kein Verlauf) → bei verbundenem `dataforseo` mit `dfs_keyword_suggestions` (echte Long-Tail-Formulierungen der Ziel-Keywords) und `dfs_keyword_overview` (`main_intent` je Keyword) grounden statt raten; ohne DataForSEO-Zugang Angles aus `projekt-kontext` + Angle-Kategorien (`references/dach-ad-copy.md`) ableiten und **als Heuristik kennzeichnen**.
 - Für die **Begründung** eines Angles (warum sollte er ziehen — Verlustaversion? Social Proof? Status-quo-Bias beim Wechsel?) → Challenge→Models-Index in `references/psychology.md` im Plugin. Psychologie liefert die Hypothese, die Konto-Daten entscheiden — nie ein Model als Beweis verkaufen.
 
 **2. RSA-Copy bauen.** Ziel: **15 Headlines + 4 Descriptions** (Google braucht den Kombinationsspielraum). Headline-Mix anstreben:
@@ -131,7 +131,7 @@ Jede Schreib-Aktion bewegt echte Auslieferung. Regel: **erst Zeichen-/Anzahl-Val
 
 ## Tools nach Modus
 - **Vorbereitung:** `list_workspaces`, `ads_list_campaigns`, `ads_list_ad_groups`, `ads_list_assets` (Asset-Ist-Stand + `asset_id` — Pflicht-Read vor jedem Sitelink-Write)
-- **Modus A (Fundierung):** `ads_search_terms`, `ads_ai_max_search_terms`, `ads_keyword_performance`, `ads_list_keywords` (DKI-Längen-Check); optional `dfs_serp_google_ads` (Konkurrenz-Claims in der SERP, source `dataforseo`)
+- **Modus A (Fundierung):** `ads_search_terms`, `ads_ai_max_search_terms`, `ads_keyword_performance`, `ads_list_keywords` (DKI-Längen-Check); optional `dfs_serp_google_ads` (Konkurrenz-Claims in der SERP), `dfs_keyword_suggestions` + `dfs_keyword_overview` (Cold-Start-Grounding ohne Konto-Historie) — alle drei source `dataforseo`
 - **Modus B (Fundierung):** `ads_list_ads`, `ads_ad_performance` (+ Befunde aus `google-ads-audit`)
 - **Write:** `ads_create_ad_group`, `ads_create_ad` (`status="PAUSED"`), `ads_replace_ad` (`keep_old=true`), `ads_update_ad_status` (Freigabe, bewusst getrennt), `ads_create_sitelink`, `ads_update_sitelink` (beide sofort live, kein PAUSED)
 - **Nicht verwenden:** `ads_update_ad` (DEPRECATED), `ads_remove_ad` (irreversibel)
