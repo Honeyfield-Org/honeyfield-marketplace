@@ -65,5 +65,5 @@ Das OG-Bild ist meist identisch mit dem Blog-Hero (`blog-featured`). Ob die Tags
 - Ein beschreibender Satz: was ist zu sehen, in natürlicher Sprache der Zielgruppe.
 - Relevantes Keyword natürlich einbauen — **kein** Keyword-Stuffing.
 - Rein dekorative Bilder: leerer Alt-Text (`alt=""`) ist die richtige Empfehlung.
-- Zahlen-Grafiken: Kernaussage in den Alt-Text („Balkendiagramm: X wächst von … auf …").
+- Zahlen-Grafiken: Kernaussage in den Alt-Text („Balkendiagramm: X wächst von … auf …”).
 - CH-Markt: kein ß auch im Alt-Text.
