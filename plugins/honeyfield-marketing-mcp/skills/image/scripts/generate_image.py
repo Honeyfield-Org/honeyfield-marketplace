@@ -40,12 +40,16 @@ def request_json(url, headers, data=None, timeout=30):
     req = urllib.request.Request(url, data=data, headers=headers)
     try:
         with urllib.request.urlopen(req, timeout=timeout) as resp:
-            return json.loads(resp.read().decode())
+            body = resp.read().decode()
     except urllib.error.HTTPError as e:
         body = e.read().decode() if e.fp else ""
         die(f"API-Fehler {e.code}: {body}")
     except urllib.error.URLError as e:
         die(f"Netzwerk-Fehler: {e.reason}")
+    try:
+        return json.loads(body)
+    except json.JSONDecodeError:
+        die(f"Ungültige API-Antwort (kein JSON): {body[:500]}")
 
 
 def poll_for_result(status_url, response_url, headers):
@@ -92,7 +96,11 @@ def main():
                           headers, data=json.dumps(payload).encode())
 
     if result.get("status") in ("IN_QUEUE", "IN_PROGRESS"):
-        result = poll_for_result(result["status_url"], result["response_url"], headers)
+        status_url = result.get("status_url")
+        response_url = result.get("response_url")
+        if not status_url or not response_url:
+            die(f"Queue-Antwort ohne status_url/response_url: {json.dumps(result, indent=2)}")
+        result = poll_for_result(status_url, response_url, headers)
 
     images = result.get("images") or result.get("output") or []
     if not images:
