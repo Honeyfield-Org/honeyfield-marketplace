@@ -64,6 +64,8 @@ Ob eine Grid-Optik zum Mandanten passt, entscheidet `visual-style.md` (`stil`/`v
 - **Farbige Pfeile** nur für aktive/wichtige Pfade (`--accent` zwischen Loops, `--good` Richtung Erfolg)
 - **Progressive Opazität** bei wiederholten Elementen (z. B. Feedback-Bögen: 0.35, 0.45, 0.55)
 - **Durchgestrichen + reduzierte Opazität** (0.7) für Anti-Pattern-Items (`.sketch-strikethrough`); `.sketch-underline` für Hervorhebung
+- **Einfach und fokussiert halten** — ein Konzept pro Grafik
+- **Keine Gradients, keine 3D-Effekte, keine Stock-Foto-Elemente**
 
 ### Typografie-Regeln
 
@@ -104,18 +106,18 @@ Für: Vorher/Nachher, Good/Bad, Mit/Ohne, Option A vs. B.
       <div class="subtitle">Kontext-Subtitle für Standalone-Nutzung</div>
     </div>
 
-    <!-- Split-Content -->
+    <!-- Split content -->
     <div class="split">
       <div class="divider"></div>
       <div class="vs-badge">VS</div>
 
       <div class="split-left">
         <div class="box box--bad box--header" style="width: 100%;">LINKER HEADER</div>
-        <!-- Linke Content-Items -->
+        <!-- Left content items -->
       </div>
       <div class="split-right">
         <div class="box box--good box--header" style="width: 100%;">RECHTER HEADER</div>
-        <!-- Rechte Content-Items -->
+        <!-- Right content items -->
       </div>
     </div>
 
@@ -141,7 +143,7 @@ Für: Links-nach-rechts-Prozesse, Build-Pipelines, Datenflüsse mit Feedback-Loo
 
 ```html
 <div style="display: flex; align-items: flex-start; gap: 0;">
-  <!-- Jeden Schritt in einen step-col wrappen (für Klammer-Ausrichtung) -->
+  <!-- Wrap each step in a step-col for bracket alignment -->
   <div style="display: flex; flex-direction: column; align-items: center;">
     <div class="box box--fg">Code</div>
   </div>
@@ -152,7 +154,7 @@ Für: Links-nach-rechts-Prozesse, Build-Pipelines, Datenflüsse mit Feedback-Loo
 
   <div style="display: flex; flex-direction: column; align-items: center;">
     <div class="box box--accent box--elevated">Loop-Schritt</div>
-    <!-- Optionales Klammer-Label -->
+    <!-- Optional bracket label -->
     <div style="margin-top: 6px; text-align: center;">
       <div style="width: 70%; height: 10px; border: 1.5px solid var(--accent); border-top: none; border-radius: 0 0 6px 6px; opacity: 0.35; margin: 0 auto;"></div>
       <span class="annotation" style="font-size: 17px; color: var(--accent); opacity: 0.8;">Loop 1</span>
@@ -219,7 +221,7 @@ window.addEventListener('load', () => {
     path.setAttribute('stroke-dasharray', '6 4');
     path.setAttribute('fill', 'none');
     path.setAttribute('marker-end', 'url(#arrow-bad)');
-    path.setAttribute('opacity', String(0.35 + i * 0.1)); // progressive Opazität
+    path.setAttribute('opacity', String(0.35 + i * 0.1)); // progressive opacity
     svg.appendChild(path);
   });
 });
