@@ -35,7 +35,7 @@ Modus-unabhängig — Verstöße schwächen jeden Text:
 2. **Übersetzung:** Für welche Zielgruppe, die die Quelle nicht direkt adressiert?
 3. **Verortung:** Was bedeutet das für den eigenen Kontext (Kunde, Projekt, Markt)?
 
-Fehlt jeder der drei Layer: nicht posten.
+Fehlt jeder der drei Layer: nicht empfehlen — Idee verwerfen oder Beleg-Lücke im Brief ausweisen.
 
 **Authority Borrowing dosiert.** Eine Zahl, ein Name, ein Zitat. Mehr wirkt wie Name-Dropping. Die Zahl gehört in den Setup (Eintritt rechtfertigen), nicht in die Conclusio (Punch geben).
 - Gut: „[Person/Quelle] hat letzte Woche etwas veröffentlicht, das gerade durch alle Filter läuft. Die Diskussion dreht sich um X. Mich hat aber Y interessiert.”
