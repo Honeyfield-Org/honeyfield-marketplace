@@ -6,8 +6,8 @@ Story-first-Handwerk, Prompt-Aufbau, Anti-Patterns und Modell-Wahl für Modus B.
 
 **Nie das Topic illustrieren, immer den Kontrast der Story.**
 
-- Falsch gedacht: „Der Artikel handelt von Feedback-Loops → zeichne ein Loop-Diagramm."
-- Richtig gedacht: „Der Artikel kontrastiert Chaos (ohne Loops) mit System (mit Loops) → zeichne Slot-Machine vs. sauberen Kreislauf."
+- Falsch gedacht: „Der Artikel handelt von Feedback-Loops → zeichne ein Loop-Diagramm.”
+- Richtig gedacht: „Der Artikel kontrastiert Chaos (ohne Loops) mit System (mit Loops) → zeichne Slot-Machine vs. sauberen Kreislauf.”
 
 ### Story-Analyse (vor JEDEM Prompt)
 1. Kern-Spannung/Kontrast des Contents? (Chaos vs. System, alt vs. neu, falsch vs. richtig)
@@ -21,12 +21,12 @@ Grundmuster: **Stil-Template (aus `visual-style.md`) + Motiv (3–5 Sätze) + Ko
 
 - **Split-Kompositionen** für Problem→Lösung-Bögen: Schlechtes links, Gutes rechts, gestrichelte Linie dazwischen.
 - **Kurz und luftig:** Jedes Prompt-Detail versucht das Modell zu rendern. Weniger Wörter = klareres Bild. Motiv-Teil max. 3–5 Sätze.
-- **Whitespace explizit anfordern:** „lots of whitespace, minimal, airy composition, no clutter" in jeden Prompt.
+- **Whitespace explizit anfordern:** „lots of whitespace, minimal, airy composition, no clutter” in jeden Prompt.
 - **Kein Text im Bild anfordern.** Labels höchstens 1–2 Wörter — alles darüber gehört in Modus A (Code-Gen).
 
 ## Anti-Patterns (vermeiden)
 
-- Dichte Annotations-Wünsche („hand-written notes around the edges") → Clutter.
+- Dichte Annotations-Wünsche („hand-written notes around the edges”) → Clutter.
 - Lange Erklär-Sätze, was Elemente bedeuten → werden als Text ins Bild gerendert.
 - Konkrete Text-Inhalte/Slogans anfordern → KI-Text-Rendering ist unzuverlässig.
 - Detail UND Whitespace gleichzeitig → immer Whitespace wählen.
