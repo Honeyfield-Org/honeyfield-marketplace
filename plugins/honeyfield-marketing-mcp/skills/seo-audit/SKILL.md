@@ -32,7 +32,7 @@ Dieser Audit ist **datengetrieben**, nicht checklisten-basiert: Du rätst nicht,
 Der Default ist Österreich/Deutsch. Bei einem DE- oder CH-Kunden ohne explizite Angabe ziehst du sonst falsche SERPs und Suchvolumina. Das gilt auch für alle **Konkurrenz-Calls** in Phase 5.
 
 ## Prioritäts-Reihenfolge (Blocker zuerst)
-Arbeite in dieser Reihenfolge und spiegle sie im Report. Logik: „kann nicht ranken" vor „rankt schlecht".
+Arbeite in dieser Reihenfolge und spiegle sie im Report. Logik: „kann nicht ranken” vor „rankt schlecht”.
 1. **Auffindbarkeit** (Index & Crawl)
 2. **Technik & Performance** (CWV, Ladezeit, mobil)
 3. **On-Page** (Title/Meta/H1/Content je Schlüsselseite)
@@ -50,7 +50,7 @@ Quer dazu: **DACH-Layer** (immer) und **Lokale Sichtbarkeit** (nur bei lokalem G
 - `dfs_onpage_instant` (Startseite) → `status_code`, `canonical`, `h1_count`.
 - **Seitenweiter Crawl (optional, kostenpflichtig):** `dfs_onpage_crawl(target, max_crawl_pages)` für einen echten Site-Scan — läuft asynchron (Minuten), Ergebnisse via `dfs_onpage_crawl_results(task_id, section)`. `max_crawl_pages` ist Pflicht und der Kosten-Hebel: auf die tatsächliche Site-Größe begrenzen, nicht pauschal aufs Maximum (1000) setzen. Section je Prüfschritt: `summary` (Gesamt-Score/Top-Issues), `non_indexable` (technische Indexierbarkeit site-weit), `redirect_chains` (Ketten/Loops), `duplicate_content`/`duplicate_tags` (Signal-Splitting; brauchen zusätzlich `url=` bzw. `tag_type=` — pro geprüfter Seite aufrufen), `links` (interne Verlinkung, Orphan-Seiten).
 
-Achten auf: nicht indexierte Schlüsselseiten, falsche/fehlende Canonicals, Mobile-Usability-Fehler, fehlende/fehlerhafte Sitemap, Soft-404 (Status 200 auf leerer/„nicht gefunden"-Seite), Redirect-Ketten/-Loops, und nicht-konsolidierte http/https/www-Varianten (mehrere gleichzeitig als 200 erreichbar = Duplicate-Risiko).
+Achten auf: nicht indexierte Schlüsselseiten, falsche/fehlende Canonicals, Mobile-Usability-Fehler, fehlende/fehlerhafte Sitemap, Soft-404 (Status 200 auf leerer/„nicht gefunden”-Seite), Redirect-Ketten/-Loops, und nicht-konsolidierte http/https/www-Varianten (mehrere gleichzeitig als 200 erreichbar = Duplicate-Risiko).
 - **URL-/Architektur-Muster** (ablesbar an den URLs aus `sc_top_pages`/Sitemap — pro gesehene URL ohne Crawl, site-weit mit `dfs_onpage_crawl`): Datums-URLs auf Evergreen-Content, Over-Nesting (>3 Pfad-Ebenen), IDs statt sprechender Slugs, alte Pfad-Varianten ohne 301-Konsolidierung.
 - **Interne Verlinkung** (Hub-and-Spoke, verwaiste Seiten): standardmäßig nur **beratend** — prüfe die Schlüsselseiten auf ein-/ausgehende interne Links und empfiehl die Hub-Struktur; mit `dfs_onpage_crawl_results(task_id, section="links")` wird die Orphan-/Hub-Analyse site-weit **gemessen**.
 > Standard bleibt URL-für-URL für die wichtigsten Seiten (schnell, günstig). Für einen echten Site-Scan `dfs_onpage_crawl` einsetzen — gezielt bei Verdacht auf site-weite Probleme, nicht als Default (Kosten/Dauer beachten).
@@ -64,7 +64,7 @@ Achten auf: schlechtes Mobil-LCP (häufigster Killer), CLS durch Cookie-Banner (
 ### 3 — On-Page
 - `dfs_onpage_instant` je Schlüsselseite → Title, Meta, `h1_count`, `word_count`, `onpage_score`.
 - **DACH-Title/Meta nach Pixelbreite, nicht Zeichen bewerten** — Grenzwerte + Komposita-Details: `references/dach-seo.md`; wichtiges Keyword nach vorn. Meta-Description ist **kein Ranking-Faktor** (nur CTR-Hebel) und wird oft von Google umgeschrieben.
-- `h1_count` = 0 → Problem (keine H1). Mehrere H1 sind nur ein Best-Practice-Hinweis, **kein Ranking-Bug** (Google straft Mehrfach-H1 nicht). Dünner `word_count` auf Geld-Seiten → Verdacht auf fehlende Content-Tiefe; aber Wortzahl ist kein Ranking-Faktor — „dünn" heißt fehlender Mehrwert, nicht wenige Wörter.
+- `h1_count` = 0 → Problem (keine H1). Mehrere H1 sind nur ein Best-Practice-Hinweis, **kein Ranking-Bug** (Google straft Mehrfach-H1 nicht). Dünner `word_count` auf Geld-Seiten → Verdacht auf fehlende Content-Tiefe; aber Wortzahl ist kein Ranking-Faktor — „dünn” heißt fehlender Mehrwert, nicht wenige Wörter.
 - **Schema-Presence-Check (pro Seite geprüft):** Ist auf den Schlüsselseiten JSON-LD vorhanden und parsebar, und welche Typen? (Seitenquelltext prüfen; `dfs_onpage_instant` erkennt Schema nur eingeschränkt.) Hier nur drei Urteile: fehlt komplett / vorhanden aber kaputt / vorhanden. Entity-Tiefe (`@graph`/`@id`, `sameAs`) und der Schema-Fix-Operator gehören zu `geo-audit` — dorthin verweisen, nicht selbst bauen.
 > Verlass dich nicht blind auf die `issues`/`checks`-Liste von `dfs_onpage_instant` (erfasst negativ benannte Checks unzuverlässig) — nutze `onpage_score` + die Rohfelder und urteile selbst.
 
@@ -77,16 +77,16 @@ Achten auf: schlechtes Mobil-LCP (häufigster Killer), CLS durch Cookie-Banner (
 - `dfs_keyword_rankings` (Domain, location/language!) → wofür die Domain laut DataForSEO rankt, mit Volume.
 - `dfs_serp_google_organic` für die 3-5 Ziel-Keywords (location!) → wer real auf Seite 1 steht, wie die Konkurrenz aussieht.
 
-**Traffic-Einbruch?** `sc_performance` mit `dimensions=["date"]` (+ query/page) über einen längeren `days`-Zeitraum → den Einbruch zeitlich exakt verorten und gegen bekannte Google-Update-Termine legen. Datenbasierte Diagnose statt Hypothesenliste. „Helpful Content" ist seit dem März-2024-Core-Update Teil des Core-Algorithmus (kein separates System, kein Recovery-Knopf) — qualitätsbedingte Einbrüche wirken site-weit und erholen sich nur langsam über spätere Core-Updates. Termine: Google Search Status Dashboard.
+**Traffic-Einbruch?** `sc_performance` mit `dimensions=["date"]` (+ query/page) über einen längeren `days`-Zeitraum → den Einbruch zeitlich exakt verorten und gegen bekannte Google-Update-Termine legen. Datenbasierte Diagnose statt Hypothesenliste. „Helpful Content” ist seit dem März-2024-Core-Update Teil des Core-Algorithmus (kein separates System, kein Recovery-Knopf) — qualitätsbedingte Einbrüche wirken site-weit und erholen sich nur langsam über spätere Core-Updates. Termine: Google Search Status Dashboard.
 
 ### 5 — Content-Lücken (Selbst-Gap + Markt-Gap)
 **Selbst-Gap (eigene Domain):**
 - `dfs_keyword_ideas_for_domain` (Domain) + `dfs_related_keywords` (Seed aus den Top-Themen) → was die Domain targeten könnte; `dfs_keyword_overview` (Liste, max. 700) → Volumen, CPC, Difficulty und Intent in einem Call.
-- Gegen die GSC-Rankings halten: hohes Volumen + kein/schlechtes Ranking = Lücke. **DACH:** Komposita vs. Phrase prüfen („Kinderfahrrad" UND „Fahrrad für Kinder").
+- Gegen die GSC-Rankings halten: hohes Volumen + kein/schlechtes Ranking = Lücke. **DACH:** Komposita vs. Phrase prüfen („Kinderfahrrad” UND „Fahrrad für Kinder”).
 
 **Competitor-Content-Gap (Markt-Gap): wo ranken Konkurrenten, wir nicht?**
 - Konkurrenten bestimmen (nicht raten): `dfs_competitors_domain` (eigene Domain) → Domains mit den meisten gemeinsamen Rankings; Gegenprobe `dfs_serp_google_organic` für die Ziel-Keywords (wer steht real auf Seite 1) → 2-3 echte SEO-Konkurrenten.
-- `dfs_domain_intersection(domain1=eigene Domain, domain2=Konkurrent, intersections=false)` (gleiche `location`/`language`!) → die Gap-Keywords direkt: „Keyword X: Konkurrent Position 4, wir nicht in den Top 100."
+- `dfs_domain_intersection(domain1=eigene Domain, domain2=Konkurrent, intersections=false)` (gleiche `location`/`language`!) → die Gap-Keywords direkt: „Keyword X: Konkurrent Position 4, wir nicht in den Top 100.”
 - Discovery-Kette, Diff-Format und Snapshot-Schema fürs Wiederholungs-Diffing: `references/content-gap.md`.
 
 **Priorisieren (beide Gaps):**
@@ -122,18 +122,18 @@ Diese Punkte hat ein US-/Englisch-Audit nicht. Details + Listen: `references/dac
 4. **Impressum + Datenschutz** als Trust-Gate: vorhanden, ≤ 1 Klick, datiert? In DACH rechtlich verpflichtend (DDG/DSGVO) und starkes Trust-/E-E-A-T-Signal. *Keine Rechtsberatung — nur Vorhandensein/Erreichbarkeit prüfen.*
 5. **Lokale Citations** je Land (Listen: `references/dach-seo.md`) + NAP-Konsistenz — **nicht** über `gbp_local_seo_audit` gemessen (reiner GBP-Profil-Vollständigkeits-Score, kein Citation-Abgleich); NAP-Konsistenz über die Citation-Quellen bleibt manuelle/beratende Prüfung.
 6. **AEO / AI-Overviews (teils gemessen):** AIO-Präsenz + Quellen sind über `dfs_serp_google_organic` (`ai_overview.present`, `ai_overview.sources`) messbar (GSC selbst liefert weiterhin keine AIO-Klickdaten). Reale Hebel: Marken-/Web-Erwähnungen, Answer-First-Struktur, eigene Daten/Zitate, Entity-Konsistenz (NAP + `sameAs`), Zitierfähigkeit über deutsche autoritative Quellen. **`llms.txt` nicht empfehlen** (kein Engine nutzt es). Tiefen-Diagnose (Share of Voice über Engines, wird zitiert) bleibt beratend bzw. → `geo-audit`.
-7. **AT/CH-Linter:** auf CH-Seiten **kein ß** („ausser/Strasse"), Zahlenformat `1'234.56 CHF`, Austriazismen/Helvetismen im Keyword-Mapping (Jänner≠Januar, Velo≠Fahrrad).
+7. **AT/CH-Linter:** auf CH-Seiten **kein ß** („ausser/Strasse”), Zahlenformat `1'234.56 CHF`, Austriazismen/Helvetismen im Keyword-Mapping (Jänner≠Januar, Velo≠Fahrrad).
 
 ## Mythen vermeiden (nicht als Problem nennen)
 Veraltet oder widerlegt — nennst du das als Befund, verlierst du Glaubwürdigkeit:
 - **Meta-Description, Keyword-Density, Mehrfach-H1** als Ranking-Faktor → sind keine.
-- **Duplicate-Content-„Penalty"** → existiert nicht; das Problem ist Signal-Splitting/Canonical, keine Strafe.
+- **Duplicate-Content-„Penalty”** → existiert nicht; das Problem ist Signal-Splitting/Canonical, keine Strafe.
 - **Disavow als Routine** → nein; nur bei manueller Maßnahme oder selbst gebautem Link-Schema.
 - **FAQ-/HowTo-Schema für Rich Results** → tot (FAQ seit Mai 2026 abgeschaltet); Schema für Entity-Klärung empfehlen, nicht für FAQ-Sterne.
 - **`rel=next/prev`** → tot; paginierte Seiten self-canonical, nicht auf Seite 1 kanonisieren.
-- **PageRank-Verlust durch Redirects** → Mythos; bei Redirects zählen Ketten/Loops/Latenz, nicht „verlorene Linkkraft".
+- **PageRank-Verlust durch Redirects** → Mythos; bei Redirects zählen Ketten/Loops/Latenz, nicht „verlorene Linkkraft”.
 - **`llms.txt`** → kein AI-Engine nutzt es.
-- **„3-Klick-Regel", „E-E-A-T-Score"** → Folklore bzw. kein direkter Faktor; E-E-A-T über Proxies (Trust-Signale, Autoren, Marken-Erwähnungen). (Die 3-Klick-Regel ist als *Ranking-Regel* Folklore — flache, logische Architektur bleibt trotzdem sinnvoll, nur ohne die Zahl als Beleg.)
+- **„3-Klick-Regel”, „E-E-A-T-Score”** → Folklore bzw. kein direkter Faktor; E-E-A-T über Proxies (Trust-Signale, Autoren, Marken-Erwähnungen). (Die 3-Klick-Regel ist als *Ranking-Regel* Folklore — flache, logische Architektur bleibt trotzdem sinnvoll, nur ohne die Zahl als Beleg.)
 - **Keyword-Difficulty-Scores aus fremden Tools** (z.B. Ahrefs/SEMrush-artige Werte) zitieren → nutze stattdessen `dfs_keyword_overview` (unsere eigene, konsistente Difficulty-Metrik); fremde Scores sind nicht vergleichbar.
 
 ## Output-Format
@@ -141,12 +141,12 @@ Veraltet oder widerlegt — nennst du das als Befund, verlierst du Glaubwürdigk
 2. **Befunde nach Phase**, jeder als:
    - **Problem** — was ist falsch
    - **Wirkung** — Hoch / Mittel / Niedrig
-   - **Beleg** — die echten Daten (z.B. „GSC: ‚zimmer salzburg', Position 8,4 · 1.240 Impressionen · CTR 0,5 %")
+   - **Beleg** — die echten Daten (z.B. „GSC: ‚zimmer salzburg', Position 8,4 · 1.240 Impressionen · CTR 0,5 %”)
    - **Fix** — konkrete Maßnahme
    - **Priorität** — 1-5
 3. **Maßnahmenplan in 4 Stufen:** Kritisch (blockiert Ranking/Indexierung) · High-Impact · Quick Wins · Langfristig.
 
-Der **Beleg** ist Pflicht und immer eine echte Zahl aus den Tools — kein „könnte sein".
+Der **Beleg** ist Pflicht und immer eine echte Zahl aus den Tools — kein „könnte sein”.
 
 ## Danach: umsetzen (Operator)
 Biete am Ende an, die sicher behebbaren Punkte direkt zu erledigen. **Immer vorher fragen, nie ungefragt schreiben.** Regel: erst Ist-Zustand lesen, dann exakten Preview zeigen (Aktion, Entität, alt → neu, Wirkung, reversibel ja/nein — Muster: `references/write-guardrails.md` im Plugin), dann einzeln bestätigen lassen, dann ausführen. `sc_submit_sitemap` und `gtm_publish_version` sind **Hochrisiko** (Einreichung bzw. sofort live auf der Kunden-Website) — nie gebündelt bestätigen.

@@ -14,7 +14,7 @@ Dieser Skill ist das **Fundament unter `google-ads-audit` und `seo-audit`**: ste
 ## Beleg-Stufen — jeden Befund nach Beweiskraft kennzeichnen
 - **Gemessen:** Daten fließen real — Event-/Conversion-Counts, letztes Conversion-Datum / `last_gap_days`. Belastbar für genau das, was sie messen.
 - **Nur konfiguriert:** verdrahtet bzw. gesetzt, Datenfluss **unbewiesen** — GTM-Config, Conversion-Action-Inventar, gesetzter GA4↔Ads-Link, Settings-Gets (Enhanced Measurement / Data Retention). Existiert, beweist aber nicht, dass Daten ankommen.
-- **Nicht prüfbar:** Tool-Grenze, nur beratend — ob Consent Mode v2 *korrekt greift*, sGTM-Gesundheit, Attributionsmodell, echte Doppelzählung. (Page-Snippet-Installation ist **prüfbar mit Einschränkung**, kein „nicht prüfbar" mehr — siehe Footgun #8 in `references/tracking-tool-grenzen.md` §B.)
+- **Nicht prüfbar:** Tool-Grenze, nur beratend — ob Consent Mode v2 *korrekt greift*, sGTM-Gesundheit, Attributionsmodell, echte Doppelzählung. (Page-Snippet-Installation ist **prüfbar mit Einschränkung**, kein „nicht prüfbar” mehr — siehe Footgun #8 in `references/tracking-tool-grenzen.md` §B.)
 
 > Grundsatz: **Config ohne Daten = Verdacht, nicht Befund.** Jeder Befund im Report trägt eine dieser drei Stufen. Vollständiges Tool-Mapping je Stufe in `references/tracking-tool-grenzen.md` §A.
 

@@ -64,11 +64,11 @@ Herzstück von Phase 1 des `marketing-plan`-Skills. Sie macht den Ist-Zustand ei
 - 0 = Keine aktiven Such-Kampagnen (mit Paid-Budget-Ziel eine Lücke; ohne Paid-Ziel neutral — siehe Fallback).
 - 1 = Kampagnen laufen, aber ohne Conversion-Ziel/Tracking — Budget fließt blind.
 - 2 = Kampagnen mit Conversion-Ziel, aber hoher Streuverlust / niedriger Impression Share / kaum Conversions.
-- 3 = Kampagnen konvertieren, CPA grob im vertretbaren Rahmen; Impression Share zeigt Luft nach oben (Budget-/Rank-Verlust).
-- 4 = Stabile Conversions zu tragbarem CPA, Impression Share solide, wenig offensichtlicher Streuverlust.
+- 3 = Kampagnen konvertieren, aber messbar unter Potenzial: Ziel-CPA (laut projekt-kontext) verfehlt **oder** Impression-Share-Verlust überwiegend Budget-bedingt.
+- 4 = Ziel-CPA gehalten, Impression-Share-Verlust überwiegend Rang- statt Budget-bedingt, wenig offensichtlicher Streuverlust.
 - 5 = Effizienter Paid-Search-Motor: guter CPA, hoher Impression Share auf Money-Terms, Budget nicht durch Rank/Budget-Limit gedeckelt.
 
-**Beleg:** `ads_campaign_performance` (Spend, Conversions, CPC, CTR) + `ads_impression_share` (Search Impression Share + Budget-/Rank-Verlust). Zählwert: Conversions je Kampagne + CPA + Höhe des Impression Share. Beleg-Stufe: **gemessen**; bei Gate-Score ≤2 nur Volumen/Impression-Share bewerten, alle CPA-/Conversion-Aussagen tragen den **Tracking-Vorbehalt**.
+**Beleg:** `ads_campaign_performance` (Spend, Conversions, CPC, CTR) + `ads_impression_share` (Search Impression Share + Budget-/Rank-Verlust). Zählwert: Conversions je Kampagne + CPA vs. Ziel-CPA + Impression Share inkl. Budget-/Rang-Verlust-Split. Fehlt ein Ziel-CPA im projekt-kontext, CPA am Ø-Kundenwert einordnen und das Fehlen als offene Entscheidung notieren. Beleg-Stufe: **gemessen**; bei Gate-Score ≤2 nur Volumen/Impression-Share bewerten, alle CPA-/Conversion-Aussagen tragen den **Tracking-Vorbehalt**.
 
 **Fallback wenn Quelle fehlt:** Keine `google_ads`-Quelle → **Lücke** benennen. Kein Paid-Search-Budget/-Ziel laut projekt-kontext → als **N/A** markieren (Score 0 ohne Wertung als Schwäche — spiegelt die Strategie, nicht ein Versäumnis).
 
@@ -128,7 +128,7 @@ Herzstück von Phase 1 des `marketing-plan`-Skills. Sie macht den Ist-Zustand ei
 - 4 = Gut gepflegtes Profil, gute Local-Pack-Präsenz für Kern-Keywords, aktiver Bewertungsfluss.
 - 5 = Dominante lokale Präsenz: Top-Local-Pack für Money-Keywords, viele frische Bewertungen, vollständiges optimiertes Profil.
 
-**Beleg:** `gbp_performance` (Impressionen Maps/Suche, Anrufe, Website-Klicks, Routenanfragen) + `gbp_local_seo_audit` (Profil-Vollständigkeit, Kategorien, NAP-Konsistenz). Zählwert: Profil-Vollständigkeits-Signal + Aktions-Volumen aus dem Profil. Beleg-Stufe: **gemessen**.
+**Beleg:** `gbp_performance` (Impressionen Maps/Suche, Anrufe, Website-Klicks, Routenanfragen) + `gbp_local_seo_audit` (Profil-Vollständigkeits-Score über Kategorien, Beschreibung, Öffnungszeiten, Attribute, Reviews, Fotos ≥3, Post ≤30 Tage — **kein NAP-/Citation-Abgleich**; Review-/Foto-/Post-Checks laufen unbewertet, wenn die v4-API nicht freigeschaltet ist). Zählwert: Vollständigkeits-Score + Aktions-Volumen (Anrufe + Website-Klicks + Routenanfragen). Beleg-Stufe: **gemessen**.
 
 **Fallback wenn Quelle fehlt:** Keine `business_profile`-Quelle → laut projekt-kontext prüfen, ob ein lokales Geschäft relevant ist: relevant → **Lücke** benennen (ein fehlendes/unverbundenes Profil ist selbst ein Befund); rein online/überregional → **N/A** ohne Schwäche-Wertung.
 

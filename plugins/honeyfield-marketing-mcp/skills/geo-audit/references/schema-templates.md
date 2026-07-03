@@ -51,7 +51,7 @@ Statt isolierte Snippets auszugeben, alles in einem Graphen verknüpfen:
 
 ## FAQPage / QAPage — Nuance
 
-**Nicht** als „bringt FAQ-Rich-Snippet" empfehlen (Rich Result tot, siehe `geo-mechanik.md`). Wert für GEO: maschinenlesbare **Frage→Antwort-Claim-Struktur**, die LLMs leicht extrahieren. Nur einsetzen, wenn echte Q&A-Inhalte auf der Seite sichtbar sind (Accuracy-Regel).
+**Nicht** als „bringt FAQ-Rich-Snippet” empfehlen (Rich Result tot, siehe `geo-mechanik.md`). Wert für GEO: maschinenlesbare **Frage→Antwort-Claim-Struktur**, die LLMs leicht extrahieren. Nur einsetzen, wenn echte Q&A-Inhalte auf der Seite sichtbar sind (Accuracy-Regel).
 
 ## Accuracy-Regeln (Pflicht)
 

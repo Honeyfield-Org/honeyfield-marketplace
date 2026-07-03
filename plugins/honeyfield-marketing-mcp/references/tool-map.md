@@ -10,7 +10,7 @@ Lege Schreib-Tools (W) nie ohne write-guardrails.md an.
 | Tool | Was | Quelle | R/W |
 |---|---|---|---|
 | `list_workspaces` | Workspaces + verbundene sources auflisten | — | R |
-| `ping` | Connectivity-Check (liefert „pong") | — | R |
+| `ping` | Connectivity-Check (liefert „pong”) | — | R |
 | `authenticate` | OAuth-Flow zum MCP starten — nur Plugin-Kontext (Claude Code); in Claude Web ist der Connector vorauthentifiziert | — | — |
 | `complete_authentication` | OAuth-Flow abschließen — nur Plugin-Kontext (Claude Code) | — | — |
 
@@ -249,7 +249,7 @@ Lege Schreib-Tools (W) nie ohne write-guardrails.md an.
 | `gbp_update_attributes` | Attribute lesen (`get`) oder setzen (`set`) — Wertformen: URL (String/Liste), Bool, `{'enum': 'WERT'}`, `{'set': […], 'unset': […]}` (Mehrfachauswahl), `None` löscht das Attribut | business_profile | R/W |
 | `gbp_manage_hours` | Reguläre + Sonderöffnungszeiten **setzen** — kein Lese-Modus, Ist-Zustand über `gbp_get_profile` | business_profile | W |
 | `gbp_manage_open_info` | Öffnungsstatus (openInfo) lesen (`get`) oder setzen (`set`, nur `OPEN` oder `CLOSED_TEMPORARILY`) — `CLOSED_PERMANENTLY` wird bewusst abgelehnt (gehört ins Google-Dashboard) | business_profile | R/W |
-| `gbp_get_review_link` | „Bewertung schreiben"-Link des Standorts; ohne `newReviewUri` Fallback auf die lange `writereview`-URL (kein Kurzlink) | business_profile | R |
+| `gbp_get_review_link` | „Bewertung schreiben”-Link des Standorts; ohne `newReviewUri` Fallback auf die lange `writereview`-URL (kein Kurzlink) | business_profile | R |
 | `gbp_local_seo_audit` | Profil-Vollständigkeits-Score (Kategorien, Beschreibung, Öffnungszeiten, Attribute, Reviews, Fotos ≥3, Post ≤30 Tage) — **kein NAP-/Citation-Abgleich**; Review-/Foto-/Post-Checks laufen unbewertet, wenn die v4-API nicht freigeschaltet ist | business_profile | R |
 | `gbp_local_rank` | Tatsächliche Position im Google-Maps/Local-Pack für ein Keyword + Standort — **Einzelpunkt-Abfrage, kein Grid** | dataforseo | R |
 | `gbp_list_posts` | Local Posts des Standorts (Update/Angebot/Veranstaltung) mit Status und CTA, paginiert | business_profile | R |
@@ -267,7 +267,7 @@ Lege Schreib-Tools (W) nie ohne write-guardrails.md an.
 |---|---|---|---|
 | `meta_list_ad_accounts` | Erreichbare Meta-Ad-Accounts auflisten (id, Name, Status, Währung) | meta_ads | R |
 | `meta_list_pages` | Facebook-Pages, die der Account bewerben darf — `page_id` ist Pflicht für `meta_create_ad` | meta_ads | R |
-| `meta_list_pixels` | Meta-Pixel (Datasets) auflisten inkl. „zuletzt gefeuert" — schnellster Tracking-Check | meta_ads | R |
+| `meta_list_pixels` | Meta-Pixel (Datasets) auflisten inkl. „zuletzt gefeuert” — schnellster Tracking-Check | meta_ads | R |
 | `meta_pixel_stats` | Pixel-Event-Statistiken der letzten N Tage (Summen + Tagesverlauf) | meta_ads | R |
 | `meta_campaign_performance` | Kampagnen-Performance (Impressionen, Klicks, Spend, Conversions) | meta_ads | R |
 | `meta_adset_performance` | Adset-Performance der letzten N Tage, sortiert nach Spend | meta_ads | R |

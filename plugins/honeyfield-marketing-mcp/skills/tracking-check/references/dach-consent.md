@@ -15,7 +15,7 @@ Referenz für `tracking-check`. Detailkörper zum Consent-Layer-Querschnitt in S
 | Tag feuert **vor** Consent (Dark Pattern) | **Nicht prüfbar** | — | Nur via Browser-Netzwerk-Tab oder Tag-Assistant |
 | sGTM-Endpoint hinterlegt | **Nur konfiguriert** | `gtm_get_tag` (GA4-Config-Tag) → `transport_url` / `server_container_url` | Nur Konfigurationspräsenz; Live-Gesundheit des Servers nicht bestätigbar |
 
-**Grundsatz:** Consent-Compliance ist per MCP-Tools höchstens als „konfiguriert vorhanden" belegbar — nie als „korrekt greifend". Für Compliance-Aussagen GTM-Preview / Tag-Assistant / Browser-Inspektion erforderlich.
+**Grundsatz:** Consent-Compliance ist per MCP-Tools höchstens als „konfiguriert vorhanden” belegbar — nie als „korrekt greifend”. Für Compliance-Aussagen GTM-Preview / Tag-Assistant / Browser-Inspektion erforderlich.
 
 ---
 
@@ -57,7 +57,7 @@ Das frühere TTDSG heißt seit **Mai 2024 TDDDG** (Telekommunikation-Digitale-Di
 - **Ausnahme §25 Abs. 2**: Technisch zwingend notwendige Cookies ohne Einwilligung erlaubt (Session, Warenkorb).
 - **DSGVO Art. 6 Abs. 1 lit. a**: Rechtsbasis für Verarbeitung personenbezogener Daten — Einwilligung muss frei, informiert, granular und widerrufbar sein; kein Opt-out, kein Pre-checked.
 - **Bußgeld**: §28 Abs. 1 TDDDG bis 300.000 EUR (Rahmen gegen aktuelle Fassung prüfen); DSGVO bis 4 % des weltweiten Jahresumsatzes oder 20 Mio. EUR.
-- **Dark Pattern**: Erste Banner-Ebene muss gleichwertige Ablehnen-Option zeigen — kein „Okay"-Button ohne „Ablehnen".
+- **Dark Pattern**: Erste Banner-Ebene muss gleichwertige Ablehnen-Option zeigen — kein „Okay”-Button ohne „Ablehnen”.
 - **PIMS** (Personal Information Management Services): Das TDDDG sieht anerkannte Einwilligungsverwaltungsdienste vor, die Cookie-Banner mittelfristig für zertifizierte Nutzer ersetzen können — Anerkennungsverordnung/Aufbau noch im Gange; konkreten Stand (Paragraf, Inkrafttreten) vor Kundennutzung verifizieren.
 
 **DACH-spezifisch DE (Stand 2025):** Ob alleiniges Laden von GTM vor Consent (ohne Tag-Feuern) bereits einwilligungspflichtig ist, wird gerichtlich diskutiert und ist umstritten. Sicherere Praxis: CMP zuerst laden, GTM erst nach Consent-Signal injizieren.

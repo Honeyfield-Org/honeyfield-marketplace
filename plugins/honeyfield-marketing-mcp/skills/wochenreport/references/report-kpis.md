@@ -18,7 +18,7 @@ Jede Report-Zeile trägt die Stufe implizit über die Quelle; AI-Traffic ohne Da
 
 Viele Tools nehmen nur `days` — das Fenster endet **heute**, eine Vorperiode ist damit nicht direkt abrufbar (`ads_campaign_performance`, `ads_impression_share`, `ga4_conversions`, `sc_top_queries`). Perioden wirklich trennen können nur `ga4_report` (`start_date`/`end_date`), `sc_performance` (`dimensions=["date"]`) und `ads_conversion_performance` (Tagesverlauf). Deshalb:
 
-- **Woche = ISO-Kalenderwoche Mo–So** (DACH-Konvention „KW"). Default: letzte abgeschlossene KW vs. die davor.
+- **Woche = ISO-Kalenderwoche Mo–So** (DACH-Konvention „KW”). Default: letzte abgeschlossene KW vs. die davor.
 - **GA4-Deltas:** `ga4_report` mit `start_date`/`end_date` — zwei exakte Fenster abrufen. Für Vergleiche nicht `ga4_conversions` nutzen (nur `days`).
 - **SEO-Deltas:** `sc_performance` mit `dimensions=["date"]`, days=14 (WoW) bzw. days≈60 (MoM) — Wochen/Monate aus den Tageszeilen selbst splitten.
 - **Ads-Conversions:** Tagesverlauf aus `ads_conversion_performance` in die zwei Perioden splitten.
@@ -26,7 +26,7 @@ Viele Tools nehmen nur `days` — das Fenster endet **heute**, eine Vorperiode i
 - **`ads_impression_share`:** Snapshot ohne belastbare Vorperiode — als Grenze kennzeichnen (Beleg-Stufe), kein Pseudo-Δ bauen.
 - **MoM für Ads-KPIs ist eingeschränkt:** sauber nur über Tagesverlauf-Tools (`ads_conversion_performance`); für days-only-Tools MoM als Näherung kennzeichnen oder weglassen.
 
-Kein Δ ohne saubere Perioden-Trennung — überlappende `days`-Fenster als Vergleich zu präsentieren wäre ein Pseudo-Delta, keine „echte Zahl aus den Tools".
+Kein Δ ohne saubere Perioden-Trennung — überlappende `days`-Fenster als Vergleich zu präsentieren wäre ein Pseudo-Delta, keine „echte Zahl aus den Tools”.
 
 ---
 
@@ -41,7 +41,7 @@ Kein Δ ohne saubere Perioden-Trennung — überlappende `days`-Fenster als Verg
 | Impression Share | `ads_impression_share` | Snapshot ohne Vorperiode — −10 %-Punkte nur, wenn eine Vorwochen-Messung (früherer Report) vorliegt | `google-ads-audit` (Lost IS Budget vs. Rank) |
 | Klicks / CTR | `ads_campaign_performance` | ±30 % | `google-ads-audit` |
 
-**Beleg-Stufe:** Conversions, CPA und ROAS tragen **„mit Tracking-Vorbehalt"**, solange das Tracking-Gate (unten) nicht grün ist.
+**Beleg-Stufe:** Conversions, CPA und ROAS tragen **„mit Tracking-Vorbehalt”**, solange das Tracking-Gate (unten) nicht grün ist.
 **Pacing-Check:** `budget_pacing` — liegt der Monats-Spend auf Kurs? Über-/Unter-Pacing als Auffälligkeit.
 
 ---
@@ -114,15 +114,15 @@ Für lokale Kunden (Praxis, Bäckerei, Handwerk) sind das Kern-Zahlen — oft wi
 Plausibilitäts-Check über `ads_conversion_performance` (`last_gap_days`) + `ga4_conversions`. Konkrete Gate-Schwellen:
 - `last_gap_days` > 7 (trotz laufendem Spend) = **Verdacht** — im Report kennzeichnen.
 - Conversions bei 0 trotz Spend **oder** Ads-vs-GA4-Klaffung > Faktor 2 = **Blocker** — ganz oben im Report markieren, auf `tracking-check` verweisen.
-- Solange das Gate nicht grün ist: Conversions/CPA/ROAS mit Beleg-Stufe **„mit Tracking-Vorbehalt"** ausweisen.
+- Solange das Gate nicht grün ist: Conversions/CPA/ROAS mit Beleg-Stufe **„mit Tracking-Vorbehalt”** ausweisen.
 
 ---
 
 ## WoW-Interpretation (Fallstricke)
-- **Kurze Zeiträume schwanken.** Bei niedrigem Volumen (< ~20 Conversions/Woche) ist ein WoW-Delta oft Rauschen — als „zu wenig Daten für belastbaren Trend" kennzeichnen, nicht als Trend verkaufen.
+- **Kurze Zeiträume schwanken.** Bei niedrigem Volumen (< ~20 Conversions/Woche) ist ein WoW-Delta oft Rauschen — als „zu wenig Daten für belastbaren Trend” kennzeichnen, nicht als Trend verkaufen.
 - **Attributions-Lag:** die letzten 1–3 Tage sind unvollständig (Conversions tropfen nach). Frische Kurzfenster nicht hart bewerten.
 - **Saisonalität / Feiertage:** DACH-Feiertage (regional unterschiedlich AT/CH/DE) und Wochenend-Muster erklären viele Deltas — vor dem Alarm prüfen.
 - **Eine Auffälligkeit ≠ eine Ursache.** Der Report zeigt *dass* etwas auffällt und *wo* man tiefer schaut — die Ursache findet der jeweilige Audit.
 
 ## Schwellen sind Richtwerte, kein Gesetz
-Die %-Schwellen oben sind Ausgangspunkte für „lohnt einen Blick", kalibriert auf mittlere Konten. Bei sehr großen/kleinen Konten anpassen. Immer die absolute Größe mitdenken (−30 % von 3 Conversions ist kein Notfall).
+Die %-Schwellen oben sind Ausgangspunkte für „lohnt einen Blick”, kalibriert auf mittlere Konten. Bei sehr großen/kleinen Konten anpassen. Immer die absolute Größe mitdenken (−30 % von 3 Conversions ist kein Notfall).

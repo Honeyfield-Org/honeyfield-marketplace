@@ -34,7 +34,7 @@ Kanonische Mix-Verteilung (Anzahl je Typ: keyword/benefit/social-proof/CTA/diffe
 
 **Der Ad-Strength-Wert ist über die MCP-Tools NICHT auslesbar.** `ads_list_ads` liefert kein `ad_strength`-Feld. Kein Tool gibt einen Strength-Wert zurück. Den aktuellen Wert (Poor / Average / Good / Excellent) sieht man **ausschließlich im Google Ads UI**.
 
-Behauptung „ich verbessere deine Ad Strength von Poor auf Excellent" ist unzulässig — nie einen Strength-Wert behaupten oder vortäuschen, ihn auszulesen.
+Behauptung „ich verbessere deine Ad Strength von Poor auf Excellent” ist unzulässig — nie einen Strength-Wert behaupten oder vortäuschen, ihn auszulesen.
 
 Was Ad Strength **treibt** (Best Practices, nach denen der Skill baut):
 
@@ -44,7 +44,7 @@ Was Ad Strength **treibt** (Best Practices, nach denen der Skill baut):
 4. **Wenig Redundanz** — Headlines/Descriptions nicht mit ähnlichen Formulierungen füllen
 5. **Themen-Diversität** — verschiedene Angles (Nutzen, Beweis, CTA) statt monothematisch
 
-Selbstcheck im Output: „RSA nach Best-Practice gebaut (15 Headlines, Unique, Keyword-Einbindung, Mix) — den Strength-Wert siehst du nur im Google Ads UI."
+Selbstcheck im Output: „RSA nach Best-Practice gebaut (15 Headlines, Unique, Keyword-Einbindung, Mix) — den Strength-Wert siehst du nur im Google Ads UI.”
 
 ---
 
@@ -71,9 +71,9 @@ Google erlaubt keine echte In-Place-Bearbeitung von RSA-Inhalten. Der MCP-Workfl
 Jede inhaltliche Änderung über Replace erzeugt eine **neue Ad-Entität** — neue Ad-ID, **Lernhistorie startet bei null**. Google braucht erneut ausreichend Impressions/Klicks, um die neue RSA zu optimieren.
 
 Konsequenz für Iteration:
-- Nicht jede schlechte Headline durch Replace „fixen" — die Kosten (Lernhistorie-Reset) gegen den Nutzen abwägen
+- Nicht jede schlechte Headline durch Replace „fixen” — die Kosten (Lernhistorie-Reset) gegen den Nutzen abwägen
 - Wenn Replace nötig: `keep_old=true`, alte pausierte Ad als Rückfall-Option behalten
-- Dem Nutzer vor jedem Replace erklären: „diese Aktion erstellt eine neue Ad — die bisherige Lernhistorie wird nicht übertragen"
+- Dem Nutzer vor jedem Replace erklären: „diese Aktion erstellt eine neue Ad — die bisherige Lernhistorie wird nicht übertragen”
 
 ---
 
@@ -89,13 +89,13 @@ Pinning (Festhalten einer Headline auf Position 1, 2 oder 3) ist **nur im Google
 - **Sparsam einsetzen:** Jeder Pin reduziert Googles Kombinationsfreiheit → schlechtere Optimierung
 - Faustregel: Maximal 1–2 Pins pro RSA, nur wenn rechtlich oder strategisch zwingend
 
-Im Output als Empfehlung formulieren: „Falls du X auf Pos 1 halten möchtest → im UI pinnen (Schraubenschlüssel-Icon an der Ad)"
+Im Output als Empfehlung formulieren: „Falls du X auf Pos 1 halten möchtest → im UI pinnen (Schraubenschlüssel-Icon an der Ad)”
 
 ---
 
 ## Statistik-Hygiene für Iteration (Modus B)
 
-Bevor Headlines oder Descriptions als „Gewinner" oder „Verlierer" eingestuft werden:
+Bevor Headlines oder Descriptions als „Gewinner” oder „Verlierer” eingestuft werden:
 
 **Mindest-Datengrundlage (Richtwerte):**
 - Impressions: **≥ 1.000** pro verglichener Ad/Zeitraum
@@ -107,10 +107,10 @@ Bevor Headlines oder Descriptions als „Gewinner" oder „Verlierer" eingestuft
 - Isoliert iterieren: erst Copy ändern, Ergebnis abwarten, dann nächste Variable
 
 **Verbotene Urteile auf dünner Datenbasis:**
-- „Headline 3 performt schlechter" bei < 500 Impressions: kein Urteil — zu wenig Daten
-- „Diese Ad hat schlechtere CTR" bei 2 Wochen Laufzeit nach einem Replace (Lernphase noch aktiv)
+- „Headline 3 performt schlechter” bei < 500 Impressions: kein Urteil — zu wenig Daten
+- „Diese Ad hat schlechtere CTR” bei 2 Wochen Laufzeit nach einem Replace (Lernphase noch aktiv)
 
-Im Output: Wenn die Datenlage dünn ist → explizit sagen: „Zu wenig Daten für ein zuverlässiges Urteil (X Impressions). Empfehlung: noch Y Wochen laufen lassen."
+Im Output: Wenn die Datenlage dünn ist → explizit sagen: „Zu wenig Daten für ein zuverlässiges Urteil (X Impressions). Empfehlung: noch Y Wochen laufen lassen.”
 
 ---
 
@@ -120,10 +120,10 @@ Deutsche Eigenheiten, die Limits sprengen:
 
 | Problem | Detail |
 |---|---|
-| **Leerzeichen** | Zählen mit — „PM Tool" (7) vs. „PM-Tool" (6) |
+| **Leerzeichen** | Zählen mit — „PM Tool” (7) vs. „PM-Tool” (6) |
 | **Umlaute & ß** | Je 1 Zeichen (ä=1, ö=1, ü=1, ß=1) — kein UTF-8-Mehrfachzählung |
 | **DKI `{KeyWord:default}`** | Wird durch das auslösende Keyword ersetzt — kann Limit sprengen, wenn Keywords lang sind. Default-Text wählen, der sicher < 30 Zeichen ist |
-| **Lange Komposita** | „Projektmanagement-Software" (27) verbraucht fast das gesamte Limit → kürzen: „PM-Software" (11) |
+| **Lange Komposita** | „Projektmanagement-Software” (27) verbraucht fast das gesamte Limit → kürzen: „PM-Software” (11) |
 | **Satzzeichen** | Ausrufezeichen in Headlines erlaubt; Ausrufezeichen in Display-URL/Path nicht |
 | **Groß-/Kleinschreibung** | Jedes signifikante Wort groß (Title Case) erhöht Lesbarkeit, kein Zeicheneffekt |
 

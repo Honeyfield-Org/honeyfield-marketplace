@@ -11,7 +11,7 @@ On-Demand-Tiefe für den `seo-audit`-Skill. Nur laden, wenn der jeweilige Punkt 
 - Mit unseren Tools nur teilweise prüfbar: Canonical via `sc_url_inspection`/`dfs_onpage_instant`; die hreflang-Tags selbst aus dem Seitenquelltext.
 
 ## Pixel-Snippets (statt Zeichenzählung)
-- Title kappt bei ~569 px (nicht „60 Zeichen"). Deutsch: Komposita + Breitbuchstaben (W/M) fressen Platz, schmale (i/l) sparen. Wichtigstes Keyword nach vorne.
+- Title kappt bei ~569 px (nicht „60 Zeichen”). Deutsch: Komposita + Breitbuchstaben (W/M) fressen Platz, schmale (i/l) sparen. Wichtigstes Keyword nach vorne.
 - Meta-Description: Desktop ~990 px, Mobil ~1.300 px.
 - `dfs_onpage_instant` liefert Title/Meta-Text → Zeichenlänge ist nur Näherung; bei langen Komposita-Titeln eher kürzen.
 
@@ -29,15 +29,15 @@ On-Demand-Tiefe für den `seo-audit`-Skill. Nur laden, wenn der jeweilige Punkt 
 - **DE:** Das Örtliche, Gelbe Seiten, 11880, Cylex, MeineStadt, Yelp DE, Bing Places, Apple Maps.
 - **AT:** Herold.at (größtes, do-follow), WKO Firmen A-Z (Pflichtmitgliedschaft → hohes Trust-Signal), FirmenABC.at.
 - **CH:** local.ch (#1), search.ch, moneyhouse.ch (Handelsregister), help.ch, cylex.ch.
-- NAP byte-genau konsistent („Str." vs. „Straße", `+43/+41/+49`). Qualität vor Menge (30 gute > 200 mittelmäßige).
+- NAP byte-genau konsistent („Str.” vs. „Straße”, `+43/+41/+49`). Qualität vor Menge (30 gute > 200 mittelmäßige).
 
 ## AEO / AI-Overviews (DACH, teils gemessen)
 - AI Overviews seit 03/2025 in DE live, wachsender Keyword-Anteil; CTR auf Position 1 sinkt bei AIO deutlich.
-- Was zählt: konsistente Entity-Daten (NAP + Geschäftszweck über Website/GBP/LinkedIn/Verzeichnisse), Zitierfähigkeit über deutsche autoritative/institutionelle Quellen, konkrete Service-/Prozess-/Preis-Transparenz statt generischer „Was ist X"-Texte.
+- Was zählt: konsistente Entity-Daten (NAP + Geschäftszweck über Website/GBP/LinkedIn/Verzeichnisse), Zitierfähigkeit über deutsche autoritative/institutionelle Quellen, konkrete Service-/Prozess-/Preis-Transparenz statt generischer „Was ist X”-Texte.
 - **AIO-Präsenz + Quellen sind jetzt gemessen** über `dfs_serp_google_organic` (`ai_overview.present`, `ai_overview.sources`) — für die Ziel-Keywords direkt prüfbar, ob und mit welchen Quellen Google eine AI-Overview ausspielt. Die tiefere Sichtbarkeits-*Diagnose* (zitiert die KI uns überhaupt, Share of Voice über Engines) bleibt beratend bzw. → `geo-audit`.
 
 ## AT/CH-Linter
-- **CH:** kein ß — immer `ss` („ausser", „Strasse"). Ein ß auf einer CH-Seite = Lokalisierungsfehler. Zahlen/Währung: `1'234.56 CHF` (Apostroph-Tausender, Punkt-Dezimal). CH oft mehrsprachig (de/fr/it) → hreflang je Sprache; Schweizer suchen meist auf Hochdeutsch, nicht Mundart.
+- **CH:** kein ß — immer `ss` („ausser”, „Strasse”). Ein ß auf einer CH-Seite = Lokalisierungsfehler. Zahlen/Währung: `1'234.56 CHF` (Apostroph-Tausender, Punkt-Dezimal). CH oft mehrsprachig (de/fr/it) → hreflang je Sprache; Schweizer suchen meist auf Hochdeutsch, nicht Mundart.
 - **AT:** Austriazismen in der Keyword-Recherche (Jänner≠Januar, Erdäpfel≠Kartoffeln, Sackerl) — eigene Suchvolumina via `dfs_keyword_volume` mit `location="Austria"`. `.at` = starkes Geo-Signal.
 - ccTLD: `.de/.at/.ch` senden je ein starkes Länder-Signal; `.com` braucht hreflang + ggf. GSC-Land-Targeting.
 
