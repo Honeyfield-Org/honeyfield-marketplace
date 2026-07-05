@@ -1,6 +1,0 @@
-{
-  "name": "honeyfield-ris-mcp",
-  "description": "RIS MCP — österreichisches Rechtsinformationssystem (Bundes-/Landesrecht, Judikatur, Verordnungen) über mcp.honeyfield.at",
-  "version": "1.0.0",
-  "author": { "name": "Honeyfield GmbH", "email": "vernes@honeyfield.at" }
-}

@@ -1,0 +1,6 @@
+{
+  "name": "honeyfield-legal-mcp",
+  "description": "Legal MCP — österreichisches Recht (RIS: Bundes-/Landesrecht, Judikatur, BGBl/LGBl, Gemeinderecht) und EU-Recht (EUR-Lex: Rechtsakte, Konsolidierungen, Zitate, EuGH) über mcp.honeyfield.at; mit 2 Skills: rechtsrecherche (Normen finden, geltende Fassung, Rechtsstand-Check, EU↔AT-Umsetzung) und judikatur (Rechtsprechung, Rechtssätze, Entscheidungslinien)",
+  "version": "1.0.0",
+  "author": { "name": "Honeyfield GmbH", "email": "vernes@honeyfield.at" }
+}

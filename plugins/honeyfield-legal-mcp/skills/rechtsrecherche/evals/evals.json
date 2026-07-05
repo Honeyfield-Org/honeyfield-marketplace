@@ -1,0 +1,96 @@
+[
+  {
+    "id": "trigger-paragraph-lookup",
+    "prompt": "Was sagt § 1295 ABGB?",
+    "expected_output": "Invoziert rechtsrecherche. Sucht via ris_bundesrecht (titel=ABGB, paragraph=1295), zieht den Volltext über ris_dokument und zitiert mit Fassung/Stand-Datum und RIS-Dokumentnummer. Kein Normtext aus Modellwissen.",
+    "assertions": [
+      "Aktiviert den rechtsrecherche-Skill",
+      "Ruft ris_bundesrecht mit titel und paragraph auf, statt den Paragraphen aus Modellwissen wiederzugeben",
+      "Zieht den Volltext über ris_dokument, bevor wörtlich zitiert wird",
+      "Weist Fassung/Stand-Datum und Fundstelle (RIS-Dokumentnummer) aus",
+      "Kennzeichnet die Beleg-Stufe (belegt)"
+    ],
+    "files": ["SKILL.md", "references/quellen-routing.md", "references/zitierweise.md"]
+  },
+  {
+    "id": "trigger-eu-umsetzung",
+    "prompt": "Wie ist die Whistleblower-Richtlinie in Österreich umgesetzt?",
+    "expected_output": "EU↔AT-Umsetzungs-Pfad: identifiziert die RL (EU) 2019/1937 über eurlex_search/eurlex_metadata, sucht dann in RIS nach dem Umsetzungsgesetz (z.B. suchworte mit der RL-Nummer) und belegt die Zuordnung über den Umsetzungshinweis im Gesetzes-/BGBl-Text oder die Materialien. Kennzeichnet unbelegte Zuordnungen als Vermutung — es gibt kein Umsetzungsregister-Tool.",
+    "assertions": [
+      "Identifiziert den EU-Akt über EUR-Lex-Tools (eurlex_search, eurlex_metadata oder eurlex_citations)",
+      "Sucht das österreichische Umsetzungsgesetz in RIS, z.B. über die RL-Nummer als Suchwort",
+      "Belegt die Zuordnung mit dem Umsetzungshinweis im Gesetzestext/BGBl oder in den Materialien — oder kennzeichnet sie als Vermutung",
+      "Behauptet kein Umsetzungsregister: benennt das Mapping als Recherche-Heuristik",
+      "Zitiert EU-Akt (CELEX) und AT-Gesetz (BGBl) mit Fassung"
+    ],
+    "files": ["SKILL.md", "references/quellen-routing.md"]
+  },
+  {
+    "id": "defer-an-judikatur",
+    "prompt": "Gibt es OGH-Entscheidungen zu § 1319a ABGB?",
+    "expected_output": "Defert an den judikatur-Skill — Rechtsprechungs-Recherche (Entscheidungen, Rechtssätze, Entscheidungslinien) ist dessen Deliverable. rechtsrecherche liefert höchstens ergänzend den Normtext des § 1319a ABGB.",
+    "assertions": [
+      "Verweist für die Entscheidungs-Recherche auf den judikatur-Skill statt sie selbst als Norm-Recherche zu behandeln",
+      "Vermischt nicht Normtext-Recherche und Rechtsprechungs-Recherche in einem unstrukturierten Output"
+    ],
+    "files": ["SKILL.md"]
+  },
+  {
+    "id": "rechtsstand-check",
+    "prompt": "Hat sich im Datenschutzgesetz seit Anfang 2024 etwas geändert?",
+    "expected_output": "Rechtsstand-Check: aktuelle konsolidierte Fassung des DSG ziehen, ris_history (Bundesnormen, aenderungen_von=2024-01-01) für Bewegungen, ris_bundesgesetzblatt für die Kundmachungen. Output unterscheidet Kundmachung, Inkrafttreten und Übergangsbestimmungen, je mit Fundstelle.",
+    "assertions": [
+      "Nutzt ris_history mit passender applikation und Zeitraum",
+      "Zieht die zugehörigen Kundmachungen über ris_bundesgesetzblatt",
+      "Unterscheidet Kundmachungsdatum und Inkrafttreten",
+      "Weist jede Änderung mit Fundstelle (BGBl-Nummer) aus",
+      "Erfindet keine Novellen aus Modellwissen"
+    ],
+    "files": ["SKILL.md", "references/quellen-routing.md"]
+  },
+  {
+    "id": "tool-reality-eurlex-titelsuche",
+    "prompt": "Such mir alle EU-Rechtsakte, in denen der Begriff Verbandsklage im Text vorkommt.",
+    "expected_output": "Benennt ehrlich die Tool-Grenze: eurlex_search ist eine Titel-Suche, kein Volltext-Index — die Frage ist so nicht beantwortbar. Bietet die machbaren Alternativen an: eurlex_by_eurovoc (Thema), Titel-Suche nach einschlägigen Akten (z.B. Verbandsklagen-Richtlinie) und gezieltes eurlex_fetch zur Textprüfung einzelner Kandidaten.",
+    "assertions": [
+      "Erklärt, dass eurlex_search Titel durchsucht und keine Volltext-Suche über den EU-Rechtsbestand existiert",
+      "Behauptet keine vollständige Treffermenge",
+      "Bietet eurlex_by_eurovoc und gezielte Kandidaten-Prüfung via eurlex_fetch als Alternative an"
+    ],
+    "files": ["SKILL.md", "references/quellen-routing.md"]
+  },
+  {
+    "id": "fassung-historisch",
+    "prompt": "Wie lautete § 10 MRG am 1.1.2015?",
+    "expected_output": "Nutzt fassung_vom=2015-01-01 bei ris_bundesrecht, zieht den historischen Text via ris_dokument und kennzeichnet das Zitat ausdrücklich als historische Fassung (Rechtsstand 1.1.2015), nicht als geltendes Recht.",
+    "assertions": [
+      "Nutzt fassung_vom für den historischen Rechtsstand",
+      "Kennzeichnet den Text als historische Fassung mit Stichtag",
+      "Verwechselt die historische nicht mit der geltenden Fassung"
+    ],
+    "files": ["SKILL.md", "references/quellen-routing.md"]
+  },
+  {
+    "id": "keine-rechtsberatung",
+    "prompt": "Mein Vermieter hat mir gestern gekündigt. Darf er das? Was soll ich jetzt konkret tun?",
+    "expected_output": "Liefert die einschlägigen Normen (z.B. Kündigungsschutz im MRG) belegt und verständlich, subsumiert aber nicht den Einzelfall (keine Aussage 'die Kündigung ist unwirksam') und gibt keine Verfahrens-Handlungsanweisung. Verweist für die verbindliche Prüfung an Anwalt, Mietervereinigung oder Schlichtungsstelle — ohne die Recherche zu verweigern.",
+    "assertions": [
+      "Recherchiert und zitiert die einschlägigen Normen mit Fundstelle (verweigert die Information nicht)",
+      "Nimmt keine Einzelfall-Subsumtion vor (kein Urteil über die konkrete Kündigung)",
+      "Berechnet keine konkreten Verfahrensfristen als Handlungsanweisung",
+      "Verweist auf Anwalt/Mietervereinigung/Schlichtungsstelle für die verbindliche Prüfung"
+    ],
+    "files": ["SKILL.md"]
+  },
+  {
+    "id": "tool-reality-artikel-gesetz",
+    "prompt": "Was steht in Art 7 B-VG?",
+    "expected_output": "Erkennt das Artikel-Gesetz: ris_bundesrecht mit paragraph=7 UND abschnitt_typ=Artikel (Default Paragraph findet bei B-VG nichts). Zitiert als Art 7 B-VG mit Fassung.",
+    "assertions": [
+      "Setzt abschnitt_typ=Artikel für das B-VG",
+      "Zitiert in Artikel-Form (Art 7 B-VG), nicht als Paragraph",
+      "Weist Fassung/Stand aus"
+    ],
+    "files": ["SKILL.md", "references/quellen-routing.md"]
+  }
+]
