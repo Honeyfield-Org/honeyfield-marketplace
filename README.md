@@ -10,8 +10,7 @@ Plugins liegen separat im privaten `honeyfield-internal-marketplace`.)
 ```
 /plugin marketplace add Honeyfield-Org/honeyfield-marketplace
 /plugin install honeyfield-marketing-mcp@honeyfield-marketplace
-/plugin install honeyfield-eurlex-mcp@honeyfield-marketplace
-/plugin install honeyfield-ris-mcp@honeyfield-marketplace
+/plugin install honeyfield-legal-mcp@honeyfield-marketplace
 ```
 
 Nach der Installation Claude Code neu starten; `/mcp` zeigt den Verbindungsstatus.
@@ -21,13 +20,13 @@ Nach der Installation Claude Code neu starten; `/mcp` zeigt den Verbindungsstatu
 | Plugin | MCP-Server | Endpoint |
 |---|---|---|
 | `honeyfield-marketing-mcp` | Marketing-Ops — Google Ads, GA4, Search Console, Google Business Profile, GTM, Clarity, DataForSEO (SEO-, Backlink-, OnPage-Crawl- & LLM-Sichtbarkeits-Daten), LinkedIn/Meta Ads, Strapi- & WordPress-CMS **+ Skills (Projekt-Kontext + Audits + Ad-Creative + Content-Strategie + Wochenreport)** | `https://mcp.ads.honeyfield.at/mcp` |
-| `honeyfield-eurlex-mcp` | EUR-Lex — EU-Rechtsdatenbank (Suche, Volltext, Zitate, Konsolidierungen) | `https://mcp.honeyfield.at/eurlex/mcp` |
-| `honeyfield-ris-mcp` | RIS — österreichisches Rechtsinformationssystem (Bundes-/Landesrecht, Judikatur, Verordnungen) | `https://mcp.honeyfield.at/ris/mcp` |
+| `honeyfield-legal-mcp` | Legal — österreichisches Recht (RIS: Bundes-/Landesrecht, Judikatur, BGBl/LGBl, Gemeinderecht) und EU-Recht (EUR-Lex: Rechtsakte, Konsolidierungen, Zitate, EuGH) **+ Skills (Rechtsrecherche + Judikatur)** | `https://mcp.honeyfield.at/ris/mcp` + `https://mcp.honeyfield.at/eurlex/mcp` |
 
-Jeder MCP ist ein eigenes Plugin — so installiert man nur, was man braucht.
-`honeyfield-marketing-mcp` bündelt die Marketing-Tools **und** die dazu passenden
-Skills (Projekt-Kontext-Fundament + Audits + Ad-Creative + Content-Strategie +
-Wochenreport) in einem Plugin — ein Install, alles dabei.
+Jedes Plugin bündelt einen Themenbereich — so installiert man nur, was man
+braucht. `honeyfield-marketing-mcp` bündelt die Marketing-Tools **und** die dazu
+passenden Skills (Projekt-Kontext-Fundament + Audits + Ad-Creative +
+Content-Strategie + Wochenreport); `honeyfield-legal-mcp` bündelt beide
+Rechts-Server (RIS + EUR-Lex) **und** die Legal-Skills — ein Install, alles dabei.
 
 Der vollständige Tool-Katalog (219 Tools über 11 Quellen, je Tool mit Quelle und
 Read/Write-Kennzeichnung) steht in
@@ -49,6 +48,15 @@ Read/Write-Kennzeichnung) steht in
 | `wochenreport` | Cross-Kanal-Report-Hub — zieht die Kern-KPIs aus allen verbundenen Kanälen (Google Ads, Meta/LinkedIn Ads, SEO, Local/GBP, GA4, AI-Sichtbarkeit) als Zeitraum-Vergleich (Woche-über-Woche / Monat-über-Monat); read-only, verweist bei Auffälligkeiten auf den passenden Audit. |
 
 Trigger z.B.: „mach einen SEO-Audit für example.at", „GEO-Audit für …", „Google-Ads-Audit für …". Jeder Skill liest zuerst den `projekt-kontext`, falls vorhanden. Weitere Trigger: „warum performen meine Facebook-Ads nicht?" (`social-ads-audit`), „stimmt mein Conversion-Tracking?" (`tracking-check`), „schreib neue Anzeigen für Kampagne X" (`ad-creative`), „was sollen wir als Nächstes schreiben?" / „Content-Ideen für …" (`content-strategie`), „Wochenreport für Kunde Y" (`wochenreport`).
+
+## Skills (honeyfield-legal-mcp)
+
+| Skill | Zweck |
+|---|---|
+| `rechtsrecherche` | Norm-Recherche in österreichischem und EU-Recht — geltende Fassung prüfen, sauber zitieren (AZR/CELEX/ECLI), Rechtsstand-Check („hat sich X geändert?") und EU↔AT-Umsetzungs-Mapping. Beleg-Disziplin: jede zitierte Norm wird aus RIS/EUR-Lex abgerufen und mit Fassung/Stand ausgewiesen — nie aus Modellwissen zitiert. Read-only; keine Rechtsberatung. |
+| `judikatur` | Rechtsprechungs-Recherche — Entscheidungen von OGH/VfGH/VwGH/BVwG/LVwG/DSB (RIS) und EuGH (EUR-Lex); unterscheidet Rechtssatz und Entscheidungstext und ordnet Treffer als Entscheidungslinien ein (ständige Rechtsprechung vs. Einzelfall). Read-only; keine Erfolgsprognosen. |
+
+Trigger z.B.: „was sagt § 1295 ABGB?", „wie ist die Whistleblower-Richtlinie in Österreich umgesetzt?" (`rechtsrecherche`); „gibt es OGH-Rechtsprechung zu § 1319a ABGB?", „was hat der EuGH zu Schrems entschieden?" (`judikatur`).
 
 ## Updates
 
