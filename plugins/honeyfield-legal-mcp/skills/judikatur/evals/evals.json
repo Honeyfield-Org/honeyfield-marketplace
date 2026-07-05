@@ -1,0 +1,81 @@
+[
+  {
+    "id": "trigger-norm-judikatur",
+    "prompt": "Welche Rechtsprechung gibt es zu § 1319a ABGB?",
+    "expected_output": "Invoziert judikatur. Sucht via ris_judikatur mit norm=1319a ABGB (dokumenttyp beide), gruppiert die Treffer zu Entscheidungslinien (ständige Rechtsprechung vs. Einzelfall), belegt Kernaussagen aus gefetchten Texten und liefert eine Entscheidungs-Tabelle mit Gericht/Datum/Gz.",
+    "assertions": [
+      "Aktiviert den judikatur-Skill",
+      "Nutzt ris_judikatur mit dem norm-Parameter statt reiner Stichwortsuche",
+      "Gruppiert Treffer zu Entscheidungslinien statt eine rohe Trefferliste auszugeben",
+      "Weist Datum und Geschäftszahl je Entscheidung aus",
+      "Zitiert Kernaussagen nur aus abgerufenen Rechtssätzen/Entscheidungstexten, nicht aus Modellwissen"
+    ],
+    "files": ["SKILL.md", "references/gerichte-map.md"]
+  },
+  {
+    "id": "trigger-geschaeftszahl",
+    "prompt": "Zeig mir die OGH-Entscheidung 5 Ob 234/20b.",
+    "expected_output": "Direktzugriff: ris_judikatur mit geschaeftszahl, dann Volltext über ris_dokument. Gibt Gericht, Datum, Rechtssatz/Kernaussagen aus dem gefetchten Text wieder — erfindet nichts, falls die Gz nicht gefunden wird.",
+    "assertions": [
+      "Sucht gezielt über den geschaeftszahl-Parameter",
+      "Zieht den Text über ris_dokument, bevor Inhalte wiedergegeben werden",
+      "Erfindet bei Nicht-Treffer keine Entscheidung, sondern meldet die Lücke"
+    ],
+    "files": ["SKILL.md"]
+  },
+  {
+    "id": "defer-an-rechtsrecherche",
+    "prompt": "Was sagt § 1319a ABGB eigentlich genau und in welcher Fassung gilt er?",
+    "expected_output": "Defert an rechtsrecherche — Normtext und Fassung sind dessen Deliverable. judikatur liefert höchstens ergänzend die Auslegungslinie der Gerichte.",
+    "assertions": [
+      "Verweist für Normtext und Fassung auf den rechtsrecherche-Skill",
+      "Behandelt die Frage nicht als Rechtsprechungs-Recherche"
+    ],
+    "files": ["SKILL.md"]
+  },
+  {
+    "id": "eugh-parteiname",
+    "prompt": "Was hat der EuGH in Sachen Schrems entschieden?",
+    "expected_output": "EuGH-Pfad über EUR-Lex: eurlex_search mit dem Parteinamen als Titel-Suche (resource_type JUDG), Volltext via eurlex_fetch, Zitat mit Rechtssache (C-311/18), ECLI und Datum. Ordnet ein, dass Schlussanträge keine Urteile sind, falls solche in den Treffern auftauchen.",
+    "assertions": [
+      "Sucht den EuGH-Fall über eurlex_search mit Parteinamen (Titel-Suche-Realität)",
+      "Zieht den Text über eurlex_fetch, bevor zitiert wird",
+      "Zitiert mit Rechtssachennummer und ECLI",
+      "Unterscheidet Urteile von Schlussanträgen (OPIN_AG)"
+    ],
+    "files": ["SKILL.md", "references/gerichte-map.md"]
+  },
+  {
+    "id": "keine-erfolgsprognose",
+    "prompt": "Ich habe einen ganz ähnlichen Fall wie in dieser OGH-Entscheidung — werde ich vor Gericht gewinnen?",
+    "expected_output": "Zeigt die Entscheidungslage (belegt), macht aber keine Erfolgsprognose für den konkreten Fall und keine Einzelfall-Subsumtion. Verweist für die Bewertung des eigenen Falls an Anwalt/Rechtsvertretung — ohne die Judikatur-Information zu verweigern.",
+    "assertions": [
+      "Gibt keine Erfolgsprognose oder Gewinnwahrscheinlichkeit ab",
+      "Liefert die Entscheidungslinien trotzdem belegt (verweigert die Recherche nicht)",
+      "Verweist für die Einzelfall-Bewertung an Anwalt/Rechtsvertretung"
+    ],
+    "files": ["SKILL.md"]
+  },
+  {
+    "id": "rechtssatz-vs-volltext",
+    "prompt": "Fass mir die tragende Begründung der ständigen Rechtsprechung zur Wegehalterhaftung zusammen.",
+    "expected_output": "Unterscheidet Rechtssatz (Leitsatz) und Entscheidungstext (Begründung): für die tragende Begründung werden Entscheidungstexte gezogen (dokumenttyp entscheidungstext bzw. ris_dokument), nicht nur Rechtssätze paraphrasiert. Kennzeichnet, was aus welchem Dokumenttyp stammt.",
+    "assertions": [
+      "Stützt tragende Aussagen auf abgerufene Entscheidungstexte, nicht allein auf Rechtssätze",
+      "Benennt den Unterschied Rechtssatz vs. Entscheidungstext",
+      "Kennzeichnet die Beleg-Stufe je Aussage"
+    ],
+    "files": ["SKILL.md", "references/gerichte-map.md"]
+  },
+  {
+    "id": "tool-reality-dsb",
+    "prompt": "Gibt es Entscheidungen der Datenschutzbehörde zu Cookie-Bannern?",
+    "expected_output": "Erkennt: DSB-Entscheidungen liegen in RIS unter gerichtsbarkeit=Dsk (historischer Name Datenschutzkommission). Sucht dort mit passenden Suchworten und weist darauf hin, dass die Dokumentation nicht lückenlos ist.",
+    "assertions": [
+      "Nutzt gerichtsbarkeit=Dsk für DSB-Entscheidungen",
+      "Behauptet keine Vollständigkeit der Treffermenge",
+      "Zitiert nur abgerufene Entscheidungen"
+    ],
+    "files": ["SKILL.md", "references/gerichte-map.md"]
+  }
+]
