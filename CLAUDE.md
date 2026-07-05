@@ -32,10 +32,18 @@ Wie ein neuer Skill geschnitten wird (Entscheidung 2026-06-30, abgeleitet vom Re
 - **Splitten nur nach Deliverable, nicht nach Funktion.** Ein Topic erst aufteilen, wenn ein klar **anderes Artefakt** entsteht (z.B. Massen-Anzeigen-Generierung neben dem Ads-Audit) — dann nach dem Output benennen (`ad-creative`), nicht `ads-build`. Auslöser: anderes Deliverable **oder** SKILL.md wird zu groß (~>500 Zeilen). Bei starker Überlappung **mergen** statt nebeneinanderstellen.
 - **Unser Vorteil ggü. reinen Wissens-/Checklisten-Skills** (wie `marketingskills`): echte MCP-Daten + sichere Write-Operatoren + Beleg-Stufen + DACH-Kalibrierung. Das ist der Qualitätsmaßstab pro Skill — nicht die Skill-Anzahl. Tiefe schlägt Breite.
 
+## `honeyfield-legal-mcp` — Konventionen
+Öffentliches Legal-Plugin: beide Rechts-Server (RIS = AT, EUR-Lex = EU) in **einer** `.mcp.json`; Zielgruppe reicht vom Laien bis zur Anwältin. 2 Skills, geschnitten nach Deliverable: `rechtsrecherche` (Norm + Rechtsstand-Check + EU↔AT-Umsetzung als Sektionen) und `judikatur` (Entscheidungslinien). Bewusst anders als das Marketing-Plugin:
+- **Kein „Projekt-Kontext zuerst"-Absatz** — das Plugin ist kontextfrei; die Pflicht oben gilt nur für `honeyfield-marketing-mcp`.
+- **Read-only, kein Operator** — alle 18 Tools lesen nur; es gibt keine Write-Guardrails, weil es nichts zu schreiben gibt.
+- **Beleg-Disziplin als Qualitätskern** (Legal-Äquivalent der Beleg-Stufen): nie Norm-/Entscheidungstext aus Modellwissen zitieren — jedes Zitat wird gefetcht und mit Fassung/Stand ausgewiesen. Harte Grenze in jedem Skill: keine Rechtsberatung, keine Einzelfall-Subsumtion, keine Erfolgsprognosen.
+- **Tool-Ground-Truth** (Parameter + Fallstricke wie Titel-Suche/Truncation/Tirol-only): `skills/rechtsrecherche/references/quellen-routing.md` und `skills/judikatur/references/gerichte-map.md`.
+- Frontmatter- und Evals-Regeln gelten unverändert (U+201D-Schließzeichen, description ≤1024 Zeichen, `evals/`-Pflicht, „Verwandte Skills"-Querverweis auf den Schwester-Skill).
+
 ## Vor jedem Commit validieren
 - `python3 .github/scripts/check_skill_frontmatter.py` — echter YAML-Parse aller Skills (läuft auch in CI `validate.yml`).
 - `python3 .github/scripts/check_version_sync.py` — `plugin.json`-Version == marketplace-Plugin-Eintrag für jedes Plugin (läuft auch in CI). Der Guard gegen den Sync-Drift.
-- `python3 -m json.tool plugins/honeyfield-marketing-mcp/skills/<skill>/evals/evals.json` — Evals valides JSON.
+- `python3 -m json.tool plugins/<plugin>/skills/<skill>/evals/evals.json` — Evals valides JSON (gilt für alle Skill-tragenden Plugins, auch `honeyfield-legal-mcp`).
 - `python3 -m json.tool plugins/<plugin>/.mcp.json` — MCP-Config valides JSON (CI prüft alle `plugins/*/.mcp.json`; `honeyfield-legal-mcp` bündelt beide Legal-Server — `ris` + `eurlex` — in einer `.mcp.json`, Tool-Namen `ris_*`/`eurlex_*` unverändert).
 - `claude plugin validate plugins/<plugin>/` — Manifest, für **jedes** geänderte Plugin (CI loopt über alle `plugins/*/`).
 - Beim Anlegen eines Skills, der Kontext konsumiert: prüfen, dass der Projekt-Kontext-Absatz drin ist und keine alten `kunden-kontext`-Referenzen übrig sind.
