@@ -6,7 +6,7 @@ On-Demand-Tiefe für den `seo-audit`-Skill, Phase 5 (Content-Lücken). Nur laden
 
 Drei Schritte, immer in dieser Reihenfolge:
 
-1. **Konkurrenten finden (nicht raten):** `dfs_competitors_domain` (eigene Domain, `location`/`language`!) → Domains mit den meisten gemeinsamen Rankings, sortiert nach Overlap. Gegenprobe: `dfs_serp_google_organic` für die 3-5 Ziel-Keywords → wer steht real auf Seite 1. **Deckung beider Listen = echte SEO-Konkurrenten** (2-3 Domains reichen). Der vom Kunden genannte „Hauptkonkurrent” ist oft NICHT der SEO-Konkurrent — das Ranking entscheidet, nicht die Branchen-Wahrnehmung.
+1. **Konkurrenten finden (nicht raten):** `dfs_competitors_domain` (eigene Domain, `location`/`language`!) → Domains mit den meisten gemeinsamen Rankings, sortiert nach Overlap. Gegenprobe: `dfs_serp_google_organic` für die 3-5 Ziel-Keywords → wer steht real auf Seite 1. **Deckung beider Listen = echte SEO-Konkurrenten** (2-3 Domains reichen). Der vom Kunden genannte „Hauptkonkurrent” ist oft NICHT der SEO-Konkurrent — das Ranking entscheidet, nicht die Branchen-Wahrnehmung. **Achtung bei dünnen Sites** (wenige eigene Rankings): `dfs_competitors_domain` ist dann stark verrauscht — Riesen-Domains (Wikipedia, Portale, Marktplätze) tauchen als Schein-Konkurrenten auf, weil schon wenige gemeinsame Keywords für Overlap reichen. In dem Fall ist die Gegenprobe via `dfs_serp_google_organic` **Pflicht** und die Konkurrenten-Liste wird manuell kuratiert, nicht aus dem Tool übernommen.
 2. **Gap direkt ziehen:** `dfs_domain_intersection(domain1=eigene Domain, domain2=Konkurrent, intersections=false)`, mit denselben `location`/`language`-Parametern wie beim Kunden → liefert die Keywords, für die der Konkurrent (`rank_domain2`) rankt und die eigene Domain (`rank_domain1`) nicht, direkt inkl. `search_volume`/`cpc_usd`. Ohne Kalibrierung vergleichst du DE-Rankings mit AT-Rankings — wertlos.
 3. **Gegen eigene Rankings absichern:** die Gap-Liste gegen `sc_performance`/`dfs_keyword_rankings` der eigenen Domain halten und formatieren: „Keyword X · Volumen · CPC · Konkurrent Position N · wir: Position M / nicht in Top 100.”
 
@@ -46,6 +46,8 @@ CPC ist der Kommerz-Proxy: hoher CPC = Werbetreibende zahlen dafür = kommerziel
 `dfs_keyword_overview` (Liste, max. 700 Keywords) liefert Difficulty, Haupt-Intent, Volumen und CPC in einem Call — eine echte, gemessene Difficulty-Zahl statt der früheren Heuristik.
 
 - Difficulty direkt aus dem Tool zitieren, keine Werte aus fremden Tools (Ahrefs/SEMrush o.ä.) übernehmen — nicht vergleichbar.
+- **0-Volumen-Keywords droppt das Tool still** — sie fehlen einfach in der Antwort, es gibt keine Null-Zeile. Die Ergebnisliste gegen die Eingabeliste diffen, sonst gehen Keywords unbemerkt verloren; „fehlt in der Antwort” heißt „kein gemessenes Volumen”, nicht „existiert nicht”.
+- **`difficulty: 0` ist kein Easy-Win:** bei hohem CPC oder dünner Datenlage heißt 0 „zu wenig SERP-Signal für eine Berechnung”, nicht „leicht rankbar” — nicht als leicht erreichbares Keyword einstufen, sondern über die SERP-Besetzung (unten) gegenprüfen.
 - Ergänzend weiterhin sinnvoll: **SERP-Besetzung** via `dfs_serp_google_organic` — stehen auf Seite 1 nur große Marken/Portale/Wikipedia, ist das Keyword auch bei niedriger Difficulty-Zahl für einen kleinen Anbieter praktisch hart erreichbar; stehen dort Nischen-Seiten und Foren, bestätigt das eine niedrige Difficulty.
 
 ## Opportunity-Matrix (Netto-Neu-Themen)

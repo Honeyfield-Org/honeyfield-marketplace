@@ -22,7 +22,7 @@ Dieser Audit ist **datengetrieben**, nicht checklisten-basiert: Du rätst nicht,
 - SEO-Kern (`search_console` + `dataforseo`) ist meist verbunden → Rankings, On-Page, SERP, Backlinks, Lighthouse laufen immer.
 - `ga4`, `clarity`, `business_profile`, `gtm` sind variabel → die jeweiligen Querschnitte nur, wenn verbunden.
 
-**Projekt-Kontext zuerst.** Liegt für dieses Projekt ein Projekt-Kontext vor — als **Projektwissen** in diesem Claude-Projekt oder als `projekt-kontext.md` im Arbeitsverzeichnis —, nutze ihn (Zielmarkt, Branche, Ziel-Keywords, Geschäftsziel, Brand-Begriffe), bevor du fragst, und frage nur nach, was dort fehlt oder für diese Aufgabe spezifisch ist. Beachte gesetzte `compliance`-Flags als harte Leitplanke. Fehlt der Kontext, biete an, ihn per `projekt-kontext` anzulegen, oder frage knapp: Domain, Zielmarkt (DE/AT/CH), lokal oder national, 3-5 wichtigste Keywords/Seiten.
+**Projekt-Kontext zuerst.** Liegt für dieses Projekt ein Projekt-Kontext vor — als **Projektwissen** in diesem Claude-Projekt oder als `projekt-kontext.md` im Arbeitsverzeichnis —, nutze ihn (Zielmarkt, Branche, Ziel-Keywords, Geschäftsziel, Brand-Begriffe), bevor du fragst, und frage nur nach, was dort fehlt oder für diese Aufgabe spezifisch ist. Beachte gesetzte `compliance`-Flags als harte Leitplanke. Fehlt der Kontext, biete an, ihn per `projekt-kontext` anzulegen, oder frage knapp: Domain, Zielmarkt (DE/AT/CH), lokal oder national, 3-5 wichtigste Keywords/Seiten. Ist ein Workspace verbunden, aber kein Projekt-Kontext vorhanden, leite die Domain aus `sc_top_pages` bzw. `gbp_get_profile` ab, statt danach zu fragen — offen bleiben dann nur Zielmarkt und Ziel-Keywords.
 
 **Markt kalibrieren (kritisch).** Setze auf JEDEM `dfs_*`-Call `location` + `language` passend zum Zielmarkt:
 - Deutschland → `location="Germany"`, `language="de"`
@@ -46,7 +46,7 @@ Quer dazu: **DACH-Layer** (immer) und **Lokale Sichtbarkeit** (nur bei lokalem G
 
 ### 1 — Auffindbarkeit (Index & Crawl)
 - `sc_list_sitemaps` → Sitemap eingereicht? `errors`/`warnings` > 0?
-- `sc_url_inspection` für 3-5 Schlüsselseiten (Startseite + wichtigste Landingpages) → `verdict`, `coverage_state`, `google_canonical` vs `user_canonical` (Canonical-Konflikt?), `mobile_verdict`.
+- `sc_url_inspection` für 3-5 Schlüsselseiten (Startseite + wichtigste Landingpages) → `verdict`, `coverage_state`, `google_canonical` vs `user_canonical` (Canonical-Konflikt?). `mobile_verdict` ist de facto deprecated — Google hat den Mobile-Usability-Report Ende 2023 abgeschaltet, das Feld liefert meist `VERDICT_UNSPECIFIED`; Mobil-Usability stattdessen über `dfs_lighthouse_live` mit `strategy="mobile"` bewerten (Phase 2).
 - `dfs_onpage_instant` (Startseite) → `status_code`, `canonical`, `h1_count`.
 - **Seitenweiter Crawl (optional, kostenpflichtig):** `dfs_onpage_crawl(target, max_crawl_pages)` für einen echten Site-Scan — läuft asynchron (Minuten), Ergebnisse via `dfs_onpage_crawl_results(task_id, section)`. `max_crawl_pages` ist Pflicht und der Kosten-Hebel: auf die tatsächliche Site-Größe begrenzen, nicht pauschal aufs Maximum (1000) setzen. Section je Prüfschritt: `summary` (Gesamt-Score/Top-Issues), `non_indexable` (technische Indexierbarkeit site-weit), `redirect_chains` (Ketten/Loops), `duplicate_content`/`duplicate_tags` (Signal-Splitting; brauchen zusätzlich `url=` bzw. `tag_type=` — pro geprüfter Seite aufrufen), `links` (interne Verlinkung, Orphan-Seiten).
 
@@ -64,7 +64,7 @@ Achten auf: schlechtes Mobil-LCP (häufigster Killer), CLS durch Cookie-Banner (
 ### 3 — On-Page
 - `dfs_onpage_instant` je Schlüsselseite → Title, Meta, `h1_count`, `word_count`, `onpage_score`.
 - **DACH-Title/Meta nach Pixelbreite, nicht Zeichen bewerten** — Grenzwerte + Komposita-Details: `references/dach-seo.md`; wichtiges Keyword nach vorn. Meta-Description ist **kein Ranking-Faktor** (nur CTR-Hebel) und wird oft von Google umgeschrieben.
-- `h1_count` = 0 → Problem (keine H1). Mehrere H1 sind nur ein Best-Practice-Hinweis, **kein Ranking-Bug** (Google straft Mehrfach-H1 nicht). Dünner `word_count` auf Geld-Seiten → Verdacht auf fehlende Content-Tiefe; aber Wortzahl ist kein Ranking-Faktor — „dünn” heißt fehlender Mehrwert, nicht wenige Wörter.
+- `h1_count` = 0 → Problem (keine H1). Mehrere H1 sind nur ein Best-Practice-Hinweis, **kein Ranking-Bug** (Google straft Mehrfach-H1 nicht). Dünner `word_count` auf Geld-Seiten → Verdacht auf fehlende Content-Tiefe; aber Wortzahl ist kein Ranking-Faktor — „dünn” heißt fehlender Mehrwert, nicht wenige Wörter. Auf JS-gerenderten Seiten (SPA/Next.js) ist `word_count` `null` — dann `dfs_onpage_crawl` (rendered) oder `dfs_content_parsing` statt `dfs_onpage_instant` nutzen, nicht „kein Content” diagnostizieren.
 - **Schema-Presence-Check (pro Seite geprüft):** Ist auf den Schlüsselseiten JSON-LD vorhanden und parsebar, und welche Typen? (Seitenquelltext prüfen; `dfs_onpage_instant` erkennt Schema nur eingeschränkt.) Hier nur drei Urteile: fehlt komplett / vorhanden aber kaputt / vorhanden. Entity-Tiefe (`@graph`/`@id`, `sameAs`) und der Schema-Fix-Operator gehören zu `geo-audit` — dorthin verweisen, nicht selbst bauen.
 > Verlass dich nicht blind auf die `issues`/`checks`-Liste von `dfs_onpage_instant` (erfasst negativ benannte Checks unzuverlässig) — nutze `onpage_score` + die Rohfelder und urteile selbst.
 
@@ -76,6 +76,7 @@ Achten auf: schlechtes Mobil-LCP (häufigster Killer), CLS durch Cookie-Banner (
 - `sc_top_queries` / `sc_top_pages` → Status quo.
 - `dfs_keyword_rankings` (Domain, location/language!) → wofür die Domain laut DataForSEO rankt, mit Volume.
 - `dfs_serp_google_organic` für die 3-5 Ziel-Keywords (location!) → wer real auf Seite 1 steht, wie die Konkurrenz aussieht.
+- **SERP-Feature-Reality-Check:** 0 Klicks trotz guter Ø-Position? Bevor du am Snippet schraubst, prüfe via `dfs_serp_google_organic` für die betroffene Query, ob Local Pack, AI Overview (`ai_overview`) oder SERP-Clutter (Jobbörsen, Verzeichnisse, Portale) die Klicks frisst — Live-Rang + reale SERP-Besetzung ansehen. Die Ø-Position aus GSC ist ein gemischter Mittelwert über alle SERP-Features und verdeckt den echten Blue-Link-Rang.
 
 **Traffic-Einbruch?** `sc_performance` mit `dimensions=["date"]` (+ query/page) über einen längeren `days`-Zeitraum → den Einbruch zeitlich exakt verorten und gegen bekannte Google-Update-Termine legen. Datenbasierte Diagnose statt Hypothesenliste. „Helpful Content” ist seit dem März-2024-Core-Update Teil des Core-Algorithmus (kein separates System, kein Recovery-Knopf) — qualitätsbedingte Einbrüche wirken site-weit und erholen sich nur langsam über spätere Core-Updates. Termine: Google Search Status Dashboard.
 
@@ -97,16 +98,16 @@ Achten auf: schlechtes Mobil-LCP (häufigster Killer), CLS durch Cookie-Banner (
 
 ### 6 — Autorität (Backlinks)
 - `dfs_backlink_summary` (Domain) → Profil + `broken_backlinks`-Zähler.
-- `dfs_backlink_competitors` (Domain) → wer ein ähnliches/stärkeres Profil hat = SEO-Konkurrenz, Link-Gap.
-- **Broken Backlinks = höchster Quick-Win:** `dfs_backlinks_list(mode="broken")` liefert die konkrete Link-Liste (`url_from`, `url_to`, `anchor`) statt nur des Aggregat-Zählers → Link zeigt auf 404 → 301 auf passendes Ziel, Linkkraft zurückholen.
+- `dfs_backlink_competitors` (Domain) → wer ein ähnliches/stärkeres Profil hat = SEO-Konkurrenz, Link-Gap. Bei dünner Datenlage kann eine Null-Zeile zurückkommen — defensiv auf `domain=null` prüfen, nicht als Konkurrent rendern.
+- **Broken Backlinks = höchster Quick-Win:** erst `broken_backlinks` > 0 aus `dfs_backlink_summary` prüfen — `dfs_backlinks_list(mode="broken")` crasht bei 0 Treffern. Dann liefert es die konkrete Link-Liste (`url_from`, `url_to`, `anchor`) statt nur des Aggregat-Zählers → Link zeigt auf 404 → 301 auf passendes Ziel, Linkkraft zurückholen.
 - **Kein Disavow empfehlen** (außer bei manueller Maßnahme in GSC oder selbst aufgebautem Link-Schema) — SpamBrain ignoriert Spam-Links automatisch; das größere Risiko ist, gute Links wegzudisavowen.
 > Backlink-Tools sind global (kein location-Parameter) — ok, Links sind länderunabhängig.
 
 ### Querschnitt — Engagement & UX (nur wenn `ga4`/`clarity` verbunden)
 - `ga4_top_pages` + `ga4_traffic_sources` → organischen Traffic isolieren, welche Landingpages tragen.
 - `ga4_report` mit `dimensions=["landingPage","sessionMedium"]`, `metrics=["sessions","engagementRate","conversions"]` → Qualität des organischen Traffics je Einstiegsseite.
-- `clarity_get_insights` (nur wenn `clarity` verbunden; max 10 Calls/Tag, 1-3 Tage) mit `dimensions=["Page"]` → Rage/Dead Clicks: warum eine gut rankende Seite nicht konvertiert.
-- **Conversion-Diagnose** (Seite rankt und hat Traffic, konvertiert aber nicht) — in Impact-Reihenfolge prüfen, nicht querbeet: 1. Value-Prop-Klarheit → 2. Headline → 3. CTA → 4. visuelle Hierarchie → 5. Trust/Social Proof → 6. Einwandbehandlung → 7. Friction. Formular-Faustregel: 3 Felder = Baseline; 4-6 Felder ≈ −10-25 % Conversion; 7+ ≈ −25-50 %. Das Symptom ist **gemessen** (Clarity Rage/Dead-Clicks, GA4 `engagementRate`/`conversions`), die Ursachen-Zuordnung ist **beratend** — so kennzeichnen.
+- `clarity_get_insights` (nur wenn `clarity` verbunden; max 10 Calls/Tag, 1-3 Tage) → Rage/Dead Clicks als **flaches Site-Aggregat** plus separate PopularPages-Liste — **kein Per-Page-Behavior-Breakdown**. Die „warum konvertiert diese Seite nicht”-Zuordnung ist daraus nicht seitenscharf ableitbar, nur qualitativ (site-weites Frustrations-Signal) — so kennzeichnen, nicht als Seiten-Beleg verkaufen.
+- **Conversion-Diagnose** (Seite rankt und hat Traffic, konvertiert aber nicht) — in Impact-Reihenfolge prüfen, nicht querbeet: 1. Value-Prop-Klarheit → 2. Headline → 3. CTA → 4. visuelle Hierarchie → 5. Trust/Social Proof → 6. Einwandbehandlung → 7. Friction. Formular-Faustregel: 3 Felder = Baseline; 4-6 Felder ≈ −10-25 % Conversion; 7+ ≈ −25-50 %. Das Symptom ist **gemessen** (GA4 `engagementRate`/`conversions` je Landingpage; Clarity Rage/Dead-Clicks nur als Site-Aggregat), die Ursachen-Zuordnung ist **beratend** — so kennzeichnen.
 
 ### Querschnitt — Lokale Sichtbarkeit (bei lokalem Geschäft)
 - **Schlüsselfrage zuerst:** Hat das lokale Geschäft überhaupt ein Google Business Profile? Prüfe via `gbp_list_locations` / `gbp_get_profile`. **Kein (oder nicht verbundenes) GBP bei einem lokalen Geschäft = High-Impact-Befund** — für lokale Sichtbarkeit ist das GBP oft der größte einzelne Hebel, größer als On-Page. Als kritischen Befund führen, nicht überspringen, nur weil die Quelle fehlt.
@@ -175,6 +176,8 @@ Biete am Ende an, die sicher behebbaren Punkte direkt zu erledigen. **Immer vorh
 - Engagement: `ga4_top_pages`, `ga4_traffic_sources`, `ga4_report`, `clarity_get_insights`
 - Lokal: `gbp_performance`, `gbp_reviews`, `gbp_search_keywords`, `gbp_local_seo_audit`, `gbp_local_rank`
 - Umsetzen: `sc_submit_sitemap`, `gtm_create_tag`, `gbp_reply_review`, `gbp_update_profile`, `gbp_manage_categories`, `gbp_manage_hours`, `gbp_update_attributes`, `strapi_update_entry`, `wp_update_post`
+
+> **Parameter-Namen exakt treffen** (häufige Verwechsler): `dfs_keyword_rankings` → `domain` · `dfs_serp_google_organic` → `keyword` · `dfs_onpage_instant` → `url` · `dfs_backlink_summary`/`dfs_backlink_competitors` → `domain` · `dfs_backlinks_list` → `target`.
 
 ## Verwandte Skills
 `projekt-kontext` (Foundation, zuerst lesen) · `google-ads-audit` (bezahlte Suche / Ads) · `geo-audit` (KI-Sichtbarkeit + Schema-Tiefe — Schwester-Skill) · `wochenreport` · `tracking-check` (Tracking-Setup und -Fixes)
