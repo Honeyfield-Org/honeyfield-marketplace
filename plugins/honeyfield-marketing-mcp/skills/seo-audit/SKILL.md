@@ -2,7 +2,7 @@
 name: seo-audit
 description: "Datengetriebener SEO-Audit für eine Kunden-Website, kalibriert auf den DACH-Markt (DE/AT/CH). Nutze diesen Skill, wenn der Nutzer einen „SEO-Audit”, eine „SEO-Analyse”, einen „SEO-Check” oder eine Diagnose von Ranking- bzw. Sichtbarkeitsproblemen will. Auch bei: „warum ranke ich nicht”, „warum werden wir nicht gefunden”, „Traffic ist eingebrochen”, „Sichtbarkeit gesunken”, „seit dem Relaunch weg”, „nach dem Google-Update abgestürzt”, „technisches SEO prüfen”, „Core Web Vitals / Ladezeit”, „Indexierungsprobleme”, „wo rankt die Konkurrenz, wir nicht”, „stimmt was mit der Seite nicht”, oder vage „unser SEO ist schlecht”. Zieht echte Daten aus Search Console, DataForSEO, GA4 und Microsoft Clarity über den Marketing-Ops-MCP und kann gefundene Probleme auf Wunsch direkt beheben. Fürs wöchentliche Reporting nutze `wochenreport`; für bezahlte Suche (Wasted Spend, Konto-Audit) `google-ads-audit`; für KI-Sichtbarkeit (ChatGPT/Perplexity/AI Overviews) `geo-audit`."
 metadata:
-  version: 0.5.0
+  version: 0.5.1
 ---
 
 # SEO-Audit
