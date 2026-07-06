@@ -41,13 +41,14 @@ Wie ein neuer Skill geschnitten wird (Entscheidung 2026-06-30, abgeleitet vom Re
 - Frontmatter- und Evals-Regeln gelten unverändert (U+201D-Schließzeichen, description ≤1024 Zeichen, `evals/`-Pflicht, „Verwandte Skills"-Querverweis auf den Schwester-Skill).
 
 ## Vor jedem Commit validieren
-- `python3 .github/scripts/check_skill_frontmatter.py` — echter YAML-Parse aller Skills (läuft auch in CI `validate.yml`).
+- `python3 .github/scripts/check_skill_frontmatter.py` — echter YAML-Parse aller Skills **+ Skill-Version-Drift-Guard** (läuft auch in CI `validate.yml`): eine geänderte `SKILL.md` ohne erhöhte `metadata.version` schlägt fehl (git-diff gegen Base — lokal `merge-base origin/main HEAD`, in CI aus dem Event; unauflösbare Base → Guard skippt still, nie ein False-Positive).
 - `python3 .github/scripts/check_version_sync.py` — `plugin.json`-Version == marketplace-Plugin-Eintrag für jedes Plugin (läuft auch in CI). Der Guard gegen den Sync-Drift.
 - `python3 -m json.tool plugins/<plugin>/skills/<skill>/evals/evals.json` — Evals valides JSON (gilt für alle Skill-tragenden Plugins, auch `honeyfield-legal-mcp`).
 - `python3 -m json.tool plugins/<plugin>/.mcp.json` — MCP-Config valides JSON (CI prüft alle `plugins/*/.mcp.json`; `honeyfield-legal-mcp` bündelt beide Legal-Server — `ris` + `eurlex` — in einer `.mcp.json`, Tool-Namen `ris_*`/`eurlex_*` unverändert).
 - `claude plugin validate plugins/<plugin>/` — Manifest, für **jedes** geänderte Plugin (CI loopt über alle `plugins/*/`).
 - Beim Anlegen eines Skills, der Kontext konsumiert: prüfen, dass der Projekt-Kontext-Absatz drin ist und keine alten `kunden-kontext`-Referenzen übrig sind.
 - **Inhaltliche Plugin-Änderung** (neuer/geänderter Skill, References, MCP-Config)? → Version in **allen drei Feldern** erhöht (siehe „Release & Org-Marketplace-Sync") — sonst synct der Org-Marketplace nicht.
+- **Skill inhaltlich geändert?** Zusätzlich die **skill-eigene `metadata.version`** im `SKILL.md`-Frontmatter erhöhen (nicht nur die drei Marketplace-Felder) — `check_skill_frontmatter.py` erzwingt das jetzt git-diff-aware. Hintergrund: ein Skill-Fix zog einst nur die drei Marketplace-Felder und vergaß die Skill-Version, das brauchte einen Nachzug-PR.
 
 ## Release & Org-Marketplace-Sync
 Der Org-Marketplace in Claude.ai synct **von `main`** und erkennt ein Update **nur an erhöhten Versionsnummern**. Drei Dinge gehen sonst immer wieder schief:
