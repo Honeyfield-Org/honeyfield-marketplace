@@ -339,11 +339,11 @@ Alle LinkedIn-Schreib-Tools akzeptieren `validate_only=true` (Vorschau ohne API-
 | `strapi_get_entry` | Einzelnen Strapi-Eintrag abrufen | strapi | R |
 | `strapi_list_media` | Dateien aus der Medienbibliothek auflisten | strapi | R |
 | `strapi_list_content_types` | Alle Content-Types auflisten (Schema-Discovery) | strapi | R |
-| `strapi_create_entry` | Neuen Eintrag in einer Collection anlegen | strapi | W |
-| `strapi_update_entry` | Bestehenden Eintrag aktualisieren | strapi | W |
+| `strapi_create_entry` | Neuen Eintrag als Draft anlegen (Draft-first; live erst via publish) | strapi | W |
+| `strapi_update_entry` | Bestehenden Eintrag aktualisieren — trifft nur den Draft, Live-Version bleibt | strapi | W |
 | `strapi_delete_entry` | Eintrag löschen | strapi | W |
-| `strapi_publish_entry` | Eintrag veröffentlichen (setzt publishedAt auf jetzt) | strapi | W |
-| `strapi_unpublish_entry` | Eintrag depublizieren (setzt publishedAt auf null) | strapi | W |
+| `strapi_publish_entry` | Eintrag veröffentlichen (v5: Content-Manager, braucht Admin-Token mit Publish-Recht; v4: setzt publishedAt) | strapi | W |
+| `strapi_unpublish_entry` | Eintrag depublizieren (v5: Content-Manager, braucht Admin-Token; v4: publishedAt=null) | strapi | W |
 | `strapi_upload_media` | Datei in die Medienbibliothek hochladen | strapi | W |
 | `strapi_delete_media` | Datei aus der Medienbibliothek löschen | strapi | W |
 
