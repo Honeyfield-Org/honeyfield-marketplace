@@ -11,6 +11,7 @@ Lege Schreib-Tools (W) nie ohne write-guardrails.md an.
 |---|---|---|---|
 | `list_workspaces` | Workspaces + verbundene sources auflisten | — | R |
 | `ping` | Connectivity-Check (liefert „pong”) | — | R |
+| `workspace_configure_source` | Source-IDs am Workspace setzen (`source`: google_ads/ga4/search_console/gtm/business_profile + `ids`) — ersetzt den Portal-Roundtrip beim Onboarding | — | W |
 | `authenticate` | OAuth-Flow zum MCP starten — nur Plugin-Kontext (Claude Code); in Claude Web ist der Connector vorauthentifiziert | — | — |
 | `complete_authentication` | OAuth-Flow abschließen — nur Plugin-Kontext (Claude Code) | — | — |
 
@@ -162,6 +163,10 @@ Lege Schreib-Tools (W) nie ohne write-guardrails.md an.
 | `sc_list_sitemaps` | Eingereichte Sitemaps: Status, Warn- und Fehlerzahlen | search_console | R |
 | `sc_submit_sitemap` | Sitemap-URL bei GSC einreichen | search_console | W |
 | `sc_delete_sitemap` | Sitemap-URL aus GSC entfernen | search_console | W |
+| `sc_list_sites` | Alle GSC-Properties der Google-Verbindung inkl. Verifizierungsstatus — geht auch ohne konfigurierte Site-URL | search_console | R |
+| `sc_add_site` | GSC-Property anlegen (`https://…` URL-Prefix oder `sc-domain:…`) — liefert erst nach Verifizierung Daten | search_console | W |
+| `sc_verification_token` | Site-Verification-Token holen (Domain: DNS_TXT/DNS_CNAME, URL: META/FILE; ANALYTICS/TAG_MANAGER brauchen keins) | search_console | R |
+| `sc_verify_site` | Site-Eigentümerschaft verifizieren — nach Platzieren des Nachweises bzw. direkt via ANALYTICS/TAG_MANAGER, wenn GA/GTM schon auf der Site läuft. Braucht neuen siteverification-Scope (ggf. Verbindung im Portal erneuern) | search_console | W |
 
 ---
 
@@ -178,6 +183,8 @@ Lege Schreib-Tools (W) nie ohne write-guardrails.md an.
 | `gtm_get_version` | Details einer Version inkl. aller Tags, Trigger, Variablen | gtm | R |
 | `gtm_get_tag` | Vollständige Tag-Definition (Parameter + Trigger-IDs) | gtm | R |
 | `gtm_workspace_status` | Offene Änderungen + Merge-Konflikte eines Workspace — Diagnose bei fehlgeschlagenem `gtm_create_version` | gtm | R |
+| `gtm_list_accounts` | GTM-Accounts der Google-Verbindung — geht auch ohne konfigurierten Container | gtm | R |
+| `gtm_list_containers` | Container eines GTM-Accounts (`account_id` aus `gtm_list_accounts`) | gtm | R |
 
 ---
 
@@ -193,6 +200,7 @@ Lege Schreib-Tools (W) nie ohne write-guardrails.md an.
 | `gtm_create_trigger` | Neuen Trigger anlegen (pageview, click, customEvent, …) | gtm | W |
 | `gtm_sync_workspace` | Workspace mit neuester Container-Version synchronisieren (bei merge_conflict); Rest-Konflikte werden gelistet | gtm | W |
 | `gtm_create_workspace` | Neuen Workspace aus neuester Container-Version anlegen — Recovery bei nicht mehr synchronisierbarem Workspace | gtm | W |
+| `gtm_create_container` | Neuen GTM-Container anlegen (web/server/android/ios/amp) — danach mit `workspace_configure_source` verknüpfen | gtm | W |
 
 ---
 
