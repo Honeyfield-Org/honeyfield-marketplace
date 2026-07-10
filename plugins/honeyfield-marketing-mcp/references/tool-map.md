@@ -201,6 +201,7 @@ Lege Schreib-Tools (W) nie ohne write-guardrails.md an.
 | `gtm_sync_workspace` | Workspace mit neuester Container-Version synchronisieren (bei merge_conflict); Rest-Konflikte werden gelistet | gtm | W |
 | `gtm_create_workspace` | Neuen Workspace aus neuester Container-Version anlegen — Recovery bei nicht mehr synchronisierbarem Workspace | gtm | W |
 | `gtm_create_container` | Neuen GTM-Container anlegen (web/server/android/ios/amp) — danach mit `workspace_configure_source` verknüpfen | gtm | W |
+| `gtm_create_variable` | Neue Variable anlegen; Default-Typ Data-Layer-Variable, Key wird aus dem Namen abgeleitet (`dlv - foo` → `foo`) — Voraussetzung für GA4-Event-Tags mit Parameter-Mapping | gtm | W |
 
 ---
 
