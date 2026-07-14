@@ -372,3 +372,13 @@ Alle LinkedIn-Schreib-Tools akzeptieren `validate_only=true` (Vorschau ohne API-
 | `wp_upload_media` | Datei in die Medienbibliothek hochladen (`source_url` ODER `file_base64`) | wordpress | W |
 | `wp_delete_media` | Datei aus der Medienbibliothek löschen (`force=True` Default → endgültig) | wordpress | W |
 | `wp_create_term` | Kategorie/Tag anlegen — idempotent (existierender Name → vorhandener Term, kein Duplikat) | wordpress | W |
+
+### WordPress Honeyfield-Connector (Builder + SEO — braucht das Connector-Plugin auf der Kundenseite)
+
+| Tool | Was | Quelle | R/W |
+|---|---|---|---|
+| `wp_bridge_status` | Connector-Verbindung prüfen: Plugin-Version, erkannte Builder (Elementor/Bricks), SEO-Plugin, Module | wordpress | R |
+| `wp_builder_get_content` | Page-Builder-Inhalt als Text-Baum lesen (`element_id` + `field` je Textfeld) — für Seiten, bei denen `wp_get_post` leer bleibt | wordpress | R |
+| `wp_builder_replace_text` | Texte in Builder-Elementen gezielt ändern (Feld setzen oder Teilstring) — Layout bleibt unangetastet, Bricks-Code-Elemente tabu | wordpress | W |
+| `wp_seo_get_meta` | SEO-Metadaten (Yoast/Rank Math) lesen: Title, Description, Canonical, noindex | wordpress | R |
+| `wp_seo_update_meta` | SEO-Metadaten schreiben (nur übergebene Felder) | wordpress | W |
