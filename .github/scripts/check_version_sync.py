@@ -7,9 +7,10 @@ diese Zahl gegenueber der Quelle der Wahrheit (`<source>/.claude-plugin/plugin.j
 auseinander, sieht der Katalog kein Update — neue Skills (z.B. google-ads-audit)
 kommen beim Client nie an, obwohl sie auf `main` liegen.
 
-Harte Invariante, die dieser Check erzwingt:
+Harte Invarianten, die dieser Check erzwingt:
   fuer jedes Plugin in marketplace.json:
     marketplace.json plugins[].version  ==  <source>/.claude-plugin/plugin.json version
+    <source>/.codex-plugin/plugin.json version == <source>/.claude-plugin/plugin.json version
 
 Zusaetzlicher harter Check (fuehrt ebenfalls zu exit 1): metadata.version
 (Katalog-Version) muss mindestens so hoch sein wie die hoechste Plugin-Version —
@@ -53,6 +54,13 @@ def main():
         with open(pj_path, encoding="utf-8") as f:
             pj_version = json.load(f).get("version")
 
+        codex_pj_path = os.path.join(source, ".codex-plugin", "plugin.json")
+        if not os.path.isfile(codex_pj_path):
+            errors.append(f"{name}: Codex plugin.json nicht gefunden unter {codex_pj_path}")
+            continue
+        with open(codex_pj_path, encoding="utf-8") as f:
+            codex_pj_version = json.load(f).get("version")
+
         if mp_version != pj_version:
             errors.append(
                 f"{name}: Versions-DRIFT — marketplace.json={mp_version!r} "
@@ -62,6 +70,14 @@ def main():
             )
         else:
             print(f"OK: {name} @ {pj_version} (plugin.json == marketplace.json)")
+
+        if codex_pj_version != pj_version:
+            errors.append(
+                f"{name}: Versions-DRIFT — .codex-plugin={codex_pj_version!r} "
+                f"!= .claude-plugin={pj_version!r}."
+            )
+        else:
+            print(f"OK: {name} @ {pj_version} (Codex == Claude)")
 
         pv = parse_semver(pj_version)
         if pv is not None:
@@ -84,9 +100,9 @@ def main():
         for e in errors:
             print(" -", e)
         print(
-            "\nFix: alle drei Felder zusammen erhoehen — "
+            "\nFix: alle vier Felder zusammen erhoehen — "
             "plugin.json.version, marketplace.json plugins[].version (== plugin.json), "
-            "und metadata.version (Katalog).",
+            ".codex-plugin/plugin.json.version und metadata.version (Katalog).",
         )
         return 1
 

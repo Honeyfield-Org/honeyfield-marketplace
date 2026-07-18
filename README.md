@@ -7,6 +7,8 @@ Plugins liegen separat im privaten `honeyfield-internal-marketplace`.)
 
 ## Installation
 
+### Claude Code
+
 ```
 /plugin marketplace add Honeyfield-Org/honeyfield-marketplace
 /plugin install honeyfield-marketing-mcp@honeyfield-marketplace
@@ -14,6 +16,17 @@ Plugins liegen separat im privaten `honeyfield-internal-marketplace`.)
 ```
 
 Nach der Installation Claude Code neu starten; `/mcp` zeigt den Verbindungsstatus.
+
+### Codex
+
+```bash
+codex plugin marketplace add Honeyfield-Org/honeyfield-marketplace
+codex plugin add honeyfield-marketing-mcp@honeyfield-marketplace
+codex plugin add honeyfield-legal-mcp@honeyfield-marketplace
+```
+
+Danach einen neuen Codex-Thread starten, damit die installierten Skills und
+MCP-Tools in den Sitzungskontext aufgenommen werden.
 
 ## Plugins
 
@@ -60,8 +73,18 @@ Trigger z.B.: „was sagt § 1295 ABGB?", „wie ist die Whistleblower-Richtlini
 
 ## Updates
 
+Claude Code:
+
 ```
 /plugin marketplace update honeyfield-marketplace
+```
+
+Codex:
+
+```bash
+codex plugin marketplace upgrade honeyfield-marketplace
+codex plugin add honeyfield-marketing-mcp@honeyfield-marketplace
+codex plugin add honeyfield-legal-mcp@honeyfield-marketplace
 ```
 
 ## Beitragen
@@ -70,8 +93,10 @@ Trigger z.B.: „was sagt § 1295 ABGB?", „wie ist die Whistleblower-Richtlini
    prüft JSON-Manifeste, **Version-Sync** (`plugin.json` ↔ `marketplace.json`),
    **Skill-Frontmatter** (echter YAML-Parse, fängt den Anführungszeichen-Footgun) und
    `claude plugin validate`. Der Check ist als Required Status Check gesetzt: **rot = kein Merge**.
-2. Neue Plugins: Ordner unter `plugins/<name>/` mit `.claude-plugin/plugin.json`
-   anlegen und in `.claude-plugin/marketplace.json` registrieren.
+2. Neue Plugins: Ordner unter `plugins/<name>/` mit
+   `.claude-plugin/plugin.json` und `.codex-plugin/plugin.json` anlegen und in
+   `.claude-plugin/marketplace.json` sowie `.agents/plugins/marketplace.json`
+   registrieren.
 3. **Bei jeder inhaltlichen Änderung die Version erhöhen** — sonst erkennt der
    Org-Marketplace-Sync das Update nicht. Drei Felder synchron halten:
    `plugin.json` → `version`, der Plugin-Eintrag in `marketplace.json`
