@@ -1,0 +1,46 @@
+{
+  "name": "honeyfield-legal-mcp",
+  "version": "1.0.0",
+  "description": "Honeyfield Legal MCP with Austrian and EU legal research skills backed by RIS and EUR-Lex.",
+  "author": {
+    "name": "Honeyfield GmbH",
+    "email": "vernes@honeyfield.at",
+    "url": "https://honeyfield.at"
+  },
+  "repository": "https://github.com/Honeyfield-Org/honeyfield-marketplace",
+  "keywords": [
+    "legal-research",
+    "austria",
+    "eu-law",
+    "ris",
+    "eur-lex"
+  ],
+  "skills": "./skills/",
+  "mcpServers": {
+    "ris": {
+      "type": "http",
+      "url": "https://mcp.honeyfield.at/ris/mcp"
+    },
+    "eurlex": {
+      "type": "http",
+      "url": "https://mcp.honeyfield.at/eurlex/mcp"
+    }
+  },
+  "interface": {
+    "displayName": "Honeyfield Legal MCP",
+    "shortDescription": "Austrian and EU legal research with primary sources",
+    "longDescription": "Research Austrian and EU legislation and case law through RIS and EUR-Lex with source-backed legal research and case-law workflows.",
+    "developerName": "Honeyfield GmbH",
+    "category": "Productivity",
+    "capabilities": [
+      "Interactive",
+      "Read"
+    ],
+    "websiteURL": "https://honeyfield.at",
+    "defaultPrompt": [
+      "Research the current Austrian law on this topic.",
+      "Find relevant Austrian and EU case law.",
+      "Verify this provision against RIS and EUR-Lex."
+    ]
+  }
+}

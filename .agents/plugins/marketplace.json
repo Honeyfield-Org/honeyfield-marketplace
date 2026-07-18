@@ -1,0 +1,32 @@
+{
+  "name": "honeyfield-marketplace",
+  "interface": {
+    "displayName": "Honeyfield Marketplace"
+  },
+  "plugins": [
+    {
+      "name": "honeyfield-marketing-mcp",
+      "source": {
+        "source": "local",
+        "path": "./plugins/honeyfield-marketing-mcp"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    },
+    {
+      "name": "honeyfield-legal-mcp",
+      "source": {
+        "source": "local",
+        "path": "./plugins/honeyfield-legal-mcp"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}

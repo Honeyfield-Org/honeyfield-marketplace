@@ -16,7 +16,7 @@ jobs:
       - name: Validate JSON files
         run: |
           set -e
-          for f in .claude-plugin/marketplace.json plugins/*/.claude-plugin/plugin.json plugins/*/.mcp.json; do
+          for f in .claude-plugin/marketplace.json .agents/plugins/marketplace.json plugins/*/.claude-plugin/plugin.json plugins/*/.codex-plugin/plugin.json plugins/*/.mcp.json; do
             [ -f "$f" ] || continue
             python3 -m json.tool "$f" > /dev/null
             echo "OK: $f"
@@ -28,16 +28,27 @@ jobs:
           python3 - <<'EOF'
           import json, os, sys
           with open(".claude-plugin/marketplace.json") as f:
-              mp = json.load(f)
+              claude_mp = json.load(f)
+          with open(".agents/plugins/marketplace.json") as f:
+              codex_mp = json.load(f)
           missing = []
-          for p in mp["plugins"]:
+          for p in claude_mp["plugins"]:
               src = p["source"]
               if not os.path.isfile(os.path.join(src, ".claude-plugin", "plugin.json")):
-                  missing.append(src)
+                  missing.append(f"Claude: {src}")
+          for p in codex_mp["plugins"]:
+              src = p["source"]["path"]
+              if not os.path.isfile(os.path.join(src, ".codex-plugin", "plugin.json")):
+                  missing.append(f"Codex: {src}")
           if missing:
               print("Missing plugin.json for:", missing)
               sys.exit(1)
-          print(f"All {len(mp['plugins'])} plugin sources valid")
+          claude_names = {p["name"] for p in claude_mp["plugins"]}
+          codex_names = {p["name"] for p in codex_mp["plugins"]}
+          if claude_names != codex_names:
+              print("Marketplace plugin-name drift:", claude_names ^ codex_names)
+              sys.exit(1)
+          print(f"All {len(claude_names)} dual-platform plugin sources valid")
           EOF
 
       - name: Check version sync (marketplace.json <-> plugin.json)
