@@ -94,7 +94,7 @@ Folgefrage: **Welche Aktion?**
 1. Ziel-Objekt per Auswahlfrage bestimmen (Kampagnen/Keywords/Bewertungen erst listen, z.B. `ads_list_campaigns` — nie IDs raten).
 2. **Vorher/Nachher-Zusammenfassung zeigen**: „Kampagne X: Budget 50 € → 80 €/Tag. Ausführen?"
 3. **Nur nach explizitem Ja ausführen.** Kein Ja = nichts schreiben.
-4. Ergebnis bestätigen und die Änderung in einem Satz protokollieren (was, wann, alter Wert).
+4. Ergebnis bestätigen und die Änderung doppelt protokollieren: ein Satz im Chat (was, wann, alter Wert) **und** per `journal_add_note` ins Änderungsjournal des Workspace (Vorher→Nachher + Warum, `source` setzen). Das Journal ersetzt die Google-Ads-Notizen (gibt es nicht per API) und überdauert Googles 30-Tage-Änderungsverlauf; `journal_list` zeigt alle Änderungen samt automatischer Protokolle.
 
 Größere Eingriffe (mehrere Kampagnen, Gebotsstrategie, Struktur, neue PMax-Kampagnen) gehören nicht in Quick-Aktionen → auf den passenden Audit-/Spezial-Skill verweisen, der das mit Dry-Run macht.
 

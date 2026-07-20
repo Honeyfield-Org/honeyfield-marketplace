@@ -40,6 +40,8 @@ Arbeite die verbundenen Kanäle durch und ziehe je die Kern-KPIs mit Zeitraum-Ve
 
 **Anomalie-Assist:** `anomaly_check` / `budget_pacing` können Ausreißer vorschlagen — als Hinweis nutzen, nicht als alleinige Wahrheit.
 
+**Änderungsjournal einbeziehen:** `journal_list` (Zeitraum = Berichtswoche + Vorwoche) zeigt, was am Konto geändert wurde — automatische Protokolle aller Schreib-Tools plus Agenten-Notizen mit dem Warum. Auffällige Deltas immer damit abgleichen: ein CPA-Sprung nach einer Budgeterhöhung ist Einordnung, keine Anomalie. Relevante Änderungen der Woche gehören als eigener Punkt in den Report („Was wurde geändert“).
+
 ## Anomalien → Deep-Dives (der Kern der Hub-Rolle)
 
 Für jede Auffälligkeit: **benennen (mit Zahl + Δ), einordnen (Kontext/Fallstrick prüfen), verweisen.** Nicht selbst tief diagnostizieren.
