@@ -6,7 +6,7 @@
   },
   "metadata": {
     "description": "Öffentlicher Honeyfield Marketplace: MCP-Plugins (Marketing-Ops mit 10 DACH-kalibrierten Skills, Legal mit RIS + EUR-Lex und 2 Recherche-Skills) über die Honeyfield-Gateways mcp.ads.honeyfield.at (Marketing) und mcp.honeyfield.at (Legal)",
-    "version": "2.3.2"
+    "version": "2.4.0"
   },
   "plugins": [
     {
