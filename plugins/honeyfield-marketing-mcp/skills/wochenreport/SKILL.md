@@ -2,7 +2,7 @@
 name: wochenreport
 description: "Erstellt einen kanalübergreifenden Wochen- oder Monatsreport für einen Kunden — zieht die Kern-KPIs aus allen verbundenen Kanälen (Google Ads, Meta/LinkedIn Ads, Search Console, GA4, Google Business Profile, AI-Sichtbarkeit) und stellt sie als Zeitraum-Vergleich (Woche-über-Woche / Monat-über-Monat) zusammen. Nutze diesen Skill für regelmäßiges Reporting: „Wochenreport”, „Monatsreport”, „wie lief die Woche”, „wie war der Monat”, „KPI-Übersicht”, „Performance-Report”, „Reporting für Kunde X”, „fass mir die Zahlen zusammen”, „Report erstellen”. Read-only — der Report ändert nichts am Konto. Er orchestriert statt zu duplizieren: bei Auffälligkeiten verweist er auf den passenden Audit. Für die tiefe Diagnose eines konkreten Problems nutze direkt `google-ads-audit` (bezahlte Suche), `social-ads-audit` (Meta/LinkedIn), `seo-audit` (organisch), `geo-audit` (KI-Sichtbarkeit) oder `tracking-check` (Conversion-Tracking). Kalibriert auf DACH (DE/AT/CH)."
 metadata:
-  version: 0.4.0
+  version: 0.5.0
 ---
 
 # Wochenreport
@@ -39,6 +39,8 @@ Arbeite die verbundenen Kanäle durch und ziehe je die Kern-KPIs mit Zeitraum-Ve
 7. **AI-Sichtbarkeit** (`dfs_llm_mentions_metrics`, max. 10 Marken-/Themen-Keywords pro Call): Mentions/Citations/Share-of-Voice als WoW-KPI (Index nicht tagesaktuell, Lag nicht API-verifiziert — bei Stichtag-nahen WoW-Vergleichen vorsichtig sein). Schlägt der Zugriff fehl (`subscription_required`, z. B. Guthaben aufgebraucht), Degradation auf `ga4_traffic_sources` (`sessionSource`, days≥28) — grobe AI-Referrer-Menge, dann explizit als **beratend/Näherung** kennzeichnen.
 
 **Anomalie-Assist:** `anomaly_check` / `budget_pacing` können Ausreißer vorschlagen — als Hinweis nutzen, nicht als alleinige Wahrheit.
+
+**Änderungsjournal einbeziehen:** `journal_list` (Zeitraum = Berichtswoche + Vorwoche) zeigt, was am Konto geändert wurde — automatische Protokolle aller Schreib-Tools plus Agenten-Notizen mit dem Warum. Auffällige Deltas immer damit abgleichen: ein CPA-Sprung nach einer Budgeterhöhung ist Einordnung, keine Anomalie. Relevante Änderungen der Woche gehören als eigener Punkt in den Report („Was wurde geändert“).
 
 ## Anomalien → Deep-Dives (der Kern der Hub-Rolle)
 

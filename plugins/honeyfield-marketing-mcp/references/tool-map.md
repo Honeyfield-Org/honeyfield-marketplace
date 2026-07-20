@@ -12,6 +12,8 @@ Lege Schreib-Tools (W) nie ohne write-guardrails.md an.
 | `list_workspaces` | Workspaces + verbundene sources auflisten | — | R |
 | `ping` | Connectivity-Check (liefert „pong”) | — | R |
 | `workspace_configure_source` | Source-IDs am Workspace setzen (`source`: google_ads/ga4/search_console/gtm/business_profile + `ids`) — ersetzt den Portal-Roundtrip beim Onboarding | — | W |
+| `journal_add_note` | Notiz ins Änderungsjournal des Workspace (`note` mit Vorher→Nachher + Warum, optional `source`) — nach JEDER Schreib-Aktion aufrufen; Ersatz für die Google-Ads-Notizen, die Googles API nicht anbietet | — | W |
+| `journal_list` | Änderungsjournal lesen (`days`, `limit`, `kind`: note/auto) — automatische Protokolle aller Schreib-Tools + Notizen; für Wochenreports und um Performance-Knicke Änderungen zuzuordnen | — | R |
 | `authenticate` | OAuth-Flow zum MCP starten — nur Plugin-Kontext (Claude Code); in Claude Web ist der Connector vorauthentifiziert | — | — |
 | `complete_authentication` | OAuth-Flow abschließen — nur Plugin-Kontext (Claude Code) | — | — |
 
