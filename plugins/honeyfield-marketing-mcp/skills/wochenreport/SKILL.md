@@ -2,7 +2,7 @@
 name: wochenreport
 description: "Erstellt einen kanalübergreifenden Wochen- oder Monatsreport für einen Kunden — zieht die Kern-KPIs aus allen verbundenen Kanälen (Google Ads, Meta/LinkedIn Ads, Search Console, GA4, Google Business Profile, AI-Sichtbarkeit) und stellt sie als Zeitraum-Vergleich (Woche-über-Woche / Monat-über-Monat) zusammen. Nutze diesen Skill für regelmäßiges Reporting: „Wochenreport”, „Monatsreport”, „wie lief die Woche”, „wie war der Monat”, „KPI-Übersicht”, „Performance-Report”, „Reporting für Kunde X”, „fass mir die Zahlen zusammen”, „Report erstellen”. Read-only — der Report ändert nichts am Konto. Er orchestriert statt zu duplizieren: bei Auffälligkeiten verweist er auf den passenden Audit. Für die tiefe Diagnose eines konkreten Problems nutze direkt `google-ads-audit` (bezahlte Suche), `social-ads-audit` (Meta/LinkedIn), `seo-audit` (organisch), `geo-audit` (KI-Sichtbarkeit) oder `tracking-check` (Conversion-Tracking). Kalibriert auf DACH (DE/AT/CH)."
 metadata:
-  version: 0.4.0
+  version: 0.5.0
 ---
 
 # Wochenreport

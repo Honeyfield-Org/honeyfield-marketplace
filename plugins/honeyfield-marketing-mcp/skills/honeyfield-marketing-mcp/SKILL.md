@@ -2,7 +2,7 @@
 name: honeyfield-marketing-mcp
 description: "Interaktiver Einstiegspunkt (Launcher/Hub) für den Honeyfield Marketing MCP. Immer verwenden, wenn der Nutzer den Skill mit einem Workspace-Namen aufruft (z.B. '/honeyfield-marketing-mcp honeyfield', 'marketing hub rent2b') oder fragt 'was kann ich mit dem Marketing MCP machen', 'zeig mir das Marketing-Menü', 'Marketing-Aktionen für Kunde X'. Auch bei kleinen konkreten Marketing-Anliegen zu einem Kunden triggern: 'beantworte die neue Google-Bewertung', 'ändere den Text auf der Website von X', 'pass den SEO-Titel an', 'pausiere die Kampagne', 'wie läuft der Monat'. Fragt interaktiv per Auswahlmenü (Report, Audit, Anzeigen & Content, Website, Quick-Check, Quick-Aktion), leitet an den passenden Spezial-Skill weiter (wochenreport, google-ads-audit, social-ads-audit, seo-audit, geo-audit, tracking-check, ad-creative, content-strategie, marketing-plan, projekt-kontext) oder führt kleine Aktionen direkt über MCP-Tools aus. Auch triggern, wenn der Nutzer nur einen Workspace-Namen im Marketing-Kontext nennt."
 metadata:
-  version: 0.2.0
+  version: 0.3.0
 ---
 
 # Honeyfield Marketing MCP — Launcher
