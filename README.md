@@ -2,8 +2,9 @@
 
 Öffentlicher Claude-Code-Plugin-Marketplace der Honeyfield GmbH. Bündelt die
 Honeyfield-MCP-Server als einzeln installierbare Plugins über die
-Honeyfield-Gateways (`mcp.honeyfield.at`, `mcp.ads.honeyfield.at`). (Interne
-Plugins liegen separat im privaten `honeyfield-internal-marketplace`.)
+Honeyfield-Gateways (`mcp.honeyfield.at`, `mcp.ads.honeyfield.at`,
+`mcp.honeyfield.at/rent2b`). (Interne Plugins liegen separat im privaten
+`honeyfield-internal-marketplace`.)
 
 ## Installation
 
@@ -13,6 +14,7 @@ Plugins liegen separat im privaten `honeyfield-internal-marketplace`.)
 /plugin marketplace add Honeyfield-Org/honeyfield-marketplace
 /plugin install honeyfield-marketing-mcp@honeyfield-marketplace
 /plugin install honeyfield-legal-mcp@honeyfield-marketplace
+/plugin install rent2b-mcp@honeyfield-marketplace
 ```
 
 Nach der Installation Claude Code neu starten; `/mcp` zeigt den Verbindungsstatus.
@@ -23,6 +25,7 @@ Nach der Installation Claude Code neu starten; `/mcp` zeigt den Verbindungsstatu
 codex plugin marketplace add Honeyfield-Org/honeyfield-marketplace
 codex plugin add honeyfield-marketing-mcp@honeyfield-marketplace
 codex plugin add honeyfield-legal-mcp@honeyfield-marketplace
+codex plugin add rent2b-mcp@honeyfield-marketplace
 ```
 
 Danach einen neuen Codex-Thread starten, damit die installierten Skills und
@@ -34,17 +37,23 @@ MCP-Tools in den Sitzungskontext aufgenommen werden.
 |---|---|---|
 | `honeyfield-marketing-mcp` | Marketing-Ops — Google Ads, GA4, Search Console, Google Business Profile, GTM, Clarity, DataForSEO (SEO-, Backlink-, OnPage-Crawl- & LLM-Sichtbarkeits-Daten), LinkedIn/Meta Ads, Strapi- & WordPress-CMS **+ Skills (Projekt-Kontext + Audits + Ad-Creative + Content-Strategie + Wochenreport)** | `https://mcp.ads.honeyfield.at/mcp` |
 | `honeyfield-legal-mcp` | Legal — österreichisches Recht (RIS: Bundes-/Landesrecht, Judikatur, BGBl/LGBl, Gemeinderecht) und EU-Recht (EUR-Lex: Rechtsakte, Konsolidierungen, Zitate, EuGH) **+ Skills (Rechtsrecherche + Judikatur)** | `https://mcp.honeyfield.at/ris/mcp` + `https://mcp.honeyfield.at/eurlex/mcp` |
+| `rent2b-mcp` | rent2b-Vermietungsverwaltung — Buchungen & Anfragen, Verfügbarkeit/Kalender, Preise & Staffelpreise (Langzeitrabatte), Artikel & Räume, Gäste, Statistiken; Login mit dem rent2b-Konto **+ interaktiver Launcher-Skill (`rent2b`)** | `https://mcp.honeyfield.at/rent2b/mcp` |
 
 Jedes Plugin bündelt einen Themenbereich — so installiert man nur, was man
 braucht. `honeyfield-marketing-mcp` bündelt die Marketing-Tools **und** die dazu
 passenden Skills (Projekt-Kontext-Fundament + Audits + Ad-Creative +
 Content-Strategie + Wochenreport); `honeyfield-legal-mcp` bündelt beide
-Rechts-Server (RIS + EUR-Lex) **und** die Legal-Skills — ein Install, alles dabei.
+Rechts-Server (RIS + EUR-Lex) **und** die Legal-Skills; `rent2b-mcp` bündelt
+die rent2b-API (156 Tools) **und** den interaktiven Launcher-Skill — ein
+Install, alles dabei.
 
 Der vollständige Tool-Katalog (219 Tools über 11 Quellen, je Tool mit Quelle und
 Read/Write-Kennzeichnung) steht in
 [`plugins/honeyfield-marketing-mcp/references/tool-map.md`](plugins/honeyfield-marketing-mcp/references/tool-map.md)
 — das ist die kanonische, modell-lesbare Referenz, die auch die Skills nutzen.
+Der rent2b-Tool-Katalog (156 Tools, Präfix `rent2b_`, je Tool mit Read/Write-Kennzeichnung)
+steht analog in
+[`plugins/rent2b-mcp/references/tool-map.md`](plugins/rent2b-mcp/references/tool-map.md).
 
 ## Skills (honeyfield-marketing-mcp)
 
@@ -71,6 +80,14 @@ Trigger z.B.: „mach einen SEO-Audit für example.at", „GEO-Audit für …", 
 
 Trigger z.B.: „was sagt § 1295 ABGB?", „wie ist die Whistleblower-Richtlinie in Österreich umgesetzt?" (`rechtsrecherche`); „gibt es OGH-Rechtsprechung zu § 1319a ABGB?", „was hat der EuGH zu Schrems entschieden?" (`judikatur`).
 
+## Skills (rent2b-mcp)
+
+| Skill | Zweck |
+|---|---|
+| `rent2b` | Interaktiver Launcher-Hub für die rent2b-Vermietungsverwaltung — führt per Auswahlmenü zu Buchungen & Anfragen (inkl. Checklisten und Schadensmeldungen), Verfügbarkeit & Kalender (Blockierung, Zeitfenster), Preisen & Staffelpreisen (Langzeitrabatte), Artikeln & Räumen, Gästen und Statistik/Quick-Checks; Schreib-/destruktive Aktionen ausschließlich nach expliziter Bestätigung mit Vorher/Nachher-Zusammenfassung. |
+
+Trigger z.B.: „/rent2b", „rent2b hub", „meine Buchungen", „zeig mir offene Anfragen", „lege einen Staffelpreis an", „wie ist meine Auslastung".
+
 ## Updates
 
 Claude Code:
@@ -85,6 +102,7 @@ Codex:
 codex plugin marketplace upgrade honeyfield-marketplace
 codex plugin add honeyfield-marketing-mcp@honeyfield-marketplace
 codex plugin add honeyfield-legal-mcp@honeyfield-marketplace
+codex plugin add rent2b-mcp@honeyfield-marketplace
 ```
 
 ## Beitragen
@@ -110,5 +128,5 @@ codex plugin add honeyfield-legal-mcp@honeyfield-marketplace
 |---|---|
 | `marketplace add` schlägt fehl | GitHub-Auth prüfen (`gh auth status` / SSH-Key) |
 | MCP-Tools fehlen nach Install | Claude Code neu starten; `/mcp` zeigt den Verbindungsstatus |
-| Gateway nicht erreichbar | `curl -I https://mcp.honeyfield.at/eurlex/mcp` bzw. `https://mcp.ads.honeyfield.at/mcp` prüfen |
+| Gateway nicht erreichbar | `curl -I https://mcp.honeyfield.at/eurlex/mcp`, `https://mcp.ads.honeyfield.at/mcp` bzw. `https://mcp.honeyfield.at/rent2b/mcp` prüfen |
 | Plugin-Update / neuer Skill kommt nicht an | Erstens: Version in `plugin.json` **und** `marketplace.json` (Plugin-Eintrag + `metadata.version`) erhöht? Zweitens: Änderung nach `main` gemerged? Der Sync (auch Org-Auto-Sync in Claude Web) zieht von `main`, nicht vom Feature-Branch. Dann `/plugin marketplace update honeyfield-marketplace` und neu starten. |

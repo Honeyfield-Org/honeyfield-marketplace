@@ -1,0 +1,6 @@
+{
+  "name": "rent2b-mcp",
+  "description": "rent2b Vermietungsverwaltung per Chat — Buchungen, Verfügbarkeit, Preise & Staffelpreise, Gäste, Statistiken über mcp.honeyfield.at/rent2b/mcp; Login mit dem rent2b-Konto (E-Mail/Passwort oder Google/Apple). Mit interaktivem Launcher-Skill (rent2b) für Buchungsanfragen, Kalender/Kalender-Blockierung, Preisregeln inkl. Staffelpreise/Langzeitrabatte, Artikel & Räume, Gäste und Statistik",
+  "version": "1.0.0",
+  "author": { "name": "Honeyfield GmbH", "email": "vernes@honeyfield.at" }
+}

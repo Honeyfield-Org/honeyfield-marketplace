@@ -1,0 +1,42 @@
+{
+  "name": "rent2b-mcp",
+  "version": "1.0.0",
+  "description": "rent2b MCP for Vermieter (rental businesses) — bookings, availability, pricing incl. duration discounts, guests, and statistics, with an interactive launcher skill.",
+  "author": {
+    "name": "Honeyfield GmbH",
+    "email": "vernes@honeyfield.at",
+    "url": "https://honeyfield.at"
+  },
+  "repository": "https://github.com/Honeyfield-Org/honeyfield-marketplace",
+  "keywords": [
+    "rental-management",
+    "vermietung",
+    "bookings",
+    "rent2b"
+  ],
+  "skills": "./skills/",
+  "mcpServers": {
+    "rent2b": {
+      "type": "http",
+      "url": "https://mcp.honeyfield.at/rent2b/mcp"
+    }
+  },
+  "interface": {
+    "displayName": "rent2b MCP",
+    "shortDescription": "rent2b rental management via chat",
+    "longDescription": "Manage bookings, availability, pricing (incl. duration discounts / long-stay rebates), guests, items/rooms, and statistics for a rent2b organization directly from chat. Sign in with the rent2b account (email/password or Google/Apple); each user only sees and manages their own organization.",
+    "developerName": "Honeyfield GmbH",
+    "category": "Productivity",
+    "capabilities": [
+      "Interactive",
+      "Read",
+      "Write"
+    ],
+    "websiteURL": "https://honeyfield.at",
+    "defaultPrompt": [
+      "Zeig mir offene Buchungsanfragen.",
+      "Wie ist meine Auslastung diesen Monat?",
+      "Leg einen Staffelpreis für Langzeitbuchungen an."
+    ]
+  }
+}
