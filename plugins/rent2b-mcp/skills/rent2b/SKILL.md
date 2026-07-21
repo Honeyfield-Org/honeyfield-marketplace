@@ -56,7 +56,7 @@ Folgefrage: **Was willst du sehen oder ändern?**
 
 ### 3. Preise & Staffelpreise
 Folgefrage: **Was genau?**
-- **Bestehende Preisregeln ansehen** → `rent2b_pricing_organization_rules_list_3` (alle Regeln der Org auf einen Blick) oder gezielt `rent2b_pricing_rooms_rules_list`/`rent2b_pricing_items_rules_list`.
+- **Bestehende Preisregeln ansehen** → `rent2b_pricing_organization_rules_list_by_org` (alle Regeln der Org auf einen Blick) oder gezielt `rent2b_pricing_rooms_rules_list`/`rent2b_pricing_items_rules_list`.
 - **Preisregel anlegen/ändern** (spezielles Datum, Wochentag, Zeitraum) → org-weit `rent2b_pricing_organization_rules_create`/`_update`, für einen Raum `rent2b_pricing_rooms_rules_create`/`_update`, für einen Artikel `rent2b_pricing_items_rules_create`/`_update` (unterstützt zusätzlich `time_of_day`). Löschen jeweils über die `_delete`-Variante.
 - **Staffelpreis/Langzeitrabatt anlegen** → erst fragen: org-weit oder für ein bestimmtes Objekt (Raum/Artikel)? Dann Mindestdauer (Tage bei Artikeln, Nächte bei Räumen) + Rabatt-Prozent erfragen, zurücklesen, nach Bestätigung `rent2b_duration_discounts_create`. Bestehende Stufen: `rent2b_duration_discounts_list` (mit `item_id`/`room_id` zusätzlich die tatsächlich wirksamen `effective_tiers`). Ändern/löschen über `rent2b_duration_discounts_update`/`_delete`. **404 → Feature noch nicht live, siehe Grundregeln.**
 

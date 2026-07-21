@@ -96,18 +96,18 @@
 |---|---|---|
 | `rent2b_pricing_organization_rules_create` | Org-weite Preisregel anlegen (Datum/Wochentag/Zeitraum) | W |
 | `rent2b_pricing_organization_rules_list` | Org-weite Preisregeln auflisten | R |
-| `rent2b_pricing_organization_rules_list_2` | Einzelne Org-Preisregel abrufen | R |
+| `rent2b_pricing_organization_rules_get` | Einzelne Org-Preisregel abrufen | R |
 | `rent2b_pricing_organization_rules_update` | Org-Preisregel ändern | W |
 | `rent2b_pricing_organization_rules_delete` | Org-Preisregel löschen | W |
-| `rent2b_pricing_organization_rules_list_3` | Alle Preisregeln der Organisation (Räume + Artikel) gemeinsam auflisten | R |
+| `rent2b_pricing_organization_rules_list_by_org` | Alle Preisregeln der Organisation (Räume + Artikel) gemeinsam auflisten | R |
 | `rent2b_pricing_rooms_rules_create` | Preisregel für einen Raum anlegen | W |
 | `rent2b_pricing_rooms_rules_list` | Preisregeln eines Raums auflisten | R |
-| `rent2b_pricing_rooms_rules_list_2` | Einzelne Raum-Preisregel abrufen | R |
+| `rent2b_pricing_rooms_rules_get` | Einzelne Raum-Preisregel abrufen | R |
 | `rent2b_pricing_rooms_rules_update` | Raum-Preisregel ändern | W |
 | `rent2b_pricing_rooms_rules_delete` | Raum-Preisregel löschen | W |
 | `rent2b_pricing_items_rules_create` | Preisregel für einen Artikel anlegen (auch time_of_day) | W |
 | `rent2b_pricing_items_rules_list` | Preisregeln eines Artikels auflisten | R |
-| `rent2b_pricing_items_rules_list_2` | Einzelne Artikel-Preisregel abrufen | R |
+| `rent2b_pricing_items_rules_get` | Einzelne Artikel-Preisregel abrufen | R |
 | `rent2b_pricing_items_rules_update` | Artikel-Preisregel ändern | W |
 | `rent2b_pricing_items_rules_delete` | Artikel-Preisregel löschen | W |
 | `rent2b_rooms_pricing_rules_list` | Verfügbare Preisregel-Vorlagen einer Organisation | R |
