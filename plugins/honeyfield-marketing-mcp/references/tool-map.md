@@ -280,9 +280,9 @@ Lege Schreib-Tools (W) nie ohne write-guardrails.md an.
 | `meta_list_pages` | Facebook-Pages, die der Account bewerben darf — `page_id` ist Pflicht für `meta_create_ad` | meta_ads | R |
 | `meta_list_pixels` | Meta-Pixel (Datasets) auflisten inkl. „zuletzt gefeuert” — schnellster Tracking-Check | meta_ads | R |
 | `meta_pixel_stats` | Pixel-Event-Statistiken der letzten N Tage (Summen + Tagesverlauf) | meta_ads | R |
-| `meta_campaign_performance` | Kampagnen-Performance (Impressionen, Klicks, Spend, Conversions) | meta_ads | R |
-| `meta_adset_performance` | Adset-Performance der letzten N Tage, sortiert nach Spend | meta_ads | R |
-| `meta_ad_performance` | Performance einzelner Anzeigen der letzten N Tage, sortiert nach Spend | meta_ads | R |
+| `meta_campaign_performance` | Kampagnen-Performance (Impressionen, Klicks, Spend, Conversions); bei leeren Insights trotz Kampagnen: `{"result": [], "info": "<Erklärung>"}` | meta_ads | R |
+| `meta_adset_performance` | Adset-Performance der letzten N Tage, sortiert nach Spend; bei leeren Insights trotz Kampagnen: `{"result": [], "info": "<Erklärung>"}` | meta_ads | R |
+| `meta_ad_performance` | Performance einzelner Anzeigen der letzten N Tage, sortiert nach Spend; bei leeren Insights trotz Kampagnen: `{"result": [], "info": "<Erklärung>"}` | meta_ads | R |
 | `meta_list_campaigns` | Kampagnen auflisten (Status, Ziel, Budgets in EUR) | meta_ads | R |
 | `meta_list_adsets` | Adsets auflisten, optional pro Kampagne (Status, Budget, Optimierungsziel, Targeting) | meta_ads | R |
 | `meta_list_ads` | Ads auflisten, optional pro Adset (Status + Creative) | meta_ads | R |
