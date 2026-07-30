@@ -12,7 +12,7 @@ Diese Punkte hat ein US-/Englisch-Audit nicht. Alles Rechtliche ist beratend (ke
 
 ## DSA-Transparenzpflicht (EU)
 - Jede in der EU ausgelieferte Anzeige braucht deklarierten **Begünstigten** und **Zahler**. Der Operator setzt `dsa_beneficiary`/`dsa_payor` bei **jeder** Adset-Anlage (Default: Zahler = Begünstigter) — Meta blockt EU-Anlagen ohne Angaben teils serverseitig.
-- Bestands-Adsets sind über die Tools **nicht** auf DSA-Vollständigkeit prüfbar (beratend erfragen).
+- Bestands-Adsets via `meta_list_adsets` auf `dsa_beneficiary`/`dsa_payor` prüfen (`null` = nicht gesetzt; rechtliche Bewertung **beratend**). Details zur Prüfbarkeit und Warn-Mechanik stehen in `meta-ads-mechanik.md`.
 - Anzeigen sind öffentlich in der EU-Ad-Library einsehbar — Transparenz gilt in beide Richtungen (manuell auch für Konkurrenz-Recherche nutzbar; kein MCP-Tool dafür).
 
 ## Special Ad Categories (Meta)

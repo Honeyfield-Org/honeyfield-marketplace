@@ -283,9 +283,9 @@ Lege Schreib-Tools (W) nie ohne write-guardrails.md an.
 | `meta_campaign_performance` | Kampagnen-Performance (Impressionen, Klicks, Spend, Conversions); bei leeren Insights trotz Kampagnen: `{"result": [], "info": "<Erklärung>"}` | meta_ads | R |
 | `meta_adset_performance` | Adset-Performance der letzten N Tage, sortiert nach Spend; bei leeren Insights trotz Kampagnen: `{"result": [], "info": "<Erklärung>"}` | meta_ads | R |
 | `meta_ad_performance` | Performance einzelner Anzeigen der letzten N Tage, sortiert nach Spend; bei leeren Insights trotz Kampagnen: `{"result": [], "info": "<Erklärung>"}` | meta_ads | R |
-| `meta_list_campaigns` | Kampagnen auflisten (Status, Ziel, Budgets in EUR) | meta_ads | R |
-| `meta_list_adsets` | Adsets auflisten, optional pro Kampagne (Status, Budget, Optimierungsziel, Targeting) | meta_ads | R |
-| `meta_list_ads` | Ads auflisten, optional pro Adset (Status + Creative) | meta_ads | R |
+| `meta_list_campaigns` | Kampagnen auflisten (Status, Ziel, Budgets in EUR, nicht-leere `issues`) | meta_ads | R |
+| `meta_list_adsets` | Adsets auflisten, optional pro Kampagne (Status, Budget, Optimierungsziel, Targeting, nicht-leere `issues`; DSA-Felder immer, `null` = fehlt; `eu_eea_targeting` mit EU-/EWR-Treffern der erfassten Geo-Formen, `[]` = keiner, `UNKNOWN` = nicht auswertbar) | meta_ads | R |
+| `meta_list_ads` | Ads auflisten, optional pro Adset (Status, Creative, nicht-leere `issues`, vorhandenes `review_feedback`) | meta_ads | R |
 | `meta_list_audiences` | Custom Audiences inkl. Customer-Match-Listen (IDs für Adset-Targeting) | meta_ads | R |
 | `meta_video_status` | Verarbeitungsstatus eines hochgeladenen Ad-Videos (`ready` = nutzbar) | meta_ads | R |
 
@@ -301,8 +301,8 @@ Alle Meta-Schreib-Tools akzeptieren `validate_only=true` (echter API-Dry-Run; `m
 | `meta_create_campaign` | Neue Kampagne anlegen (Standard: PAUSED) — `daily_budget` gesetzt = CBO, optional `bid_strategy` | meta_ads | W |
 | `meta_update_campaign` | Kampagne ändern: Name, Status, Tagesbudget in EUR (Budget nur bei CBO) | meta_ads | W |
 | `meta_delete_campaign` | Kampagne endgültig löschen inkl. Adsets/Ads — zum Stoppen besser Status PAUSED/ARCHIVED | meta_ads | W |
-| `meta_create_adset` | Neues Adset anlegen (Standard: PAUSED) — Budget (erkennt CBO selbst) + Zielgruppe, Bidding, DSA-Angaben (EU-Pflicht), `advantage_audience` | meta_ads | W |
-| `meta_update_adset` | Adset ändern: Name, Status, Budget, Bidding, DSA-Angaben (EU-Pflicht), `advantage_audience`, Targeting (wird gemerged) | meta_ads | W |
+| `meta_create_adset` | Neues Adset anlegen (Standard: PAUSED) — Budget (erkennt CBO selbst) + Zielgruppe, Bidding, DSA-Angaben (EU-Pflicht), `advantage_audience`; nicht-blockierende DSA-Warnung für alle Geo-Einträge mit Ländercode und `country_groups` `europe`/`eea`/`worldwide` | meta_ads | W |
+| `meta_update_adset` | Adset ändern: Name, Status, Budget, Bidding, DSA-Angaben (EU-Pflicht), `advantage_audience`, Targeting (wird gemerged); gleiche DSA-Coverage, bei `status=ACTIVE` zusätzlicher Best-effort-Advisory-Check (Ausfall → `dsa_check: "unavailable"` + Warnung) | meta_ads | W |
 | `meta_update_ad_status` | Ad-Status ändern (ACTIVE/PAUSED/ARCHIVED/DELETED) | meta_ads | W |
 | `meta_upload_ad_image` | Bild von öffentlicher URL in die Bildbibliothek laden (max. 8 MB) — liefert `image_hash` | meta_ads | W |
 | `meta_upload_ad_video` | Video von öffentlicher URL laden — asynchron, Status via `meta_video_status` | meta_ads | W |
