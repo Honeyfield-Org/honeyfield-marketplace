@@ -2,7 +2,7 @@
 name: social-ads-audit
 description: "Datengetriebener Social-Ads-Audit für Meta (Facebook/Instagram) und LinkedIn Ads, kalibriert auf den DACH-Markt (DE/AT/CH). Nutze diesen Skill bei „Social-Ads-Audit”, „Meta-Ads-Check”, „Facebook-/Instagram-Ads analysieren”, „LinkedIn-Kampagnen prüfen” oder Diagnose-Fragen: „warum performen meine Facebook-Ads nicht”, „CPA auf Meta zu hoch”, „Anzeigen ausgebrannt / Ad Fatigue”, „Budget auf Social verbrennt”, „feuert mein Pixel”, „welche Anzeigen soll ich pausieren”. Zieht echte Konto-Daten über den Marketing-Ops-MCP — Pixel-Gesundheit, Kampagnen-/Adset-/Ad-Performance, Budgets, Audiences (+ GA4-Cross-Check) — und setzt Behebbares nach Dry-Run (validate_only) und Bestätigung direkt um: Ads/Adsets pausieren, Budgets anpassen, neue Anzeigen als PAUSED/DRAFT anlegen. Für bezahlte Suche nutze `google-ads-audit`; für Site-Tracking (GA4/GTM) `tracking-check`; fürs Reporting `wochenreport`; für Google-RSA-Texte `ad-creative`; für organisches Ranking `seo-audit`."
 metadata:
-  version: 0.1.0
+  version: 0.1.1
 ---
 
 # Social-Ads-Audit
@@ -62,7 +62,7 @@ Logik: „das Konto/Signal steht nicht” vor „Geld fließt falsch” vor „p
 
 ### 3 — Struktur & Setup
 - **Objective vs. Geschäftsziel:** `meta_list_campaigns` → `objective` (OUTCOME_*) gegen das Ziel aus dem Projekt-Kontext. OUTCOME_TRAFFIC bei Lead-/Sales-Ziel = klassischer Fehlgriff (optimiert auf Klicker, nicht Käufer). LinkedIn analog über den Kampagnen-Typ/`objectiveType`.
-- **Status-Hygiene:** `effective_status` je Kampagne/Adset/Ad (nicht `status`!) — WITH_ISSUES / DISAPPROVED / abgelaufene `stop_time`; Alt-Lasten, die das Bild verzerren. Deutung in `references/meta-ads-mechanik.md`.
+- **Status-Hygiene:** `effective_status` je Kampagne/Adset/Ad prüfen (WITH_ISSUES / DISAPPROVED / abgelaufene `stop_time`; Alt-Lasten, die das Bild verzerren), aber **nicht allein darauf vertrauen**: `issues` auf Kampagnen-/Adset-Ebene sind Delivery-Blocker; auf Ad-Ebene nach `error_type` gewichten (`HARD_ERROR` vs. nicht hart blockierendem `SOFT_ERROR`). `review_feedback` auf globale und placement-spezifische Policy-Ablehnungen prüfen. Deutung in `references/meta-ads-mechanik.md`.
 - **CBO vs. ABO konsistent?** Budgets auf Kampagne UND Adsets gemischt = unklare Steuerung — vereinheitlichen.
 - `meta_list_adsets` → Targeting-Zusammenfassung: Länder (DE+AT+CH in einem Adset → DE dominiert), Altersspanne 18–65 = faktisch untargeted (bewusst?), `advantage_audience` bewusst entschieden?
 
@@ -81,7 +81,7 @@ Logik: „das Konto/Signal steht nicht” vor „Geld fließt falsch” vor „p
 ## DACH-Layer (immer, quer über alle Phasen)
 Details in `references/dach-social-ads.md`.
 1. **Consent-Untererfassung (EU):** Pixel-Zahlen sind um die Ablehner-Quote gedämpft — die Plattform-CPA ist strukturell überschätzt. CAPI federt das ab; ob sie läuft, ist via MCP nicht sichtbar (beratend fragen).
-2. **DSA-Transparenzpflicht:** EU-Anzeigen brauchen Begünstigten + Zahler — der Operator setzt `dsa_beneficiary`/`dsa_payor` bei jeder Adset-Anlage; Bestands-Adsets sind darauf nicht prüfbar (beratend).
+2. **DSA-Transparenzpflicht:** EU-Anzeigen brauchen Begünstigten + Zahler — Bestands-Adsets via `meta_list_adsets` prüfen (`dsa_beneficiary`/`dsa_payor`, `eu_eea_targeting`; `null` = fehlt, `[]` = kein EU-/EWR-Treffer in den erfassten Geo-Formen, `UNKNOWN` = nicht auswertbare Geo-Einträge; rechtliche Bewertung beratend). Die Schreib-Tools warnen nicht-blockierend bei EU/EWR-Targeting über alle Geo-Einträge mit Ländercode, relevante `country_groups` und `UNKNOWN`-Fälle; Mechanik in `references/meta-ads-mechanik.md`.
 3. **LinkedIn-Sprachtargeting = Profil-/Interface-Sprache:** `language=de` erreicht nur Profile mit deutscher LinkedIn-Oberfläche — DACH-Professionals mit englischem Interface (Tech/Beratung, sehr verbreitet) fallen raus. Bewusste Entscheidung; ggf. EN-Zwilling aufs gleiche Geo.
 4. **Special Ad Categories (Meta):** Kredit/Beschäftigung/Wohnen/Politik → bei Anlage deklarieren, Targeting wird eingeschränkt; `compliance`-Flags prüfen.
 5. **Werberecht (beratend, keine Rechtsberatung):** UWG-Belegpflicht für Claims, HWG bei Health, PAngV bei Preisen, Impressums-Erreichbarkeit der Landingpage — Leitplanke für jede Creative-Empfehlung und jedes `meta_create_ad`.
@@ -120,7 +120,7 @@ Alle `meta_*`-/`linkedin_*`-Schreib-Tools haben **`validate_only`** — der Dry-
 ## Grenzen (ehrlich benennen)
 - **Kein ROAS, keine Frequency, kein Reach, keine Breakdowns, keine Zeitreihen** — die größten Analyse-Lücken dieses Audits; benennen statt umschiffen.
 - Meta-conversions = nur Purchase-/Lead-Action-Types; andere Geschäftsmodelle laufen über den GA4-Umweg (beratend).
-- Learning-Phase, CAPI-Status, Bestands-DSA-Angaben, Audience-Ausschlüsse: nicht auslesbar.
+- Learning-Phase, CAPI-Status, Audience-Ausschlüsse: nicht auslesbar.
 - Anzeigen-Inhalte (Copy/Visual) nicht lesbar — Inhalts-Urteile brauchen den Kunden bzw. das UI.
 - LinkedIn: Conversion-Setup nicht prüfbar, Namen nur für ~20 Zeilen aufgelöst, Bestands-Targeting nicht im Detail lesbar, kein manuelles Bidding via MCP.
 - Momentaufnahme; Plattform-Attribution ≠ GA4 (Größenordnungs-Vergleich, kein exakter Abgleich).
