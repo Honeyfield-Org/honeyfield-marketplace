@@ -2,7 +2,7 @@
 name: ad-creative
 description: "Generiert und optimiert Google-Ads-Anzeigen-Copy (Responsive Search Ads + Sitelinks), daten-fundiert aus der Konto-Performance und kalibriert auf DACH (DE/AT/CH). Nutze diesen Skill, wenn Anzeigen oder Text-Assets erstellt oder erneuert werden sollen: „neue Anzeigen schreiben”, „RSA erstellen”, „Headlines/Descriptions generieren”, „bessere Anzeigentexte”, „Anzeigen austauschen”, „Sitelinks anlegen”, „Ad-Copy für Kampagne X”, „mehr Headlines für die RSA”. Leitet Angles aus echten Suchbegriffen ab, hält die harten Google-Zeichen-Limits gegen deutsche Komposita, prüft DACH-Werberecht (UWG/Preisangaben) über `compliance`-Flags und schreibt Anzeigen nach Bestätigung als pausierte Assets ins Konto. Für die Diagnose bestehender Anzeigen (welche sind schwach, Wasted Spend) nutze `google-ads-audit`; für Landingpage-Text `seo-audit`; fürs Reporting `wochenreport`."
 metadata:
-  version: 0.5.0
+  version: 0.5.1
 ---
 
 # Ad-Creative
@@ -67,7 +67,7 @@ Jede Headline thematisch **unique** (keine Paraphrasen voneinander — Redundanz
 **3. DACH-Zeichen-Disziplin (hart, vor jeder Ausgabe).**
 - 30 Zeichen/Headline, 90/Description, 15/Path — **selbst zählen** (Umlaute/ß = je 1 Zeichen, Leerzeichen zählen mit).
 - Deutsche Komposita kürzen, wo möglich: „PM-Tool” (7) statt „Projektmanagement-Software” (26); Präpositionalphrase („Software für KMU”) oder Verb-Phrase („Buchhaltung automatisieren”) schaffen Platz für CTA/Kontext.
-- DKI `{KeyWord:Fallback}` kann das Limit sprengen — Fallback ≤30 prüfen **und** die längste realistische Keyword-Ersetzung prüfen: Keywords der Ziel-Ad-Group per `ads_list_keywords` ziehen, das längste gegen das 30er-Limit rechnen. DKI nie blind einsetzen.
+- DKI `{KeyWord:Fallback}` kann das Limit sprengen — Fallback ≤30 prüfen **und** die längste realistische Keyword-Ersetzung prüfen: Keywords der Ziel-Ad-Group per `ads_list_keywords(ad_group_id=…)` ziehen (Zeilen mit `negative=true` sind Ad-Group-Negatives — ausklammern), das längste gegen das 30er-Limit rechnen. DKI nie blind einsetzen.
 
 **4. Themen-Cluster → Ad-Group-Bezug.** Headlines am Keyword-Thema der Ad-Group ausrichten. Keyword-Einbindung + Diversität + genug Unique Headlines treiben die Ad Strength — der Wert selbst bleibt nur im UI sichtbar (nie behaupten).
 

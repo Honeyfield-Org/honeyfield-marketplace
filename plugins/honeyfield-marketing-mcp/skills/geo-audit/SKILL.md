@@ -2,7 +2,7 @@
 name: geo-audit
 description: "Datengetriebener GEO-/AEO-Audit: prüft, ob KI-Assistenten (ChatGPT, Claude, Gemini, Perplexity, Google AI Overviews) eine Kunden-Website lesen, fetchen und zitieren können — kalibriert auf den DACH-Markt (DE/AT/CH). Nutze diesen Skill bei: „GEO-Audit”, „AEO-Audit”, „AI-SEO”, „KI-Sichtbarkeit”, „werde ich in ChatGPT gefunden/zitiert”, „taucht meine Marke in KI-Antworten auf”, „warum empfiehlt ChatGPT die Konkurrenz”, „Sichtbarkeit in ChatGPT/Perplexity/Gemini verbessern”, „Generative Engine Optimization”, „Answer Engine Optimization”. Zieht echte Daten aus Search Console, GA4 und DataForSEO über den Marketing-Ops-MCP, prüft Crawlbarkeit/Rendering/Schema deterministisch und kann Fixbares direkt umsetzen. Für klassisches Google-Ranking nutze stattdessen `seo-audit`; für reines wöchentliches Reporting `wochenreport`."
 metadata:
-  version: 0.3.0
+  version: 0.3.1
 ---
 
 # GEO-Audit (KI-Sichtbarkeit)
@@ -94,7 +94,7 @@ Selbst-Citation ist unmöglich → es zählt, wer in den Category-Queries zitier
 - Ehrlich kennzeichnen: GA4-Referrer ≠ Fetch-Beweis; der harte Beweis sind Server-/Cloudflare-Logs (off-tool).
 
 ### 7 — Cross-Engine-Sichtbarkeit (Weg B Default, Weg A Fallback)
-- **Weg B — LLM-Mentions-Adapter (Default):** `dfs_llm_mentions`, `dfs_llm_mentions_metrics`, `dfs_llm_top_domains`, `dfs_llm_responses` — automatisiert, unterscheidet Citation (URL verlinkt) vs. Mention, Index nicht tagesaktuell (Lag nicht API-verifiziert — bei Stichtag-nahen Vergleichen vorsichtig sein). Pay-as-you-go über das normale DataForSEO-Guthaben (kein separates Abo mehr nötig); liefert ein Call `subscription_required` (Zugriffsproblem, z. B. Guthaben aufgebraucht, `40204`), auf Weg A degradieren.
+- **Weg B — LLM-Mentions-Adapter (Default):** `dfs_llm_mentions`, `dfs_llm_mentions_metrics`, `dfs_llm_top_domains`, `dfs_llm_responses` — automatisiert, unterscheidet Citation (URL verlinkt) vs. Mention; `platform` `'google'` (AI Overview, Default) oder `'chat_gpt'` (nur US/en), ein Call = eine Plattform; Index nicht tagesaktuell (Lag nicht API-verifiziert — bei Stichtag-nahen Vergleichen vorsichtig sein). Pay-as-you-go über das normale DataForSEO-Guthaben (kein separates Abo mehr nötig); liefert ein Call `subscription_required` (Zugriffsproblem, z. B. Guthaben aufgebraucht, `40204`), auf Weg A degradieren.
 - **Weg A — Manuelle Capture (Fallback bei `subscription_required` oder ohne DataForSEO-Zugang):** 20 Top-Queries × ChatGPT/Perplexity/Gemini, monatlich protokollieren (genannt/zitiert/abwesend + welche Konkurrenz).
 
 Beide Wege, Protokoll, Endpoints und Kosten in `references/llm-mentions-adapter.md`. Niemals aus einer Einzelabfrage einen „Score” ableiten — auch mit aktivem Adapter gilt: belastbar wird es erst über aggregiertes/wiederholtes Sampling.

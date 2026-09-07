@@ -43,11 +43,11 @@ Lege Schreib-Tools (W) nie ohne write-guardrails.md an.
 | `ads_device_performance` | Performance nach Gerätetyp (Mobile, Desktop, Tablet) | google_ads | R |
 | `ads_schedule_performance` | Performance nach Wochentag und Stunde | google_ads | R |
 | `ads_change_history` | Änderungshistorie: wer hat wann was geändert (max. 29 Tage) | google_ads | R |
-| `ads_list_conversion_actions` | Conversion-Aktionen mit Status, Typ, Counts — deckt totes Tracking auf | google_ads | R |
-| `ads_conversion_performance` | Conversion-Performance pro Aktion + Tagesverlauf | google_ads | R |
+| `ads_list_conversion_actions` | Conversion-Aktionen mit Status, Typ, Counts (`conversions_{N}d`) — deckt totes Tracking auf. Zählt nach **Conversion-Datum**: Offline-Importe zählen am Tag der Conversion, nicht am Klick-Tag — nicht 1:1 mit den klick-datierten Kampagnen-Tools vergleichbar | google_ads | R |
+| `ads_conversion_performance` | Conversion-Performance pro Aktion + Tagesverlauf; alle Datumsangaben (`first/last_date`, `daily_total`, `last_gap_days`) beziehen sich auf das **Conversion-Datum** — Offline-Importe zählen am Tag der Conversion, nicht am Klick-Tag (ein heute verbuchter Import senkt `last_gap_days`); Fenster bis gestern | google_ads | R |
 | `ads_list_campaigns` | Alle Kampagnen (Name, Status, Budget, Channel Type, Bidding Strategy) | google_ads | R |
 | `ads_list_ad_groups` | Ad Groups auflisten, optional nach Kampagne gefiltert | google_ads | R |
-| `ads_list_keywords` | Keywords auflisten, optional nach Kampagne oder Ad Group gefiltert | google_ads | R |
+| `ads_list_keywords` | Keywords auflisten, optional nach Kampagne oder Ad Group gefiltert; `limit` (Default 200, max. 1000) — wird abgeschnitten, kommt `{result, warning}` statt der Liste (dann `campaign_id`/`ad_group_id` einschränken oder `limit` erhöhen); enthält auch Ad-Group-Negatives, gekennzeichnet über `negative=true` | google_ads | R |
 | `ads_list_negative_keywords` | Negative Keywords auflisten, optional nach Kampagne gefiltert | google_ads | R |
 | `ads_list_ads` | Alle Anzeigen (Headlines, Descriptions, URLs, Status, Approval) | google_ads | R |
 | `ads_list_assets` | Assets auflisten (Sitelinks, Callouts, Structured Snippets) | google_ads | R |
@@ -67,8 +67,8 @@ Lege Schreib-Tools (W) nie ohne write-guardrails.md an.
 |---|---|---|---|
 | `ads_upload_conversions` | Offline-/Enhanced-Conversions via Data Manager API hochladen | google_ads | W |
 | `ads_create_conversion_action` | Neue Conversion-Aktion anlegen | google_ads | W |
-| `ads_update_conversion_action` | Bestehende Conversion-Aktion ändern (Name, Status, primary_for_goal) | google_ads | W |
-| `ads_create_campaign` | Neue Kampagne anlegen (Standard: PAUSED) | google_ads | W |
+| `ads_update_conversion_action` | Bestehende Conversion-Aktion ändern (Name, Status, `default_value`, `primary_for_goal`) — auch `primary_for_goal=False` (Herabstufung auf sekundär) und `default_value=0` werden übernommen; danach mit `ads_list_conversion_actions` zurücklesen | google_ads | W |
+| `ads_create_campaign` | Neue Kampagne anlegen (Standard: PAUSED) — `channel_type` SEARCH/DISPLAY/VIDEO/PERFORMANCE_MAX; SHOPPING wird vor dem API-Aufruf mit `{error: unsupported_channel, hint}` abgelehnt; der Parameter `url_expansion_opt_out` existiert nicht mehr (PMax-Final-URL-Expansion bleibt auf Googles Standard, nur in der Google-Ads-Oberfläche abschaltbar) | google_ads | W |
 | `ads_update_campaign_status` | Kampagne aktivieren oder pausieren | google_ads | W |
 | `ads_update_campaign_name` | Kampagnen-Name ändern | google_ads | W |
 | `ads_update_campaign_budget` | Tagesbudget einer Kampagne ändern | google_ads | W |
@@ -126,7 +126,7 @@ Lege Schreib-Tools (W) nie ohne write-guardrails.md an.
 | `ga4_top_pages` | Meistbesuchte Seiten (pageviews, sessions, engagementRate) | ga4 | R |
 | `ga4_traffic_sources` | Traffic-Quellen (sessions, newUsers, engagedSessions) | ga4 | R |
 | `ga4_conversions` | Conversion Events mit Count und Value | ga4 | R |
-| `ga4_list_key_events` | Konfigurierte Key Events + Counts — feuern sie wirklich? | ga4 | R |
+| `ga4_list_key_events` | Konfigurierte Key Events + Counts — feuern sie wirklich? Je Zeile `key_event_id` (numerisch) und `name` (`properties/<pid>/keyEvents/<id>`) — beides für `ga4_delete_key_event` geeignet | ga4 | R |
 | `ga4_list_properties` | Alle GA4 Properties der verbundenen Google-Verbindung | ga4 | R |
 | `ga4_list_data_streams` | Datenströme (Web/App) einer Property auflisten inkl. Measurement-ID | ga4 | R |
 | `ga4_list_custom_dimensions` | Custom Dimensions einer Property auflisten | ga4 | R |
@@ -138,15 +138,15 @@ Lege Schreib-Tools (W) nie ohne write-guardrails.md an.
 
 | Tool | Was | Quelle | R/W |
 |---|---|---|---|
-| `ga4_create_property` | Neue GA4 Property in einem Analytics-Account anlegen | ga4 | W |
+| `ga4_create_property` | Neue GA4 Property in einem Analytics-Account anlegen — `account_id` ohne Präfix (Feld `account_id` aus `ga4_list_properties`; `accounts/<id>` wird akzeptiert, Präfix entfernt); danach `workspace_configure_source(source='ga4', ids={'property_id': <neue ID>})`, sonst lehnen die `ga4_*`-Tools die neue Property als workspace-fremd ab | ga4 | W |
 | `ga4_create_data_stream` | Web-Datenstream für eine Property anlegen (liefert Measurement-ID) | ga4 | W |
 | `ga4_update_property` | Property-Stammdaten ändern (Name, Zeitzone, Währung) | ga4 | W |
 | `ga4_create_key_event` | GA4 Key Event (Conversion) anlegen | ga4 | W |
 | `ga4_create_custom_dimension` | GA4 Custom Dimension anlegen (EVENT / USER / ITEM) | ga4 | W |
 | `ga4_archive_custom_dimension` | GA4 Custom Dimension archivieren | ga4 | W |
-| `ga4_create_custom_metric` | GA4 Custom Metric anlegen | ga4 | W |
+| `ga4_create_custom_metric` | GA4 Custom Metric anlegen — `restricted_metric_types` (COST_DATA und/oder REVENUE_DATA) bei `measurement_unit=CURRENCY` Pflicht, sonst `{error: restricted_metric_types_required}` ohne API-Aufruf | ga4 | W |
 | `ga4_archive_custom_metric` | GA4 Custom Metric archivieren | ga4 | W |
-| `ga4_delete_key_event` | GA4 Key Event löschen | ga4 | W |
+| `ga4_delete_key_event` | GA4 Key Event löschen — `key_event_name` akzeptiert die numerische ID, den vollen Pfad `properties/<pid>/keyEvents/<id>` oder den Event-Namen (z.B. `purchase`, wird zur ID aufgelöst; unbekannt → `{error: not_found}` mit vorhandenen Key Events, mehrdeutig → `{error: ambiguous, candidates}`) | ga4 | W |
 | `ga4_enhanced_measurement` | Enhanced Measurement lesen/setzen (Scroll, Outbound, Site-Search, Video, Downloads) | ga4 | R/W |
 | `ga4_data_retention` | Event-Daten-Aufbewahrung lesen/setzen (2 vs. 14 Monate) | ga4 | R/W |
 | `ga4_manage_google_ads_links` | GA4↔Google-Ads-Verknüpfung auflisten/anlegen | ga4 | R/W |
@@ -161,7 +161,7 @@ Lege Schreib-Tools (W) nie ohne write-guardrails.md an.
 | `sc_top_queries` | Top organische Suchanfragen (clicks, impressions, ctr, position) | search_console | R |
 | `sc_top_pages` | Top Landing Pages aus der Google-Suche | search_console | R |
 | `sc_performance` | Flexibler Search Analytics Report (query, page, country, device, date) | search_console | R |
-| `sc_url_inspection` | Indexierungsstatus, Canonical, Mobile Usability einer URL | search_console | R |
+| `sc_url_inspection` | Indexierungsstatus, Canonicals und Crawl-Signale einer URL: `verdict`, `coverage_state`, `indexing_state`, `google_canonical`/`user_canonical`, `last_crawl`, `robots_txt_state` (ALLOWED/DISALLOWED), `page_fetch_state` (SUCCESSFUL, SOFT_404, BLOCKED_ROBOTS_TXT, NOT_FOUND, …); `mobile_verdict`/`mobile_issues` nur, wenn Google den eingestellten Mobile-Usability-Teil noch mitliefert — fehlen sie, wurde nichts geprüft | search_console | R |
 | `sc_list_sitemaps` | Eingereichte Sitemaps: Status, Warn- und Fehlerzahlen | search_console | R |
 | `sc_submit_sitemap` | Sitemap-URL bei GSC einreichen | search_console | W |
 | `sc_delete_sitemap` | Sitemap-URL aus GSC entfernen | search_console | W |
@@ -209,6 +209,8 @@ Lege Schreib-Tools (W) nie ohne write-guardrails.md an.
 
 ## DataForSEO (source: dataforseo)
 
+Leere DataForSEO-Antworten (`"items": null`) brechen die `dfs_*`-Tools nicht mehr ab — Listen-Tools liefern dann eine leere Liste (`dfs_onpage_instant`: `{error: no_items}`).
+
 | Tool | Was | Quelle | R/W |
 |---|---|---|---|
 | `dfs_serp_google_organic` | Top-N organische Google-Ergebnisse für ein Keyword inkl. SERP-Features, AI-Overview-Präsenz + Quellen und People-Also-Ask | dataforseo | R |
@@ -219,17 +221,17 @@ Lege Schreib-Tools (W) nie ohne write-guardrails.md an.
 | `dfs_keyword_ideas_for_domain` | Keyword-Ideen basierend auf Domain-Inhalten und Ranking-Historie | dataforseo | R |
 | `dfs_backlink_summary` | Backlink-Profil einer Domain (Links, Referring Domains, Rank) | dataforseo | R |
 | `dfs_backlink_competitors` | Domains mit ähnlichem Backlink-Profil | dataforseo | R |
-| `dfs_onpage_instant` | Live On-Page Audit (Title, Meta, H1, Score, Issues) | dataforseo | R |
+| `dfs_onpage_instant` | Live On-Page Audit (Title, Meta, H1, Score, Issues) — `checks_failed` = echte Issue-Flags (`no_title`, `no_h1_tag`, `no_description`, `duplicate_title_tag`, `high_loading_time`, `is_broken`, …; Positivflags wie `has_html_doctype`/`is_https` zählen nicht), `fetched_at` (UTC-Zeitstempel; ersetzt `fetch_time_ms`), `page_timing_ms` (Ladezeiten in ms oder `null`); keine Core Web Vitals — dafür `dfs_lighthouse_live` | dataforseo | R |
 | `dfs_lighthouse_live` | Google Lighthouse Audit (Performance, Accessibility, SEO) | dataforseo | R |
 | `dfs_keyword_overview` | Volumen, CPC, Difficulty und Haupt-Intent für eine Keyword-Liste in einem Call (max 700) | dataforseo | R |
 | `dfs_domain_intersection` | Ranking-Schnittmenge zweier Domains — oder Gap-Modus: wofür Domain 2 rankt, Domain 1 nicht | dataforseo | R |
 | `dfs_competitors_domain` | Domains mit den meisten gemeinsamen Rankings — echte SEO-Konkurrenten statt Branchen-Raten | dataforseo | R |
 | `dfs_keyword_suggestions` | Keyword-Vorschläge zu einem Seed-Keyword inkl. Volumen, CPC, Difficulty | dataforseo | R |
 | `dfs_backlinks_list` | Konkrete Backlink-Liste einer Domain, filterbar nach broken/dofollow/lost | dataforseo | R |
-| `dfs_llm_mentions` | Marken-/Themen-Erwähnungen in LLM-Antworten je Keyword (~$0.10/Call) | dataforseo | R |
-| `dfs_llm_mentions_metrics` | Aggregierte Mentions pro Engine, Gesamt-Citations + Share-of-Voice über LLM-Engines (~$0.10/Call) | dataforseo | R |
-| `dfs_llm_top_domains` | Meistzitierte Domains in LLM-Antworten zu einer Keyword-Liste (~$0.10/Call) | dataforseo | R |
-| `dfs_llm_responses` | Rohe LLM-Antwort + Zitate zu einem Prompt (ChatGPT/Claude/Gemini/Perplexity, ~$0.10/Call) | dataforseo | R |
+| `dfs_llm_mentions` | Marken-/Themen-Erwähnungen in LLM-Antworten je Keyword (~$0.10/Call); `platform` `'google'` (Google AI Overview, Default) oder `'chat_gpt'` — ein Call deckt genau eine Plattform ab; bei `chat_gpt` nur United States/Englisch (location/language werden überschrieben) | dataforseo | R |
+| `dfs_llm_mentions_metrics` | Aggregierte Mentions pro Engine, Gesamt-Citations + Share-of-Voice über LLM-Engines (~$0.10/Call); `platform` wie bei `dfs_llm_mentions` (`share_of_voice_by_engine` ist bei einer Plattform pro Call immer 1.0) | dataforseo | R |
+| `dfs_llm_top_domains` | Meistzitierte Domains in LLM-Antworten zu einer Keyword-Liste (~$0.10/Call); `platform` wie bei `dfs_llm_mentions` | dataforseo | R |
+| `dfs_llm_responses` | Rohe LLM-Antwort + Zitate zu einem Prompt (ChatGPT/Claude/Gemini/Perplexity, ~$0.10/Call); `web_search=True` schaltet die Websuche des Modells ein (höhere Kosten) — nur dann sind `citations` zu erwarten; bei `perplexity` wird `web_search` ignoriert (sonar sucht immer) | dataforseo | R |
 | `dfs_onpage_crawl` | Seitenweiten Crawl einer Domain starten (asynchron, `max_crawl_pages` Pflicht — Kosten skalieren pro Seite) | dataforseo | R |
 | `dfs_onpage_crawl_results` | Crawl-Ergebnisse abrufen (Summary, Pages, Links, Redirects, Duplicate Content u.a.) | dataforseo | R |
 | `dfs_reviews` | Rezensionen von Trustpilot oder Google abrufen (task-basiert, ggf. Folge-Call mit task_id) | dataforseo | R |
@@ -249,7 +251,7 @@ Lege Schreib-Tools (W) nie ohne write-guardrails.md an.
 |---|---|---|---|
 | `gbp_list_locations` | Alle Standorte des verbundenen Google-Kontos — paginiert vollständig über Accounts und Standorte; bei Erreichen der Seiten-Obergrenze (50 je Schleife) zusätzliches Warn-Element `{"warning": "truncated", ...}` am Listenende | business_profile | R |
 | `gbp_location_info` | Stammdaten des Standorts (Name, Adresse, Telefon, Kategorie, Öffnungszeiten) | business_profile | R |
-| `gbp_get_profile` | Vollständiges Business-Profil inkl. Attribute und Sonderöffnungszeiten | business_profile | R |
+| `gbp_get_profile` | Vollständiges Business-Profil inkl. Attribute und Sonderöffnungszeiten (nur als `special_hours_count`); `attributes` je Attribut `id` plus alle Wertfelder — `values` (Enum/Bool), `uriValues` (URL-Attribute wie `url_linkedin`), `repeatedEnumValue` (Mehrfachauswahl mit `setValues`/`unsetValues`), gleiche Struktur wie `gbp_update_attributes(action="get")`; schlägt die Attribut-Abfrage fehl, ist `attributes=[]` | business_profile | R |
 | `gbp_performance` | Impressionen (Maps/Suche), Anrufe, Website-Klicks, Routenanfragen, Buchungen, Essensbestellungen, Menü-Klicks — Zeitraum via `days` (rollierend) oder `start_date`+`end_date`; `metrics` filtert auf eine Teilmenge; `include_time_series=True` liefert Tageswerte statt nur Summen | business_profile | R |
 | `gbp_search_keywords` | Suchbegriffe, über die Nutzer das Profil gefunden haben | business_profile | R |
 | `gbp_reviews` | Rezensionen: Durchschnittswertung + Bewertungen inkl. Antworten. Fenster: max. 50/Seite (API-Cap, `limit` wird gedeckelt); kein serverseitiges Unbeantwortet-Filter — `unanswered_only=True` + `max_pages` paginiert durch und liefert nur unbeantwortete Reviews plus `pages_scanned`/`next_page_token` (kann dabei bis zu eine Seite mehr als `limit` enthalten); `order_by` (`updateTime desc`, `rating` oder `rating desc`) und `page_token` für Sortierung/Fortsetzung. **Antworten bumpt `updateTime`** — bei `updateTime desc` springt ein gerade beantwortetes Review nach oben: nie Lesen und Antworten verschränken, erst per `unanswered_only` vollständigen Snapshot sammeln, dann antworten | business_profile | R |
@@ -283,9 +285,9 @@ Lege Schreib-Tools (W) nie ohne write-guardrails.md an.
 | `meta_campaign_performance` | Kampagnen-Performance (Impressionen, Klicks, Spend, Conversions); bei leeren Insights trotz Kampagnen: `{"result": [], "info": "<Erklärung>"}` | meta_ads | R |
 | `meta_adset_performance` | Adset-Performance der letzten N Tage, sortiert nach Spend; bei leeren Insights trotz Kampagnen: `{"result": [], "info": "<Erklärung>"}` | meta_ads | R |
 | `meta_ad_performance` | Performance einzelner Anzeigen der letzten N Tage, sortiert nach Spend; bei leeren Insights trotz Kampagnen: `{"result": [], "info": "<Erklärung>"}` | meta_ads | R |
-| `meta_list_campaigns` | Kampagnen auflisten (Status, Ziel, Budgets in EUR, nicht-leere `issues`) | meta_ads | R |
-| `meta_list_adsets` | Adsets auflisten, optional pro Kampagne (Status, Budget, Optimierungsziel, Targeting, nicht-leere `issues`; DSA-Felder immer, `null` = fehlt; `eu_eea_targeting` mit EU-/EWR-Treffern der erfassten Geo-Formen, `[]` = keiner, `UNKNOWN` = nicht auswertbar) | meta_ads | R |
-| `meta_list_ads` | Ads auflisten, optional pro Adset (Status, Creative, nicht-leere `issues`, vorhandenes `review_feedback`) | meta_ads | R |
+| `meta_list_campaigns` | Kampagnen auflisten (Status, Ziel, Budgets in EUR, nicht-leere `issues`); `limit` (Default 50) — wird abgeschnitten (Meta meldet weitere Seiten), kommt `{result, warning}` statt der Liste, dann `limit` erhöhen | meta_ads | R |
+| `meta_list_adsets` | Adsets auflisten, optional pro Kampagne (Status, Budget, Optimierungsziel, Targeting, nicht-leere `issues`; DSA-Felder immer, `null` = fehlt; `eu_eea_targeting` mit EU-/EWR-Treffern der erfassten Geo-Formen, `[]` = keiner, `UNKNOWN` = nicht auswertbar); `limit` (Default 50) — wird abgeschnitten, kommt `{result, warning}` statt der Liste, dann `campaign_id` einschränken oder `limit` erhöhen | meta_ads | R |
+| `meta_list_ads` | Ads auflisten, optional pro Adset (Status, Creative, nicht-leere `issues`, vorhandenes `review_feedback`); `name_contains` filtert serverseitig, `status` filtert den KONFIGURIERTEN Status schon beim Laden (blättert weiter, bis `limit` passende Anzeigen vorliegen, höchstens 20 Seiten à 100 — vorzeitiger Abbruch steht in `warning`); `limit` (Default 50) — wird abgeschnitten, kommt `{result, warning}` statt der Liste | meta_ads | R |
 | `meta_list_audiences` | Custom Audiences inkl. Customer-Match-Listen (IDs für Adset-Targeting) | meta_ads | R |
 | `meta_video_status` | Verarbeitungsstatus eines hochgeladenen Ad-Videos (`ready` = nutzbar) | meta_ads | R |
 
@@ -298,11 +300,11 @@ Alle Meta-Schreib-Tools akzeptieren `validate_only=true` (echter API-Dry-Run; `m
 | Tool | Was | Quelle | R/W |
 |---|---|---|---|
 | `meta_create_pixel` | Neues Pixel (Dataset) anlegen — liefert Pixel-ID + Einbau-Code | meta_ads | W |
-| `meta_create_campaign` | Neue Kampagne anlegen (Standard: PAUSED) — `daily_budget` gesetzt = CBO, optional `bid_strategy` | meta_ads | W |
+| `meta_create_campaign` | Neue Kampagne anlegen (Standard: PAUSED) — `daily_budget` gesetzt = CBO; `bid_strategy` NUR zusammen mit `daily_budget`, sonst bricht das Tool mit `error=bid_strategy_requires_budget` ab (nichts wird angelegt) — dann `daily_budget` mitgeben oder die Strategie je Adset in `meta_create_adset` setzen | meta_ads | W |
 | `meta_update_campaign` | Kampagne ändern: Name, Status, Tagesbudget in EUR (Budget nur bei CBO) | meta_ads | W |
 | `meta_delete_campaign` | Kampagne endgültig löschen inkl. Adsets/Ads — zum Stoppen besser Status PAUSED/ARCHIVED | meta_ads | W |
 | `meta_create_adset` | Neues Adset anlegen (Standard: PAUSED) — Budget (erkennt CBO selbst) + Zielgruppe, Bidding, DSA-Angaben (EU-Pflicht), `advantage_audience`; nicht-blockierende DSA-Warnung für alle Geo-Einträge mit Ländercode und `country_groups` `europe`/`eea`/`worldwide` | meta_ads | W |
-| `meta_update_adset` | Adset ändern: Name, Status, Budget, Bidding, DSA-Angaben (EU-Pflicht), `advantage_audience`, Targeting (wird gemerged); gleiche DSA-Coverage, bei `status=ACTIVE` zusätzlicher Best-effort-Advisory-Check (Ausfall → `dsa_check: "unavailable"` + Warnung) | meta_ads | W |
+| `meta_update_adset` | Adset ändern: Name, Status, Budget, Bidding, DSA-Angaben (EU-Pflicht), `advantage_audience`, Targeting (wird gemerged); `bid_amount` OHNE `bid_strategy` liest die bestehende Strategie des Adsets und behält sie bei (COST_CAP bleibt COST_CAP; nur LOWEST_COST_WITHOUT_CAP wechselt auf LOWEST_COST_WITH_BID_CAP), die Antwort nennt in `bid_strategy`, was gesendet wurde — ist die Strategie nicht lesbar, bricht das Tool ohne Änderung ab; gleiche DSA-Coverage, bei `status=ACTIVE` zusätzlicher Best-effort-Advisory-Check (Ausfall → `dsa_check: "unavailable"` + Warnung) | meta_ads | W |
 | `meta_update_ad_status` | Ad-Status ändern (ACTIVE/PAUSED/ARCHIVED/DELETED) | meta_ads | W |
 | `meta_upload_ad_image` | Bild von öffentlicher URL in die Bildbibliothek laden (max. 8 MB) — liefert `image_hash` | meta_ads | W |
 | `meta_upload_ad_video` | Video von öffentlicher URL laden — asynchron, Status via `meta_video_status` | meta_ads | W |
@@ -321,8 +323,8 @@ Hierarchie: Campaign Group (≈ Meta-Kampagne) → Campaign (Budget + Targeting,
 | `linkedin_list_campaigns` | Kampagnen auflisten (Name, Status, Typ, Tagesbudget) | linkedin_ads | R |
 | `linkedin_list_creatives` | Creatives (Anzeigen) auflisten, optional pro Kampagne — Status + Post-URN | linkedin_ads | R |
 | `linkedin_list_audiences` | Matched Audiences (DMP-Segmente): Retargeting- und Kontaktlisten | linkedin_ads | R |
-| `linkedin_campaign_performance` | Kampagnen-Performance (Impressionen, Klicks, Kosten, Conversions) | linkedin_ads | R |
-| `linkedin_creative_performance` | Performance einzelner Anzeigen, sortiert nach Kosten | linkedin_ads | R |
+| `linkedin_campaign_performance` | Kampagnen-Performance (Impressionen, Klicks, Kosten, `conversions` = Website-Conversions, `leads` = abgeschickte Lead-Gen-Formulare, `lead_form_opens` = geöffnete Formulare) — bei Lead-Gen-Kampagnen `leads` auswerten, nicht `conversions` | linkedin_ads | R |
+| `linkedin_creative_performance` | Performance einzelner Anzeigen, sortiert nach Kosten — Felder wie `linkedin_campaign_performance` (`conversions` = Website-Conversions, `leads`/`lead_form_opens` = Lead-Gen-Formulare) | linkedin_ads | R |
 
 ---
 
@@ -347,15 +349,15 @@ Alle LinkedIn-Schreib-Tools akzeptieren `validate_only=true` (Vorschau ohne API-
 | Tool | Was | Quelle | R/W |
 |---|---|---|---|
 | `strapi_list_entries` | Einträge einer Collection paginiert auflisten | strapi | R |
-| `strapi_get_entry` | Einzelnen Strapi-Eintrag abrufen | strapi | R |
-| `strapi_list_media` | Dateien aus der Medienbibliothek auflisten | strapi | R |
+| `strapi_get_entry` | Einzelnen Strapi-Eintrag abrufen — `status` (`'draft'`\|`'published'`, nur v5): ohne `status` liefert v5 die VERÖFFENTLICHTE Version (nie publizierter Draft → `{error: http_error, status: 404}`, geänderter Draft erscheint als unveränderte Live-Version) — Drafts nach create/update mit `status='draft'` zurücklesen | strapi | R |
+| `strapi_list_media` | Dateien aus der Medienbibliothek auflisten — Rückgabe `{data, _meta: {total, page, page_size}}`, `data` standardmäßig kompakt (id, documentId, name, url, mime, size_kb, width, height); `full=true` liefert die vollständigen File-Objekte (formats, hash, ext, alternativeText … — nötig für Bild-Nodes in Blocks-Rich-Text), `ids=[…]` filtert auf Datei-IDs (z.B. `strapi_list_media(ids=[42], full=True)`); page/page_size und ids wirken auf die komplett geladene Mediathek, `_meta.total` zählt nach dem ids-Filter | strapi | R |
 | `strapi_list_content_types` | Alle Content-Types auflisten (Schema-Discovery) | strapi | R |
 | `strapi_create_entry` | Neuen Eintrag als Draft anlegen (Draft-first; live erst via publish) | strapi | W |
 | `strapi_update_entry` | Bestehenden Eintrag aktualisieren — trifft nur den Draft, Live-Version bleibt | strapi | W |
-| `strapi_delete_entry` | Eintrag löschen | strapi | W |
+| `strapi_delete_entry` | Eintrag löschen — `locale` wählt die Sprachversion (v5-i18n), `'*'` löscht ALLE Sprachversionen; ohne `locale` löscht v5 nur die Default-Locale-Version (andere bleiben, auch live — Antwort enthält `hint`); Rückgabe bestätigt nur den Aufruf, Ergebnis mit `strapi_list_entries(locale=…)` prüfen | strapi | W |
 | `strapi_publish_entry` | Eintrag veröffentlichen (v5: Content-Manager, braucht Admin-Token mit Publish-Recht; v4: setzt publishedAt) | strapi | W |
 | `strapi_unpublish_entry` | Eintrag depublizieren (v5: Content-Manager, braucht Admin-Token; v4: publishedAt=null) | strapi | W |
-| `strapi_upload_media` | Datei in die Medienbibliothek hochladen | strapi | W |
+| `strapi_upload_media` | Datei in die Medienbibliothek hochladen (`source_url`, max. 25 MB, ODER `file_base64`) — liefert `{success, uploaded: [{id, name, url, mime, size_kb}]}`; `full=true` liefert das komplette File-Objekt (width, height, formats, hash, ext, documentId …) direkt in `uploaded` — nötig für Bild-Nodes in Blocks-Rich-Text, für Media-Felder (z.B. cover) reicht die id | strapi | W |
 | `strapi_delete_media` | Datei aus der Medienbibliothek löschen | strapi | W |
 
 ---
@@ -368,7 +370,7 @@ Alle LinkedIn-Schreib-Tools akzeptieren `validate_only=true` (Vorschau ohne API-
 | `wp_get_post` | Einzelnen Beitrag/Seite/Site-Editor-Vorlage mit vollem Inhalt abrufen | wordpress | R |
 | `wp_list_media` | Dateien aus der Medienbibliothek auflisten (paginiert) | wordpress | R |
 | `wp_list_terms` | Kategorien oder Tags auflisten (id, name, slug, count) — IDs für `wp_create_post` | wordpress | R |
-| `wp_create_post` | Beitrag/Seite anlegen — status default `draft`; `publish` = sofort live | wordpress | W |
+| `wp_create_post` | Beitrag/Seite anlegen — status default `draft`; `publish` = sofort live; `future` (terminiert) braucht `date` (ISO 8601 ohne Zeitzonen-Suffix in der Site-Zeitzone, z.B. `2026-10-01T09:00:00`) — ohne `date` kommt `{error: date_required}` zurück, bevor etwas angelegt wird | wordpress | W |
 | `wp_update_post` | Beitrag/Seite/Vorlage aktualisieren (nur gesetzte Felder); `status=publish` = live | wordpress | W |
 | `wp_delete_post` | Beitrag/Seite löschen — `force=False` → Papierkorb, `force=True` → endgültig | wordpress | W |
 | `wp_upload_media` | Datei in die Medienbibliothek hochladen (`source_url` ODER `file_base64`) | wordpress | W |

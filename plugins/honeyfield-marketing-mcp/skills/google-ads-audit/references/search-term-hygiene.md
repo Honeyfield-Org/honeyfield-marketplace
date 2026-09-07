@@ -33,7 +33,7 @@ Faustregel: **universelle Müll-Begriffe → Shared List** (einmal pflegen, übe
 - **Single-Word-Broad-Negatives sind gefährlich:** `frei` würde auch „Freiberufler”, „Freizeit” wegschneiden. Vor breiten Single-Word-Negatives prüfen, was sie sonst noch blockieren.
 
 ## Konflikte (Negative blockiert aktives Keyword)
-Ein zu breites Negative kann ein **aktives, bezahltes Keyword** aushebeln (das Keyword bekommt keine Impressionen mehr). Vor jedem Bulk-Ausschluss gegen die aktive Keyword-Liste (`ads_list_keywords`) prüfen — ein Negative, das ein Performer-Keyword killt, ist schlimmer als der ausgeschlossene Müll. Bestehende Konflikte via `ads_list_negative_keywords` aufdecken.
+Ein zu breites Negative kann ein **aktives, bezahltes Keyword** aushebeln (das Keyword bekommt keine Impressionen mehr). Vor jedem Bulk-Ausschluss gegen die aktive Keyword-Liste (`ads_list_keywords`; Zeilen mit `negative=true` sind Ad-Group-Negatives und zählen nicht dazu; bei `{result, warning}` ist die Liste abgeschnitten — pro Kampagne/Ad Group nachladen) prüfen — ein Negative, das ein Performer-Keyword killt, ist schlimmer als der ausgeschlossene Müll. Bestehende Konflikte via `ads_list_negative_keywords` aufdecken.
 
 ## Brand vs. Non-Brand trennen
 Brand-Suchbegriffe (eigener Markenname) haben hohe CTR, niedrigen CPC, hohen ROAS — sie **blähen jeden Blended-Wert auf**. Ein Konto kann „profitabel” aussehen, während das Non-Brand-Geschäft Geld verliert. Immer getrennt auswerten:

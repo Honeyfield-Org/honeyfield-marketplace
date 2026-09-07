@@ -2,7 +2,7 @@
 name: google-ads-audit
 description: "Datengetriebener Google-Ads-Audit für einen Kunden-Account, kalibriert auf den DACH-Markt (DE/AT/CH). Nutze diesen Skill, wenn der Nutzer einen „Google-Ads-Audit”, eine „Ads-Analyse” oder einen „Ads-Check” will oder Performance-/Spend-Probleme diagnostizieren möchte. Auch bei: „warum performen meine Ads schlecht”, „wo verbrenne ich Budget”, „Wasted Spend / verschwendete Suchbegriffe”, „CPA/ROAS zu schlecht”, „Conversions eingebrochen”, „Impression Share verloren”, „Negatives/Suchbegriffe aufräumen” oder vage „mein Google Ads läuft nicht”. Zieht echte Daten aus dem Konto über den Marketing-Ops-MCP (+ GA4-Cross-Check fürs Conversion-Tracking) und kann behebbare Probleme — Negatives setzen, Keywords/Anzeigen pausieren, Budget und Gebote anpassen — nach Bestätigung direkt umsetzen. Für Reporting nutze `wochenreport`; für organisches Ranking `seo-audit`; für KI-Sichtbarkeit `geo-audit`; für tiefe Tracking-Diagnose `tracking-check`; für neue Anzeigentexte `ad-creative`."
 metadata:
-  version: 0.3.0
+  version: 0.3.1
 ---
 
 # Google-Ads-Audit
@@ -19,7 +19,7 @@ Dieser Audit ist **datengetrieben**, nicht checklisten-basiert: Du rätst nicht,
 ## Tool- & Datengrenzen (kritisch, zuerst lesen)
 Was die Daten NICHT bedeuten — sonst entstehen False-Findings:
 - **Die „Conversions”-Spalte zählt nur primäre Conversion-Actions.** Sekundäre Actions sind beobachtend und fließen nicht in Conversions/CPA/ROAS ein. Eine Action falsch als primär/sekundär eingestuft = systematisch falsche CPA. Vor jeder Conversion-Aussage die Action-Konfiguration prüfen (Phase 1).
-- **Attributions-Lag:** Conversions werden rückwirkend dem Klick-Datum zugeschrieben. Die jüngsten ~1–14 Tage sind unterzählt — beurteile CPA/ROAS auf einem abgeschlossenen Zeitraum, nicht auf einem frischen Kurzfenster.
+- **Attributions-Lag:** Conversions werden in den Kampagnen-Tools rückwirkend dem Klick-Datum zugeschrieben. Die jüngsten ~1–14 Tage sind unterzählt — beurteile CPA/ROAS auf einem abgeschlossenen Zeitraum, nicht auf einem frischen Kurzfenster. (`ads_conversion_performance`/`ads_list_conversion_actions` zählen dagegen nach Conversion-Datum — Offline-Importe am Tag der Conversion — und sind nicht 1:1 mit den Kampagnen-Zahlen vergleichbar.)
 - **Der Suchbegriff-Bericht verbirgt Low-Volume-Begriffe** (Datenschutzschwelle). Ein Teil des Spends taucht nie als konkreter Begriff auf — dieser unattribuierte Anteil ist selbst ein Befund („X % des Spends nicht auf Suchbegriff-Ebene sichtbar”), kein Grund, ihn zu übergehen.
 - **Quality Score (1–10) ist eine nachlaufende Diagnose, kein Hebel.** Man optimiert die Komponenten (Erwartete CTR, Anzeigenrelevanz, Landingpage-Erfahrung), nicht „den Score”.
 - **Impression-Share-Werte sind Schätzungen** und werden unterhalb einer Schwelle redigiert (z. B. `< 10 %` / `--`). Lost IS nur als grobe Richtung lesen, nicht auf den Prozentpunkt.
@@ -69,7 +69,7 @@ Logik: „die Zahl ist nicht vertrauenswürdig” und „Geld leckt sichtbar” 
 
 ### 4 — Keyword-Qualität & Konto-Struktur
 - `ads_keyword_quality` → Quality Score **mit Komponenten** (Erwartete CTR / Anzeigenrelevanz / Landingpage-Erfahrung). „Unterdurchschnittlich” bei einer Komponente zeigt den Fix: Anzeigenrelevanz → Anzeige enger ans Keyword; LP-Erfahrung → Landingpage (Tiefe via `seo-audit`); erwartete CTR → Anzeigentext/Extensions.
-- `ads_list_keywords` / `ads_list_ad_groups` → **Duplikate über Ad Groups** (Selbst-Konkurrenz), zu breite Ad Groups (viele unzusammenhängende Keywords verwässern Relevanz), „Geringes Suchvolumen”-Keywords (inaktiv), reine Match-Type-Dopplungen, die intern konkurrieren.
+- `ads_list_keywords` / `ads_list_ad_groups` → **Duplikate über Ad Groups** (Selbst-Konkurrenz), zu breite Ad Groups (viele unzusammenhängende Keywords verwässern Relevanz), „Geringes Suchvolumen”-Keywords (inaktiv), reine Match-Type-Dopplungen, die intern konkurrieren. `ads_list_keywords` liefert per Default max. 200 Zeilen (`limit` bis 1000) — kommt `{result, warning}` statt der Liste, ist der Bestand abgeschnitten: pro Kampagne/Ad Group abfragen; Zeilen mit `negative=true` sind Ad-Group-Negatives, keine gebotenen Keywords.
 > QS ist Symptom, nicht Ziel: niedrige Komponenten als Wegweiser nutzen, nicht „den Score hochschrauben” als Maßnahme verkaufen.
 
 ### 5 — Gebotsstrategie & Impression Share

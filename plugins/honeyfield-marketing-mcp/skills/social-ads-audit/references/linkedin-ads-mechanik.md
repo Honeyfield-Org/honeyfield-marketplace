@@ -8,7 +8,7 @@ Ground Truth ist die Server-Implementierung des Marketing-Ops-MCP (LinkedIn Mark
 
 ## adAnalytics-Realität
 - `linkedin_campaign_performance` / `linkedin_creative_performance`: `days`-Fenster (endet heute), `timeGranularity=ALL` → **eine Aggregat-Zeile pro Entität, keine Zeitreihe**.
-- Felder: `impressions`, `clicks`, `cost` (Konto-Währung), `conversions` (= `externalWebsiteConversions`). **CTR und CPC selbst rechnen**; kein Conversion-Value → kein ROAS.
+- Felder: `impressions`, `clicks`, `cost` (Konto-Währung), `conversions` (= `externalWebsiteConversions`, Website-Conversions), `leads` (abgeschickte Lead-Gen-Formulare), `lead_form_opens` (geöffnete Formulare) — bei Lead-Gen-Kampagnen/-Anzeigen `leads` auswerten, nicht `conversions`. **CTR und CPC selbst rechnen**; kein Conversion-Value → kein ROAS.
 - **Namen nur best-effort:** URNs werden für max. ~20 Zeilen in Kampagnen-Namen aufgelöst — der Rest bleibt `urn:li:sponsoredCampaign:…` (ID hinten ablesen und via `linkedin_list_campaigns` zuordnen). Nicht als fehlende Kampagne deuten.
 - **Conversion-Setup nicht prüfbar:** kein Insight-Tag-/Conversion-Regel-Tool. `conversions` dauerhaft 0 bei nennenswertem Traffic = Setup-Verdacht → im Campaign Manager prüfen lassen (beratend). Das ist die LinkedIn-Entsprechung des Meta-Signal-Gates — nur ohne Prüfwerkzeug.
 
