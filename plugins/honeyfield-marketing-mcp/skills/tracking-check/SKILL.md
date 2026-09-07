@@ -2,7 +2,7 @@
 name: tracking-check
 description: "Datengetriebener Tracking- und Conversion-Audit für einen Kunden, kalibriert auf DACH (DE/AT/CH). Nutze diesen Skill, wenn geprüft werden soll, ob das Conversion- und Event-Tracking korrekt läuft: „stimmt mein Tracking”, „Conversions werden nicht gezählt”, „GA4 und Google Ads weichen ab”, „feuern meine Events / Tags”, „Conversion-Tracking prüfen”, „doppelte Conversions”, „Cookie-/Consent-Tracking DSGVO-konform”, „GTM-Setup prüfen”, „Tracking eingerichtet, aber nichts kommt an”. Zieht echte Daten aus GA4, Google Tag Manager und Google Ads über den Marketing-Ops-MCP, belegt jeden Befund nach Beweiskraft (gemessen / nur konfiguriert / nicht prüfbar) und behebt Sicheres nach Bestätigung. Für bezahlte Such-Performance nutze `google-ads-audit`; für Meta-Pixel-/Social-Ads-Signale `social-ads-audit`; für organisches Ranking `seo-audit`; für KI-Sichtbarkeit `geo-audit`; fürs wöchentliche Reporting `wochenreport`."
 metadata:
-  version: 0.4.0
+  version: 0.4.1
 ---
 
 # Tracking-Check
@@ -30,7 +30,7 @@ Logik: „die Zahl lebt nicht” vor „die Zahl ist inkonsistent” vor „Fein
 
 ### 1 — Lebt das Conversion-Tracking überhaupt? (Gate, immer zuerst)
 - `anomaly_check` → Erst-Signal für Conversion-Ausfälle im Analysefenster (meldet auch Kostenspitzen / CTR-Einbrüche — hier zählt der Conversion-Teil).
-- `ads_list_conversion_actions` + `ads_conversion_performance` → `last_gap_days`, letztes Conversion-Datum → **totes Tracking** erkennen (Action existiert, zählt aber seit Wochen nichts).
+- `ads_list_conversion_actions` + `ads_conversion_performance` → `last_gap_days`, letztes Conversion-Datum → **totes Tracking** erkennen (Action existiert, zählt aber seit Wochen nichts). Datumsbasis ist das Conversion-Datum, nicht das Klick-Datum: Offline-Importe zählen am Tag der Conversion — ein heute verbuchter Import senkt `last_gap_days`; die Zahlen sind nicht 1:1 mit den klick-datierten Kampagnen-Tools vergleichbar.
 - `ga4_conversions` / `ga4_list_key_events` → kommen Conversion-Events real an (Counts > 0)?
 - Bei totem / eingebrochenem Tracking: `ads_change_history` → Ausfallbeginn mit Konto-Änderungen korrelieren (z. B. Conversion-Action editiert). Reicht max. 29 Tage zurück — ältere Ausfälle so nicht datierbar.
 - **Kein / totes Conversion-Tracking = Top-Blocker.** Alles Nachgelagerte steht still — hier ist der Audit ggf. zu Ende: erst Tracking reanimieren, dann den Rest.

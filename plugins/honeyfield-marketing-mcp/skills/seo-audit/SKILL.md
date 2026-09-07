@@ -2,7 +2,7 @@
 name: seo-audit
 description: "Datengetriebener SEO-Audit für eine Kunden-Website, kalibriert auf den DACH-Markt (DE/AT/CH). Nutze diesen Skill, wenn der Nutzer einen „SEO-Audit”, eine „SEO-Analyse”, einen „SEO-Check” oder eine Diagnose von Ranking- bzw. Sichtbarkeitsproblemen will. Auch bei: „warum ranke ich nicht”, „warum werden wir nicht gefunden”, „Traffic ist eingebrochen”, „Sichtbarkeit gesunken”, „seit dem Relaunch weg”, „nach dem Google-Update abgestürzt”, „technisches SEO prüfen”, „Core Web Vitals / Ladezeit”, „Indexierungsprobleme”, „wo rankt die Konkurrenz, wir nicht”, „stimmt was mit der Seite nicht”, oder vage „unser SEO ist schlecht”. Zieht echte Daten aus Search Console, DataForSEO, GA4 und Microsoft Clarity über den Marketing-Ops-MCP und kann gefundene Probleme auf Wunsch direkt beheben. Fürs wöchentliche Reporting nutze `wochenreport`; für bezahlte Suche (Wasted Spend, Konto-Audit) `google-ads-audit`; für KI-Sichtbarkeit (ChatGPT/Perplexity/AI Overviews) `geo-audit`."
 metadata:
-  version: 0.5.1
+  version: 0.5.2
 ---
 
 # SEO-Audit
@@ -46,7 +46,7 @@ Quer dazu: **DACH-Layer** (immer) und **Lokale Sichtbarkeit** (nur bei lokalem G
 
 ### 1 — Auffindbarkeit (Index & Crawl)
 - `sc_list_sitemaps` → Sitemap eingereicht? `errors`/`warnings` > 0?
-- `sc_url_inspection` für 3-5 Schlüsselseiten (Startseite + wichtigste Landingpages) → `verdict`, `coverage_state`, `google_canonical` vs `user_canonical` (Canonical-Konflikt?). `mobile_verdict` ist de facto deprecated — Google hat den Mobile-Usability-Report Ende 2023 abgeschaltet, das Feld liefert meist `VERDICT_UNSPECIFIED`; Mobil-Usability stattdessen über `dfs_lighthouse_live` mit `strategy="mobile"` bewerten (Phase 2).
+- `sc_url_inspection` für 3-5 Schlüsselseiten (Startseite + wichtigste Landingpages) → `verdict`, `coverage_state`, `google_canonical` vs `user_canonical` (Canonical-Konflikt?), `robots_txt_state`/`page_fetch_state` (Crawl-Signale: DISALLOWED, BLOCKED_ROBOTS_TXT, SOFT_404, NOT_FOUND). `mobile_verdict`/`mobile_issues` erscheinen nur noch, wenn Google den Ende 2023 eingestellten Mobile-Usability-Teil noch mitliefert — fehlen die Felder, wurde nichts geprüft; Mobil-Usability stattdessen über `dfs_lighthouse_live` mit `strategy="mobile"` bewerten (Phase 2).
 - `dfs_onpage_instant` (Startseite) → `status_code`, `canonical`, `h1_count`.
 - **Seitenweiter Crawl (optional, kostenpflichtig):** `dfs_onpage_crawl(target, max_crawl_pages)` für einen echten Site-Scan — läuft asynchron (Minuten), Ergebnisse via `dfs_onpage_crawl_results(task_id, section)`. `max_crawl_pages` ist Pflicht und der Kosten-Hebel: auf die tatsächliche Site-Größe begrenzen, nicht pauschal aufs Maximum (1000) setzen. Section je Prüfschritt: `summary` (Gesamt-Score/Top-Issues), `non_indexable` (technische Indexierbarkeit site-weit), `redirect_chains` (Ketten/Loops), `duplicate_content`/`duplicate_tags` (Signal-Splitting; brauchen zusätzlich `url=` bzw. `tag_type=` — pro geprüfter Seite aufrufen), `links` (interne Verlinkung, Orphan-Seiten).
 
@@ -66,7 +66,7 @@ Achten auf: schlechtes Mobil-LCP (häufigster Killer), CLS durch Cookie-Banner (
 - **DACH-Title/Meta nach Pixelbreite, nicht Zeichen bewerten** — Grenzwerte + Komposita-Details: `references/dach-seo.md`; wichtiges Keyword nach vorn. Meta-Description ist **kein Ranking-Faktor** (nur CTR-Hebel) und wird oft von Google umgeschrieben.
 - `h1_count` = 0 → Problem (keine H1). Mehrere H1 sind nur ein Best-Practice-Hinweis, **kein Ranking-Bug** (Google straft Mehrfach-H1 nicht). Dünner `word_count` auf Geld-Seiten → Verdacht auf fehlende Content-Tiefe; aber Wortzahl ist kein Ranking-Faktor — „dünn” heißt fehlender Mehrwert, nicht wenige Wörter. Auf JS-gerenderten Seiten (SPA/Next.js) ist `word_count` `null` — dann `dfs_onpage_crawl` (rendered) oder `dfs_content_parsing` statt `dfs_onpage_instant` nutzen, nicht „kein Content” diagnostizieren.
 - **Schema-Presence-Check (pro Seite geprüft):** Ist auf den Schlüsselseiten JSON-LD vorhanden und parsebar, und welche Typen? (Seitenquelltext prüfen; `dfs_onpage_instant` erkennt Schema nur eingeschränkt.) Hier nur drei Urteile: fehlt komplett / vorhanden aber kaputt / vorhanden. Entity-Tiefe (`@graph`/`@id`, `sameAs`) und der Schema-Fix-Operator gehören zu `geo-audit` — dorthin verweisen, nicht selbst bauen.
-> Verlass dich nicht blind auf die `issues`/`checks`-Liste von `dfs_onpage_instant` (erfasst negativ benannte Checks unzuverlässig) — nutze `onpage_score` + die Rohfelder und urteile selbst.
+> `checks_failed` von `dfs_onpage_instant` enthält echte Issue-Flags (`no_title`, `no_h1_tag`, `no_description`, `duplicate_title_tag`, `high_loading_time`, …; Positivflags wie `has_html_doctype` zählen nicht) — als Hinweisliste nutzen, aber mit `onpage_score` + den Rohfeldern gegenprüfen und selbst urteilen.
 
 ### 4 — Sichtbarkeit & Rankings (das Herzstück, echte GSC-Daten)
 - `sc_performance` mit `dimensions=["query","page"]`, `days=28`, hohes `limit` → die Goldgrube:

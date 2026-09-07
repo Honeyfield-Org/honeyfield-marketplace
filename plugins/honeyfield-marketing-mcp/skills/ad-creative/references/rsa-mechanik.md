@@ -132,7 +132,7 @@ Deutsche Eigenheiten, die Limits sprengen:
 2. Für jede Description: `len(text.strip()) <= 90`
 3. Für Paths: `len(path.strip()) <= 15`
 4. Headlines-Anzahl: 3 ≤ n ≤ 15; Descriptions: 2 ≤ n ≤ 4
-5. DKI-Texte: Default-Wert im Limit prüfen, **und** längste realistische Keyword-Ersetzung prüfen — Ad-Group-Keywords per `ads_list_keywords` ziehen, das längste gegen das 30er-Limit rechnen
+5. DKI-Texte: Default-Wert im Limit prüfen, **und** längste realistische Keyword-Ersetzung prüfen — Ad-Group-Keywords per `ads_list_keywords(ad_group_id=…)` ziehen (Zeilen mit `negative=true` sind Ad-Group-Negatives — ausklammern), das längste gegen das 30er-Limit rechnen
 
 ---
 
