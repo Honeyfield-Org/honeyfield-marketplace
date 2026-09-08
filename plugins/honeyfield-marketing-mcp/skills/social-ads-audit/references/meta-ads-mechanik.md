@@ -24,7 +24,7 @@ Ground Truth ist die Server-Implementierung des Marketing-Ops-MCP (Graph API v25
 ## Bid-Strategien
 - `LOWEST_COST_WITHOUT_CAP` („Highest Volume”, Default — kein Gebot nötig), `LOWEST_COST_WITH_BID_CAP` (+`bid_amount`), `COST_CAP` (+`bid_amount` als Ziel-Kosten), `LOWEST_COST_WITH_MIN_ROAS`.
 - Cost Cap / Bid Cap zu niedrig = erstickte Auslieferung (Analogie: zu niedriger tCPA bei Google) — sichtbar als Spend deutlich unter Budget bei aktivem Status.
-- `meta_update_adset(bid_amount=…)` ohne `bid_strategy` behält die bestehende Strategie des Adsets bei (COST_CAP bleibt COST_CAP; nur LOWEST_COST_WITHOUT_CAP wechselt auf LOWEST_COST_WITH_BID_CAP) — die Antwort nennt in `bid_strategy`, was gesendet wurde. `meta_create_campaign(bid_strategy=…)` geht nur zusammen mit `daily_budget` (CBO), sonst `error=bid_strategy_requires_budget` ohne Anlage — bei ABO die Strategie je Adset in `meta_create_adset` setzen.
+- `meta_update_adset(bid_amount=…)` ohne `bid_strategy` behält die bestehende Strategie des Adsets bei (COST_CAP bleibt COST_CAP; nur LOWEST_COST_WITHOUT_CAP wechselt auf LOWEST_COST_WITH_BID_CAP) — die Antwort nennt in `bid_strategy`, was gesendet wurde (bei CBO-Adsets ohne eigene Strategie fehlt das Feld). `meta_create_campaign(bid_strategy=…)` geht nur zusammen mit `daily_budget` (CBO), sonst `error=bid_strategy_requires_budget` ohne Anlage — bei ABO die Strategie je Adset in `meta_create_adset` setzen.
 
 ## Signal-Fragmentierung (beratend)
 - Die Auslieferung lernt **pro Adset**. Meta-Faustregel: ~50 Conversion-Events pro Adset und Woche für stabiles Lernen.

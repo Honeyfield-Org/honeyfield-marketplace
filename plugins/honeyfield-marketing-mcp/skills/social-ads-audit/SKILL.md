@@ -2,7 +2,7 @@
 name: social-ads-audit
 description: "Datengetriebener Social-Ads-Audit für Meta (Facebook/Instagram) und LinkedIn Ads, kalibriert auf den DACH-Markt (DE/AT/CH). Nutze diesen Skill bei „Social-Ads-Audit”, „Meta-Ads-Check”, „Facebook-/Instagram-Ads analysieren”, „LinkedIn-Kampagnen prüfen” oder Diagnose-Fragen: „warum performen meine Facebook-Ads nicht”, „CPA auf Meta zu hoch”, „Anzeigen ausgebrannt / Ad Fatigue”, „Budget auf Social verbrennt”, „feuert mein Pixel”, „welche Anzeigen soll ich pausieren”. Zieht echte Konto-Daten über den Marketing-Ops-MCP — Pixel-Gesundheit, Kampagnen-/Adset-/Ad-Performance, Budgets, Audiences (+ GA4-Cross-Check) — und setzt Behebbares nach Dry-Run (validate_only) und Bestätigung direkt um: Ads/Adsets pausieren, Budgets anpassen, neue Anzeigen als PAUSED/DRAFT anlegen. Für bezahlte Suche nutze `google-ads-audit`; für Site-Tracking (GA4/GTM) `tracking-check`; fürs Reporting `wochenreport`; für Google-RSA-Texte `ad-creative`; für organisches Ranking `seo-audit`."
 metadata:
-  version: 0.1.2
+  version: 0.1.3
 ---
 
 # Social-Ads-Audit
@@ -23,7 +23,7 @@ Was die Daten NICHT bedeuten — sonst entstehen False-Findings:
 - **Nur `days`-Fenster (endet heute), eine Aggregat-Zeile pro Entität.** Keine Zeitreihe, keine frei wählbaren Zeiträume → Vorperioden-Deltas und Fatigue-Verläufe nur näherungsweise über zwei getrennte Fenster (z. B. `days=7` vs. `days=30` — Mechanik in `references/meta-ads-mechanik.md`).
 - **Keine Frequency, kein Reach, keine Breakdowns** (Placement / Alter / Geschlecht / Device). Fatigue nur über CTR-/CPA-Fenster-Vergleich diagnostizierbar, Segment-Lecks gar nicht — als Grenze ausweisen, nicht raten.
 - **Learning-Phase nicht auslesbar.** Ob ein Adset (noch) lernt, zeigt kein Tool — nach Budget-/Setup-Änderungen die Mechanik beratend erklären, nicht „ist in der Lernphase” behaupten.
-- **Anzeigen-Inhalt nicht lesbar.** Meta liefert je Ad nur Creative-ID + Name, LinkedIn nur die Post-URN. Performance je Ad ja — Copy/Visual nein. Für Inhalts-Urteile das Creative vom Kunden zeigen lassen bzw. die Post-URL öffnen.
+- **Anzeigen-Inhalt nur bei Meta lesbar.** `meta_list_ads` liefert Anzeigentext (`body`), `title`, CTA, `image_url`/`video_id` und die Zielseite — das Visual selbst bleibt ein Link. LinkedIn liefert nur die Post-URN: Performance je Creative ja, Copy/Visual nein; für LinkedIn-Inhalts-Urteile die Post-URL öffnen bzw. das Creative vom Kunden zeigen lassen.
 - **LinkedIn-Conversion-Tracking ist nicht prüfbar** (kein Insight-Tag-/Conversion-Setup-Tool). `conversions` (= `externalWebsiteConversions`) ist eine Zahl ohne Setup-Einblick; dauerhaft 0 bei nennenswertem Traffic = Setup-Verdacht → Campaign Manager (beratend). Lead-Gen-Formulare zählen separat in `leads` (abgeschickt) und `lead_form_opens` (geöffnet) — bei Lead-Gen-Kampagnen `leads` auswerten, nicht `conversions`.
 - **LinkedIn löst Kampagnen-Namen nur für max. ~20 Zeilen auf** — darüber bleiben URNs; nicht als „Kampagne fehlt” deuten.
 - **Plattform-Attribution schmeichelt sich selbst** (View-Through, Modellierung). Der GA4-Vergleich ist Größenordnung, kein exakter Abgleich; es zählt der blended CPA, nicht die Plattform-Zahl allein.
