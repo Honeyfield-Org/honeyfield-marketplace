@@ -18,7 +18,7 @@ Ground Truth ist die Server-Implementierung des Marketing-Ops-MCP (Graph API v25
 ## CBO vs. ABO
 - **CBO** (Campaign Budget Optimization): `daily_budget`/`lifetime_budget` steht auf der **Kampagne** (`meta_list_campaigns`), die Bid-Strategie ebenfalls; Adset-Budgets werden ignoriert.
 - **ABO**: Budget je **Adset** (`meta_list_adsets`), Bid je Adset.
-- `meta_update_campaign(daily_budget)` wirkt **nur bei CBO**. `meta_create_adset` erkennt CBO selbst und verlangt bei ABO ein eigenes `daily_budget`.
+- `meta_update_campaign(daily_budget|lifetime_budget)` wirkt **nur bei CBO** (nie beides; Wechsel Tages↔Laufzeit lehnt Meta ab). `meta_create_adset` erkennt CBO selbst und verlangt bei ABO ein eigenes `daily_budget` oder `lifetime_budget` (Laufzeitbudget braucht `end_time`; ein Kampagnen-Enddatum gibt es nicht — Meta leitet es aus den Adsets ab). Details in der Plugin-Tool-Map (`plugins/honeyfield-marketing-mcp/references/tool-map.md`).
 - Befund-Muster: Budgets auf beiden Ebenen sichtbar = unklare Steuerung → vereinheitlichen (welches Modell, entscheidet der Kunde; CBO bündelt Signale, ABO gibt Kontrolle).
 
 ## Bid-Strategien
@@ -46,7 +46,7 @@ Ground Truth ist die Server-Implementierung des Marketing-Ops-MCP (Graph API v25
 - Workflow immer: `validate_only=true` → Preview zeigen → Bestätigung einholen → echter Call.
 
 ## meta_create_ad-Ablauf
-- Pflicht: `adset_id`, `name`, `page_id` (via `meta_list_pages` — Ads laufen im Namen einer Page), `message` (Text über dem Medium), `link`. Optional `headline`/`description` (unter dem Medium), `call_to_action` (LEARN_MORE, SHOP_NOW, SIGN_UP, CONTACT_US, BOOK_NOW …).
+- Pflicht: `adset_id`, `name`, `page_id` (via `meta_list_pages` — Ads laufen im Namen einer Page), `message` (Text über dem Medium), `link` (außer bei Lead-Anzeigen mit `lead_gen_form_id` — dort setzt das Tool Metas Platzhalter `https://fb.me/` selbst; Lead-Workflow, CTA-Positivliste und `leadgen_tos_accepted`-Gate in der Plugin-Tool-Map `plugins/honeyfield-marketing-mcp/references/tool-map.md`). Optional `headline`/`description` (unter dem Medium), `call_to_action` (LEARN_MORE, SHOP_NOW, SIGN_UP, CONTACT_US, BOOK_NOW …), `url_tags` (UTM-Parameter).
 - **Bild-Ad:** `image_hash` (aus `meta_upload_ad_image` — öffentliche URL, max. 8 MB) oder `image_url` direkt (wird dann automatisch hochgeladen).
 - **Video-Ad:** `meta_upload_ad_video` (asynchron) → `meta_video_status` pollen bis `ready` → dann `meta_create_ad` mit `video_id`. Thumbnail ist Pflicht (explizit oder Auto-Thumbnail des Videos).
 - Creative + Ad entstehen in **einem** Schritt, Default PAUSED. Schlägt der Ad-Teil fehl, existiert das Creative bereits (`creative_id` in der Fehler-Antwort — wiederverwendbar, kein Duplikat anlegen).
