@@ -2,7 +2,7 @@
 name: social-ads-audit
 description: "Datengetriebener Social-Ads-Audit für Meta (Facebook/Instagram) und LinkedIn Ads, kalibriert auf den DACH-Markt (DE/AT/CH). Nutze diesen Skill bei „Social-Ads-Audit”, „Meta-Ads-Check”, „Facebook-/Instagram-Ads analysieren”, „LinkedIn-Kampagnen prüfen” oder Diagnose-Fragen: „warum performen meine Facebook-Ads nicht”, „CPA auf Meta zu hoch”, „Anzeigen ausgebrannt / Ad Fatigue”, „Budget auf Social verbrennt”, „feuert mein Pixel”, „welche Anzeigen soll ich pausieren”. Zieht echte Konto-Daten über den Marketing-Ops-MCP — Pixel-Gesundheit, Kampagnen-/Adset-/Ad-Performance, Budgets, Audiences (+ GA4-Cross-Check) — und setzt Behebbares nach Dry-Run (validate_only) und Bestätigung direkt um: Ads/Adsets pausieren, Budgets anpassen, neue Anzeigen als PAUSED/DRAFT anlegen. Für bezahlte Suche nutze `google-ads-audit`; für Site-Tracking (GA4/GTM) `tracking-check`; fürs Reporting `wochenreport`; für Google-RSA-Texte `ad-creative`; für organisches Ranking `seo-audit`."
 metadata:
-  version: 0.1.4
+  version: 0.1.5
 ---
 
 # Social-Ads-Audit
@@ -21,8 +21,8 @@ Was die Daten NICHT bedeuten — sonst entstehen False-Findings:
 - **Die Meta-„conversions”-Zahl zählt nur vier Action-Types** (purchase / lead, je als Pixel- und Onsite-Variante). Custom Conversions, Registrierungen, `add_to_cart`, Messaging- und App-Ziele fließen NICHT ein — bei jedem Geschäftsmodell außer klassischem Kauf/Lead zeigt die Spalte systematisch zu wenig oder 0. Vor jeder CPA-Aussage klären, ob das Ziel-Event purchase/lead ist; sonst CPA über `ga4_conversions` herleiten (beratend, andere Attribution).
 - **Kein Conversion-Value → kein ROAS aus den Tools.** ROAS-Aussagen nur über GA4 als Näherung (beratend) — nie eine Plattform-ROAS-Zahl erfinden.
 - **Nur `days`-Fenster (endet heute), eine Aggregat-Zeile pro Entität.** Keine Zeitreihe, keine frei wählbaren Zeiträume → Vorperioden-Deltas und Fatigue-Verläufe nur näherungsweise über zwei getrennte Fenster (z. B. `days=7` vs. `days=30` — Mechanik in `references/meta-ads-mechanik.md`).
-- **Keine Frequency, kein Reach, keine Breakdowns** (Placement / Alter / Geschlecht / Device). Fatigue nur über CTR-/CPA-Fenster-Vergleich diagnostizierbar, Segment-Lecks gar nicht — als Grenze ausweisen, nicht raten.
-- **Learning-Phase nicht auslesbar.** Ob ein Adset (noch) lernt, zeigt kein Tool — nach Budget-/Setup-Änderungen die Mechanik beratend erklären, nicht „ist in der Lernphase” behaupten.
+- **Keine Frequency, kein Reach, keine Breakdowns** (Placement / Alter / Geschlecht / Device). Fatigue nur über CTR-/CPA-Fenster-Vergleich diagnostizierbar, Segment-Lecks gar nicht — als Grenze ausweisen, nicht raten. (Die *konfigurierten* Platzierungen sind lesbar: `meta_list_adsets` → `targeting.placements`; Performance je Placement nicht.)
+- **Learning-Phase nur als Status lesbar.** `meta_list_adsets` liefert je Adset `learning` (`status` LEARNING = lernt noch, Auslieferung schwankt; LEARNING_LIMITED = abgebrochen, zu wenig Conversions; `"unbekannt"` = Meta liefert nichts dazu, üblich ohne Conversion-Optimierung — jeweils mit Klartext-Hinweis; andere Meta-Werte wie SUCCESS = abgeschlossen kommen unverändert durch). Das ist eine Momentaufnahme: Dauer, Reset-Zeitpunkt und Mechanik bleiben beratend — „ist in der Lernphase” nur mit gelesenem Status behaupten.
 - **Anzeigen-Inhalt nur bei Meta lesbar.** `meta_list_ads` liefert Anzeigentext (`body`), `title`, CTA, `image_url`/`video_id` und die Zielseite — das Visual selbst bleibt ein Link. LinkedIn liefert nur die Post-URN: Performance je Creative ja, Copy/Visual nein; für LinkedIn-Inhalts-Urteile die Post-URL öffnen bzw. das Creative vom Kunden zeigen lassen.
 - **LinkedIn-Conversion-Tracking ist nicht prüfbar** (kein Insight-Tag-/Conversion-Setup-Tool). `conversions` (= `externalWebsiteConversions`) ist eine Zahl ohne Setup-Einblick; dauerhaft 0 bei nennenswertem Traffic = Setup-Verdacht → Campaign Manager (beratend). Lead-Gen-Formulare zählen separat in `leads` (abgeschickt) und `lead_form_opens` (geöffnet) — bei Lead-Gen-Kampagnen `leads` auswerten, nicht `conversions`.
 - **LinkedIn löst Kampagnen-Namen nur für max. ~20 Zeilen auf** — darüber bleiben URNs; nicht als „Kampagne fehlt” deuten.
@@ -64,7 +64,7 @@ Logik: „das Konto/Signal steht nicht” vor „Geld fließt falsch” vor „p
 - **Objective vs. Geschäftsziel:** `meta_list_campaigns` → `objective` (OUTCOME_*) gegen das Ziel aus dem Projekt-Kontext. OUTCOME_TRAFFIC bei Lead-/Sales-Ziel = klassischer Fehlgriff (optimiert auf Klicker, nicht Käufer). LinkedIn analog über den Kampagnen-Typ/`objectiveType`.
 - **Status-Hygiene:** `effective_status` je Kampagne/Adset/Ad prüfen (WITH_ISSUES / DISAPPROVED / abgelaufene `stop_time`; Alt-Lasten, die das Bild verzerren), aber **nicht allein darauf vertrauen**: `issues` auf Kampagnen-/Adset-Ebene sind Delivery-Blocker; auf Ad-Ebene nach `error_type` gewichten (`HARD_ERROR` vs. nicht hart blockierendem `SOFT_ERROR`). `review_feedback` auf globale und placement-spezifische Policy-Ablehnungen prüfen. Deutung in `references/meta-ads-mechanik.md`.
 - **CBO vs. ABO konsistent?** Budgets auf Kampagne UND Adsets gemischt = unklare Steuerung — vereinheitlichen.
-- `meta_list_adsets` → Targeting-Zusammenfassung: Länder (DE+AT+CH in einem Adset → DE dominiert), Altersspanne 18–65 = faktisch untargeted (bewusst?), `advantage_audience` bewusst entschieden?
+- `meta_list_adsets` → Targeting-Zusammenfassung: Länder (DE+AT+CH in einem Adset → DE dominiert; nur `countries` = landesweit — Geo-Verfeinerungen `regions`/`cities`/`zips`/`custom_locations` erscheinen nur, wenn gesetzt), Altersspanne 18–65 = faktisch untargeted (bewusst?), `advantage_audience` bewusst entschieden?; `targeting.placements` (`"automatisch (alle Plattformen)"` = läuft auch im Audience Network — bewusst?); `learning` je Adset (LEARNING_LIMITED = Lernphase abgebrochen, zu wenig Conversions → Konsolidierung prüfen, Phase 2; beratend).
 
 ### 4 — Creative-Performance & Fatigue (Herzstück)
 - `meta_ad_performance` (30 Tage) → Spend-Konzentration je Ad; **CTR-Vergleich nur innerhalb desselben Adsets** (anderes Targeting = anderer Kontext, nicht vergleichbar); CPA je Ad mit Signal-Vorbehalt.
@@ -75,7 +75,8 @@ Logik: „das Konto/Signal steht nicht” vor „Geld fließt falsch” vor „p
 
 ### 5 — Audiences & Targeting-Hygiene
 - `meta_list_audiences` → Inventar: Subtype, Größen-Bounds, `delivery_status` (zu klein? abgelaufen?). Gegen die Adset-Targeting-Zusammenfassung halten: Welche Audiences hängen wirklich in der Auslieferung?
-- **Ausschlüsse sind nicht lesbar** (die Targeting-Zusammenfassung zeigt nur Includes) — Bestandskunden-/Käufer-Ausschluss als beratende Frage stellen, nicht als geprüft abhaken.
+- **Ausschlüsse lesen:** `meta_list_adsets` → `targeting.excluded_custom_audiences` (Custom-Audience-Ausschlüsse, z. B. Bestandskunden/Käufer) und `excluded_geo_locations` — die Schlüssel erscheinen nur, wenn gesetzt; fehlen sie, ist kein Ausschluss konfiguriert. Fehlender Käufer-Ausschluss trotz passender Audience im Inventar = Befund; nachrüsten via Operator (`meta_update_adset(excluded_custom_audience_ids=…)`, IDs aus `meta_list_audiences`).
+- **DACH-Geo / lokale Angebote:** ein Adset nur mit `countries` läuft landesweit — für Filiale/Einzugsgebiet gehören `regions`, `cities` (Umkreis 17–80 km), `zips` (`AT:5020`) oder `custom_locations` (Adresse/Koordinaten, 1–80 km) ins Targeting. Schlüssel ausschließlich via `meta_targeting_search` (`kind` city/region/zip/geo, `country_code` setzen — „Salzburg” gibt es auch anderswo), nie raten. Ineinanderliegende Einschlüsse (AT + Salzburg) lehnt Meta als Konflikt ab (Fehler 1487756, kommt mit `hint`) — Land weglassen oder Gebiete innerhalb per `excluded_geo_locations` ausschließen; Rezept im Operator.
 - LinkedIn: `linkedin_list_audiences` (Matched Audiences / DMP-Segmente: Typ, Status) — Retargeting-Basis vorhanden und einsatzbereit (Mindestgröße)?
 
 ## DACH-Layer (immer, quer über alle Phasen)
@@ -94,7 +95,7 @@ Details in `references/dach-social-ads.md`.
 - **„Boost Post = Kampagne”** → geboostete Posts ohne Objective-/Targeting-Steuerung ersetzen keine strukturierte Kampagne.
 - **Audience-Overlap-Panik** → Überlappung ist normal, Meta dedupliziert die Auslieferung; problematisch erst bei identischen Zielgruppen mit konkurrierenden Setups.
 - **„Advantage+ ist immer besser / immer schlechter”** → Zielgruppen-Erweiterung ist ein Trade-off (Volumen vs. Kontrolle); je Konto anhand der Zahlen entscheiden.
-- **Tägliches Umschrauben** → jede Budget-/Setup-Änderung kann die Lernphase zurücksetzen; Änderungen bündeln und wirken lassen (Mechanik beratend — die Phase selbst ist nicht auslesbar).
+- **Tägliches Umschrauben** → jede Budget-/Setup-Änderung kann die Lernphase zurücksetzen; Änderungen bündeln und wirken lassen (Mechanik beratend — den Stand danach via `meta_list_adsets` → `learning` zurücklesen).
 
 ## Output-Format
 1. **Kurz-Fazit:** Gesamteinschätzung in 2–3 Sätzen + Top 3–5 Probleme + schnellste Quick Wins — je Plattform getrennt, wenn beide verbunden sind.
@@ -111,8 +112,8 @@ Der **Beleg** ist Pflicht, trägt **immer** seine Stufe und ist eine echte Zahl 
 ## Danach: umsetzen (Operator) — immer vorher fragen, nie ungefragt schreiben
 Alle `meta_*`-/`linkedin_*`-Schreib-Tools haben **`validate_only`** — der Dry-Run ist hier echt, nicht simuliert. Regel: **erst mit `validate_only=true` ausführen und das Ergebnis als Preview zeigen (was genau, welche Ebene, welche Wirkung, reversibel ja/nein), dann einzeln bestätigen lassen, dann echt schreiben.**
 - **Pausieren / reaktivieren:** `meta_update_ad_status`, `meta_update_adset`, `meta_update_campaign` (Status) · `linkedin_update_campaign_status`, `linkedin_update_creative_status`. Vorher betroffene Elemente + Beleg (aus Phase 4) zeigen.
-- **Budget anpassen:** `meta_update_campaign` (**nur bei CBO wirksam**) / `meta_update_adset` · `linkedin_update_campaign_budget`. Höchstes Geld-Risiko: Betrag alt → neu + erwartete Wirkung zeigen. Leitplanke: in 20–30-%-Schritten, dann 3–5 Tage wirken lassen (Learning-Mechanik, beratend).
-- **Targeting ändern:** `meta_update_adset` — jedes übergebene Feld ersetzt den bestehenden Wert komplett (Länderliste immer vollständig angeben!); nicht übergebene Felder bleiben erhalten.
+- **Budget anpassen:** `meta_update_campaign` (**nur bei CBO wirksam**) / `meta_update_adset` · `linkedin_update_campaign_budget`. Höchstes Geld-Risiko: Betrag alt → neu + erwartete Wirkung zeigen. Leitplanke: in 20–30-%-Schritten, dann 3–5 Tage wirken lassen (Learning-Mechanik beratend; Stand danach in `meta_list_adsets` → `learning`).
+- **Targeting ändern:** `meta_update_adset` — Targeting wird gemerged: jede übergebene Liste ersetzt ihren Bestand komplett (Länderliste immer vollständig angeben!), eine leere Liste (`cities=[]`, `interest_ids=[]`, `countries=[]` = Länder **und** Ländergruppen weg) entfernt den Schlüssel, nicht übergebene Felder bleiben erhalten. Geo-Verfeinerung (`cities`/`regions`/`zips`/`custom_locations`, Schlüssel via `meta_targeting_search`) OHNE `countries` entfernt bestehende Länder und `country_groups` mit Warnung in `warnings` — gewollt, weil Meta ineinanderliegende Einschlüsse (AT + Salzburg) als Konflikt ablehnt (Fehler 1487756, kommt mit `hint`; für Ländergruppen nur angenommen, nicht live geprüft); länderübergreifend (DE + Salzburg/AT) ist die Kombination erlaubt, `countries` bleibt dann ohne Warnung stehen; bleibt kein Gebiet übrig → `error=geo_required`; Ausschlüsse innerhalb eines Gebiets (Land minus Stadt, Stadt-Umkreis minus PLZ) via `excluded_geo_locations` / `excluded_custom_audience_ids` (IDs aus `meta_list_audiences`). Immer mit `meta_list_adsets` zurücklesen (Details in `references/meta-ads-mechanik.md`).
 - **Neu anlegen:** `meta_create_campaign` → `meta_create_adset` (**DSA-Angaben immer setzen**, `advantage_audience` bewusst entscheiden) → `meta_create_ad` — alles Default **PAUSED**. Bild via `meta_upload_ad_image`/`image_url` (max. 8 MB, öffentliche URL), Video via `meta_upload_ad_video` + `meta_video_status` (erst bei `ready`). LinkedIn: `linkedin_create_campaign_group` / `linkedin_create_campaign` (Default **DRAFT**) · `linkedin_create_ad_from_post` — **nur bestehende Page-Posts, keine Dark Posts** (fehlender API-Scope).
 - **Aktivierung (ACTIVE) ist ein bewusst getrennter Schritt** — nie im selben Zug wie die Anlage, nie ungefragt.
 - **Tabu ohne ausführliche Rücksprache:** `meta_delete_campaign` (endgültig, löscht Adsets/Ads mit — stattdessen PAUSED/ARCHIVED), `meta_create_pixel` (per API **nicht löschbar** — erst `meta_list_pixels` prüfen), Objective-Wechsel über Neuanlage ganzer Strukturen.
@@ -120,7 +121,7 @@ Alle `meta_*`-/`linkedin_*`-Schreib-Tools haben **`validate_only`** — der Dry-
 ## Grenzen (ehrlich benennen)
 - **Kein ROAS, keine Frequency, kein Reach, keine Breakdowns, keine Zeitreihen** — die größten Analyse-Lücken dieses Audits; benennen statt umschiffen.
 - Meta-conversions = nur Purchase-/Lead-Action-Types; andere Geschäftsmodelle laufen über den GA4-Umweg (beratend).
-- Learning-Phase, CAPI-Status, Audience-Ausschlüsse: nicht auslesbar.
+- CAPI-Status: nicht auslesbar. Learning-Phase nur als Status-Momentaufnahme (`learning`), Ausschlüsse nur als konfigurierte Schlüssel (`excluded_custom_audiences`/`excluded_geo_locations`) — beides via `meta_list_adsets`; wann eine Lernphase endet, bleibt beratend.
 - Anzeigen-Inhalte (Copy/Visual) nicht lesbar — Inhalts-Urteile brauchen den Kunden bzw. das UI.
 - LinkedIn: Conversion-Setup nicht prüfbar, Namen nur für ~20 Zeilen aufgelöst, Bestands-Targeting nicht im Detail lesbar, kein manuelles Bidding via MCP.
 - Momentaufnahme; Plattform-Attribution ≠ GA4 (Größenordnungs-Vergleich, kein exakter Abgleich).
@@ -132,13 +133,13 @@ Alle `meta_*`-/`linkedin_*`-Schreib-Tools haben **`validate_only`** — der Dry-
 - Budget: `meta_list_campaigns`, `meta_list_adsets`, `meta_campaign_performance`, `linkedin_list_campaign_groups`, `linkedin_list_campaigns`, `linkedin_campaign_performance`
 - Struktur: `meta_list_campaigns`, `meta_list_adsets`, `meta_list_ads`
 - Creative: `meta_ad_performance`, `meta_adset_performance`, `linkedin_creative_performance`, `linkedin_list_creatives`
-- Audiences: `meta_list_audiences`, `linkedin_list_audiences`
-- Operator: `meta_update_ad_status`, `meta_update_adset`, `meta_update_campaign`, `meta_create_campaign`, `meta_create_adset`, `meta_create_ad`, `meta_upload_ad_image`, `meta_upload_ad_video`, `meta_video_status`, `meta_list_pages` (page_id-Pflicht für `meta_create_ad`), `linkedin_update_campaign_status`, `linkedin_update_campaign_budget`, `linkedin_update_creative_status`, `linkedin_create_campaign_group`, `linkedin_create_campaign`, `linkedin_create_ad_from_post`
+- Audiences: `meta_list_audiences`, `meta_list_adsets` (Ausschlüsse/Geo), `meta_targeting_search` (Geo-/Interessen-Schlüssel, read-only), `linkedin_list_audiences`
+- Operator: `meta_update_ad_status`, `meta_update_adset`, `meta_update_campaign`, `meta_create_campaign`, `meta_create_adset`, `meta_targeting_search` (Schlüssel vor jeder Targeting-Änderung), `meta_create_ad`, `meta_upload_ad_image`, `meta_upload_ad_video`, `meta_video_status`, `meta_list_pages` (page_id-Pflicht für `meta_create_ad`), `linkedin_update_campaign_status`, `linkedin_update_campaign_budget`, `linkedin_update_creative_status`, `linkedin_create_campaign_group`, `linkedin_create_campaign`, `linkedin_create_ad_from_post`
 
 ## Verwandte Skills
 `projekt-kontext` (Foundation, zuerst lesen) · `google-ads-audit` (bezahlte Suche) · `tracking-check` (Site-Messung GA4/GTM/Google Ads — das Meta-Pixel-Gate liegt bewusst hier im Skill) · `wochenreport` (Reporting; verweist bei Social-Auffälligkeiten hierher) · `ad-creative` (Google-RSA-Texte) · `seo-audit` (organisch)
 
 ## Referenzen
-- `references/meta-ads-mechanik.md` — conversions-Zählung (die vier Action-Types), CBO/ABO- und Bid-Mechanik, Fenster-Mathe für Fatigue/Trends, Signal-Fragmentierung, effective_status-/account_status-Deutung, validate_only-Nutzung, `meta_create_ad`-Ablauf (Bild/Video/Thumbnail).
+- `references/meta-ads-mechanik.md` — conversions-Zählung (die vier Action-Types), CBO/ABO- und Bid-Mechanik, Fenster-Mathe für Fatigue/Trends, Signal-Fragmentierung + Lernphasen-Status (`learning`), effective_status-/account_status-Deutung, validate_only-Nutzung, `meta_create_ad`-Ablauf (Bild/Video/Thumbnail), Geo-Targeting-Merge und Platzierungen.
 - `references/linkedin-ads-mechanik.md` — Hierarchie-Mapping (Group→Campaign→Creative vs. Meta), adAnalytics-Realität (Aggregat, ~20-Namen-Limit, CTR selbst rechnen), Objectives, festes Auto-Bidding, Geo-URNs, Interface-Sprachen-Footgun, Sponsored-Content-only.
 - `references/dach-social-ads.md` — Consent-Untererfassung & CAPI-Kontext, DSA-Transparenzpflicht, Special Ad Categories, UWG/HWG/PAngV-Leitplanken, Markt-Kalibrierung AT/CH/DE.
