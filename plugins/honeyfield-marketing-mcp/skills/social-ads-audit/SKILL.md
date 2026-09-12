@@ -2,7 +2,7 @@
 name: social-ads-audit
 description: "Datengetriebener Social-Ads-Audit für Meta (Facebook/Instagram) und LinkedIn Ads, kalibriert auf den DACH-Markt (DE/AT/CH). Nutze diesen Skill bei „Social-Ads-Audit”, „Meta-Ads-Check”, „Facebook-/Instagram-Ads analysieren”, „LinkedIn-Kampagnen prüfen” oder Diagnose-Fragen: „warum performen meine Facebook-Ads nicht”, „CPA auf Meta zu hoch”, „Anzeigen ausgebrannt / Ad Fatigue”, „Budget auf Social verbrennt”, „feuert mein Pixel”, „welche Anzeigen soll ich pausieren”. Zieht echte Konto-Daten über den Marketing-Ops-MCP — Pixel-Gesundheit, Kampagnen-/Adset-/Ad-Performance, Budgets, Audiences (+ GA4-Cross-Check) — und setzt Behebbares nach Dry-Run (validate_only) und Bestätigung direkt um: Ads/Adsets pausieren, Budgets anpassen, neue Anzeigen als PAUSED/DRAFT anlegen. Für bezahlte Suche nutze `google-ads-audit`; für Site-Tracking (GA4/GTM) `tracking-check`; fürs Reporting `wochenreport`; für Google-RSA-Texte `ad-creative`; für organisches Ranking `seo-audit`."
 metadata:
-  version: 0.1.7
+  version: 0.1.8
 ---
 
 # Social-Ads-Audit
@@ -56,7 +56,7 @@ Logik: „das Konto/Signal steht nicht” vor „Geld fließt falsch” vor „p
 
 ### 2 — Budget & Verteilung
 - `meta_list_campaigns` (daily/lifetime_budget → CBO ja/nein) + `meta_list_adsets` (ABO-Budgets) + `meta_campaign_performance` → Spend-Verteilung: Welcher Anteil läuft auf die Top-Kampagne? **Stille Fresser** (Spend ohne conversions über das volle Fenster, mit Signal-Vorbehalt)?
-- **Pacing selbst rechnen** — `budget_pacing`/`anomaly_check` sind google_ads-only: Spend im Fenster ÷ Tage gegen das Tagesbudget je Kampagne/Adset halten.
+- **Pacing selbst rechnen** — `budget_pacing` ist google_ads-only, und `anomaly_check` wertet Google Ads, GA4 und Search Console aus, aber kein Meta/LinkedIn: Spend im Fenster ÷ Tage gegen das Tagesbudget je Kampagne/Adset halten.
 - **Signal-Fragmentierung:** viele kleine Adsets mit je wenigen Conversions lernen schlechter als wenige gebündelte — Richtwerte in `references/meta-ads-mechanik.md`; als beratend kennzeichnen.
 - LinkedIn: `linkedin_list_campaign_groups` (totalBudget) + `linkedin_list_campaigns` (dailyBudget) + `linkedin_campaign_performance` (cost) → dieselben Fragen auf kleinerer Datenbasis.
 
