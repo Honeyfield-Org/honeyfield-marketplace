@@ -2,7 +2,7 @@
 name: tracking-check
 description: "Datengetriebener Tracking- und Conversion-Audit für einen Kunden, kalibriert auf DACH (DE/AT/CH). Nutze diesen Skill, wenn geprüft werden soll, ob das Conversion- und Event-Tracking korrekt läuft: „stimmt mein Tracking”, „Conversions werden nicht gezählt”, „GA4 und Google Ads weichen ab”, „feuern meine Events / Tags”, „Conversion-Tracking prüfen”, „doppelte Conversions”, „Cookie-/Consent-Tracking DSGVO-konform”, „GTM-Setup prüfen”, „Tracking eingerichtet, aber nichts kommt an”. Zieht echte Daten aus GA4, Google Tag Manager und Google Ads über den Marketing-Ops-MCP, belegt jeden Befund nach Beweiskraft (gemessen / nur konfiguriert / nicht prüfbar) und behebt Sicheres nach Bestätigung. Für bezahlte Such-Performance nutze `google-ads-audit`; für Meta-Pixel-/Social-Ads-Signale `social-ads-audit`; für organisches Ranking `seo-audit`; für KI-Sichtbarkeit `geo-audit`; fürs wöchentliche Reporting `wochenreport`."
 metadata:
-  version: 0.4.1
+  version: 0.4.2
 ---
 
 # Tracking-Check
@@ -29,7 +29,8 @@ Dieser Skill ist das **Fundament unter `google-ads-audit` und `seo-audit`**: ste
 Logik: „die Zahl lebt nicht” vor „die Zahl ist inkonsistent” vor „Feinschliff”. Im Report spiegeln.
 
 ### 1 — Lebt das Conversion-Tracking überhaupt? (Gate, immer zuerst)
-- `anomaly_check` → Erst-Signal für Conversion-Ausfälle im Analysefenster (meldet auch Kostenspitzen / CTR-Einbrüche — hier zählt der Conversion-Teil).
+- `anomaly_check` → Erst-Signal über alle verbundenen Quellen (Google Ads, GA4, Search Console; läuft auch ohne Google-Ads-Konto — dann ist `daily` leer). Hier zählt der Conversion-Teil, `findings[].source` sagt, woher: Google Ads `conversions_zero` (≥3 Tage Kosten ohne Conversion — zählt nur **primäre** Aktionen) / `clicks_no_conversions`; GA4 `key_events_zero` (≥3 Datentage Sitzungen ohne Key Event, davor gab es welche), `key_events_none` (im ganzen Fenster keine), `sessions_drop_to_zero` / `ga4_no_data` (keine Sitzungen — GA4 verarbeitet bis zu 24–48 h nach: fehlt nur gestern, ist es `warn`, morgen erneut prüfen). Kostenspitzen / CTR-Einbrüche gehören zu `google-ads-audit`, `sc_*`-Findings zu `seo-audit`.
+- **Zweites Gate: `sources`.** Je Quelle den `status` lesen — nur `checked` ist ein Beleg; `not_connected` / `not_permitted` / `skipped` / `error` (dazu Finding `sources_unavailable`) heißt „nicht geprüft”, nicht „grün”. `ok=true` setzt kein warn-/critical-Finding **und** mindestens eine geprüfte Quelle voraus; `{error: no_sources}` = keine Quelle verbunden → das Gate als Lücke ausweisen. `include_clarity=True` nur bewusst setzen (verbraucht 1 der 10 Clarity-Tagesaufrufe; `clarity_no_data` = keine Sitzung in 72 h → Snippet prüfen).
 - `ads_list_conversion_actions` + `ads_conversion_performance` → `last_gap_days`, letztes Conversion-Datum → **totes Tracking** erkennen (Action existiert, zählt aber seit Wochen nichts). Datumsbasis ist das Conversion-Datum, nicht das Klick-Datum: Offline-Importe zählen am Tag der Conversion — ein heute verbuchter Import senkt `last_gap_days`; die Zahlen sind nicht 1:1 mit den klick-datierten Kampagnen-Tools vergleichbar.
 - `ga4_conversions` / `ga4_list_key_events` → kommen Conversion-Events real an (Counts > 0)?
 - Bei totem / eingebrochenem Tracking: `ads_change_history` → Ausfallbeginn mit Konto-Änderungen korrelieren (z. B. Conversion-Action editiert). Reicht max. 29 Tage zurück — ältere Ausfälle so nicht datierbar.
@@ -105,7 +106,7 @@ Regel: erst zeigen (was genau, welche Ebene, welche Wirkung), einzeln bestätige
 
 ## Tools nach Phase
 - Schritt 0: `list_workspaces`
-- Phase 1 (Gate): `anomaly_check`, `ads_list_conversion_actions`, `ads_conversion_performance`, `ga4_conversions`, `ga4_list_key_events`; bei totem Tracking `ads_change_history`
+- Phase 1 (Gate): `anomaly_check` (google_ads / ga4 / search_console — läuft auch ohne Google Ads; `sources`-Status lesen), `ads_list_conversion_actions`, `ads_conversion_performance`, `ga4_conversions`, `ga4_list_key_events`; bei totem Tracking `ads_change_history`
 - Phase 2 (Config): `ga4_list_key_events`, `ads_list_conversion_actions`, `ga4_list_custom_dimensions`, `ga4_list_custom_metrics`
 - Phase 3 (GA4↔Ads): `ga4_manage_google_ads_links`, `ga4_conversions`, `ads_conversion_performance`
 - Phase 4 (GTM): `gtm_container_info`, `gtm_get_version`, `gtm_list_tags`, `gtm_list_triggers`, `gtm_list_variables`, `gtm_get_tag`, `ga4_list_data_streams`; optional `dfs_domain_technologies` / `dfs_raw_html` (Snippet-Footgun, s.o.)
