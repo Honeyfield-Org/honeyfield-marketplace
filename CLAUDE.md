@@ -47,15 +47,16 @@ Wie ein neuer Skill geschnitten wird (Entscheidung 2026-06-30, abgeleitet vom Re
 - `python3 -m json.tool plugins/<plugin>/.mcp.json` — MCP-Config valides JSON (CI prüft alle `plugins/*/.mcp.json`; `honeyfield-legal-mcp` bündelt beide Legal-Server — `ris` + `eurlex` — in einer `.mcp.json`, Tool-Namen `ris_*`/`eurlex_*` unverändert).
 - `claude plugin validate plugins/<plugin>/` — Manifest, für **jedes** geänderte Plugin (CI loopt über alle `plugins/*/`).
 - Beim Anlegen eines Skills, der Kontext konsumiert: prüfen, dass der Projekt-Kontext-Absatz drin ist und keine alten `kunden-kontext`-Referenzen übrig sind.
-- **Inhaltliche Plugin-Änderung** (neuer/geänderter Skill, References, MCP-Config)? → Version in **allen drei Feldern** erhöht (siehe „Release & Org-Marketplace-Sync") — sonst synct der Org-Marketplace nicht.
-- **Skill inhaltlich geändert?** Zusätzlich die **skill-eigene `metadata.version`** im `SKILL.md`-Frontmatter erhöhen (nicht nur die drei Marketplace-Felder) — `check_skill_frontmatter.py` erzwingt das jetzt git-diff-aware. Hintergrund: ein Skill-Fix zog einst nur die drei Marketplace-Felder und vergaß die Skill-Version, das brauchte einen Nachzug-PR.
+- **Inhaltliche Plugin-Änderung** (neuer/geänderter Skill, References, MCP-Config)? → Version in **allen vier Feldern** erhöht (siehe „Release & Org-Marketplace-Sync") — sonst synct der Org-Marketplace nicht.
+- **Skill inhaltlich geändert?** Zusätzlich die **skill-eigene `metadata.version`** im `SKILL.md`-Frontmatter erhöhen (nicht nur die vier Marketplace-Felder) — `check_skill_frontmatter.py` erzwingt das jetzt git-diff-aware. Hintergrund: ein Skill-Fix zog einst nur die Marketplace-Felder und vergaß die Skill-Version, das brauchte einen Nachzug-PR.
 
 ## Release & Org-Marketplace-Sync
 Der Org-Marketplace in Claude.ai synct **von `main`** und erkennt ein Update **nur an erhöhten Versionsnummern**. Drei Dinge gehen sonst immer wieder schief:
 
 1. **Inhalt geändert, Version nicht erhöht → kein Sync.** Jede inhaltliche Änderung an einem Plugin (neuer Skill, geänderte `SKILL.md`/References, MCP-Config) **muss** mit einem Version-Bump einhergehen. Ohne Bump sieht der Sync keine Änderung — auch manuelles „Update" in den Org-Settings bringt dann nichts.
-2. **Drei Versionsfelder, die zusammen steigen** (laufen sonst auseinander — `marketplace.json` wird am häufigsten vergessen, weil die Quelle der Wahrheit in `plugin.json` liegt):
+2. **Vier Versionsfelder, die zusammen steigen** (laufen sonst auseinander — `marketplace.json` wird am häufigsten vergessen, weil die Quelle der Wahrheit in `plugin.json` liegt; das Codex-Manifest ist die neueste Falle):
    - `plugins/<plugin>/.claude-plugin/plugin.json` → `version` — Quelle der Wahrheit fürs Plugin.
+   - `plugins/<plugin>/.codex-plugin/plugin.json` → `version` — **muss exakt = `.claude-plugin/plugin.json` sein**; `check_version_sync.py` prüft das als „Codex == Claude".
    - `.claude-plugin/marketplace.json` → der `version` des Plugin-Eintrags in `plugins[]` — **muss exakt = `plugin.json` sein.**
    - `.claude-plugin/marketplace.json` → `metadata.version` — Katalog-Version, bei jeder Katalog-Änderung erhöhen.
 3. **Sync zieht von `main`, nicht vom Feature-Branch.** Ein Skill, der nur auf einem Feature-Branch / in einem offenen PR liegt, taucht in Claude Web **nie** auf — egal wie oft man „Update" drückt. Erst nach `main` mergen, dann syncen.

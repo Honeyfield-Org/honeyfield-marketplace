@@ -2,7 +2,7 @@
 name: google-ads-audit
 description: "Datengetriebener Google-Ads-Audit für einen Kunden-Account, kalibriert auf den DACH-Markt (DE/AT/CH). Nutze diesen Skill, wenn der Nutzer einen „Google-Ads-Audit”, eine „Ads-Analyse” oder einen „Ads-Check” will oder Performance-/Spend-Probleme diagnostizieren möchte. Auch bei: „warum performen meine Ads schlecht”, „wo verbrenne ich Budget”, „Wasted Spend / verschwendete Suchbegriffe”, „CPA/ROAS zu schlecht”, „Conversions eingebrochen”, „Impression Share verloren”, „Negatives/Suchbegriffe aufräumen” oder vage „mein Google Ads läuft nicht”. Zieht echte Daten aus dem Konto über den Marketing-Ops-MCP (+ GA4-Cross-Check fürs Conversion-Tracking) und kann behebbare Probleme — Negatives setzen, Keywords/Anzeigen pausieren, Budget und Gebote anpassen — nach Bestätigung direkt umsetzen. Für Reporting nutze `wochenreport`; für organisches Ranking `seo-audit`; für KI-Sichtbarkeit `geo-audit`; für tiefe Tracking-Diagnose `tracking-check`; für neue Anzeigentexte `ad-creative`."
 metadata:
-  version: 0.3.1
+  version: 0.3.2
 ---
 
 # Google-Ads-Audit
@@ -77,6 +77,7 @@ Logik: „die Zahl ist nicht vertrauenswürdig” und „Geld leckt sichtbar” 
 - **Conversion-Volumen für Smart Bidding:** `ads_conversion_performance` → genug Conversions, damit tCPA/tROAS verlässlich lernt? tROAS braucht mehr als tCPA; Schwellen in `references/google-ads-benchmarks.md`. Darunter ist Smart Bidding eher Raten.
 - **Lernphase:** kürzlich geänderte Strategie/Ziel → instabile Phase, nicht hart beurteilen (Dauer in `references/google-ads-benchmarks.md`). Via `ads_change_history` prüfen, ob jüngst umgestellt wurde.
 - `ads_impression_share` → **Lost IS (Budget) vs. Lost IS (Rank)** ist die Schlüssel-Diagnose: viel Lost IS (Budget) → Budget/Effizienz; viel Lost IS (Rank) → QS/Gebot, **nicht** Budget. Search (Abs) Top IS → Positionsqualität. Diagnose-Matrix in `references/google-ads-benchmarks.md`.
+- **Auf Keyword-Ebene weiterbohren**, statt beim Kampagnen-Mittel stehenzubleiben: `level="ad_group"` bzw. `level="keyword"` (dazu `campaign_id`/`ad_group_id` oder `keyword` als Teilstring) zeigt Top-IS und Abs-Top-IS je Keyword. Genau dort entscheidet sich die Gebotsfrage: schwacher Abs-Top-IS bei gutem Gesamt-IS heißt „schaltet, aber zu weit unten” — Gebot per `ads_update_keyword_bid` auf die mitgelieferte `criterion_id`. Zwei Grenzen: **Budget-Verlust gibt es nur auf Kampagnenebene** (Google lehnt die Kennzahl darunter ab), und die Anteile sind **nicht aggregierbar** — Keyword-Werte nicht zu einem Kampagnenwert mitteln, dafür `level="campaign"` abfragen.
 - `ads_list_experiments` → läuft ein Experiment auf der Kampagne? Traffic-Split verzerrt KPI-Vergleiche — Basis- und Test-Arm getrennt beurteilen, nicht als eine Kampagne. (`ads_change_history` reicht nur ~29 Tage zurück — länger laufende Experimente sieht nur dieses Tool.)
 - Bei hohem Lost IS (Rank) / CPC-Druck: `dfs_serp_google_ads` für die wichtigsten Ziel-Keywords → wer bietet mit, Anzeigen-Dichte als Wettbewerbs-Kontext; optional `dfs_google_ads_advertisers` (Google-Ads-Transparency-Center-Daten) als ergänzende Advertiser-Liste je Keyword (`location`/`language` wie in Schritt 0 kalibriert).
 > tCPA zu niedrig gesetzt erstickt das Volumen (hoher Lost IS Rank, „durch Gebotsstrategie begrenzt”) — sieht aus wie ein Rank-Problem, ist aber ein Ziel-Wert-Problem.

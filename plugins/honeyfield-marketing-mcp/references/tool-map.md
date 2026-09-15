@@ -33,7 +33,7 @@ Lege Schreib-Tools (W) nie ohne write-guardrails.md an.
 | Tool | Was | Quelle | R/W |
 |---|---|---|---|
 | `ads_campaign_performance` | Kampagnen-KPIs (Impressions, Clicks, Cost, CTR, CPC, Conversions) | google_ads | R |
-| `ads_impression_share` | Impression Share + Budget-/Rank-Verluste pro Kampagne | google_ads | R |
+| `ads_impression_share` | Impression Share, Top-IS und Abs-Top-IS je Kampagne, Anzeigengruppe oder Keyword (`level`); Filter `campaign_id`/`ad_group_id`/`keyword`. Rank-Verlust auf allen Ebenen, Budget-Verlust nur auf Kampagnenebene | google_ads | R |
 | `ads_search_terms` | Search-Terms-Report — was User wirklich gesucht haben | google_ads | R |
 | `ads_ai_max_search_terms` | AI-Max-Quelle-Split pro Suchbegriff × Headline × Landing-Page | google_ads | R |
 | `ads_budget_status` | Tagesbudget, Ausgaben und Budget-Auslastung pro Kampagne | google_ads | R |
