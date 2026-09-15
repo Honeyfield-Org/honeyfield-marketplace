@@ -81,13 +81,14 @@ Lege Schreib-Tools (W) nie ohne write-guardrails.md an.
 | `ads_update_ad_group_bid` | CPC-Gebot einer Ad Group ändern | google_ads | W |
 | `ads_update_ad_group_name` | Ad Group Name ändern | google_ads | W |
 | `ads_add_keyword` | Keyword zu einer Ad Group hinzufügen | google_ads | W |
-| `ads_bulk_add_keywords` | Mehrere Keywords in einer Ad Group anlegen (ein API-Call) | google_ads | W |
+| `ads_bulk_add_keywords` | Mehrere Keywords in einer Ad Group anlegen (ein API-Call); legt sie absichtlich PAUSED an | google_ads | W |
 | `ads_move_keyword` | Keyword von einer Ad Group in eine andere verschieben | google_ads | W |
 | `ads_add_negative_keyword` | Negatives Keyword zu einer Kampagne hinzufügen | google_ads | W |
 | `ads_bulk_add_negative_keywords` | Mehrere negative Keywords in einer Kampagne anlegen (ein API-Call) | google_ads | W |
 | `ads_remove_negative_keyword` | Negatives Keyword von einer Kampagne entfernen | google_ads | W |
 | `ads_manage_shared_negative_list` | Geteilte Negativ-Keyword-Listen auflisten, erstellen, befüllen, an Kampagnen anhängen (`validate_only` = Dry-Run) | google_ads | R/W |
-| `ads_update_keyword_status` | Keyword aktivieren oder pausieren | google_ads | W |
+| `ads_update_keyword_status` | Ein Keyword aktivieren oder pausieren | google_ads | W |
+| `ads_bulk_update_keyword_status` | Mehrere Keywords einer Ad Group aktivieren/pausieren — ein API-Call statt N, atomar; der vorgesehene zweite Schritt nach `ads_bulk_add_keywords` | google_ads | W |
 | `ads_update_keyword_bid` | CPC-Gebot eines Keywords ändern | google_ads | W |
 | `ads_remove_keyword` | Keyword entfernen (nicht rückgängig machbar) | google_ads | W |
 | `ads_create_ad` | Responsive Search Ad anlegen (**Standard: ENABLED** — für sichere Anlage explizit `status="PAUSED"` setzen) | google_ads | W |
