@@ -2,7 +2,7 @@
 name: google-ads-audit
 description: "Datengetriebener Google-Ads-Audit für einen Kunden-Account, kalibriert auf den DACH-Markt (DE/AT/CH). Nutze diesen Skill, wenn der Nutzer einen „Google-Ads-Audit”, eine „Ads-Analyse” oder einen „Ads-Check” will oder Performance-/Spend-Probleme diagnostizieren möchte. Auch bei: „warum performen meine Ads schlecht”, „wo verbrenne ich Budget”, „Wasted Spend / verschwendete Suchbegriffe”, „CPA/ROAS zu schlecht”, „Conversions eingebrochen”, „Impression Share verloren”, „Negatives/Suchbegriffe aufräumen” oder vage „mein Google Ads läuft nicht”. Zieht echte Daten aus dem Konto über den Marketing-Ops-MCP (+ GA4-Cross-Check fürs Conversion-Tracking) und kann behebbare Probleme — Negatives setzen, Keywords/Anzeigen pausieren, Budget und Gebote anpassen — nach Bestätigung direkt umsetzen. Für Reporting nutze `wochenreport`; für organisches Ranking `seo-audit`; für KI-Sichtbarkeit `geo-audit`; für tiefe Tracking-Diagnose `tracking-check`; für neue Anzeigentexte `ad-creative`."
 metadata:
-  version: 0.3.2
+  version: 0.3.3
 ---
 
 # Google-Ads-Audit
@@ -126,7 +126,7 @@ Der **Beleg** ist Pflicht, trägt **immer** seine Stufe und ist eine echte Zahl 
 ## Danach: umsetzen (Operator) — immer vorher fragen, nie ungefragt schreiben
 Jede Schreib-Aktion bewegt echtes Geld oder echte Auslieferung. Regel: **erst Dry-Run zeigen (was genau, welche Ebene, welche Wirkung, reversibel ja/nein), dann einzeln bestätigen lassen, dann ausführen.** Nichts pauschal, nichts automatisch.
 - **Negatives setzen** → `ads_add_negative_keyword` / `ads_bulk_add_negative_keywords` / Shared-Liste via `ads_manage_shared_negative_list`. Vorher: Liste der Begriffe + Ziel-Ebene (Account-/Shared-Liste vs. Kampagne vs. Ad Group) + Match-Type zeigen und gegen aktive Keywords auf **Konflikte** prüfen.
-- **Keywords/Anzeigen pausieren** → `ads_update_keyword_status` / `ads_update_ad_status`. Vorher: betroffene Elemente + Begründung (z. B. Spend ohne Conversion über X Klicks) zeigen.
+- **Keywords/Anzeigen pausieren** → `ads_update_keyword_status` / `ads_update_ad_status`; mehrere Keywords derselben Ad Group in einem Aufruf mit `ads_bulk_update_keyword_status` (atomar, spart Aufrufe im Monatskontingent). Vorher: betroffene Elemente + Begründung (z. B. Spend ohne Conversion über X Klicks) zeigen.
 - **Budget anpassen** → `ads_update_campaign_budget`. Höchstes Geld-Risiko: Betrag, Richtung und erwartete Wirkung (mit IS-Bezug aus Phase 5) explizit zeigen, dann fragen.
 - **Gebots-Modifier** → `ads_set_device_bid_modifier` u. ä. **Nur bei manuellem Bidding sinnvoll**; bei Smart Bidding höchstens −100 %-Ausschluss (s. Tool-Grenzen).
 - **Geo-Targeting umstellen** → `ads_update_geo_targeting`. Vorher: Kampagne, Einstellung alt → neu, erwartete Reichweiten-Wirkung zeigen, einzeln bestätigen.
@@ -149,7 +149,7 @@ Jede Schreib-Aktion bewegt echtes Geld oder echte Auslieferung. Regel: **erst Dr
 - Bidding/IS: `ads_campaign_performance`, `ads_conversion_performance`, `ads_impression_share`, `ads_change_history`, `ads_list_experiments`
 - Anzeigen/Assets/Segmente: `ads_ad_performance`, `ads_list_ads`, `ads_list_assets`, `ads_device_performance`, `ads_geo_performance`, `ads_schedule_performance`, `ads_demographic_performance`, `ads_get_geo_targeting`
 - Empfehlungen: `ads_list_recommendations`
-- Umsetzen: `ads_add_negative_keyword`, `ads_bulk_add_negative_keywords`, `ads_manage_shared_negative_list`, `ads_update_keyword_status`, `ads_update_ad_status`, `ads_update_campaign_budget`, `ads_set_device_bid_modifier`, `ads_update_geo_targeting`
+- Umsetzen: `ads_add_negative_keyword`, `ads_bulk_add_negative_keywords`, `ads_manage_shared_negative_list`, `ads_update_keyword_status`, `ads_bulk_update_keyword_status`, `ads_update_ad_status`, `ads_update_campaign_budget`, `ads_set_device_bid_modifier`, `ads_update_geo_targeting`
 - Wettbewerb (DACH-Beifang): `dfs_serp_google_ads`, optional `dfs_google_ads_advertisers` (Transparency-Center-Advertiser-Liste)
 
 ## Verwandte Skills
