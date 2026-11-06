@@ -208,6 +208,14 @@ Lege Schreib-Tools (W) nie ohne write-guardrails.md an.
 
 ---
 
+## Website-Checks (keine Quelle nötig)
+
+| Tool | Was | Quelle | R/W |
+|---|---|---|---|
+| `site_crawler_check` | Dürfen Such- und KI-Bots die Website lesen? robots.txt nach RFC 9309 für 16 Bots in vier Gruppen (Suche, KI-Suche, KI-Assistenten im Nutzerauftrag, KI-Training), Cloudflare-Signale, Content Signals, Robots-Angaben der Startseite. `url` (ohne Angabe: Workspace-Website), `paths` (max. 10), `check_live=true` ruft die Startseite je Bot-User-Agent ab — **nur Indiz**, ein 403 auf den nachgemachten UA beweist keine Sperre des echten Bots. Rückgabe u. a. `bots[]`, `summary` je Gruppe, `hosting.cloudflare`, `notes` mit Empfehlung | — | R |
+
+---
+
 ## DataForSEO (source: dataforseo)
 
 Leere DataForSEO-Antworten (`"items": null`) brechen die `dfs_*`-Tools nicht mehr ab — Listen-Tools liefern dann eine leere Liste (`dfs_onpage_instant`: `{error: no_items}`).

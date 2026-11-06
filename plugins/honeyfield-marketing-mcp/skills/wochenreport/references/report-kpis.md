@@ -69,7 +69,7 @@ Kein Δ ohne saubere Perioden-Trennung — überlappende `days`-Fenster als Verg
 | Ø-Position | `sc_performance` | +3 Positionen schlechter | `seo-audit` (Rankings/Traffic-Einbruch) |
 | Top-Query-Bewegung | `sc_top_queries` | Top-Query fällt aus Top-10 | `seo-audit` |
 
-**Traffic-Einbruch:** Zeitlich verorten (date-Dimension), gegen bekannte Google-Update-Termine legen → dann `seo-audit`.
+**Traffic-Einbruch:** Zeitlich verorten (date-Dimension), gegen bekannte Google-Update-Termine **und** bekannte Ereignisse außerhalb von Updates legen (`references/bekannte-ereignisse.md` im Plugin, z. B. Wegfall der Gratis-Produkt-Listings in der EEA ab 17.–18.09.2026) → dann `seo-audit`.
 
 ---
 

@@ -37,8 +37,8 @@ Relevante User-Agents: `GPTBot`, `ChatGPT-User`, `OAI-SearchBot` (OpenAI), `Clau
 - **CCBot** (Common Crawl) = nur Training, **keine** Citations → kann gefahrlos geblockt werden (die einzige sichere „Content-Diebstahl”-Antwort).
 - **Google-Extended** blockt nur Gemini-Training, nicht die Google-Suche/AIO.
 
-Bot-Status-Test: Schlüssel-URL je Bot-UA abrufen, z. B.
-`curl -sIL -A "OAI-SearchBot/1.0 (+https://openai.com/searchbot)" <url>` → 200 (gut) vs. 403/Cloudflare-Block vs. Soft-404 (Status 200 auf leerer Seite). UA ist spoofbar — für die *Diagnose der eigenen Site* irrelevant; für die Auswertung fremder Server-Logs müsste man die Source-IP gegen die publizierten Ranges der Anbieter prüfen.
+Bot-Status-Test: `site_crawler_check` mit `check_live=true` (Startseite, beide Plattformen). In Claude Code für weitere URLs je Bot-UA abrufen, z. B.
+`curl -sIL -A "OAI-SearchBot/1.0 (+https://openai.com/searchbot)" <url>` → 200 (gut) vs. 403/Cloudflare-Block vs. Soft-404 (Status 200 auf leerer Seite). UA ist spoofbar, und Cloudflare & Co. verifizieren echte Bots über IP-Bereiche: ein 403 auf unseren Testabruf beweist keine Sperre des echten Bots (nur Indiz, robots.txt ist verlässlich); für die Auswertung fremder Server-Logs müsste man die Source-IP gegen die publizierten Ranges der Anbieter prüfen.
 
 ## Princeton-GEO-Hebel (Fix-Priorisierung)
 

@@ -2,7 +2,7 @@
 name: geo-audit
 description: "Datengetriebener GEO-/AEO-Audit: prüft, ob KI-Assistenten (ChatGPT, Claude, Gemini, Perplexity, Google AI Overviews) eine Kunden-Website lesen, fetchen und zitieren können — kalibriert auf den DACH-Markt (DE/AT/CH). Nutze diesen Skill bei: „GEO-Audit”, „AEO-Audit”, „AI-SEO”, „KI-Sichtbarkeit”, „werde ich in ChatGPT gefunden/zitiert”, „taucht meine Marke in KI-Antworten auf”, „warum empfiehlt ChatGPT die Konkurrenz”, „Sichtbarkeit in ChatGPT/Perplexity/Gemini verbessern”, „Generative Engine Optimization”, „Answer Engine Optimization”. Zieht echte Daten aus Search Console, GA4 und DataForSEO über den Marketing-Ops-MCP, prüft Crawlbarkeit/Rendering/Schema deterministisch und kann Fixbares direkt umsetzen. Für klassisches Google-Ranking nutze stattdessen `seo-audit`; für reines wöchentliches Reporting `wochenreport`."
 metadata:
-  version: 0.3.1
+  version: 0.4.0
 ---
 
 # GEO-Audit (KI-Sichtbarkeit)
@@ -13,7 +13,7 @@ Kernmechanik (Details in `references/geo-mechanik.md`): KI-Antworten unterscheid
 
 ## Beleg-Stufen — jeden Befund kennzeichnen
 
-- **Gemessen (deterministisch):** Rendering (raw-HTML vs. JS), robots.txt-Regeln, Schema im Roh-HTML, Index-Präsenz (Google via `sc_url_inspection`) → harte Fakten, 100 % belastbar. Der **Bot-UA-Status-Code-Check** zählt nur in Claude Code dazu — in Claude.ai plattformbedingte Lücke (s. Plattform-Weiche, Schritt 0).
+- **Gemessen (deterministisch):** Rendering (raw-HTML vs. JS), robots.txt-Regeln, Schema im Roh-HTML, Index-Präsenz (Google via `sc_url_inspection`) → harte Fakten, 100 % belastbar. Die robots.txt-Auswertung je KI-Bot liefert `site_crawler_check` auf beiden Plattformen. Der **Bot-UA-Status-Code-Check** (`site_crawler_check` mit `check_live=true`) ist dagegen nur ein Indiz, kein gemessener Befund: Cloudflare & Co. erkennen echte Bots an ihren IP-Bereichen.
 - **Gemessen (First-Party / SERP):** AI-Referrer in GA4, GSC-Queries, wem die zitierten Quellen der Category-Queries gehören (SERP + Backlinks), Google-AI-Overview-Präsenz, Cross-Engine-Mentions/Citations via LLM-Mentions-Adapter (bei verbundenem DataForSEO-Zugang) → echte Zahlen.
 - **Beratend:** Extractability-/Content-Struktur, Entity-Empfehlungen, Cross-Engine-Citations ohne DataForSEO-Zugang oder bei `subscription_required` (dann nur manuelle Capture, Weg A) → begründete Empfehlung, nie als gemessen verkaufen.
 
@@ -29,7 +29,7 @@ Was die Tools NICHT sehen — sonst entstehen False-Findings (alle im Live-Test 
 ## Schritt 0 — Vorbereitung (immer zuerst)
 
 **Workspace + Datenquellen klären.** Rufe `list_workspaces` auf, prüfe die `sources` des Ziel-Workspace. Führe nur Phasen aus, deren Quelle verbunden ist; fehlt eine, nenne das als Lücke und rate die Daten nicht zusammen.
-- Phase 1–3 brauchen nur den Raw-Fetcher (s. Plattform-Weiche unten); die `dfs_*`-Checks brauchen DataForSEO.
+- Phase 1–3 brauchen nur den Raw-Fetcher (s. Plattform-Weiche unten) und `site_crawler_check` (braucht keine Quelle, nur Domain oder Workspace-Website); die `dfs_*`-Checks brauchen DataForSEO.
 - `ga4`/`search_console` → Phase 6 (Fetch & AI-Traffic); `search_console` zusätzlich → Google-Index-Status in Phase 1. Ohne sie: die jeweilige Messung als Lücke benennen.
 - `business_profile` → `gbp_get_profile` liefert die Ist-NAP-Daten (Name/Adresse/Telefon) als Vergleichsbasis für Phase 4 (nur bei lokalem Geschäft); `gbp_local_seo_audit` misst Profil-Vollständigkeit, keine NAP-/Citation-Konsistenz über externe Quellen. Der Abgleich mit externen Verzeichnissen bleibt beratend.
 - **DataForSEO ist domain-parametrisiert, nicht workspace-gebunden.** Hat der Ziel-Workspace `dataforseo:false`, nutze einen Schwester-Workspace mit `dataforseo:true` als Credential-Träger (`workspace=` darauf setzen) — `domain`/`keyword` bleiben das Ziel. Sonst wird Phase 5 fälschlich als undurchführbar markiert.
@@ -37,7 +37,7 @@ Was die Tools NICHT sehen — sonst entstehen False-Findings (alle im Live-Test 
 
 **Projekt-Kontext zuerst.** Liegt für dieses Projekt ein Projekt-Kontext vor — als **Projektwissen** in diesem Claude-Projekt oder als `projekt-kontext.md` im Arbeitsverzeichnis —, nutze ihn (Branche, Zielmarkt, Ziel-Themen, B2B/B2C, Marke), bevor du fragst, und frage nur nach, was dort fehlt oder für diese Aufgabe spezifisch ist. Beachte gesetzte `compliance`-Flags als harte Leitplanke. Fehlt der Kontext, biete an, ihn per `projekt-kontext` anzulegen, oder frage knapp: Domain, Zielmarkt, B2B oder B2C, 3–5 Kern-Themen/Queries, Markenname.
 
-**Plattform-Weiche (Raw-Fetcher).** In **Claude Code** laufen die deterministischen Checks über `curl`/`grep` wie beschrieben. In **Claude.ai** gibt es keine Shell: Roh-HTML, robots.txt und sitemap.xml per WebFetch holen — Token-Präsenz-Checks funktionieren; für den JSON-LD-im-Roh-HTML-Check (WebFetch liefert sonst nur konvertierten Text) `dfs_raw_html` nutzen — liefert echtes Roh-HTML plattformunabhängig und schließt damit die Claude.ai-Lücke. Der **Bot-Status-Code-Check mit Bot-User-Agent geht nur in Claude Code** (WebFetch setzt keinen Custom User-Agent) — in Claude.ai als plattformbedingte Lücke benennen, nicht raten; harter Ersatz: Server-/Cloudflare-Logs.
+**Plattform-Weiche (Raw-Fetcher).** In **Claude Code** laufen die deterministischen Checks über `curl`/`grep` wie beschrieben. In **Claude.ai** gibt es keine Shell: den KI-Crawler-Zugang (robots.txt je Bot, Cloudflare-Signale) per `site_crawler_check` prüfen, Roh-HTML und sitemap.xml per WebFetch holen — Token-Präsenz-Checks funktionieren; für den JSON-LD-im-Roh-HTML-Check (WebFetch liefert sonst nur konvertierten Text) `dfs_raw_html` nutzen — liefert echtes Roh-HTML plattformunabhängig und schließt damit die Claude.ai-Lücke. Den **Bot-Status-Code-Check mit Bot-User-Agent** übernimmt `site_crawler_check` mit `check_live=true` auf beiden Plattformen (nur die Startseite, nur ein Indiz). Harter Beleg bleiben Server-/Cloudflare-Logs.
 
 **Schlüsselseiten wählen.** Sitemap per Raw-Fetcher holen (`curl <domain>/sitemap.xml` bzw. WebFetch) → sample Startseite + 1 Money-Page (Leistung/Preise) + 1 Content-Seite (Blog). Kein site-weiter Crawl — URL-für-URL.
 
@@ -57,9 +57,10 @@ Logik: „kann nicht gelesen werden” vor „rankt schlecht in KI-Antworten”.
 ## Audit-Phasen
 
 ### 1 — AI-Crawler-Zugang & Index-Präsenz
-- **robots.txt** holen, gegen die KI-Bot-Liste prüfen (GPTBot, ChatGPT-User, OAI-SearchBot, PerplexityBot, ClaudeBot, anthropic-ai, Google-Extended, Bingbot — Liste + Nuancen in `references/geo-mechanik.md`). Geblockt = kritischer Befund.
+- **KI-Crawler-Zugang per `site_crawler_check`** (plattformunabhängig, kein `curl` nötig): wertet die robots.txt nach RFC 9309 für 16 Bots in vier Gruppen aus (Suche, KI-Suche, KI-Assistenten im Nutzerauftrag, KI-Training), dazu Cloudflare-Signale, Content Signals und die Robots-Angaben der Startseite. Für die Schlüsselseiten `paths` setzen (max. 10). Gruppe KI-Suche oder KI-Assistenten gesperrt = kritischer Befund. Nuancen in `references/geo-mechanik.md`.
   - **CCBot** (Common Crawl) darf gefahrlos geblockt werden (nur Training, keine Citations). **GPTBot** macht Training UND Search gleichzeitig — nicht trennbar.
-- **Bot-Status-Code (nur Claude Code):** Schlüssel-URLs mit Bot-User-Agent abrufen (`curl -A "ChatGPT-User/1.0"` …) → 200 vs. 403/Cloudflare-Block vs. Soft-404. In Claude.ai nicht ersetzbar → plattformbedingte Lücke benennen (s. Schritt 0).
+  - **Cloudflare-Default:** Cloudflare sperrt seit 15.09.2026 per Default KI-Training- und KI-Agent-Crawler, Such-Crawler bleiben offen. `ChatGPT-User` und `Claude-User` fallen in die Agent-Kategorie, `OAI-SearchBot` und `PerplexityBot` in die Such-Kategorie. Ob der Default auch für Bestandskunden gilt, ist nicht gesichert (die Quellen widersprechen sich) — nicht als Tatsache melden. Zeigt `hosting.cloudflare` Cloudflare an: dem Kunden empfehlen, die Agent-Kategorie in den Cloudflare-Einstellungen bewusst zu erlauben oder zu sperren, statt den Default hinzunehmen.
+- **Bot-Status-Code (nur Indiz):** `site_crawler_check` mit `check_live=true` ruft die Startseite je Bot-User-Agent ab → 200 vs. 403/Cloudflare-Abwehr. **Ein 403 auf einen nachgemachten User-Agent beweist keine Sperre:** Cloudflare verifiziert echte Bots über ihre IP-Bereiche. Melden als „unser Testabruf wurde abgewiesen”, nie als „Bot ist gesperrt”. Verlässlich ist die robots.txt-Auswertung. In Claude Code geht für weitere URLs zusätzlich `curl -A "<Bot-UA>"`, mit derselben Einschränkung.
 - **Google-Index-Status:** Schlüssel-URLs deterministisch via `sc_url_inspection` prüfen (falls `search_console` verbunden) — Google-AIO und Perplexity ziehen aus dem Google-Index. Ohne GSC den Google-Index als Lücke kennzeichnen, nicht raten.
 - **Index-Backend pro Engine (oft übersehene Lücke):** ChatGPT/Copilot ziehen aus **Bing**, Claude aus **Brave**, Perplexity eigen+Google, Google-AIO aus Google. Viele DACH-Sites reichen nur bei der GSC ein → **Bing Webmaster Tools + IndexNow** prüfen/empfehlen. Mapping in `references/geo-mechanik.md`.
 
@@ -140,7 +141,7 @@ Regel: **erst den Ist-Zustand lesen, dann exakten Diff/Dry-Run zeigen, dann einz
 - Momentaufnahme, keine Historie.
 
 ## Tools nach Phase
-- Crawler-Zugang/Index: `curl`/WebFetch (robots; Bot-UA nur via `curl`), `sc_url_inspection`, `sc_list_sitemaps`, `dfs_onpage_instant`, `dfs_serp_bing_organic` (Bing-Index-Check)
+- Crawler-Zugang/Index: `site_crawler_check` (robots.txt je Bot, Cloudflare; `check_live=true` = Bot-UA-Indiz), `sc_url_inspection`, `sc_list_sitemaps`, `dfs_onpage_instant`, `dfs_serp_bing_organic` (Bing-Index-Check)
 - Parsability: `curl`/WebFetch (raw) + `dfs_raw_html` (plattformunabhängig) + `dfs_onpage_instant` (rendered)
 - Entity/Schema: `curl`/WebFetch/`dfs_raw_html` (JSON-LD parsen), `dfs_onpage_instant`, `gbp_local_seo_audit` + `gbp_get_profile` (Local)
 - Off-site: `dfs_serp_google_organic` (inkl. AI-Overview), `dfs_backlinks_list`, `dfs_backlink_competitors`, `dfs_backlink_summary`; bei DataForSEO-Zugang zusätzlich `dfs_llm_top_domains`
