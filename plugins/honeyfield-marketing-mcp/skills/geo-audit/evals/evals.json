@@ -110,5 +110,17 @@
       "Startet keinen vollständigen GEO-Audit für eine reine Reporting-Anfrage"
     ],
     "files": ["SKILL.md"]
+  },
+  {
+    "id": "tool-reality-crawler-check-cloudflare",
+    "prompt": "Wir sind hinter Cloudflare. Kann ChatGPT unsere Website überhaupt lesen? Ich bin in Claude Web, nicht im Terminal.",
+    "expected_output": "Prüft den KI-Crawler-Zugang mit site_crawler_check statt curl, ordnet den Cloudflare-Default vom 15.09.2026 ein (Agent-Kategorie wie ChatGPT-User gesperrt, Such-Crawler offen) und wertet einen 403 im Live-Abruf nur als Indiz.",
+    "assertions": [
+      "Ruft site_crawler_check auf und verlangt kein curl",
+      "Meldet einen 403 aus check_live nicht als bewiesene Sperre, sondern als abgewiesenen Testabruf",
+      "Empfiehlt, die Agent-Kategorie in Cloudflare bewusst zu erlauben oder zu sperren",
+      "Stellt nicht als Tatsache dar, dass der Cloudflare-Default für alle Bestandskunden gilt"
+    ],
+    "files": ["SKILL.md"]
   }
 ]

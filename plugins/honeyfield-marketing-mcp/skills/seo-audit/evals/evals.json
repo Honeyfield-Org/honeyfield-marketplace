@@ -149,5 +149,16 @@
       "Startet keinen vollen SEO-Audit für eine reine Reporting-Anfrage"
     ],
     "files": ["SKILL.md"]
+  },
+  {
+    "id": "traffic-drop-eea-free-listings",
+    "prompt": "Unser Online-Shop in Deutschland hat seit Mitte September deutlich weniger organische Klicks auf Produktseiten. Die Rankings sehen stabil aus. Was ist da los?",
+    "expected_output": "Verortet den Einbruch zeitlich mit sc_performance und prüft ihn gegen die Liste bekannter Ereignisse: der Wegfall der kostenlosen Produkt-Listings in der EEA am 17.–18.09.2026 ist der wahrscheinliche Grund, kein Ranking- oder Qualitätsproblem.",
+    "assertions": [
+      "Nennt den Wegfall der kostenlosen Produkt-Listings in der EEA am 17.–18.09.2026 als Kandidat",
+      "Deutet den Einbruch nicht als Qualitäts- oder Technikproblem, solange das Datum passt",
+      "Verortet den Einbruch zeitlich mit sc_performance und dimensions=[\"date\"]"
+    ],
+    "files": ["SKILL.md"]
   }
 ]
