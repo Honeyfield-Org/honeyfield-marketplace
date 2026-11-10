@@ -50,12 +50,72 @@
   {
     "id": "smart-bidding-data-threshold",
     "prompt": "Soll ich auf Target ROAS umstellen, läuft gerade auf Maximize Clicks?",
-    "expected_output": "Prüft das Conversion-Volumen, bevor eine Smart-Bidding-Umstellung empfohlen wird. Nennt die konservative Daten-Schwelle (tROAS braucht mehr Conversions als tCPA) und warnt vor der Lernphase nach einem Strategiewechsel. Behandelt die Bidding-Strategie-Umstellung als Operator-Tabu ohne ausführliche Rücksprache.",
+    "expected_output": "Prüft das Conversion-Volumen, bevor eine Smart-Bidding-Umstellung empfohlen wird. Nennt die Google-Werte (Bewertungszeiträume mit mind. 30 Conversions, 50 bei tROAS) und die Vorbedingung für Value-Based Bidding (Conversion-Werte seit 4 Wochen oder 3 Conversion-Zyklen, der längere Zeitraum). Weist darauf hin, dass der Strategiewechsel den Learning-Status auslöst (höchstens 7 Tage). Behandelt die Bidding-Strategie-Umstellung als Operator-Tabu ohne ausführliche Rücksprache.",
     "assertions": [
-      "Prüft das monatliche Conversion-Volumen gegen die Smart-Bidding-Schwellen, bevor tROAS empfohlen wird",
-      "Warnt vor der 1–2-wöchigen Lernphase nach einem Strategiewechsel",
+      "Prüft das Conversion-Volumen gegen die Google-Werte (mind. 30 Conversions im Bewertungszeitraum, 50 bei tROAS), bevor tROAS empfohlen wird",
+      "Prüft, ob Conversion-Werte seit mind. 4 Wochen bzw. 3 Conversion-Zyklen erfasst werden (Vorbedingung Value-Based Bidding)",
+      "Nennt den Learning-Status nach dem Strategiewechsel mit höchstens 7 Tagen, nicht 1–2 Wochen",
       "Behandelt einen Mismatch (Maximize Clicks bei Conversion-Ziel) als Befund",
       "Stellt die Gebotsstrategie nicht ungefragt um (Operator-Tabu)"
+    ],
+    "files": ["SKILL.md", "references/google-ads-benchmarks.md"]
+  },
+  {
+    "id": "budget-change-no-learning",
+    "prompt": "Ich würde das Budget unserer tCPA-Kampagne gern um 30 % erhöhen, die ist durch Budget begrenzt und der CPA ist gut. Oder setzt das die Lernphase zurück?",
+    "expected_output": "Stellt klar, dass Budget-Änderungen laut Google keinen Learning-Status auslösen (Auslöser sind nur neue/reaktivierte Strategie, Strategie-Einstellungen, Zusammensetzung und signifikante Conversion-Ziel-Änderung). Nennt mögliche kurze Volatilität bei großen Sprüngen als Nicht-Learning. Prüft Lost IS (Budget) und zeigt die Budget-Änderung als Dry-Run vor der Bestätigung.",
+    "assertions": [
+      "Sagt, dass eine Budget-Änderung laut Google keinen Learning-Status auslöst",
+      "Nennt die echten Learning-Auslöser (Strategie neu/reaktiviert/geändert, Zusammensetzung, signifikante Conversion-Ziel-Änderung)",
+      "Rät nicht wegen einer angeblichen Lernphase von der Budget-Erhöhung ab",
+      "Zeigt die Budget-Änderung als Dry-Run und führt sie erst nach Bestätigung aus"
+    ],
+    "files": ["SKILL.md", "references/google-ads-benchmarks.md"]
+  },
+  {
+    "id": "dach-language-ad-landingpage-match",
+    "prompt": "Wir sind ein Schweizer Online-Shop und werben auf Deutsch und Französisch. Ist unser Sprach-Targeting in den Suchkampagnen richtig eingestellt?",
+    "expected_output": "Erklärt, dass Google seit Ende 09/2026 die Spracheinstellung auf Kampagnenebene für Search und AI Max entfernt und die Sprache aus Anzeige und Landingpage ermittelt. Prüft stattdessen, ob Anzeigentext und Landingpage je Sprache (DE/FR) zusammenpassen. Wertet die Alt-Einstellung aus ads_get_language_targeting nicht als maßgeblichen Befund.",
+    "assertions": [
+      "Sagt, dass die Spracheinstellung für Search/AI Max seit Ende 09/2026 entfällt",
+      "Prüft, ob die Sprache von Anzeigentext und Landingpage je Zielsprache (DE/FR getrennt) zusammenpasst",
+      "Leitet aus der Alt-Einstellung von ads_get_language_targeting keinen Befund für Search-Kampagnen ab",
+      "Empfiehlt nicht, die UI-Sprache „Englisch/alle Sprachen” für Search-Kampagnen zu ergänzen"
+    ],
+    "files": ["SKILL.md", "references/dach-ads.md"]
+  },
+  {
+    "id": "ai-max-text-guidelines-compliance",
+    "prompt": "Wir sind eine Physiotherapie-Praxis in Wien (HWG-Flag im Projekt-Kontext gesetzt) und nutzen AI Max in der Suchkampagne. Check mal die Anzeigen.",
+    "expected_output": "Erkennt AI Max über die Quellen in ads_ai_max_search_terms und weist darauf hin, dass aktive Text Customization Google-eigene Anzeigentexte erzeugt, die am HWG-Check vorbeilaufen. Empfiehlt bei gesetztem compliance-Flag Text Guidelines (Term Exclusions, Messaging Restrictions) im UI oder das Abschalten der Text Customization, Stufe beratend.",
+    "assertions": [
+      "Prüft AI-Max-Aktivität über ads_ai_max_search_terms",
+      "Benennt das Risiko, dass von Google generierte Texte die HWG-Leitplanke umgehen",
+      "Empfiehlt Text Guidelines oder das Abschalten der Text Customization",
+      "Kennzeichnet die Empfehlung als beratend (per MCP nicht lesbar/setzbar)"
+    ],
+    "files": ["SKILL.md", "references/dach-ads.md"]
+  },
+  {
+    "id": "consent-modeling-threshold",
+    "prompt": "Wir sind ein kleiner Handwerksbetrieb in Bayern, unser Cookie-Banner hat nur ca. 35 % Zustimmung. Google Ads zeigt kaum Conversions — sind die Kampagnen so schlecht?",
+    "expected_output": "Behandelt die niedrigen Conversions zuerst als möglichen Tracking-Vorbehalt: Bei niedriger Einwilligungsrate und kleinem Konto erreicht die Consent-Mode-Modellierung (Advanced) oft die Mindest-Datenmenge nicht; auch Basic modelliert nur mit einem allgemeinen Modell. Wertet das nicht als Performance-Befund und verweist für die tiefe Consent-Prüfung auf tracking-check.",
+    "assertions": [
+      "Nennt die Consent-Lücke als Tracking-Vorbehalt, bevor die Kampagnen-Performance bewertet wird",
+      "Erwähnt, dass die Consent-Mode-Modellierung eine Mindest-Datenmenge braucht, die kleine Konten oft nicht erreichen",
+      "Verweist für die tiefe Consent-/Tracking-Prüfung auf tracking-check"
+    ],
+    "files": ["SKILL.md", "references/google-ads-benchmarks.md"]
+  },
+  {
+    "id": "ad-strength-unpinned-excellent",
+    "prompt": "Unsere RSAs stehen fast alle auf Ad Strength „Durchschnittlich”. Ist das egal, weil Ad Strength eh nichts über Performance sagt?",
+    "expected_output": "Widerspricht der pauschalen These: Für ungepinnte RSAs korreliert höhere Ad Strength mit besseren Ergebnissen, also „Excellent” anstreben; der Vorteil schwächerer Anzeigen kommt vor allem vom Pinning. Nennt Googles Empfehlung von mind. 2 RSAs mit „Good” oder „Excellent” je Ad Group. Weist darauf hin, dass ads_list_ads keine Ad Strength liefert (UI, beratend).",
+    "assertions": [
+      "Empfiehlt für ungepinnte RSAs „Excellent” anzustreben, statt Ad Strength als irrelevant abzutun",
+      "Nennt Pinning als Hauptgrund, warum schwächer bewertete Anzeigen teils besser konvertieren",
+      "Nennt die Google-Empfehlung von mind. 2 RSAs mit Ad Strength „Good” oder „Excellent” je Ad Group",
+      "Kennzeichnet die Ad Strength als nicht per MCP lesbar (beratend)"
     ],
     "files": ["SKILL.md", "references/google-ads-benchmarks.md"]
   },

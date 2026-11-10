@@ -85,13 +85,14 @@
   {
     "id": "ga4-ads-consistency",
     "prompt": "Unser GA4 zeigt 120 Conversions diese Woche, aber Google Ads meldet 280. Ist das normal?",
-    "expected_output": "Prüft mit ga4_manage_google_ads_links, ob der GA4↔Ads-Link gesetzt ist. Kreuzcheckt ga4_conversions vs. ads_conversion_performance für denselben Zeitraum. Bewertet Faktor-2+-Diskrepanz als Tracking-Verdacht (nicht 'ist halt so'): mögliche Doppelzählung (GA4-Import + nativer Ads-Tag), fehlender Import oder Zählmethoden-Mismatch. Deduplication als nicht prüfbar kennzeichnen.",
+    "expected_output": "Prüft mit ga4_manage_google_ads_links, ob der GA4↔Ads-Link gesetzt ist. Kreuzcheckt ga4_conversions vs. ads_conversion_performance für denselben Zeitraum. Bewertet Faktor-2+-Diskrepanz als Tracking-Verdacht (nicht 'ist halt so'): mögliche Doppelzählung (GA4-Import + nativer Ads-Tag), fehlender Import oder Zählmethoden-Mismatch. Deduplication als nicht prüfbar kennzeichnen. Nennt kleine, beratende Abweichungsgründe als nicht prüfbar: Attributions-Kanal-Einstellung (seit 06/2023 Default „Google Paid Channels” bei neuer Verknüpfung), Google Signals für Cross-Device, Berichtszeit Interaktion (Ads) vs. Event (GA4).",
     "assertions": [
       "Prüft ga4_manage_google_ads_links auf gesetzten GA4↔Ads-Link",
       "Kreuzcheckt ga4_conversions gegen ads_conversion_performance für denselben Zeitraum",
       "Bewertet Faktor-2+-Diskrepanz als Tracking-Verdacht, nicht als Attributions-Normalfall",
       "Benennt mögliche Doppelzählung (GA4-Import-Conversion + nativer Ads-Tag) als Ursache-Verdacht",
-      "Kennzeichnet Doppelzählungs-Bestätigung als 'nicht prüfbar' (Tools dedupen nicht)"
+      "Kennzeichnet Doppelzählungs-Bestätigung als 'nicht prüfbar' (Tools dedupen nicht)",
+      "Nennt Attributions-Kanal-Einstellung, Google Signals und Berichtszeit nur als beratende, nicht prüfbare Gründe für kleine Abweichungen — nicht als Erklärung für Faktor 2+"
     ],
     "files": ["SKILL.md", "references/tracking-tool-grenzen.md"]
   },
@@ -124,14 +125,79 @@
   {
     "id": "dach-data-retention",
     "prompt": "Wir sind ein österreichisches SaaS-Unternehmen. Reicht unsere GA4-Einstellung so wie sie ist?",
-    "expected_output": "Prüft ga4_data_retention und ga4_enhanced_measurement. Identifiziert TWO_MONTHS (2-Monats-Retention) als unnötig kurz für DACH (Default ≠ Pflicht). Empfiehlt 14 Monate als Quick Win mit geringer Datenschutz-Hürde. Benennt die DSGVO-Speicherbegrenzung (Art. 5) als relevanten Rahmen ohne Rechtsberatung — §165 TKG (AT) betrifft Cookies/Consent, nicht die Retention-Dauer. Datenschutz-Default ≠ Pflicht — 14 Monate sind in AT/DE zulässig.",
+    "expected_output": "Prüft ga4_data_retention und ga4_enhanced_measurement. Identifiziert TWO_MONTHS (2-Monats-Retention) als unnötig kurz für DACH (Default ≠ Pflicht). Empfiehlt 14 Monate als Quick Win mit geringer Datenschutz-Hürde. Benennt die DSGVO-Speicherbegrenzung (Art. 5) als relevanten Rahmen ohne Rechtsberatung — §165 TKG (AT) betrifft Cookies/Consent, nicht die Retention-Dauer. Datenschutz-Default ≠ Pflicht — 14 Monate sind in AT/DE zulässig. Nennt die Grenzen: Large-/XL-Properties sind auf 2 Monate begrenzt (dort kein Quick Win), GA4 360 hat längere Optionen; Property-Größe und User-Daten-Retention liest ga4_data_retention nicht → nicht prüfbar. Beschreibt im Dry-Run, dass eine Erhöhung auch auf noch gespeicherte Daten wirkt, schon gelöschte aber nicht zurückkommen.",
     "assertions": [
       "Ruft ga4_data_retention auf, um den aktuellen Retention-Wert zu prüfen",
       "Identifiziert TWO_MONTHS als unnötig kurz für DACH und empfiehlt FOURTEEN_MONTHS",
       "Benennt die DSGVO-Speicherbegrenzung (Art. 5) als Rechtsrahmen für die Retention-Dauer — nicht §165 TKG, der Cookies/Consent betrifft — ohne konkrete Rechtsberatung zu geben",
       "Behandelt die Retention-Verlängerung als Quick Win, nicht als Datenschutz-Risiko",
-      "Verwechselt Datenschutz-Default nicht mit Pflicht ('14 Monate zulässig')"
+      "Verwechselt Datenschutz-Default nicht mit Pflicht ('14 Monate zulässig')",
+      "Nennt die Large-/XL-Grenze (nur 2 Monate) bzw. kennzeichnet Property-Größe und User-Daten-Retention als nicht prüfbar",
+      "Sagt bei der Erhöhung, dass sie auch auf noch gespeicherte Daten wirkt und schon gelöschte Daten nicht zurückkommen"
+    ],
+    "files": ["SKILL.md", "references/dach-consent.md", "references/tracking-tool-grenzen.md"]
+  },
+  {
+    "id": "consent-basic-modelliert-auch",
+    "prompt": "Unsere Agentur sagt, wir müssen Consent Mode auf Advanced umstellen, weil Google im Basic-Modus gar nichts modelliert. Stimmt das? Wir sind ein kleiner Shop in Deutschland.",
+    "expected_output": "Korrigiert die Annahme: Auch Basic modelliert (allgemeines Modell, weniger genau). Advanced baut ein eigenes Modell aus Pings, braucht aber eine Mindest-Datenmenge — bei kleinen Konten mit niedriger Einwilligungsrate oft nicht erreicht. Nennt neutral, dass Advanced Pings ohne Einwilligung sendet (§ 25 TDDDG relevant) und die Wahl beim Kunden mit Datenschutzberatung liegt. Kennzeichnet den Modellierungsumfang als nicht prüfbar über die MCP-Tools. Keine Rechtsberatung.",
+    "assertions": [
+      "Widerspricht der Aussage, Basic modelliere nicht — Basic nutzt ein allgemeines Modell",
+      "Nennt die Daten-Schwelle für das Advanced-Modell und dass kleine DACH-Konten sie oft nicht erreichen",
+      "Nennt, dass Advanced Pings ohne Einwilligung sendet und § 25 TDDDG relevant ist, ohne Rechtsberatung zu geben",
+      "Empfiehlt Advanced nicht pauschal und begründet es nicht mit „sonst kein Modelling”",
+      "Kennzeichnet den Umfang der Modellierung als nicht prüfbar über die MCP-Tools"
     ],
     "files": ["SKILL.md", "references/dach-consent.md"]
+  },
+  {
+    "id": "pii-in-ga4-urls",
+    "prompt": "Stehen bei uns E-Mail-Adressen oder Telefonnummern in den GA4-URLs? Unser Kontaktformular hängt glaube ich Parameter an die Danke-Seite.",
+    "expected_output": "Prüft mit ga4_report auf Dimension pageLocation (nicht pagePath, da ohne Query-Parameter) mit einem FULL_REGEXP-Filter auf PII-Muster (@, %40, email=, tel=, phone=, name=). Treffer = gemessen, hohe Priorität (Google-Richtlinie + DSGVO). Kennzeichnet Data Redaction als nicht prüfbar. Sagt, dass keine Treffer wegen limit/Thresholding keine Sauberkeit beweisen. Fix: Formular ohne PII-Parameter weiterleiten, Data Redaction für den Web-Stream aktivieren.",
+    "assertions": [
+      "Ruft ga4_report mit Dimension pageLocation und einem dimension_filter (match_type FULL_REGEXP) auf PII-Muster auf",
+      "Begründet pageLocation statt pagePath (pagePath enthält keine Query-Parameter)",
+      "Bewertet Treffer als gemessenen Befund mit hoher Priorität",
+      "Kennzeichnet die Data-Redaction-Einstellung als nicht prüfbar",
+      "Behauptet nicht, die Property sei PII-frei, nur weil keine Treffer kommen"
+    ],
+    "files": ["SKILL.md", "references/tracking-tool-grenzen.md"]
+  },
+  {
+    "id": "at-us-transfer-dpf",
+    "prompt": "Wir sind in Österreich. Die DSB hat doch 2021 Google Analytics verboten — dürfen wir GA4 überhaupt nutzen?",
+    "expected_output": "Ordnet den DSB-Bescheid 2021 als historischen Stand ein: Der DPF-Angemessenheitsbeschluss gilt, das EuG wies am 03.09.2025 die Klage dagegen ab (T-553/23). Empfiehlt, den Stand eines Rechtsmittels vor Kundennutzung zu prüfen (z. B. mit honeyfield-legal-mcp). Nennt § 165 TKG für Cookie-Consent als eigenes Thema. Gibt keine Rechtsberatung und keine Freigabe für den Einzelfall.",
+    "assertions": [
+      "Nennt EuG T-553/23 vom 03.09.2025 als Bestätigung des DPF",
+      "Kennzeichnet den DSB-Bescheid 2021 als historischen Stand für DPF-zertifizierte Empfänger",
+      "Empfiehlt, den Rechtsmittel-Stand vor Kundennutzung zu prüfen",
+      "Trennt US-Transfer von der Cookie-Einwilligung nach § 165 TKG",
+      "Gibt keine Rechtsberatung und keine Einzelfall-Freigabe"
+    ],
+    "files": ["SKILL.md", "references/dach-consent.md"]
+  },
+  {
+    "id": "self-referral-und-test-traffic",
+    "prompt": "In GA4 sehe ich unsere eigene Domain und paypal.com als Top-Quellen für Käufe. Außerdem frage ich mich, ob unsere Staging-Seite mitgezählt wird.",
+    "expected_output": "Prüft mit ga4_report nach sessionSource: eigene Domain/Payment-Anbieter als Quelle = Self-Referral- bzw. Cross-Domain-Verdacht (gemessen). Prüft mit ga4_report nach hostName auf localhost/Staging-Hosts (gemessen). Kennzeichnet Cross-Domain-Einstellung, Unwanted-Referral-Liste und Datenfilter als nicht prüfbar. Fix: Unwanted Referral für den Payment-Anbieter, Cross-Domain-Measurement, Datenfilter/eigene Property für Staging.",
+    "assertions": [
+      "Nutzt ga4_report mit Dimension sessionSource als gemessenen Self-Referral-Proxy",
+      "Nutzt ga4_report mit Dimension hostName als gemessenen Proxy für Staging-/Test-Traffic",
+      "Kennzeichnet Cross-Domain-/Referral-Einstellungen und Datenfilter als nicht prüfbar",
+      "Nennt konkrete Fixes (Unwanted Referral, Cross-Domain-Measurement, Filter für Test-Traffic)"
+    ],
+    "files": ["SKILL.md", "references/tracking-tool-grenzen.md"]
+  },
+  {
+    "id": "upload-enhanced-conversions-processor",
+    "prompt": "Lade unsere Offline-Leads mit E-Mail-Adressen als Enhanced Conversions for Leads in Google Ads hoch.",
+    "expected_output": "Nutzt ads_upload_conversions mit validate_only zuerst und holt Bestätigung ein. Weist darauf hin, dass Google bei Uploads mit Nutzerdaten (Enhanced Conversions inkl. for Leads, Customer Match, Store Sales) Auftragsverarbeiter ist; Data Processing Terms und eine Einwilligung mit ad_user_data sind Voraussetzung und über die Tools nicht prüfbar. Für normale Ads/GA4-Messung gelten Controller-Controller-Bedingungen.",
+    "assertions": [
+      "Führt ads_upload_conversions zuerst mit validate_only aus und lädt erst nach Bestätigung hoch",
+      "Nennt Google bei diesem Upload als Auftragsverarbeiter (Processor)",
+      "Nennt Data Processing Terms und ad_user_data-Einwilligung als Voraussetzung und kennzeichnet sie als nicht prüfbar",
+      "Behauptet nicht, Google sei bei jeder Ads-/GA4-Messung Auftragsverarbeiter"
+    ],
+    "files": ["SKILL.md", "references/dach-consent.md", "references/tracking-tool-grenzen.md"]
   }
 ]

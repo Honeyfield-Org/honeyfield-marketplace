@@ -28,13 +28,15 @@
   {
     "id": "trigger-content-brief",
     "prompt": "Wir wollen das Thema Angebotsverfolgung für Handwerksbetriebe angehen. Bereite das bitte so auf, dass unsere Texterin loslegen kann.",
-    "expected_output": "Aktiviert content-strategie und erstellt einen vollständigen Content-Brief: Ziel-Query-Set mit Volumen (dfs_keyword_volume/dfs_keyword_overview, Komposita- UND Phrase-Varianten), gemessene Suchintention (main_intent), Gliederungs-Vorschlag, W-Fragen aus people_also_ask, interne Verlinkung aus dem Bestand (sc_top_pages bzw. CMS-Read) und Belegpflicht-/Compliance-Hinweise (UWG, compliance-Flags). Schreibt den Artikel nicht selbst.",
+    "expected_output": "Aktiviert content-strategie und erstellt einen vollständigen Content-Brief: Ziel-Query-Set mit Volumen (dfs_keyword_volume/dfs_keyword_overview, Komposita- UND Phrase-Varianten), geschätzte Suchintention (main_intent, an der SERP geprüft), Content-Typ/Format/Angle aus der SERP-Analyse (dfs_serp_google_organic), Gliederungs-Vorschlag, W-Fragen aus people_also_ask, interne Verlinkung aus dem Bestand (sc_top_pages bzw. CMS-Read) und Belegpflicht-/Compliance-Hinweise (UWG, compliance-Flags). Schreibt den Artikel nicht selbst.",
     "assertions": [
       "Erstellt einen Content-Brief statt eines fertigen Artikels",
       "Belegt das Query-Set mit Volumen-/Intent-Daten und deckt Komposita- und Phrase-Varianten ab",
       "Nimmt W-Fragen aus people_also_ask in den Brief auf",
       "Gibt interne Verlinkungs-Hinweise auf Basis des Bestands (sc_top_pages bzw. wp_list_posts/strapi_list_entries)",
-      "Nennt Belegpflicht-/Compliance-Hinweise (UWG-Superlative, compliance-Flags) im Brief"
+      "Nennt Belegpflicht-/Compliance-Hinweise (UWG-Superlative, compliance-Flags) im Brief",
+      "Leitet Content-Typ, Format und Angle aus der SERP der Top-Ergebnisse (dfs_serp_google_organic) ab, nicht nur aus dem Keyword-Modifier",
+      "Kennzeichnet Volumen, Difficulty und main_intent als geschätzt (Datenbank), nicht als gemessen"
     ],
     "files": ["SKILL.md"]
   },
@@ -101,6 +103,28 @@
       "Kennzeichnet Suchvolumen als Schätzwert und leitet daraus keine garantierte Besucherzahl ab",
       "Erklärt, wovon realer Traffic zusätzlich abhängt (Position, CTR, Umsetzung)",
       "Kennzeichnet jede Einordnung als beratend statt als gemessen"
+    ],
+    "files": ["SKILL.md"]
+  },
+  {
+    "id": "brief-bestehende-url-datum",
+    "prompt": "Unser Ratgeber zur Angebotsverfolgung ist von 2023. Mach einen Brief für die Überarbeitung — und wir setzen dann einfach das Datum auf heute, damit er frisch wirkt.",
+    "expected_output": "Erstellt einen Überarbeitungs-Brief für die bestehende URL und setzt die Datums-Leitplanke: Veröffentlichungs-/Aktualisierungsdatum nur bei substanzieller inhaltlicher Änderung ändern. Datum hochsetzen ohne Änderung ist laut Google kein Qualitätssignal und kann schaden. Schreibt den Artikel nicht selbst.",
+    "assertions": [
+      "Erstellt einen Brief für die Überarbeitung der bestehenden URL statt eines fertigen Artikels",
+      "Rät davon ab, nur das Datum hochzusetzen, und bindet die Datumsänderung an eine substanzielle inhaltliche Überarbeitung",
+      "Begründet die Leitplanke mit Googles Hinweis (Schein-Aktualität ist kein Qualitätssignal)"
+    ],
+    "files": ["SKILL.md"]
+  },
+  {
+    "id": "tool-reality-anonymisierte-queries",
+    "prompt": "Summier mal alle Klicks aus unseren GSC-Queries — dann wissen wir, wie viel organischer Traffic insgesamt über Content-Themen kommt.",
+    "expected_output": "Bildet keine Gesamtwerte aus Query-Zeilen: GSC lässt auf Query-Ebene anonymisierte Suchanfragen weg (über alle Properties ca. 47 % der Klicks, Stand 04/2025; je Site oft 45–80 %). Summen über Query-Zeilen sind daher kleiner als die Gesamtsumme. Zieht Gesamt-Klicks aus sc_performance ohne query-Dimension und kennzeichnet Bestands-Chancen als lückenhaft.",
+    "assertions": [
+      "Bildet keinen Gesamtwert aus der Summe der Query-Zeilen",
+      "Nennt anonymisierte Suchanfragen als Grund (ca. 47 % der Klicks, Stand 04/2025)",
+      "Zieht Gesamt-Klicks ohne query-Dimension bzw. kennzeichnet die Query-Summe als Untergrenze"
     ],
     "files": ["SKILL.md"]
   }

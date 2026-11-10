@@ -47,7 +47,7 @@ Default-Modus. Vorwärtsgerichtet: „was als nächstes”, nicht „warum” (U
 
 ## 2 · Strategischer Rahmen
 
-**Zweck:** Positionierung, Zielkunde (ICP) und Ziel-KPI auf einer halben Seite — aus dem Projekt-Kontext gezogen, nicht neu erfunden. Widersprüche im Kontext hier nicht glätten, sondern in Sektion 9 als offene Entscheidung führen.
+**Zweck:** Positionierung, Zielkunde (ICP) und Ziel-KPI auf einer halben Seite — aus dem Projekt-Kontext gezogen, nicht neu erfunden. Widersprüche im Kontext hier nicht glätten, sondern in Sektion 9 als offene Entscheidung führen. Fehlt ein ICP im Projekt-Kontext, keins erfinden — ebenfalls als offene Entscheidung in Sektion 9; bei Marken-Fundament ≤ 2/5 steht „Positionierung/ICP schärfen” als erste Foundation-Maßnahme in der Roadmap.
 
 > **Positionierung:** Spezialpraxis für Sportphysiotherapie und Rückentherapie in Graz — nicht die Allround-Praxis, sondern die Adresse für Sportverletzungen.
 > **Zielkunde:** Selbstzahler 30–55, sportlich aktiv, Graz + Umland, akuter Leidensdruck (Verletzung, Rückenschmerz), sucht schnell einen Termin.
@@ -158,10 +158,10 @@ Kurzform für ein Ziel, 1–2 Kanäle, ein Zeitfenster. Gleiche Kundenfähig-Reg
 
 ## 4 · Budget & Flighting
 
-**Zweck:** Budget aus Ziel-Anfragen × Ziel-Kosten rückrechnen; Laufzeit-Verteilung (Flighting) so, dass die Lernphase nicht abreißt.
+**Zweck:** Budget aus Ziel-Anfragen × Ziel-Kosten rückrechnen; Laufzeit-Verteilung (Flighting) so, dass die Datenbasis nicht abreißt.
 
 > **Budget:** 750 € über ~3,5 Wochen (~30 €/Tag, beratend). Rechnung: 30 Anfragen × 25 € Ziel-Kosten = 750 € (beratend).
-> **Flighting:** durchgehend ~3,5 Wochen statt Stop-and-Go — sonst startet die Lernphase jedes Mal neu; das 750-€-Budget nicht auf mehr Wochen strecken (unter ~30 €/Tag/Kanal verhungert der Kanal).
+> **Flighting:** durchgehend ~3,5 Wochen statt Stop-and-Go — sonst reißt die Datenbasis ab (Google bewertet Smart Bidding erst über Zeiträume mit mind. 30 Conversions); das 750-€-Budget nicht auf mehr Wochen strecken (unter ~30 €/Tag/Kanal verhungert der Kanal).
 
 ## 5 · Messplan
 
@@ -189,6 +189,7 @@ Kurzform für ein Ziel, 1–2 Kanäle, ein Zeitfenster. Gleiche Kundenfähig-Reg
 | Maßnahme | Zuständiger Skill | Benötigte Quelle |
 |---|---|---|
 | Current-State-Rubric scoren | `marketing-plan` (dieser Skill) | `list_workspaces` + Read-Tools je Dimension |
+| Positionierung/ICP schärfen (bei Marken-Fundament ≤ 2/5) | `projekt-kontext` | Interview + Projekt-Kontext-Felder |
 | Lokale Sichtbarkeit / Leistungsseiten | `seo-audit` | `sc_performance`, `sc_top_queries`, `dfs_keyword_rankings` |
 | Unternehmensprofil vervollständigen | `seo-audit` (Local-Teil) | `gbp_get_profile`, `gbp_performance`, `gbp_local_seo_audit` |
 | Bewertungs-Ablauf | `seo-audit` (Local) / Kunde | `gbp_reviews`, `gbp_get_review_link` |

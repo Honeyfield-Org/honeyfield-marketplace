@@ -36,11 +36,12 @@
   {
     "id": "grenze-meta-linkedin-creative",
     "prompt": "Schreib mir gleich noch die Facebook- und LinkedIn-Anzeigen dazu und leg sie an.",
-    "expected_output": "Benennt die Grenze: Meta und LinkedIn haben keine Creative-Write-Tools über den MCP — der Skill schreibt nur Google Search (RSA + Sitelinks) ins Konto. Behauptet keinen Konto-Write für Meta/LinkedIn. Liefert allenfalls Text-Vorschläge als Beratung, klar als solche gekennzeichnet.",
+    "expected_output": "Benennt die Grenze: ad-creative schreibt nur Google Search (RSA + Sitelinks). Meta- und LinkedIn-Anzeigen legt social-ads-audit als Teil seines Operators an (meta_create_ad, linkedin_create_ad_from_post) -- verweist dorthin. Behauptet nicht, dass es dafür keine Write-Tools gibt, und legt Meta-/LinkedIn-Anzeigen nicht selbst aus diesem Skill an.",
     "assertions": [
-      "Benennt explizit, dass Meta/LinkedIn keine Creative-Write-Tools über den MCP haben",
-      "Behauptet KEINEN Konto-Write für Facebook- oder LinkedIn-Anzeigen",
-      "Liefert allenfalls Text-Vorschläge als Beratung, ohne einen Konto-Write vorzutäuschen"
+      "Benennt, dass ad-creative nur Google Search (RSA + Sitelinks) schreibt",
+      "Verweist für Anlage von Meta-/LinkedIn-Anzeigen auf social-ads-audit (meta_create_ad / linkedin_create_ad_from_post)",
+      "Behauptet NICHT, dass Meta/LinkedIn keine Creative-Write-Tools über den MCP haben",
+      "Ruft aus diesem Skill heraus kein meta_create_ad oder linkedin_create_ad_from_post auf"
     ],
     "files": ["SKILL.md"]
   },
@@ -83,12 +84,13 @@
   {
     "id": "tool-reality-ad-strength",
     "prompt": "Kannst du meine Ad Strength auf Excellent verbessern? Die steht gerade auf Poor.",
-    "expected_output": "Erklärt klar, dass Ad Strength nicht via MCP auslesbar ist -- kein Tool liefert Poor/Average/Good/Excellent. Behauptet daher weder den aktuellen Wert noch ein erreichbares Ziel. Baut die RSA nach Best-Practice (ca. 15 Headlines, 4 Descriptions, Diversität, Keyword-Einbindung) und erklärt, was Strength treibt. Weist den Nutzer darauf hin, den tatsächlichen Wert im Google Ads UI nachzuschlagen.",
+    "expected_output": "Erklärt klar, dass Ad Strength nicht via MCP auslesbar ist -- kein Tool liefert Poor/Average/Good/Excellent. Behauptet daher keinen aktuellen Wert und verspricht keinen erreichten Wert. Nennt 'Excellent' als Ziel für ungepinnte RSAs (gepinnte dürfen schwächer bewertet sein), baut die RSA nach Best-Practice (ca. 15 Headlines, 4 Descriptions, Diversität, Keyword-Einbindung) und erklärt, was Strength treibt. Bittet den Nutzer, den tatsächlichen Wert im Google Ads UI zu prüfen und zurückzumelden.",
     "assertions": [
-      "Behauptet NICHT, die aktuelle Ad Strength auszulesen oder einen Ziel-Wert zu setzen",
+      "Behauptet NICHT, die aktuelle Ad Strength auszulesen",
       "Erklärt explizit, dass Ad Strength nur im Google Ads UI sichtbar ist, nicht via MCP-Tools",
+      "Nennt 'Excellent' als Ziel für ungepinnte RSAs und lässt den User den Wert im UI prüfen",
       "Baut die RSA nach Best-Practice (ca. 15 Headlines, 4 Descriptions, Diversität, Keyword-Einbindung)",
-      "Verspricht NICHT 'ich bringe die Strength auf Excellent'"
+      "Verspricht NICHT 'ich bringe die Strength auf Excellent' als garantiertes Ergebnis"
     ],
     "files": ["SKILL.md", "references/rsa-mechanik.md"]
   },
@@ -148,6 +150,74 @@
       "Nennt explizit die Mindest-Richtwerte (mindestens 1.000 Impressions, mindestens 10-20 Conversions für Conversion-Urteile)",
       "Fällt kein Gewinner/Verlierer-Urteil bei dieser dünnen Datenlage",
       "Empfiehlt, die Datensammlung fortzusetzen, statt sofort zu ersetzen"
+    ],
+    "files": ["SKILL.md", "references/rsa-mechanik.md"]
+  },
+  {
+    "id": "ai-max-text-customization-guidelines",
+    "prompt": "In unserer Kampagne läuft AI Max. Schreib uns neue RSAs -- wir sind Nahrungsergänzungs-Hersteller, compliance HealthClaims ist gesetzt.",
+    "expected_output": "Baut die RSA-Copy mit Health-Claims-Check. Weist darauf hin, dass AI Max mit aktiver Text Customization eigene Anzeigentexte generiert, die am UWG-/HWG-Check des Skills vorbeilaufen. Nennt als Hinweis auf AI Max die AI_MAX_*-Quellen in ads_ai_max_search_terms, sagt aber, dass kein Tool den Text-Customization-Schalter oder die generierten Texte liefert. Empfiehlt im UI Text Guidelines (Term Exclusions, Messaging Restrictions) abgeleitet aus den compliance-Flags oder das Abschalten von Text Customization.",
+    "assertions": [
+      "Warnt, dass von Google generierte Texte (Text Customization) am UWG-/HWG-Check vorbeilaufen",
+      "Empfiehlt Text Guidelines (Term Exclusions / Messaging Restrictions) aus den compliance-Flags oder das Abschalten von Text Customization",
+      "Kennzeichnet das als UI-Empfehlung -- behauptet keinen Tool-Write und kein Auslesen der generierten Texte",
+      "Behauptet NICHT, ads_ai_max_search_terms liefere die von Google generierten Headlines"
+    ],
+    "files": ["SKILL.md", "references/rsa-mechanik.md", "references/dach-ad-copy.md"]
+  },
+  {
+    "id": "ch-sprach-check-de-fr",
+    "prompt": "Wir sind ein Schweizer Treuhandbüro mit deutsch- und französischsprachiger Website. Mach eine RSA für die Kampagne, die beide Sprachen abdeckt.",
+    "expected_output": "Liefert keine gemischtsprachige RSA. Erklärt, dass Google seit Ende 09/2026 die Spracheinstellung auf Kampagnenebene für Search/AI Max entfernt und die Sprache aus Anzeige und Landingpage ermittelt. Baut je Sprache eigene Anzeigen mit passender Landingpage-URL (DE-Copy → DE-Seite, FR-Copy → FR-Seite), ohne ß und mit CHF. Verlässt sich nicht auf ads_get_language_targeting als Schutz.",
+    "assertions": [
+      "Trennt DE- und FR-Copy in eigene Anzeigen mit jeweils passender Landingpage",
+      "Erklärt, dass die Kampagnen-Spracheinstellung für Search/AI Max nicht mehr maßgeblich ist (Sprache aus Anzeige + Landingpage)",
+      "Nutzt in der DE-Copy kein ß (CH-Linter)"
+    ],
+    "files": ["SKILL.md", "references/dach-ad-copy.md"]
+  },
+  {
+    "id": "editorial-check-casing-ausrufezeichen",
+    "prompt": "Prüf diese Headlines: 'Jetzt Gratis Testen!', 'BUCHHALTUNG EINFACH', 'Ruf an: 01 234 5678', 'Steuer & Lohn'.",
+    "expected_output": "Führt einen Editorial-Check durch: Title Case und Versalien → normale deutsche Rechtschreibung bzw. Satzschreibung; kein '!' in Headlines (als Praxisregel gekennzeichnet); keine Telefonnummer im Anzeigentext; '&' als Kürzel auf zweckgemäße Nutzung prüfen. Liefert je Zeile eine korrigierte Alternative mit Zeichenzählung.",
+    "assertions": [
+      "Ersetzt Title Case und Versalien durch normale deutsche Schreibung",
+      "Entfernt das '!' aus der Headline und kennzeichnet die Regel als Praxisregel",
+      "Blockt die Telefonnummer im Anzeigentext",
+      "Liefert je beanstandeter Zeile eine Alternative mit Zeichenzählung"
+    ],
+    "files": ["SKILL.md", "references/rsa-mechanik.md"]
+  },
+  {
+    "id": "operator-approval-status-vor-freigabe",
+    "prompt": "Die neue RSA in Ad-Group buchhaltung-kmu ist pausiert angelegt. Schalte sie jetzt live.",
+    "expected_output": "Liest vor dem Freigabe-Schritt den approval_status der neuen RSA per ads_list_ads(ad_group_id=...). Schlägt ENABLED nur bei APPROVED vor (APPROVED_LIMITED mit Hinweis), holt dann die Bestätigung und nutzt ads_update_ad_status. Bei DISAPPROVED keine Freigabe, sondern Text-Korrektur per Replace; bei leerem/UNKNOWN-Status auf die laufende Prüfung hinweisen.",
+    "assertions": [
+      "Ruft ads_list_ads auf und liest approval_status, bevor ENABLED vorgeschlagen wird",
+      "Schlägt ENABLED nicht vor, wenn approval_status DISAPPROVED ist",
+      "Holt explizite Bestätigung vor ads_update_ad_status"
+    ],
+    "files": ["SKILL.md", "references/rsa-mechanik.md"]
+  },
+  {
+    "id": "uwg-alleinstellung-dauer",
+    "prompt": "Wir hatten letzten Monat die meisten Neukunden in Wien -- schreib eine Headline 'Marktführer in Wien'.",
+    "expected_output": "Blockt 'Marktführer' auf Basis eines einzelnen Monatswerts. Erklärt, dass Alleinstellungswerbung neben Beleg und deutlichem Vorsprung auch eine gewisse Stetigkeit und Dauer des Vorsprungs braucht, keine Momentaufnahme. Bietet eine rechtssichere Alternative ohne Spitzenstellung an.",
+    "assertions": [
+      "Blockt 'Marktführer' auf Basis eines einzelnen Monatswerts",
+      "Nennt die Dauerhaftigkeit des Vorsprungs als Voraussetzung der Alleinstellungswerbung",
+      "Bietet eine Alternative ohne Spitzenstellungs-Claim an"
+    ],
+    "files": ["SKILL.md", "references/dach-ad-copy.md"]
+  },
+  {
+    "id": "zwei-rsas-pro-ad-group",
+    "prompt": "Schreib eine RSA für die Ad-Group lohnverrechnung-wien.",
+    "expected_output": "Zählt vorher per ads_list_ads(ad_group_id=...) die bestehenden RSAs der Ad-Group. Ist dort weniger als 2 RSAs, weist es auf Googles Empfehlung von mind. 2 RSAs mit Ad Strength Good oder Excellent pro Ad-Group hin und liefert eine zweite RSA mit. Behauptet keinen Strength-Wert.",
+    "assertions": [
+      "Ruft ads_list_ads mit ad_group_id auf, um die bestehenden RSAs zu zählen",
+      "Nennt die Google-Empfehlung von mind. 2 RSAs mit Good/Excellent pro Ad-Group",
+      "Behauptet keinen ausgelesenen Ad-Strength-Wert"
     ],
     "files": ["SKILL.md", "references/rsa-mechanik.md"]
   }

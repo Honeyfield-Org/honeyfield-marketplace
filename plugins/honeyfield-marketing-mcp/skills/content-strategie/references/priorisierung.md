@@ -19,8 +19,8 @@ Jedes Thema auf vier Faktoren bewerten (1–10), gewichtet:
 - Führt es natürlich zum Angebot?
 
 ### 3. Search Potential (20 %)
-- Monatliches Suchvolumen (`dfs_keyword_volume`, gemessen)?
-- Keyword-Difficulty (`dfs_keyword_overview`, gemessene Zahl — SERP-Besetzung via `dfs_serp_google_organic` bleibt ergänzendes qualitatives Signal)?
+- Monatliches Suchvolumen (`dfs_keyword_volume`, geschätzt — Datenbank-Modellwert)?
+- Keyword-Difficulty (`dfs_keyword_overview`, geschätzt — Datenbank-Modellwert; SERP-Besetzung via `dfs_serp_google_organic` bleibt ergänzendes qualitatives Signal)?
 - Long-Tail-Chancen drumherum (`dfs_keyword_suggestions`)?
 - Interesse steigend oder fallend (`dfs_keyword_trends`, max. 5 Keywords/Call — für die Shortlist, nicht jedes Thema)?
 
@@ -39,7 +39,7 @@ Total = gewichteter Schnitt. Hoch nach unten sortieren, Empfehlung aussprechen w
 
 ## Buyer-Stage-Keyword-Modifier (DACH)
 
-Themen der Buyer-Journey zuordnen. `dfs_keyword_overview.main_intent` liefert den Intent jetzt als Messwert (informational/commercial/transactional/navigational) — der Modifier unten übersetzt das in die vier Buyer-Stages und den passenden Content-Typ, und dient als Plausibilisierung, wenn Query-Muster und gemessener Intent auseinanderlaufen:
+Themen der Buyer-Journey zuordnen. `dfs_keyword_overview.main_intent` liefert den Intent als Datenbank-Schätzwert (informational/commercial/transactional/navigational) — der Modifier unten übersetzt das in die vier Buyer-Stages und dient als Plausibilisierung, wenn Query-Muster und geschätzter Intent auseinanderlaufen. Den Content-Typ bestimmt die SERP-Analyse (`dfs_serp_google_organic`, siehe SKILL.md); die Spalte „Content-Typ” ist nur der Fallback ohne SERP:
 
 | Stage | DE-Modifier (Beispiele) | Content-Typ |
 |---|---|---|
@@ -48,14 +48,14 @@ Themen der Buyer-Journey zuordnen. `dfs_keyword_overview.main_intent` liefert de
 | **Decision** | „preis”, „kosten”, „erfahrungen”, „bewertung”, „demo”, „testen” | Pricing-/Produktseite, Case Study, Review-Seite |
 | **Implementation** | „vorlage”, „anleitung”, „tutorial”, „beispiel”, „checkliste”, „so geht” | Template, Schritt-für-Schritt, How-to |
 
-**DACH-Hinweis:** Komposita UND Phrase abdecken („[Thema]-Vergleich” und „[Thema] vergleichen”). Consideration-/Decision-Modifier mit kommerziellem Intent haben oft höheren CPC — CPC als Kommerz-Proxy nutzen (gemessen), nicht als Erfolgsgarantie (beratend).
+**DACH-Hinweis:** Komposita UND Phrase abdecken („[Thema]-Vergleich” und „[Thema] vergleichen”). Consideration-/Decision-Modifier mit kommerziellem Intent haben oft höheren CPC — CPC als Kommerz-Proxy nutzen (geschätzt), nicht als Erfolgsgarantie (beratend).
 
 ## Verzahnung mit dem `seo-audit`-Gap-Input
 
 Kommt eine Content-Lücken-Liste aus `seo-audit` Phase 5, ist die Diagnose schon erledigt — **nicht neu diagnostizieren**. Der Gap enthält Selbst-Gap (eigene Domain: hohes Volumen, kein/schlechtes Ranking) und Competitor-Gap (wo Konkurrenten ranken, der Kunde nicht). Vorgehen:
 1. Jedes Gap-Thema um die für die Erstellung fehlenden Felder ergänzen: Volumen/CPC (`dfs_keyword_volume`), Difficulty/Intent (`dfs_keyword_overview`), Buyer-Stage (Modifier oben), Pillar-Fit.
 2. Striking-Distance-Gaps (bestehende Rankings Position 5–15 mit GSC-Beleg) sind der stärkste Hebel — vor Netto-Neu-Themen priorisieren.
-3. Score anwenden, Content-Typ je Buyer-Stage festlegen, in die Roadmap.
+3. Score anwenden, Content-Typ aus der SERP-Analyse festlegen (Buyer-Stage-Modifier nur als Fallback), in die Roadmap.
 
 ## Headline- & CTA-Formeln (eingedeutscht)
 

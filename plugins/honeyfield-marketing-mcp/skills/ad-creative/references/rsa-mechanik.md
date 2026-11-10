@@ -44,7 +44,11 @@ Was Ad Strength **treibt** (Best Practices, nach denen der Skill baut):
 4. **Wenig Redundanz** — Headlines/Descriptions nicht mit ähnlichen Formulierungen füllen
 5. **Themen-Diversität** — verschiedene Angles (Nutzen, Beweis, CTA) statt monothematisch
 
-Selbstcheck im Output: „RSA nach Best-Practice gebaut (15 Headlines, Unique, Keyword-Einbindung, Mix) — den Strength-Wert siehst du nur im Google Ads UI.”
+**Zielwert:** Für **ungepinnte** RSAs „Excellent” anstreben — für ungepinnte Anzeigen bringt höhere Ad Strength bessere Ergebnisse; der Vorteil schwächer bewerteter Anzeigen kommt vor allem vom Pinning ([Adalysis](https://adalysis.com/blog/google-ads-data-study-does-a-higher-ad-strength-improve-your-performance/)). Gepinnte RSAs (Brand/Pflichtangabe) dürfen schwächer bewertet sein — das ist erwartbar. Ad Strength bleibt Diagnose, nicht Geschäftsziel.
+
+**Pro Ad-Group:** Google empfiehlt mind. **2 RSAs mit Ad Strength „Good” oder „Excellent”** ([Google](https://support.google.com/google-ads/answer/7684791)). Bestand vorher per `ads_list_ads(ad_group_id=…)` zählen.
+
+Selbstcheck im Output: „RSA nach Best-Practice gebaut (15 Headlines, Unique, Keyword-Einbindung, Mix), Ziel ‚Excellent‘ (ungepinnt) — prüf den Strength-Wert im Google Ads UI und meld ihn zurück.”
 
 ---
 
@@ -88,6 +92,7 @@ Pinning (Festhalten einer Headline auf Position 1, 2 oder 3) ist **nur im Google
 - **Disclaimer/Pflichtangaben:** Pos 1 oder 3, falls rechtlich erforderlich
 - **Sparsam einsetzen:** Jeder Pin reduziert Googles Kombinationsfreiheit → schlechtere Optimierung
 - Faustregel: Maximal 1–2 Pins pro RSA, nur wenn rechtlich oder strategisch zwingend
+- **Reihenfolge (Geddes):** Pins entfernen → ungepinnt auf „Excellent” bauen → gezielt nur die nötigen Pins neu setzen ([SEJ](https://www.searchenginejournal.com/google-favors-high-ad-strength-rsas-but-lower-rated-ads-convert-better/595478/))
 
 Im Output als Empfehlung formulieren: „Falls du X auf Pos 1 halten möchtest → im UI pinnen (Schraubenschlüssel-Icon an der Ad)”
 
@@ -108,7 +113,7 @@ Bevor Headlines oder Descriptions als „Gewinner” oder „Verlierer” einges
 
 **Verbotene Urteile auf dünner Datenbasis:**
 - „Headline 3 performt schlechter” bei < 500 Impressions: kein Urteil — zu wenig Daten
-- „Diese Ad hat schlechtere CTR” bei 2 Wochen Laufzeit nach einem Replace (Lernphase noch aktiv)
+- „Diese Ad hat schlechtere CTR” bei 2 Wochen Laufzeit nach einem Replace (Datenaufbau der neuen Anzeigen-ID: die neue Ad hat noch kaum eigene Statistik — das ist kein Google-Status „Learning”; den lösen nur Gebotsstrategie-, Zusammensetzungs- und Conversion-Ziel-Änderungen aus, [Google](https://support.google.com/google-ads/answer/13020501))
 
 Im Output: Wenn die Datenlage dünn ist → explizit sagen: „Zu wenig Daten für ein zuverlässiges Urteil (X Impressions). Empfehlung: noch Y Wochen laufen lassen.”
 
@@ -123,9 +128,10 @@ Deutsche Eigenheiten, die Limits sprengen:
 | **Leerzeichen** | Zählen mit — „PM Tool” (7) vs. „PM-Tool” (6) |
 | **Umlaute & ß** | Je 1 Zeichen (ä=1, ö=1, ü=1, ß=1) — kein UTF-8-Mehrfachzählung |
 | **DKI `{KeyWord:default}`** | Wird durch das auslösende Keyword ersetzt — kann Limit sprengen, wenn Keywords lang sind. Default-Text wählen, der sicher < 30 Zeichen ist |
-| **Lange Komposita** | „Projektmanagement-Software” (27) verbraucht fast das gesamte Limit → kürzen: „PM-Software” (11) |
-| **Satzzeichen** | Ausrufezeichen in Headlines erlaubt; Ausrufezeichen in Display-URL/Path nicht |
-| **Groß-/Kleinschreibung** | Jedes signifikante Wort groß (Title Case) erhöht Lesbarkeit, kein Zeicheneffekt |
+| **Lange Komposita** | „Projektmanagement-Software” (26) verbraucht fast das gesamte Limit → kürzen: „PM-Software” (11) |
+| **Satzzeichen** | Kein „!” in Headlines (Praxisregel aus Googles älteren Editorial-Richtlinien, Ablehnung üblich); in Descriptions höchstens eines; kein „!” in Display-URL/Path. Die aktuelle Policy „Punctuation and symbols” verbietet zweckfremde und wiederholte Satzzeichen („flowers!!”) ([Google](https://support.google.com/adspolicy/answer/14847994)) |
+| **Groß-/Kleinschreibung** | Kein Title Case, keine Versalien — normale deutsche Rechtschreibung bzw. Satzschreibung. Optmyzr-Gesamtdatensatz: CPA bei Sentence Case $7,46 vs. Title Case $27,47 (korrelativ, [Optmyzr](https://www.optmyzr.com/blog/google-rsa-performance-study/)) |
+| **Symbole & Kürzel** | Nur zweckgemäß — „&” als Platz-Kürzel prüfen; keine Telefonnummer im Anzeigentext ([Editorial-Policy](https://support.google.com/adspolicy/answer/6021546)) |
 
 **Validierungs-Routine vor Write:**
 1. Für jede Headline: `len(text.strip()) <= 30` — sonst kürzen oder streichen
@@ -133,6 +139,10 @@ Deutsche Eigenheiten, die Limits sprengen:
 3. Für Paths: `len(path.strip()) <= 15`
 4. Headlines-Anzahl: 3 ≤ n ≤ 15; Descriptions: 2 ≤ n ≤ 4
 5. DKI-Texte: Default-Wert im Limit prüfen, **und** längste realistische Keyword-Ersetzung prüfen — Ad-Group-Keywords per `ads_list_keywords(ad_group_id=…)` ziehen (Zeilen mit `negative=true` sind Ad-Group-Negatives — ausklammern), das längste gegen das 30er-Limit rechnen
+6. Editorial-Check: keine Versalien/kein Title Case, kein „!” in Headlines (Praxisregel, Warnung statt Abbruch), höchstens eines je Description, Symbole zweckgemäß, keine Telefonnummer
+7. Sprach-Check: Copy-Sprache = Landingpage-Sprache (CH: DE/FR/IT getrennt)
+
+**Nach dem Write, vor dem Freigabe-Vorschlag:** `approval_status` der neuen RSA per `ads_list_ads(ad_group_id=…)` lesen — nur bei `APPROVED` (bzw. `APPROVED_LIMITED` mit Hinweis) `ENABLED` vorschlagen; `DISAPPROVED` → Text per Replace korrigieren.
 
 ---
 
@@ -145,11 +155,11 @@ Deutsche Eigenheiten, die Limits sprengen:
 - `ads_create_sitelink` / `ads_update_sitelink` — Sitelinks neu anlegen / final_url in-place ändern; **kein `status`-Parameter** (kein PAUSED — nach Anlage sofort aktiv, ohne `campaign_id` Konto-weit) und kein Remove-Tool via MCP
 
 **Read-Tools (Fundierung):**
-- `ads_list_ads` — liefert Copy + Status; **kein Ad-Strength-Wert**
+- `ads_list_ads` — liefert Copy + Status + `approval_status` (Policy-Freigabe); **kein Ad-Strength-Wert**
 - `ads_list_assets` — Sitelinks/Callouts/Structured Snippets inkl. `asset_id` (Filter `asset_type`); Pflicht-Read vor jedem Sitelink-Write (Duplikate vermeiden, `asset_id` fürs Update). Promotion/Price deckt es nicht ab
 - `ads_ad_performance` — Ad-Level CTR/Conversions (keine per-Asset-Labels)
-- `ads_search_terms` / `ads_ai_max_search_terms` — reale Suchsprache der Nutzer
+- `ads_search_terms` / `ads_ai_max_search_terms` — reale Suchsprache der Nutzer; `ads_ai_max_search_terms` splittet nach `source` (Keyword vs. `AI_MAX_*`), liefert aber **keine** von Google generierten Headlines
 - `ads_keyword_performance` — QS + Conversion-Signale der Ziel-Keywords
 - `ads_list_keywords` — alle Keywords der Ziel-Ad-Group (DKI-Längen-Check, auch impression-lose)
 
-**Kein Tool liefert:** Ad Strength, per-Asset-Labels (Best/Good/Low), Pinning-Status.
+**Kein Tool liefert:** Ad Strength, per-Asset-Labels (Best/Good/Low), Pinning-Status, AI-Max-Text-Customization-Status und von Google generierte Texte.

@@ -30,15 +30,22 @@ Prüf-Schritt: Steht die Site in **Bing**? `dfs_serp_bing_organic(keyword="site:
 
 ## KI-Bot-Liste + robots.txt-Nuancen
 
-Relevante User-Agents: `GPTBot`, `ChatGPT-User`, `OAI-SearchBot` (OpenAI), `ClaudeBot`, `anthropic-ai`, `Claude-User` (Anthropic), `PerplexityBot`, `Perplexity-User`, `Google-Extended` (Gemini-Training-Opt-out), `Bingbot`.
+Relevante User-Agents: `GPTBot`, `ChatGPT-User`, `OAI-SearchBot`, `OAI-AdsBot` (OpenAI), `ClaudeBot`, `Claude-SearchBot`, `Claude-User`, `Claude-Agent`, `anthropic-ai` (Anthropic), `PerplexityBot`, `Perplexity-User`, `Google-Extended` (Gemini-Training-Opt-out), `Bingbot`. Belege: https://developers.openai.com/docs/gptbot · https://support.claude.com/en/articles/8896518 · https://docs.perplexity.ai/docs/resources/perplexity-crawlers
+
+**Abdeckung `site_crawler_check`** (16 Bots): Googlebot, Bingbot, Applebot · OAI-SearchBot, PerplexityBot, Claude-SearchBot · ChatGPT-User, Claude-User, Perplexity-User · GPTBot, ClaudeBot, Google-Extended, Applebot-Extended, CCBot, Bytespider, Meta-ExternalAgent. **Nicht abgedeckt:** `OAI-AdsBot`, `Claude-Agent`, `anthropic-ai`, AIPREF → manuell prüfen (robots.txt lesen, z. B. `curl <domain>/robots.txt` bzw. WebFetch).
 
 - **GPTBot** = Training UND Search zugleich, nicht trennbar → Blocken kostet Citations.
 - **OAI-SearchBot / ChatGPT-User** = Live-/Search-Fetch → niemals blocken, wenn man zitiert werden will.
+- **`OAI-AdsBot`** = Ad-Review für OpenAI-Anzeigen → relevant, wenn der Kunde `openai_ads_*` nutzt; nicht blocken.
+- **`Claude-Agent`** = von Anthropic gehosteter Browser (Agent im Nutzerauftrag); **`Claude-SearchBot`** = Anthropics Such-Crawler → für Citations in Claude offen lassen.
+- **`Perplexity-User`** = Abruf im Nutzerauftrag; ignoriert robots.txt laut Perplexity meist („generally ignores robots.txt rules”) → eine robots.txt-Sperre nur dafür ist keine wirksame Sperre.
 - **CCBot** (Common Crawl) = nur Training, **keine** Citations → kann gefahrlos geblockt werden (die einzige sichere „Content-Diebstahl”-Antwort).
 - **Google-Extended** blockt nur Gemini-Training, nicht die Google-Suche/AIO.
+- **AIO/AI-Mode-Opt-out = Snippet-Steuerung:** `nosnippet`, `max-snippet`, `data-nosnippet` und `noindex` sind laut Google die Controls für die Nutzung in AI Overviews/AI Mode (https://developers.google.com/search/docs/appearance/ai-features). Ungewollt gesetzt → kritischer Blocker; `site_crawler_check` liefert Meta-Robots (`robots`/`googlebot`) und X-Robots-Tag nur der Startseite, `data-nosnippet` steht nur im Roh-HTML.
+- **AIPREF (ab Anfang 2027):** Google will das AIPREF-Signal `user-agent: __usage_ai-training` als Trainings-Opt-out unterstützen (https://developers.google.com/search/docs/crawling-indexing/google-common-crawlers). `site_crawler_check` wertet es nicht aus (nur Content Signals) → bei Bedarf robots.txt manuell lesen.
 
 Bot-Status-Test: `site_crawler_check` mit `check_live=true` (Startseite, beide Plattformen). In Claude Code für weitere URLs je Bot-UA abrufen, z. B.
-`curl -sIL -A "OAI-SearchBot/1.0 (+https://openai.com/searchbot)" <url>` → 200 (gut) vs. 403/Cloudflare-Block vs. Soft-404 (Status 200 auf leerer Seite). UA ist spoofbar, und Cloudflare & Co. verifizieren echte Bots über IP-Bereiche: ein 403 auf unseren Testabruf beweist keine Sperre des echten Bots (nur Indiz, robots.txt ist verlässlich); für die Auswertung fremder Server-Logs müsste man die Source-IP gegen die publizierten Ranges der Anbieter prüfen.
+`curl -sIL -A "OAI-SearchBot/1.0 (+https://openai.com/searchbot)" <url>` → 200 (gut) vs. 403/Cloudflare-Block vs. Soft-404 (Status 200 auf leerer Seite). UA ist spoofbar, und Cloudflare & Co. verifizieren echte Bots über IP-Bereiche: ein 403 auf unseren Testabruf beweist keine Sperre des echten Bots (nur Indiz, robots.txt ist verlässlich); für die Auswertung fremder Server-Logs müsste man die Source-IP gegen die publizierten Ranges der Anbieter prüfen. Anthropic veröffentlicht seine IPs unter `claude.com/crawling/bots.json` und empfiehlt trotzdem robots.txt statt IP-Blocking (https://support.claude.com/en/articles/8896518); Perplexity veröffentlicht IP-JSONs je Bot.
 
 ## Princeton-GEO-Hebel (Fix-Priorisierung)
 
@@ -54,12 +61,14 @@ Quantifizierter Sichtbarkeits-Boost (Princeton/„GEO”, KDD 2024) — als Sort
 | Fachbegriffe / Vokabular | +15–18 % |
 | **Keyword-Stuffing** | **−10 % (schadet aktiv)** |
 
-Beste Kombi: **Fluency + Statistics**. Niedrig rankende Sites profitieren überproportional (bis +115 % mit Citations). → Bei der Fix-Empfehlung „Statistik mit Quelle ergänzen” über „Ton verbessern” stellen.
+Beste Kombi: **Fluency + Statistics**. Niedrig rankende Sites profitieren überproportional (Methode „Cite Sources”: +115 % für Rang 5, −30 % für Rang 1).
+
+*Fußnote:* Benchmark-Werte aus dem Paper (https://arxiv.org/html/2311.09735v3), keine Garantie im Einzelfall. Auf Perplexity fiel der Effekt kleiner aus (Quotation Addition ca. +22 %). → Bei der Fix-Empfehlung „Statistik mit Quelle ergänzen” über „Ton verbessern” stellen.
 
 ## Content-Answer-Fit & Freshness
 
 - **Content-Answer-Fit:** Wie gut Stil/Struktur dem Antwortformat der Engine gleicht, korreliert laut ZipTie (~400k Seiten) stark mit Citation-Wahrscheinlichkeit — deutlich stärker als Domain-Authority. Heuristik: „Schreib so, wie die KI die Frage beantworten würde.”
-- **Freshness:** Content mit sichtbarem Update <30 Tage wird bei ChatGPT ~3,2× häufiger zitiert. Sichtbares „Zuletzt aktualisiert”-Datum, Quartals-Refresh kompetitiver Seiten.
+- **Freshness:** Content mit sichtbarem Update <30 Tage wird bei ChatGPT ~3,2× häufiger zitiert. Sichtbares „Zuletzt aktualisiert”-Datum, Quartals-Refresh kompetitiver Seiten. **Leitplanke:** Das Datum nur bei substanzieller inhaltlicher Änderung ändern. Datum hochsetzen ohne Änderung ist laut Google kein Qualitätssignal und kann schaden (https://developers.google.com/search/docs/fundamentals/creating-helpful-content).
 
 ## Extractability-Detailcheck (Phase 3)
 
@@ -74,7 +83,7 @@ Pass/Fail pro Schlüsselseite — kann eine Passage als Antwort herausgelöst we
 
 ## Mythen & Anti-Patterns (nicht als Befund/Fix verkaufen)
 
-- **FAQ-/HowTo-Schema für Rich Results** → tot (FAQ ~Aug 2023 nur noch Behörden/Health, HowTo ~Sep 2023 entfernt). Für GEO behält strukturiertes Q&A Rest-Wert als **maschinenlesbare Claim-Struktur** (LLMs extrahieren Frage→Antwort leichter) — so framen, nicht als Snippet-Taktik.
+- **FAQ-/HowTo-Schema für Rich Results** → tot (FAQ ab 08/2023 nur noch Behörden/Health, seit 07.05.2026 für alle Sites abgeschaltet; HowTo 09/2023 entfernt; der Typ `FAQPage` bleibt gültig). Für GEO behält strukturiertes Q&A Rest-Wert als **maschinenlesbare Claim-Struktur** (LLMs extrahieren Frage→Antwort leichter) — so framen, nicht als Snippet-Taktik.
 - **Separater „AI-Content”** → fällt unter „scaled content abuse” (Spam-Policy).
 - **Content-Chunking** → Google explizit: „Don't break your content into tiny pieces for AI.”
 - **Mass-Generation / dünne programmatische Seiten** → ignoriert.
@@ -83,11 +92,11 @@ Pass/Fail pro Schlüsselseite — kann eine Passage als Antwort herausgelöst we
 - **JS-only Rendering** → unsichtbar für nicht-rendernde Crawler.
 - **Keyword-Stuffing** → −10 %.
 
-**Google-vs-Multi-Platform-Dualität:** Google sagt offiziell, es brauche keine Spezial-Files/kein AI-Markup. Non-Google-Engines belohnen Struktur aber sehr wohl. Sicherer Default, der beide Lager bedient: **„write for people, organize for clarity.”** Strukturelle Hacks nicht überversprechen.
+**Google-vs-Multi-Platform-Dualität:** Google sagt offiziell, es brauche keine Spezial-Files/kein AI-Markup. Inhaltliche Struktur (answer-first, Tabellen, Q&A) erleichtert allen Engines die Extraktion. Die Wirkung von **Schema/strukturierten Daten** auf KI-Zitate ist dagegen **unbelegt** — nicht „Mythos”, nicht „der Hebel”: Ahrefs findet keine klare Richtung (30-Tage-Fenster, gepoolte Schema-Typen, Störfaktoren; https://ahrefs.com/blog/schema-ai-citations/). Schema bleibt sinnvoll für Rich Results und Klarheit über die Entität. Sicherer Default, der beide Lager bedient: **„write for people, organize for clarity.”** Strukturelle Hacks nicht überversprechen.
 
 ## llms.txt / OKF — nüchterne Einordnung
 
-Aktuell crawlt kein Engine `llms.txt` aktiv für Citations. Höchstens als „Signpost”-Wette (vergleichbar mit früher Schema.org-Adoption), nicht als Hebel. **Skip**, wenn: <10 Seiten, Closed-Platform (Wix/Squarespace-Lock-in), keine laufende Schema-/Content-Pflege. Nicht als Pflicht-Fix empfehlen.
+`llms.txt` bringt keine Sichtbarkeit in der Suche oder AI-Search (kein Such-/Antwort-System nutzt es nachweislich). Ausnahme: Dev-Docs für Coding-Agents (die rufen sie tatsächlich ab). Für SEO/GEO nicht empfehlen; bei SaaS mit Entwickler-Doku optional. Beleg: https://ahrefs.com/blog/llmstxt-study/
 
 ## Google AI Overview via DataForSEO
 

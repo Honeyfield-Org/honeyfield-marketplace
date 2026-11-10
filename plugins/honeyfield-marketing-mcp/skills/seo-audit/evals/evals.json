@@ -185,5 +185,32 @@
       "Koppelt den Recheck an das nächste Core-Update, nicht an einen festen Termin"
     ],
     "files": ["SKILL.md"]
+  },
+  {
+    "id": "tool-reality-inp-not-measured",
+    "prompt": "Wie steht es um unsere Core Web Vitals? Vor allem INP interessiert mich, die Seite fühlt sich beim Klicken träge an.",
+    "expected_output": "Fährt dfs_lighthouse_live mit strategy=\"mobile\" und \"desktop\" und berichtet LCP und CLS als Laborwerte. Sagt klar, dass der Lighthouse-Laborlauf ohne Interaktion kein INP misst (inp_ms meist leer) und dass der MCP keine CrUX-/GSC-CWV-Felddaten liefert. Nennt TBT als Proxy (steckt nur im Performance-Score) und kennzeichnet jede INP-Aussage als beratend.",
+    "assertions": [
+      "Nutzt dfs_lighthouse_live für mobile und desktop",
+      "Gibt keinen INP-Wert als gemessen aus",
+      "Sagt, dass der MCP keine INP-Felddaten aus CrUX oder dem GSC-CWV-Bericht liefert",
+      "Nennt TBT als Labor-Proxy für INP",
+      "Kennzeichnet INP-Aussagen als beratend"
+    ],
+    "files": ["SKILL.md"]
+  },
+  {
+    "id": "relaunch-traffic-drop-checklist",
+    "prompt": "Seit dem Relaunch unserer Website vor drei Wochen sind wir bei Google praktisch weg. Was ist da schiefgelaufen?",
+    "expected_output": "Verortet den Einbruch mit sc_performance (dimensions=[\"date\"]) auf das Relaunch-Datum und arbeitet die Relaunch-Prüfliste ab: Staging-noindex/robots.txt über site_crawler_check, sc_url_inspection (robots_txt_state, indexing_state) und dfs_onpage_instant; alte und neue Property über sc_list_sites; alte Top-URLs auf 301 zum passenden Ziel prüfen, Redirect-Ketten site-weit über dfs_onpage_crawl_results (section=\"redirect_chains\"/\"non_indexable\"); interne Links, Canonicals und hreflang auf neue URLs; Sitemap mit neuen URLs (sc_submit_sitemap nur nach Bestätigung). Change of Address nur bei Domain-/Subdomain-Wechsel, als beratend gekennzeichnet.",
+    "assertions": [
+      "Prüft Staging-noindex und robots.txt-Sperren mit site_crawler_check oder sc_url_inspection",
+      "Prüft mit sc_list_sites, ob alte und neue Property verifiziert sind",
+      "Prüft Redirects 1:1 ohne Ketten (dfs_onpage_instant für alte URLs oder dfs_onpage_crawl_results mit redirect_chains)",
+      "Nennt interne Links, Canonicals und hreflang auf die neuen URLs",
+      "Empfiehlt Change of Address nur bei Domain- oder Subdomain-Wechsel und kennzeichnet ihn als beratend",
+      "Reicht die Sitemap nicht ohne Bestätigung ein"
+    ],
+    "files": ["SKILL.md"]
   }
 ]

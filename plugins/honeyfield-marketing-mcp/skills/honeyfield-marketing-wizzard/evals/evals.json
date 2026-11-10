@@ -1,0 +1,119 @@
+[
+  {
+    "id": "trigger-workspace-aufruf-menue",
+    "prompt": "/honeyfield-marketing-wizzard rent2b",
+    "expected_output": "Aktiviert den Launcher. Nutzt einen vorhandenen Projekt-Kontext, ruft list_workspaces auf, matcht 'rent2b' gegen die Slugs und bestätigt in einem Satz Workspace + verbundene sources. Zeigt dann das Hauptmenü als Auswahlfrage mit höchstens 4 Optionen plus „Mehr…” und bietet nur Kategorien an, die zu den verbundenen Quellen passen.",
+    "assertions": [
+      "Aktiviert den honeyfield-marketing-wizzard-Skill",
+      "Ruft list_workspaces auf und bestätigt Workspace + verbundene sources in einem Satz",
+      "Stellt eine Frage pro Runde mit höchstens 4 Optionen (plus ggf. „Mehr…” / „Etwas anderes”)",
+      "Bietet keine Menüpunkte für nicht verbundene Quellen an (z. B. keine Website-Aktionen ohne wordpress/strapi)"
+    ],
+    "files": ["SKILL.md"]
+  },
+  {
+    "id": "projekt-kontext-zuerst-nicht-blockieren",
+    "prompt": "Marketing hub haus-hana — beantworte die neue Google-Bewertung. Einen Projekt-Kontext haben wir noch nicht angelegt.",
+    "expected_output": "Sucht zuerst nach einem Projekt-Kontext (Projektwissen oder projekt-kontext.md). Da keiner vorliegt, bietet es an, ihn per projekt-kontext anzulegen, blockiert die Bewertungsantwort aber nicht. Fragt nur knapp nach dem, was für die Antwort fehlt (z. B. Tonalität), liest gbp_reviews, entwirft die Antwort und schreibt per gbp_reply_review erst nach explizitem Ja.",
+    "assertions": [
+      "Prüft zuerst, ob ein Projekt-Kontext vorliegt",
+      "Bietet an, den fehlenden Kontext per projekt-kontext anzulegen, ohne die Aktion zu blockieren",
+      "Liest die Bewertung über gbp_reviews und zeigt den Antwort-Entwurf vor dem Schreiben",
+      "Ruft gbp_reply_review erst nach explizitem Ja auf und protokolliert per journal_add_note"
+    ],
+    "files": ["SKILL.md"]
+  },
+  {
+    "id": "defer-report-an-wochenreport",
+    "prompt": "honeyfield — wie lief der letzte Monat über alle Kanäle?",
+    "expected_output": "Erkennt den Report-Wunsch, klärt höchstens den Zeitraum (hier schon gegeben: letzter Monat, MoM) und übergibt an wochenreport mit Workspace und Zeitraum, ohne erneut zu fragen. Baut den Report nicht selbst aus Einzel-Tools.",
+    "assertions": [
+      "Routet an den wochenreport-Skill",
+      "Übergibt Workspace und Zeitraum, ohne sie erneut zu fragen",
+      "Baut keinen eigenen Report aus Quick-Check-Tools"
+    ],
+    "files": ["SKILL.md"]
+  },
+  {
+    "id": "defer-tiefe-diagnose-an-audit",
+    "prompt": "rent2b — unser CPA in Google Ads ist seit drei Wochen viel zu hoch, finde raus warum und räum auf.",
+    "expected_output": "Erkennt eine tiefe Diagnose mit Umsetzung und routet an google-ads-audit (dessen SKILL.md lesen und befolgen, inkl. Dry-Run). Diagnostiziert nicht selbst tief und führt keine Quick-Aktionen ohne den Audit aus.",
+    "assertions": [
+      "Routet an google-ads-audit statt selbst zu diagnostizieren",
+      "Führt keine Schreib-Aktion als Quick-Aktion aus",
+      "Übergibt das genannte Symptom (CPA gestiegen) an den Audit"
+    ],
+    "files": ["SKILL.md"]
+  },
+  {
+    "id": "defer-grosser-eingriff-kein-quick",
+    "prompt": "honeyfield — stell bitte alle Suchkampagnen auf Ziel-ROAS um.",
+    "expected_output": "Ordnet den Wechsel der Gebotsstrategie über mehrere Kampagnen als größeren Eingriff ein, der nicht in Quick-Aktionen gehört. Verweist auf google-ads-audit, der das mit Dry-Run und Bestätigung macht. Schreibt nichts selbst.",
+    "assertions": [
+      "Behandelt den Gebotsstrategie-Wechsel über mehrere Kampagnen nicht als Quick-Aktion",
+      "Verweist auf google-ads-audit (Dry-Run + Bestätigung)",
+      "Ruft kein ads_update_campaign_bidding_strategy direkt auf"
+    ],
+    "files": ["SKILL.md"]
+  },
+  {
+    "id": "linkedin-pausieren-ebene-klaeren",
+    "prompt": "honeyfield — pausiere die LinkedIn-Kampagne „Q4 Recruiting”.",
+    "expected_output": "Klärt vor dem Schreiben die LinkedIn-Ebene: Seit 10/2025 heißt im Campaign Manager die alte Campaign Group „Campaign” und die alte Campaign „Ad set”. Listet passend linkedin_list_campaign_groups bzw. linkedin_list_campaigns, nennt beide Namen in der Rückfrage und nutzt für eine UI-„Campaign” linkedin_update_campaign_group (status), für ein UI-„Ad set” linkedin_update_campaign_status. Schreibt erst nach Vorher/Nachher und explizitem Ja.",
+    "assertions": [
+      "Fragt nach oder prüft, ob die UI-„Campaign” (API Campaign Group) oder das UI-„Ad set” (API Campaign) gemeint ist",
+      "Nennt UI- und API-Namen der Ebene in der Rückfrage",
+      "Nutzt für die UI-„Campaign” linkedin_update_campaign_group und für das UI-„Ad set” linkedin_update_campaign_status",
+      "Listet das Ziel-Objekt vor dem Schreiben und rät keine IDs"
+    ],
+    "files": ["SKILL.md"]
+  },
+  {
+    "id": "quick-check-unter-30-conversions-rauschen",
+    "prompt": "Quick-Check für rent2b: Kampagne B hatte in den letzten 7 Tagen 3 Conversions bei 400 € Spend. Soll ich sie gleich pausieren?",
+    "expected_output": "Zeigt die 7-Tage-Zahlen kompakt, kennzeichnet sie aber als Rauschen: Google bewertet Smart-Bidding-Performance erst über Zeiträume mit mind. 30 Conversions (50 bei tROAS). Leitet aus 3 Conversions keine Pause ab und verweist für die Entscheidung auf google-ads-audit.",
+    "assertions": [
+      "Kennzeichnet 7-Tage-Zahlen mit weniger als 30 Conversions als nicht belastbar / Rauschen",
+      "Nennt die Google-Schwelle von 30 Conversions (50 bei tROAS)",
+      "Empfiehlt keine Pause oder Budget-Kürzung allein auf dieser Basis",
+      "Verweist für die Entscheidung auf google-ads-audit"
+    ],
+    "files": ["SKILL.md"]
+  },
+  {
+    "id": "budget-aenderung-keine-lernphase",
+    "prompt": "honeyfield — erhöh das Tagesbudget der Kampagne „Brand AT” von 50 auf 80 €. Setzt das die Lernphase zurück?",
+    "expected_output": "Listet die Kampagne, zeigt Vorher/Nachher (50 € → 80 €/Tag) und sagt korrekt: Eine Budgetänderung löst laut Google nie den Status „Learning” aus; ein großer Sprung kann kurz Volatilität bringen, das ist kein „Learning”. „Learning” lösen u. a. eine neue/reaktivierte Gebotsstrategie oder eine Änderung der Zusammensetzung aus. Ruft ads_update_campaign_budget erst nach explizitem Ja auf und protokolliert per journal_add_note.",
+    "assertions": [
+      "Sagt, dass eine Budgetänderung laut Google kein „Learning” auslöst",
+      "Unterscheidet kurzfristige Volatilität bei großen Budget-Sprüngen von der Lernphase",
+      "Zeigt Vorher/Nachher und ruft ads_update_campaign_budget erst nach explizitem Ja auf",
+      "Protokolliert die Änderung per journal_add_note"
+    ],
+    "files": ["SKILL.md"]
+  },
+  {
+    "id": "website-datum-nur-bei-substanz",
+    "prompt": "haus-hana — setz beim Blogartikel „Sauna-Tipps” das Datum auf heute, damit er frischer wirkt. Am Text ändern wir nichts.",
+    "expected_output": "Rät davon ab: Das Veröffentlichungs- oder Aktualisierungsdatum nur bei substanzieller inhaltlicher Änderung neu setzen; Datum hochsetzen ohne Änderung ist laut Google kein Qualitätssignal und kann schaden. Bietet stattdessen an, den Artikel inhaltlich zu überarbeiten (oder an content-strategie / seo-audit zu verweisen). Schreibt nichts ohne Bestätigung.",
+    "assertions": [
+      "Setzt das Datum nicht ohne substanzielle inhaltliche Änderung neu",
+      "Begründet, dass ein Datums-Update ohne Änderung kein Qualitätssignal ist und schaden kann",
+      "Bietet eine inhaltliche Überarbeitung als Alternative an",
+      "Schreibt nichts per wp_update_post/strapi_update_entry ohne Vorher/Nachher und explizites Ja"
+    ],
+    "files": ["SKILL.md"]
+  },
+  {
+    "id": "tool-reality-page-builder-text",
+    "prompt": "honeyfield — ändere auf der Startseite den Satz „Wir sind Ihre Agentur” in „Wir sind Ihre Marketing-Agentur in Graz”.",
+    "expected_output": "Liest die Seite zuerst mit wp_get_post. Ist der Inhalt leer oder gekürzt, nutzt es wp_builder_get_content und ändert gezielt das Feld per wp_builder_replace_text, ohne das Layout anzufassen. Zeigt alter → neuer Text und schreibt erst nach explizitem Ja. Bei Fehlern ruft es wp_bridge_status auf und gibt den Hinweis wörtlich weiter.",
+    "assertions": [
+      "Liest die Seite zuerst mit wp_get_post",
+      "Nutzt bei leerem/gekürztem Inhalt wp_builder_get_content und wp_builder_replace_text",
+      "Zeigt Vorher/Nachher und schreibt erst nach explizitem Ja",
+      "Ruft bei Fehlern wp_bridge_status auf, statt zu improvisieren"
+    ],
+    "files": ["SKILL.md"]
+  }
+]

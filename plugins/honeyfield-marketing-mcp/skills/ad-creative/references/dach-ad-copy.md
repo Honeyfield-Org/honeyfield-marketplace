@@ -21,12 +21,14 @@ Werbeaussagen müssen wahrheitsgemäß und nicht irreführend sein. Verboten: fa
 | Formulierung | Status | Anforderung |
 |---|---|---|
 | „Nr. 1 in Deutschland” | ⚠ Belegpflichtig | Marktanteilsstudie, Umsatzdaten, Zertifikat |
-| „Marktführer” | ⚠ Belegpflichtig | Nachweisbar signifikanter Vorsprung |
+| „Marktführer” | ⚠ Belegpflichtig | Nachweisbar deutlicher Vorsprung von gewisser Stetigkeit und Dauer — keine Momentaufnahme |
 | „Bestes Produkt” / „Beste Qualität” | ⚠ Relativ | Nur mit Test / Auszeichnung / Zertifikat |
 | „Testsieger” | ⚠ Belegpflichtig | Konkreter Test, Datum, Ort, eindeutig Erstplatzierter |
 | „Führend bei X” | ⚠ Belegpflichtig | Branche + Kriterium spezifizieren + Quelle |
 | „Über 10.000 Kunden” | ✓ Wenn belegt | Aus CRM / Konto-Daten / projekt-kontext belegbar |
 | „Top-bewertet” | ✓ Bedingt | Konkrete Plattform + Basis nennen (z.B. „4,8/5 auf Trustpilot”) |
+
+**Alleinstellungswerbung — Dauerhaftigkeit:** Jede Spitzenstellung (Nr. 1, Marktführer, führend) braucht neben Wahrheit und deutlichem Vorsprung auch eine gewisse Stetigkeit und Dauer des Vorsprungs ([IHK Frankfurt](https://www.frankfurt-main.ihk.de/recht/uebersicht-alle-rechtsthemen/wettbewerbsrecht/unlauterer-wettbewerb/irrefuehrende-werbung/alleinstellungswerbung-5196142)). Ein einzelner Monats- oder Quartalswert reicht nicht.
 
 **Belegpflicht liegt beim Werbenden** — bei Abmahnung muss das Unternehmen die Richtigkeit beweisen, nicht der Abmahner das Gegenteil.
 
@@ -140,6 +142,8 @@ Das österreichische UWG ist nach EU-Modernisierungsrichtlinie weitgehend mit DE
 - CH-spezifisch: Keine 30-Tage-Bestpreis-Pflicht analog §11 PAngV DE — eigene Streichpreis-Regeln (lokal aktuell prüfen)
 - Preise in CHF angeben, nicht EUR
 
+**Sprache CH:** DE/FR/IT je eigene Anzeigen mit passender Landingpage — Google ermittelt die Sprache seit Ende 09/2026 aus Anzeige und Landingpage, nicht mehr aus der Kampagnen-Einstellung (Sprach-Check in SKILL.md, Schritt 0).
+
 **UWG CH:** Vergleichende Werbung erlaubt wenn sachlich, nicht irreführend, nicht unnötig herabsetzend — entspricht weitgehend DE/EU.
 
 ---
@@ -216,3 +220,12 @@ DKI kann das 30er-Limit sprengen — Prüf-Mechanik (Fallback ≤ 30, längste K
 ---
 
 *Rechtlicher Aktualitätsstand: UWG-Novelle 2022 (Modernisierungsrichtlinie DE), PAngV-Fassung 28.05.2022, Health-Claims-VO (EG) 1924/2006, AT-UWG und CH-PBV als Grundlage geprüft (WebSearch-Verifikation Juli 2026). AT/CH-MwSt.-Sätze und CH-Streichpreis-Regeln kurzfristig lokal prüfen.*
+
+## 7. Von Google generierte Texte (AI Max Text Customization)
+
+Ist AI Max mit Text Customization aktiv, schreibt Google eigene Anzeigentexte. Diese Texte laufen am UWG-/HWG-Check des Skills vorbei. Automatisch erstellte Assets wurden ab 09/2026 auf AI Max / Text Customization migriert.
+
+- **Text Guidelines** (Beta; bis 25 Term Exclusions, bis 40 Messaging Restrictions, alle Sprachen) aus den `compliance`-Flags ableiten: Superlative und Alleinstellungs-Begriffe als Term Exclusions, Wirkversprechen (HWG) als Messaging Restrictions.
+- Alternative: Text Customization abschalten.
+- Beides nur in der Google-Ads-Oberfläche; kein MCP-Tool liest oder setzt Schalter oder Guidelines.
+- Belege: [Text Customization](https://support.google.com/google-ads/answer/11259373), [Text Guidelines](https://support.google.com/google-ads/answer/16489313).

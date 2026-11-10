@@ -8,9 +8,9 @@ Referenz für `tracking-check`. Auf diese Datei verweist SKILL.md — Begriffe (
 
 | Stufe | Bedeutung | Quelle (Tools) |
 |---|---|---|
-| **Gemessen** | Daten fließen real | `ga4_list_key_events` (Per-Event-Counts), `ga4_conversions`, `ga4_report`, `ads_list_conversion_actions` (letztes Conversion-Datum), `ads_conversion_performance` (`last_gap_days`) |
+| **Gemessen** | Daten fließen real | `ga4_list_key_events` (Per-Event-Counts), `ga4_conversions`, `ga4_report` (auch PII-Muster in `pageLocation`, Self-Referrals in `sessionSource`, Test-Hosts in `hostName` — s. §D), `ads_list_conversion_actions` (letztes Conversion-Datum), `ads_conversion_performance` (`last_gap_days`) |
 | **Nur konfiguriert** | verdrahtet bzw. gesetzt, Datenfluss **unbewiesen** | `gtm_get_tag`, `gtm_list_tags`/`_triggers`/`_variables`, `gtm_get_version`, `ads_list_conversion_actions` (Inventar), `ga4_list_custom_dimensions`/`_metrics`, `ga4_manage_google_ads_links` (list — Link gesetzt ≠ Import fließt), `ga4_enhanced_measurement`/`ga4_data_retention` (get — Setting ≠ ankommende Daten) |
-| **Nicht prüfbar** | Tool-Grenze, nur beratend | Consent-Mode-v2 *greift korrekt*, sGTM-Gesundheit, Attributionsmodell, echte Doppelzählung |
+| **Nicht prüfbar** | Tool-Grenze, nur beratend | Consent-Mode-v2 *greift korrekt*, Umfang der Consent-Modellierung, sGTM-Gesundheit, Attributionsmodell/Attributions-Kanal-Einstellung, Google Signals, echte Doppelzählung, Data Redaction, Datenfilter (intern/Developer), Cross-Domain-Domains und Unwanted-Referral-Liste, User-Daten-Retention, Property-Größe (Standard/Large/XL) und 360-Status |
 
 Jeder Befund im Audit trägt eine dieser drei Stufen. Config-ohne-Daten = **Verdacht**, nicht Befund. Page-Snippet-Installation ist **nicht** mehr pauschal „nicht prüfbar” — sie ist **prüfbar mit Einschränkung** über `dfs_domain_technologies` / `dfs_raw_html` (Präsenz-Nachweis, kein seitenweiter Feuer-Beweis), s. Footgun #8 unten.
 
@@ -59,3 +59,30 @@ Bei „kein Dry-Run”: Skill zeigt vorher, was sich ändert (Simulation), warte
 6. `gtm_publish_version` — **LIVE**, nicht rückgängig zu machen ohne neuen Publish
 
 Als benannte Version mit Change-Notes. `gtm_publish_version` niemals ohne explizite Bestätigung.
+
+---
+
+## D — Datenqualität (Phase 6): Abfragen, Stufe, Beleg
+
+Alle Abfragen über `ga4_report` (Parameter: `metrics`, `dimensions`, `days` oder `start_date`/`end_date`, `limit` max. 500, `dimension_filter` als `{"field","value","match_type"}` mit `EXACT`/`CONTAINS`/`BEGINS_WITH`/`ENDS_WITH`/`FULL_REGEXP`). Treffer sind **gemessen**. Zeilen sind durch `limit` und Thresholding gekappt — Treffer belegen ein Problem, „keine Treffer” beweist keine Sauberkeit.
+
+| Check | Abfrage | Befund | Nicht prüfbar (beratend) | Beleg |
+|---|---|---|---|---|
+| **PII in URLs** | `metrics=["screenPageViews"]`, `dimensions=["pageLocation"]`, `dimension_filter` = PII-Regex (Code-Block unter der Tabelle) | E-Mail, Telefon oder Name in Pfad, Query- oder UTM-Parameter = Verstoß gegen die Google-Richtlinie (Pfad und Parameter müssen PII-frei sein) + DSGVO-Thema. Treffer manuell sichten (`name=` kann harmlos sein). `pageLocation` statt `pagePath` — `pagePath` enthält keine Query-Parameter. | Data Redaction (gibt es nur für Web-Streams) ist über die Tools nicht lesbar | https://support.google.com/analytics/answer/6366371 |
+| **Self-Referral / Cross-Domain** | `metrics=["sessions","keyEvents"]`, `dimensions=["sessionSource"]` | Eigene Domain, Checkout-Domain oder Payment-Anbieter (z. B. `paypal.com`) als Quelle = Verdacht auf fehlendes Cross-Domain-Measurement bzw. fehlende Unwanted-Referral-Regel. Key Events landen dann bei der falschen Quelle. | Cross-Domain-Domains, `_gl`-Linker, Unwanted-Referral-Liste (max. 50 Regeln pro Stream) | https://support.google.com/analytics/answer/10327750 |
+| **Test-/Dev-Traffic** | `metrics=["sessions"]`, `dimensions=["hostName"]` | `localhost`, Staging-/Dev-Domains oder fremde Hosts in der Prod-Property = Test-Traffic in den Zahlen | Datenfilter für interne und Developer-Zugriffe; DebugView-Traffic muss laut Google gefiltert werden | https://support.google.com/analytics/answer/7201382 |
+| **Data Retention** | `ga4_data_retention` (`action="get"`, `property_id`) → `event_data_retention`, `reset_user_data_on_new_activity` | Standard-Property: `TWO_MONTHS` vs. `FOURTEEN_MONTHS`. Large-/XL-Properties sind laut Google auf 2 Monate begrenzt — dort kein Quick Win. GA4 360: auch `TWENTY_SIX_`/`THIRTY_EIGHT_`/`FIFTY_MONTHS`. Eine **Erhöhung** wirkt auch auf schon erhobene, noch gespeicherte Daten; schon gelöschte Daten kommen nicht zurück. | User-Daten-Retention (eigene Optionsliste), Property-Größe, 360-Status | https://support.google.com/analytics/answer/7667196 |
+
+PII-Filter für `ga4_report` (`FULL_REGEXP` muss die ganze URL treffen, daher `.*` an beiden Enden):
+
+```json
+{"field": "pageLocation", "value": ".*(@|%40|email=|e-mail=|tel=|phone=|name=).*", "match_type": "FULL_REGEXP"}
+```
+
+**GA4 ↔ Google Ads — beratende Abweichungsgründe (Phase 3, alle nicht prüfbar):**
+- Attributions-Kanal-Einstellung in GA4: Seit 06/2023 ist bei neuer Verknüpfung „Google Paid Channels” der Default.
+- Cross-Device-Conversions zählt GA4 nur mit aktivem Google Signals.
+- Berichtszeit: Google Ads bucht auf die Interaktionszeit (Klick), GA4 auf die Event-Zeit.
+- Zeitzone.
+
+Diese Gründe erklären kleine Abweichungen. Eine Faktor-2+-Diskrepanz bleibt Tracking-Verdacht. Beleg: https://support.google.com/analytics/answer/10632359

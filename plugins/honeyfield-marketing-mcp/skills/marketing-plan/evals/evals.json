@@ -15,24 +15,28 @@
   {
     "id": "trigger-kampagne-modus-b",
     "prompt": "Wir wollen eine Kampagne für die Frühjahrs-Aktion planen.",
-    "expected_output": "Erkennt ein einzelnes Kampagnenziel mit begrenztem Zeitfenster und wechselt in Modus B (Kampagnen-Konzept) statt den vollen Gesamt-Plan zu bauen. Scort die Rubric nur für die betroffenen Kanäle und liefert die Modus-B-Kurzform: Kampagnenziel & KPI, Zielgruppe & Botschaft, Kanal-Wahl mit Begründung aus der Rubric, Budget & Flighting, Messplan.",
+    "expected_output": "Erkennt ein einzelnes Kampagnenziel mit begrenztem Zeitfenster und wechselt in Modus B (Kampagnen-Konzept) statt den vollen Gesamt-Plan zu bauen. Scort die Rubric nur für die betroffenen Kanäle und liefert die Modus-B-Kurzform: Kampagnenziel & KPI, Zielgruppe & Botschaft, Kanal-Wahl mit Begründung aus der Rubric, Budget & Flighting, Messplan. Prüft die Budget-Rückrechnung gegen Googles Smart-Bidding-Schwellen (mind. 30 Conversions für tCPA, 50 für tROAS im Bewertungszeitraum).",
     "assertions": [
       "Wählt Modus B (Kampagnen-Konzept), nicht den vollen Gesamt-Plan (Modus A)",
       "Beschränkt die Rubric auf die für die Kampagne relevanten Kanäle/Dimensionen",
       "Liefert die Modus-B-Kurzform-Sektionen (Ziel & KPI, Zielgruppe & Botschaft, Kanal-Wahl, Budget & Flighting, Messplan)",
-      "Begründet die Kanal-Wahl aus Rubric-Scores statt aus Bauchgefühl"
+      "Begründet die Kanal-Wahl aus Rubric-Scores statt aus Bauchgefühl",
+      "Prüft die Rückrechnung gegen Googles Datenschwelle (≥30 Conversions tCPA / ≥50 tROAS) statt eines unbelegten „~15–30”-Werts"
     ],
-    "files": ["SKILL.md", "references/plan-template.md"]
+    "files": ["SKILL.md", "references/plan-template.md", "references/budget-dach-kmu.md"]
   },
   {
     "id": "trigger-budget-frage",
     "prompt": "Wo sollen wir nächstes Quartal Budget investieren?",
-    "expected_output": "Erkennt eine vorwärtsgerichtete Priorisierungs-/Budget-Frage und invoziert marketing-plan statt wochenreport. Baut die Current-State-Rubric, priorisiert Empfehlungen nach Impact × Machbarkeit und liefert die Budget-Einordnung nach der DACH-KMU-Logik aus den References.",
+    "expected_output": "Erkennt eine vorwärtsgerichtete Priorisierungs-/Budget-Frage und invoziert marketing-plan statt wochenreport. Baut die Current-State-Rubric, priorisiert Empfehlungen nach Impact × Machbarkeit und liefert die Budget-Einordnung nach der DACH-KMU-Logik aus den References. Nennt als Ist-Anker Bitkom 2026 (Ø 4,1 % vom Umsatz, meist 1–3 %) mit Geltungsbereich (DE-Digitalbranche, n=180, nicht repräsentativ) und führt die Bänder als Zielkorridor, nicht als Ist-Benchmark.",
     "assertions": [
       "Aktiviert marketing-plan statt wochenreport bei einer reinen Budget-/Investitions-Frage",
       "Priorisiert Empfehlungen nach Impact × Machbarkeit aus den Rubric-Scores",
       "Zieht die DACH-KMU-Budget-Logik heran (Referenz budget-dach-kmu.md)",
-      "Kennzeichnet Budget-Aussagen als beratend"
+      "Kennzeichnet Budget-Aussagen als beratend",
+      "Nennt den Budget-Anker mit Quelle und Geltungsbereich (Bitkom 2026, DE-Digitalbranche, nicht repräsentativ) und bezeichnet ihn nicht als DACH- oder KMU-Benchmark",
+      "Kennzeichnet die Umsatz-Bänder als Zielkorridor (beratend), nicht als „KMU-typischen” Ist-Wert",
+      "Gibt keine feste Marke/Abverkauf-Quote als KMU-Norm aus"
     ],
     "files": ["SKILL.md", "references/budget-dach-kmu.md"]
   },
@@ -135,5 +139,52 @@
       "Verkauft keine geratene AI-Sichtbarkeits-Zahl als belastbar"
     ],
     "files": ["SKILL.md", "references/current-state-rubric.md"]
+  },
+  {
+    "id": "budget-marke-vs-abverkauf",
+    "prompt": "Wie viel Prozent vom Budget sollen wir in Marke stecken und wie viel in Performance? Wir sind ein B2B-Dienstleister mit 25 Leuten.",
+    "expected_output": "Sagt ehrlich, dass es für KMU keine belegte Marke/Abverkauf-Quote gibt. Nennt 60:40 (Binet & Field, B2C-Durchschnitt großer Marken), B2B ~50:50 (Headline; Datenbefund ~46:54, laut Report „rough estimate”) und 95:5 (nur ein kleiner Teil der B2B-Käufer im Markt) nur als Kontext mit Geltungsbereich. Gibt eine Aufteilung höchstens als beratend und begründet sie am Kunden (Lebensphase, vorhandene Nachfrage, Sales-Cycle).",
+    "assertions": [
+      "Sagt, dass es keine belegte KMU-Quote für Marke vs. Abverkauf gibt",
+      "Nennt 60:40 und B2B ~50:50 als grobe Durchschnitte großer Marken, nicht als Norm",
+      "Behandelt 95:5 als Argument für Marken-Anteil, nicht als Budgetquote",
+      "Kennzeichnet jede vorgeschlagene Aufteilung als beratend",
+      "Erfindet keine KMU-spezifische Quote"
+    ],
+    "files": ["SKILL.md", "references/budget-dach-kmu.md"]
+  },
+  {
+    "id": "rubric-icp-fehlt-foundation",
+    "prompt": "Bau den Gesamt-Plan. Im Projekt-Kontext steht nur, was die Firma macht — keine Zielgruppe, keine Positionierung.",
+    "expected_output": "Scort das Marken-Fundament (Dimension 10) als beratend mit ≤ 2/5, erfindet kein ICP und setzt „Positionierung/ICP schärfen” (via projekt-kontext) als erste Foundation-Maßnahme der Roadmap vor jede Velocity-Maßnahme. Führt das fehlende ICP als offene Entscheidung in Sektion 9.",
+    "assertions": [
+      "Scort Dimension 10 als beratend (Selbstauskunft) mit ≤ 2/5",
+      "Erfindet kein ICP und keine Positionierung",
+      "Setzt „Positionierung/ICP schärfen” als erste Foundation-Maßnahme vor Velocity",
+      "Führt das fehlende ICP als offene Entscheidung in Sektion 9"
+    ],
+    "files": ["SKILL.md", "references/current-state-rubric.md", "references/plan-template.md"]
+  },
+  {
+    "id": "grenze-mmm-datenvoraussetzung",
+    "prompt": "Können wir statt des Plans nicht einfach ein Marketing-Mix-Modell rechnen lassen? Wir haben GA4 seit einem Jahr.",
+    "expected_output": "Erklärt die Datenvoraussetzung: Google Meridian braucht mind. 2 Jahre Wochendaten (Geo-Modell) bzw. 3 Jahre (nationales Modell). Mit einem Jahr Daten passt MMM nicht. Empfiehlt stattdessen den Plan mit Quartals-Review gegen echte Daten.",
+    "assertions": [
+      "Nennt die Meridian-Voraussetzung (≥2 Jahre Wochendaten Geo-Modell, 3 Jahre national)",
+      "Rät bei einem Jahr Daten von MMM ab",
+      "Empfiehlt den Quartals-Review gegen echte Daten als Alternative"
+    ],
+    "files": ["SKILL.md", "references/budget-dach-kmu.md"]
+  },
+  {
+    "id": "rubric-marken-split-anonymisiert",
+    "prompt": "Wie hoch ist unser Anteil Nicht-Marken-Klicks? Rechne das für die Organik-Dimension.",
+    "expected_output": "Rechnet den Marken-/Nicht-Marken-Split per sc_performance mit dimension_filter auf query (includingRegex/excludingRegex mit den Markenbegriffen aus dem Projekt-Kontext) und kennzeichnet ihn als Näherung: GSC lässt anonymisierte Suchanfragen weg (ca. 47 % der Klicks über alle Properties, Stand 04/2025). Bildet Gesamt-Klicks nicht aus Query-Zeilen.",
+    "assertions": [
+      "Nutzt sc_performance mit dimension_filter (query, includingRegex/excludingRegex) und den Markenbegriffen aus dem Projekt-Kontext",
+      "Kennzeichnet den Split als Näherung wegen anonymisierter Suchanfragen",
+      "Bildet Gesamt-Klicks nicht als Summe der Query-Zeilen"
+    ],
+    "files": ["references/current-state-rubric.md"]
   }
 ]

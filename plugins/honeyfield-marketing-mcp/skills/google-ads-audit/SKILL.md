@@ -2,7 +2,7 @@
 name: google-ads-audit
 description: "Datengetriebener Google-Ads-Audit für einen Kunden-Account, kalibriert auf den DACH-Markt (DE/AT/CH). Nutze diesen Skill, wenn der Nutzer einen „Google-Ads-Audit”, eine „Ads-Analyse” oder einen „Ads-Check” will oder Performance-/Spend-Probleme diagnostizieren möchte. Auch bei: „warum performen meine Ads schlecht”, „wo verbrenne ich Budget”, „Wasted Spend / verschwendete Suchbegriffe”, „CPA/ROAS zu schlecht”, „Conversions eingebrochen”, „Impression Share verloren”, „Negatives/Suchbegriffe aufräumen” oder vage „mein Google Ads läuft nicht”. Zieht echte Daten aus dem Konto über den Marketing-Ops-MCP (+ GA4-Cross-Check fürs Conversion-Tracking) und kann behebbare Probleme — Negatives setzen, Keywords/Anzeigen pausieren, Budget und Gebote anpassen — nach Bestätigung direkt umsetzen. Für Reporting nutze `wochenreport`; für organisches Ranking `seo-audit`; für KI-Sichtbarkeit `geo-audit`; für tiefe Tracking-Diagnose `tracking-check`; für neue Anzeigentexte `ad-creative`."
 metadata:
-  version: 0.3.3
+  version: 0.4.0
 ---
 
 # Google-Ads-Audit
@@ -24,7 +24,7 @@ Was die Daten NICHT bedeuten — sonst entstehen False-Findings:
 - **Quality Score (1–10) ist eine nachlaufende Diagnose, kein Hebel.** Man optimiert die Komponenten (Erwartete CTR, Anzeigenrelevanz, Landingpage-Erfahrung), nicht „den Score”.
 - **Impression-Share-Werte sind Schätzungen** und werden unterhalb einer Schwelle redigiert (z. B. `< 10 %` / `--`). Lost IS nur als grobe Richtung lesen, nicht auf den Prozentpunkt.
 - **Smart Bidding ignoriert manuelle Gebots-Anpassungen** (Device/Geo/Zeit) bis auf den −100 %-Ausschluss. Auf tCPA/tROAS-Kampagnen also keine Device-Gebots-„Fixes” vorschlagen außer Ausschluss.
-- **Ad Strength misst Asset-Vielfalt, nicht erwartete Performance.** „Poor” heißt meist „zu wenige/zu ähnliche Assets”, nicht „schlechte Anzeige” — als Hinweis behandeln.
+- **Ad Strength ist Diagnose, nicht Geschäftsziel — aber kein Rauschen.** Für **ungepinnte** RSAs gilt: höhere Ad Strength = bessere Ergebnisse, also „Excellent” anstreben. Der Vorteil schwächer bewerteter Anzeigen kommt vor allem vom Pinning (Gegenbefund Optmyzr: Pinning senkt eher die Conversion-Rate — eine Kreativ-/Marken-Entscheidung). `ads_list_ads` liefert **keine** Ad Strength → Wert im Ads-UI prüfen, Befund-Stufe: beratend.
 - **Nur verbundene Quellen liefern Daten.** Fehlt im Workspace `google_ads` oder (für den Cross-Check) `ga4`, benenne das als Lücke — rate die Zahlen nicht zusammen. Welche Felder ein `ads_*`-Call konkret zurückgibt, der Tool-Antwort entnehmen, nicht annehmen.
 
 ## Schritt 0 — Vorbereitung (immer zuerst)
@@ -50,6 +50,7 @@ Logik: „die Zahl ist nicht vertrauenswürdig” und „Geld leckt sichtbar” 
 - `ads_list_conversion_actions` → welche Actions, Status (aktiv? „keine letzten Conversions”?), **primär vs. sekundär**, Zählung **„Jede” vs. „Eine”** (Lead-Gen sollte „Eine” pro Klick zählen, E-Commerce „Jede”), Attributionsmodell, Conversion-Fenster, Enhanced Conversions an?
 - **Cross-Check gegen GA4:** `ga4_conversions` / `ga4_report` (Key-Events) für denselben Zeitraum → Größenordnung vergleichen. Große Diskrepanz = Tracking-Verdacht (Schwelle in `references/google-ads-benchmarks.md`; Doppelzählung, fehlende/doppelte Imports, GCLID-/Auto-Tagging-Bruch), nicht als „GA4 ≠ Ads ist halt so” abtun.
 - Achten auf: mehrere primäre Actions, die dasselbe Ereignis doppelt zählen (z. B. „Kauf” UND „Warenkorb” beide primär); importierte GA4-Conversions **und** native Tags gleichzeitig; Actions ohne Conversions seit Wochen (Tracking gebrochen); „Jede/Eine” falsch fürs Geschäftsmodell.
+- **Consent-Lücke:** Kleines DACH-Konto + niedrige Einwilligungsrate → Consent-Mode-Modellierung greift womöglich nicht (Advanced braucht eine Mindest-Datenmenge). Dann sind Conversions systematisch untererfasst — als **Tracking-Vorbehalt** nennen, nicht als Performance-Befund; tiefe Prüfung via `tracking-check` (Mechanik in `references/google-ads-benchmarks.md`).
 > Steht das Tracking nicht, ist der Audit hier zu Ende: erst Tracking fixen (ggf. `tracking-check`), dann Performance bewerten. Alles andere wäre Optimierung auf falsche Zahlen.
 
 ### 2 — Budget & Pacing
@@ -63,6 +64,7 @@ Logik: „die Zahl ist nicht vertrauenswürdig” und „Geld leckt sichtbar” 
 - **n-gram-Muster statt Einzelbegriffe:** nach wiederkehrenden Tokens gruppieren (z. B. alle Suchbegriffe mit „job”, „gratis”, „selber machen”) → systematische Lecks und die richtige Negative-Ebene (Wort vs. Phrase) erkennen. Methodik in `references/search-term-hygiene.md`.
 - **Brand vs. Non-Brand trennen** — Brand-Begriffe blähen den Blended-ROAS auf; getrennt beurteilen, sonst sieht ein schwaches Non-Brand-Konto „profitabel” aus.
 - **Match-Type-Lecks:** viel „weitgehend passend” (Broad) ohne Conversion → Broad nur mit gutem Tracking + Smart Bidding + Negatives-Hygiene tragbar.
+- **DSA läuft aus:** Ab 02/2027 stellt Google DSA-Kampagnen automatisch auf AI Max um. DSA-Konten jetzt auf URL-Ausschlüsse und Negatives prüfen und den Wechsel als Langfrist-Maßnahme in den Plan aufnehmen.
 - **Unattribuierter Anteil:** Spend, der nicht auf Suchbegriff-Ebene auftaucht (Datenschutzschwelle), beziffern und als Sichtbarkeitslücke nennen.
 - **Negative-Hygiene:** bestehende Negatives via `ads_list_negative_keywords` prüfen — **Konflikte** (ein Negative blockiert ein aktives Keyword) und über-breite Single-Word-Negatives, die zu viel wegschneiden. Wichtig: **Negatives matchen keine Close-Variants/Tippfehler** — sie müssen exakt formuliert sein (Details in der Reference).
 > Dieser Skill **besitzt** die Suchbegriff-Hygiene voll (Diagnose + Umsetzung), er delegiert sie nicht. Der Bulk-Ausschluss läuft über den Operator unten.
@@ -75,7 +77,7 @@ Logik: „die Zahl ist nicht vertrauenswürdig” und „Geld leckt sichtbar” 
 ### 5 — Gebotsstrategie & Impression Share
 - `ads_campaign_performance` → je Kampagne die Strategie (Maximize Conversions/Value, tCPA, tROAS, Maximize Clicks, Manual CPC) gegen das Geschäftsziel. **Mismatch** (z. B. Maximize Clicks bei Conversion-Ziel) = Befund.
 - **Conversion-Volumen für Smart Bidding:** `ads_conversion_performance` → genug Conversions, damit tCPA/tROAS verlässlich lernt? tROAS braucht mehr als tCPA; Schwellen in `references/google-ads-benchmarks.md`. Darunter ist Smart Bidding eher Raten.
-- **Lernphase:** kürzlich geänderte Strategie/Ziel → instabile Phase, nicht hart beurteilen (Dauer in `references/google-ads-benchmarks.md`). Via `ads_change_history` prüfen, ob jüngst umgestellt wurde.
+- **Lernphase:** Status „Learning” lösen nur aus: neue/reaktivierte Gebotsstrategie, Einstellungsänderung der Strategie, Änderung der Zusammensetzung (Kampagnen/Ad Groups/Keywords hinzu/weg) und eine signifikante Änderung der Conversion-Ziele (z. B. Action primär ↔ sekundär umgestuft). Budget-, tCPA/tROAS-Wert- und Targeting-Änderungen lösen laut Google **nie** „Learning” aus. Der Status dauert höchstens 7 Tage — in dieser Zeit nicht hart beurteilen (Details in `references/google-ads-benchmarks.md`). Via `ads_change_history` prüfen, ob jüngst umgestellt wurde.
 - `ads_impression_share` → **Lost IS (Budget) vs. Lost IS (Rank)** ist die Schlüssel-Diagnose: viel Lost IS (Budget) → Budget/Effizienz; viel Lost IS (Rank) → QS/Gebot, **nicht** Budget. Search (Abs) Top IS → Positionsqualität. Diagnose-Matrix in `references/google-ads-benchmarks.md`.
 - **Auf Keyword-Ebene weiterbohren**, statt beim Kampagnen-Mittel stehenzubleiben: `level="ad_group"` bzw. `level="keyword"` (dazu `campaign_id`/`ad_group_id` oder `keyword` als Teilstring) zeigt Top-IS und Abs-Top-IS je Keyword. Genau dort entscheidet sich die Gebotsfrage: schwacher Abs-Top-IS bei gutem Gesamt-IS heißt „schaltet, aber zu weit unten” — Gebot per `ads_update_keyword_bid` auf die mitgelieferte `criterion_id`. Zwei Grenzen: **Budget-Verlust gibt es nur auf Kampagnenebene** (Google lehnt die Kennzahl darunter ab), und die Anteile sind **nicht aggregierbar** — Keyword-Werte nicht zu einem Kampagnenwert mitteln, dafür `level="campaign"` abfragen.
 - `ads_list_experiments` → läuft ein Experiment auf der Kampagne? Traffic-Split verzerrt KPI-Vergleiche — Basis- und Test-Arm getrennt beurteilen, nicht als eine Kampagne. (`ads_change_history` reicht nur ~29 Tage zurück — länger laufende Experimente sieht nur dieses Tool.)
@@ -83,7 +85,8 @@ Logik: „die Zahl ist nicht vertrauenswürdig” und „Geld leckt sichtbar” 
 > tCPA zu niedrig gesetzt erstickt das Volumen (hoher Lost IS Rank, „durch Gebotsstrategie begrenzt”) — sieht aus wie ein Rank-Problem, ist aber ein Ziel-Wert-Problem.
 
 ### 6 — Anzeigen, Assets & Segmente
-- `ads_ad_performance` / `ads_list_ads` → mind. 2 aktive RSAs je Ad Group? Über-Pinning, das die RSA einengt? Pausierte/abgelehnte Anzeigen?
+- `ads_ad_performance` / `ads_list_ads` → mind. 2 aktive RSAs je Ad Group (Google: mit Ad Strength „Good” oder „Excellent” — Ad Strength nur im UI, beratend)? Über-Pinning, das die RSA einengt? Pausierte/abgelehnte Anzeigen?
+- **AI Max / Text Customization:** Zeigt `ads_ai_max_search_terms` Quellen wie `AI_MAX_KEYWORDLESS`/`AI_MAX_BROAD_MATCH`, läuft AI Max. Ist dort Text Customization aktiv (seit 09/2026 aus „automatisch erstellten Assets” migriert), schreibt Google eigene Anzeigentexte — die laufen am UWG/HWG-Check vorbei. Bei gesetzten `compliance`-Flags: **Text Guidelines** setzen oder Text Customization abschalten (UI, beratend; Details in `references/dach-ads.md`).
 - `ads_list_assets` → **Asset-/Extension-Abdeckung**: Sitelinks, Callouts, Snippets, Bild-, Anruf-Assets vorhanden? Fehlende Extensions sind ein verlässlicher Quick-Win (mehr SERP-Fläche + CTR) — oft der schnellste Hebel im ganzen Audit.
 - Segmente: `ads_device_performance`, `ads_geo_performance`, `ads_schedule_performance`, `ads_demographic_performance` → CPA-Divergenzen nach Device/Region/Zeit/Demografie. **Aber:** bei Smart Bidding wirken Gebots-Modifier nur als −100 %-Ausschluss (s. Tool-Grenzen) — Segment-Lecks dann über Ausschluss/Targeting lösen, nicht über Modifier.
 
@@ -95,7 +98,7 @@ Logik: „die Zahl ist nicht vertrauenswürdig” und „Geld leckt sichtbar” 
 ## DACH-Layer (immer, quer über alle Phasen)
 Diese Punkte hat ein US-/Englisch-Audit nicht. Details in `references/dach-ads.md`.
 1. **Standort-Targeting „Anwesenheit” vs. „Anwesenheit oder Interesse”:** Default ist „Anwesenheit oder Interesse” und zeigt Anzeigen auch Leuten, die nur *über* den Ort suchen (z. B. jemand in DE sucht „Hotel Wien”). Bei lokalem/regionalem DACH-Geschäft auf **„Anwesenheit”** — eine der größten stillen Wasted-Spend-Quellen. Targeting-Methode je Kampagne via `ads_get_geo_targeting` prüfen (Presence vs. POI); Umstellung über den Operator.
-2. **Sprach-Targeting basiert auf der Google-Oberflächensprache, nicht der Suchsprache.** Nur „Deutsch” kann DACH-Nutzer mit englischer UI ausschließen; je nach Zielgruppe Englisch/alle ergänzen. Die Einstellung ist per MCP nicht lesbar — im Ads-UI prüfen bzw. beim Kunden erfragen; Beleg-Stufe: beratend.
+2. **Sprache von Anzeige und Landingpage abgleichen:** Seit Ende 09/2026 entfernt Google die Spracheinstellung auf Kampagnenebene für Search und AI Max; Google ermittelt die Sprache aus Anzeige und Landingpage. Prüfpunkt: Passen Anzeigentext und Landingpage je Zielmarkt sprachlich zusammen (CH: DE/FR/IT getrennt)? `ads_get_language_targeting` liefert nur die Alt-Einstellung — für Search/AI Max nicht mehr maßgeblich. Details in `references/dach-ads.md`.
 3. **Währung & Markt getrennt:** DE/AT/CH als eigene Geo-Targets; Streuung über Landesgrenzen prüfen. Kontowährung beachten (CH oft CHF) — CPA/ROAS in Kontowährung lesen.
 4. **Deutsche Morphologie:** Komposita und Flexion streuen die Suchbegriffe; Close-Variants decken viel ab, aber die n-gram-Negative-Analyse (Phase 3) wiegt in DE schwerer als in EN.
 5. **Rechtliches (beratend, keine Rechtsberatung):** HWG (Heilmittel/Gesundheit), Preisangaben (PAngV — Grund-/Endpreis), Impressums-Erreichbarkeit auf Landingpages. Nur auf Vorhandensein/Plausibilität hinweisen, nicht rechtlich bewerten.
@@ -110,6 +113,7 @@ Diese Punkte hat ein US-/Englisch-Audit nicht. Details in `references/dach-ads.m
 - **Mehr Keywords = mehr Reichweite** → Duplikate (Selbst-Konkurrenz) und „Geringes Suchvolumen”-Keywords schaden eher.
 - **CPA/ROAS auf den letzten 7 Tagen** → Attributions-Lag; frische Conversions fehlen noch.
 - **Blended ROAS über Brand + Non-Brand** → Brand bläht auf; getrennt beurteilen.
+- **„Budget-Änderung startet die Lernphase neu”** → nein; Budget, tCPA/tROAS-Wert und Targeting lösen laut Google nie „Learning” aus. Große Budget-Sprünge können kurz Volatilität bringen — das ist kein „Learning”.
 
 ## Output-Format
 1. **Kurz-Fazit:** Gesamteinschätzung in 2–3 Sätzen + Top 3–5 Probleme + schnellste Quick Wins.
@@ -127,7 +131,7 @@ Der **Beleg** ist Pflicht, trägt **immer** seine Stufe und ist eine echte Zahl 
 Jede Schreib-Aktion bewegt echtes Geld oder echte Auslieferung. Regel: **erst Dry-Run zeigen (was genau, welche Ebene, welche Wirkung, reversibel ja/nein), dann einzeln bestätigen lassen, dann ausführen.** Nichts pauschal, nichts automatisch.
 - **Negatives setzen** → `ads_add_negative_keyword` / `ads_bulk_add_negative_keywords` / Shared-Liste via `ads_manage_shared_negative_list`. Vorher: Liste der Begriffe + Ziel-Ebene (Account-/Shared-Liste vs. Kampagne vs. Ad Group) + Match-Type zeigen und gegen aktive Keywords auf **Konflikte** prüfen.
 - **Keywords/Anzeigen pausieren** → `ads_update_keyword_status` / `ads_update_ad_status`; mehrere Keywords derselben Ad Group in einem Aufruf mit `ads_bulk_update_keyword_status` (atomar, spart Aufrufe im Monatskontingent). Vorher: betroffene Elemente + Begründung (z. B. Spend ohne Conversion über X Klicks) zeigen.
-- **Budget anpassen** → `ads_update_campaign_budget`. Höchstes Geld-Risiko: Betrag, Richtung und erwartete Wirkung (mit IS-Bezug aus Phase 5) explizit zeigen, dann fragen.
+- **Budget anpassen** → `ads_update_campaign_budget`. Höchstes Geld-Risiko: Betrag, Richtung und erwartete Wirkung (mit IS-Bezug aus Phase 5) explizit zeigen, dann fragen. Löst keinen „Learning”-Status aus; große Sprünge können kurz Volatilität bringen.
 - **Gebots-Modifier** → `ads_set_device_bid_modifier` u. ä. **Nur bei manuellem Bidding sinnvoll**; bei Smart Bidding höchstens −100 %-Ausschluss (s. Tool-Grenzen).
 - **Geo-Targeting umstellen** → `ads_update_geo_targeting`. Vorher: Kampagne, Einstellung alt → neu, erwartete Reichweiten-Wirkung zeigen, einzeln bestätigen.
 - **Tabu ohne ausführliche Rücksprache:** Kampagnen erstellen (`ads_create_campaign`), Gebotsstrategie umstellen (`ads_update_campaign_bidding_strategy` — startet eine Lernphase), `ads_apply_recommendation` pauschal anwenden.
@@ -147,7 +151,8 @@ Jede Schreib-Aktion bewegt echtes Geld oder echte Auslieferung. Regel: **erst Dr
 - Suchbegriffe/Negatives: `ads_search_terms`, `ads_ai_max_search_terms`, `ads_list_negative_keywords`
 - Keywords/Struktur: `ads_keyword_quality`, `ads_list_keywords`, `ads_list_ad_groups`
 - Bidding/IS: `ads_campaign_performance`, `ads_conversion_performance`, `ads_impression_share`, `ads_change_history`, `ads_list_experiments`
-- Anzeigen/Assets/Segmente: `ads_ad_performance`, `ads_list_ads`, `ads_list_assets`, `ads_device_performance`, `ads_geo_performance`, `ads_schedule_performance`, `ads_demographic_performance`, `ads_get_geo_targeting`
+- Anzeigen/Assets/Segmente: `ads_ad_performance`, `ads_list_ads`, `ads_list_assets`, `ads_device_performance`, `ads_geo_performance`, `ads_schedule_performance`, `ads_demographic_performance`, `ads_get_geo_targeting`, `ads_get_language_targeting` (nur Alt-Einstellung)
+- Rechtliches (beratend): `ads_list_customer_match_lists` (Processor-Rolle, s. `references/dach-ads.md`)
 - Empfehlungen: `ads_list_recommendations`
 - Umsetzen: `ads_add_negative_keyword`, `ads_bulk_add_negative_keywords`, `ads_manage_shared_negative_list`, `ads_update_keyword_status`, `ads_bulk_update_keyword_status`, `ads_update_ad_status`, `ads_update_campaign_budget`, `ads_set_device_bid_modifier`, `ads_update_geo_targeting`
 - Wettbewerb (DACH-Beifang): `dfs_serp_google_ads`, optional `dfs_google_ads_advertisers` (Transparency-Center-Advertiser-Liste)
@@ -158,4 +163,4 @@ Jede Schreib-Aktion bewegt echtes Geld oder echte Auslieferung. Regel: **erst Dr
 ## Referenzen
 - `references/google-ads-benchmarks.md` — QS-Komponenten-Deutung, Smart-Bidding-Conversion-Schwellen, Impression-Share-Diagnose-Matrix (Budget vs. Rank), Attributions-Fenster, primäre/sekundäre & „Jede/Eine”-Conversion-Mechanik, Ad-Strength- & Optimization-Score-Realität, Warnung gegen erfundene CTR/CPC-Benchmarks.
 - `references/search-term-hygiene.md` — Match-Type-/Close-Variant-Mechanik, n-gram-Analyse-Workflow, Negative-Ebenen & Shared Lists, Konflikt- und Single-Word-Risiken, Brand/Non-Brand-Split, unattribuierter Spend, Bulk-Ausschluss-Workflow.
-- `references/dach-ads.md` — Standort-Targeting Anwesenheit vs. Interesse, Sprach-Targeting-Mechanik, Währung/Markt-Trennung DE/AT/CH, deutsche Morphologie & Negatives, rechtliche Hinweise (HWG/PAngV/Impressum, beratend).
+- `references/dach-ads.md` — Standort-Targeting Anwesenheit vs. Interesse, Sprach-Abgleich Anzeige/Landingpage (Spracheinstellung für Search/AI Max entfällt), Währung/Markt-Trennung DE/AT/CH, deutsche Morphologie & Negatives, rechtliche Hinweise (HWG/PAngV/Impressum, Text Guidelines, Google-Rolle DSGVO, beratend).

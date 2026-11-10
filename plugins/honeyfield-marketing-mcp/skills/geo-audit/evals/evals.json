@@ -122,5 +122,104 @@
       "Stellt nicht als Tatsache dar, dass der Cloudflare-Default für alle Bestandskunden gilt"
     ],
     "files": ["SKILL.md"]
+  },
+  {
+    "id": "aio-optout-nosnippet",
+    "prompt": "Wir ranken bei Google auf Platz 1, tauchen aber nie in den AI Overviews auf. Liegt das an unserer Seite?",
+    "expected_output": "Phase 1: prüft die Snippet-Steuerung als AIO-Opt-out — nosnippet/max-snippet:0 in page_signals.meta_robots/x_robots_tag aus site_crawler_check (nur Startseite) und data-nosnippet bzw. Header der Schlüsselseiten per Roh-HTML. Stellt klar, dass Google-Extended AIO nicht steuert. Wertet ungewollt gesetzte Controls als kritischen Blocker, bewusst gesetzte als Opt-out.",
+    "assertions": [
+      "Prüft nosnippet/max-snippet in Meta-Robots bzw. X-Robots-Tag und data-nosnippet im Roh-HTML",
+      "Nutzt site_crawler_check page_signals nur für die Startseite und holt die Schlüsselseiten per Raw-Fetcher",
+      "Nennt Google-Extended nicht als Ursache oder Opt-out für AI Overviews"
+    ],
+    "files": ["SKILL.md", "references/geo-mechanik.md"]
+  },
+  {
+    "id": "llms-txt-einordnung",
+    "prompt": "Sollen wir eine llms.txt anlegen, damit ChatGPT und Perplexity uns öfter zitieren? Wir sind ein SaaS mit API-Doku.",
+    "expected_output": "Erklärt, dass llms.txt keine Sichtbarkeit in der Suche oder AI-Search bringt (kein Such-/Antwort-System nutzt es nachweislich, Ahrefs-Studie) und für SEO/GEO nicht empfohlen wird. Nennt die Ausnahme: für die Entwickler-Doku optional, weil Coding-Agents sie tatsächlich abrufen.",
+    "assertions": [
+      "Verkauft llms.txt nicht als GEO-/Citation-Hebel",
+      "Nennt die Ausnahme Dev-Docs für Coding-Agents als optionale Maßnahme für die API-Doku",
+      "Bezeichnet llms.txt nicht pauschal als Mythos ohne jeden Nutzen"
+    ],
+    "files": ["SKILL.md", "references/geo-mechanik.md"]
+  },
+  {
+    "id": "bot-inventar-perplexity-user-oai-adsbot",
+    "prompt": "In unserer robots.txt sperren wir Perplexity-User, OAI-AdsBot und Claude-Agent. Ist das ok? Wir schalten auch Anzeigen in ChatGPT.",
+    "expected_output": "Wertet die Sperre von Perplexity-User nicht als wirksame Sperre (ignoriert robots.txt laut Perplexity meist). Erkennt, dass site_crawler_check OAI-AdsBot und Claude-Agent nicht prüft, und liest die robots.txt dafür manuell. Weist darauf hin, dass eine OAI-AdsBot-Sperre bei OpenAI-Anzeigen das Ad-Review stört.",
+    "assertions": [
+      "Stellt eine robots.txt-Sperre für Perplexity-User nicht als wirksame Sperre dar",
+      "Sagt, dass site_crawler_check OAI-AdsBot und Claude-Agent nicht abdeckt, und prüft die robots.txt dafür manuell",
+      "Verknüpft OAI-AdsBot mit dem Ad-Review für OpenAI-Anzeigen"
+    ],
+    "files": ["SKILL.md", "references/geo-mechanik.md"]
+  },
+  {
+    "id": "ai-referral-conversions-ga4-report",
+    "prompt": "Bringt uns der Traffic aus ChatGPT und Perplexity eigentlich auch Anfragen, oder nur Besuche?",
+    "expected_output": "Phase 6: nach dem sessionSource-Match zusätzlich ga4_report mit dimensions=['sessionSource'] und metrics inkl. keyEvents (und engagementRate), days=90 — Key-Event-Rate der AI-Referrer gegen den Site-Schnitt. Kennzeichnet kleine Fallzahlen und GA4-Referrer als Näherung.",
+    "assertions": [
+      "Ruft ga4_report mit sessionSource als Dimension und keyEvents als Metrik auf",
+      "Nutzt einen 90-Tage-Zeitraum statt des Default 7",
+      "Warnt vor Raten-Vergleichen bei kleinen Fallzahlen"
+    ],
+    "files": ["SKILL.md", "references/dach-citability.md"]
+  },
+  {
+    "id": "freshness-datums-leitplanke",
+    "prompt": "ChatGPT zitiert frische Inhalte lieber. Setz bei allen Blogartikeln einfach das Aktualisierungsdatum auf heute.",
+    "expected_output": "Lehnt das pauschale Hochsetzen ab: das Datum nur bei substanzieller inhaltlicher Änderung ändern, sonst laut Google kein Qualitätssignal und potenziell schädlich. Schlägt stattdessen echte Content-Updates vor und ändert nichts ohne Bestätigung.",
+    "assertions": [
+      "Setzt das Datum nicht ohne substanzielle Inhaltsänderung hoch",
+      "Begründet mit der Google-Aussage, dass Datum ohne Änderung kein Qualitätssignal ist und schaden kann",
+      "Schreibt nichts ins CMS ohne Diff und Bestätigung"
+    ],
+    "files": ["SKILL.md", "references/geo-mechanik.md"]
+  },
+  {
+    "id": "schema-wirkung-unbelegt",
+    "prompt": "Wenn wir überall Schema-Markup einbauen, werden wir dann öfter in KI-Antworten zitiert?",
+    "expected_output": "Stellt klar, dass die Wirkung von Schema auf KI-Zitate unbelegt ist — weder Mythos noch der Hebel. Empfiehlt Schema als beratende Maßnahme für Rich Results und Klarheit über die Entität (@id/sameAs), nicht als bewiesenen Citation-Hebel.",
+    "assertions": [
+      "Bezeichnet die Wirkung von Schema auf KI-Zitate als unbelegt",
+      "Verspricht keine Citation-Steigerung durch Schema",
+      "Begründet Schema mit Rich Results und Entitäts-Klarheit und kennzeichnet die Empfehlung als beratend"
+    ],
+    "files": ["SKILL.md", "references/schema-templates.md", "references/geo-mechanik.md"]
+  },
+  {
+    "id": "bing-index-tools-confirm",
+    "prompt": "Sind unsere wichtigsten Seiten überhaupt im Bing-Index? Bing Webmaster ist verbunden. Reich fehlende Seiten gleich ein.",
+    "expected_output": "Phase 1: prüft die Schlüssel-URLs mit bing_url_info (last_crawled fehlt = nie gecrawlt), dazu bing_list_sitemaps und bing_crawl_issues. Begründet mit ChatGPT-Search/Copilot auf Bing-Basis. Zeigt die Einreichung (bing_submit_urls bzw. site_indexnow_key → site_indexnow_submit) als Vorschau und führt sie erst nach einzelner Bestätigung aus.",
+    "assertions": [
+      "Nutzt bing_url_info für die Schlüssel-URLs statt nur zu empfehlen",
+      "Prüft vor IndexNow die Schlüsseldatei mit site_indexnow_key",
+      "Führt bing_submit_urls oder site_indexnow_submit erst nach ausdrücklicher Bestätigung aus"
+    ],
+    "files": ["SKILL.md"]
+  },
+  {
+    "id": "tool-reality-bing-ai-performance",
+    "prompt": "Kann ich über den MCP sehen, wie oft Copilot uns zitiert?",
+    "expected_output": "Erklärt, dass der Bing-Webmaster-Report „AI Performance” (Public Preview seit 10.02.2026) die First-Party-Quelle dafür ist, die bing_*-Tools ihn aber nicht liefern. Empfiehlt den manuellen Blick im Bing-UI und kennzeichnet das als beratend; bietet dfs_llm_* bzw. manuelle Capture als Ersatzmessung an.",
+    "assertions": [
+      "Nennt Bing AI Performance als Preview-Report mit Datum",
+      "Behauptet nicht, ein bing_*-Tool liefere AI-Citation-Daten",
+      "Kennzeichnet den Bing-UI-Check als manuell bzw. beratend"
+    ],
+    "files": ["SKILL.md"]
+  },
+  {
+    "id": "gsc-marke-nicht-marke-regex",
+    "prompt": "Wie viel unserer Google-Nachfrage läuft über unseren Markennamen und wie viel über die Kategorie?",
+    "expected_output": "Phase 6: Split per sc_performance mit dimension_filter auf query und includingRegex/excludingRegex mit den Markenbegriffen aus dem Projekt-Kontext. Sagt, dass der native GSC-Markenfilter im MCP nicht verfügbar ist (manueller Gegencheck im UI, Grenzen: nur eigene Marke, Mindest-Volumen, Fehlzuordnung) und anonymisierte Suchanfragen herausfallen.",
+    "assertions": [
+      "Nutzt sc_performance mit dimension_filter auf query und includingRegex bzw. excludingRegex",
+      "Behauptet nicht, der MCP könne Marke/Nicht-Marke nicht trennen",
+      "Weist darauf hin, dass anonymisierte Suchanfragen im Query-Split fehlen"
+    ],
+    "files": ["SKILL.md"]
   }
 ]
