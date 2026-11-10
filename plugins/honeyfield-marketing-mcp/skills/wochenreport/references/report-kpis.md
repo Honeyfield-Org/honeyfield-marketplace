@@ -16,11 +16,11 @@ Jede Report-Zeile trägt die Stufe implizit über die Quelle; AI-Traffic ohne Da
 
 ## Zeitraum-Mechanik (Pflicht vor jedem Δ)
 
-Viele Tools nehmen nur `days` — das Fenster endet **heute**, eine Vorperiode ist damit nicht direkt abrufbar (`ads_campaign_performance`, `ads_impression_share`, `ga4_conversions`, `sc_top_queries`). Perioden wirklich trennen können nur `ga4_report` (`start_date`/`end_date`), `sc_performance` (`dimensions=["date"]`) und `ads_conversion_performance` (Tagesverlauf). Deshalb:
+Viele Tools nehmen nur `days` — das Fenster endet **heute**, eine Vorperiode ist damit nicht direkt abrufbar (`ads_campaign_performance`, `ads_impression_share`, `ga4_conversions`, `ga4_traffic_sources`, `linkedin_campaign_performance`). Perioden wirklich trennen können `ga4_report` (`start_date`/`end_date`), `sc_performance`, `sc_top_queries` und `sc_top_pages` (je `start_date`/`end_date` im Format `YYYY-MM-DD`, nur gemeinsam) und `ads_conversion_performance` (Tagesverlauf). Deshalb:
 
 - **Woche = ISO-Kalenderwoche Mo–So** (DACH-Konvention „KW”). Default: letzte abgeschlossene KW vs. die davor.
 - **GA4-Deltas:** `ga4_report` mit `start_date`/`end_date` — zwei exakte Fenster abrufen. Für Vergleiche nicht `ga4_conversions` nutzen (nur `days`).
-- **SEO-Deltas:** `sc_performance` mit `dimensions=["date"]`, days=14 (WoW) bzw. days≈60 (MoM) — Wochen/Monate aus den Tageszeilen selbst splitten.
+- **SEO-Deltas:** `sc_performance` mit `start_date`/`end_date` und `dimensions=[]` — ein Aufruf je Periode, liefert die Gesamtsumme inkl. anonymisierter Suchanfragen. Alternativ `dimensions=["date"]` über beide Perioden und die Tageszeilen selbst splitten. GSC-Daten laufen 2–3 Tage hinterher: prüfen, ob das Ende der Berichtswoche schon vollständig ist.
 - **Ads-Conversions:** Tagesverlauf aus `ads_conversion_performance` in die zwei Perioden splitten.
 - **Additive Ads-KPIs** (Spend, Klicks, Impressions): notfalls per Differenz ableiten — days=14 minus days=7 = Vorwoche. **CTR/CPC aus den additiven Werten je Periode neu berechnen — nie Raten differenzieren.**
 - **`ads_impression_share`:** Snapshot ohne belastbare Vorperiode — als Grenze kennzeichnen (Beleg-Stufe), kein Pseudo-Δ bauen.
@@ -55,6 +55,7 @@ Kein Δ ohne saubere Perioden-Trennung — überlappende `days`-Fenster als Verg
 | Conversions | `meta_campaign_performance` / `linkedin_campaign_performance` | −25 % | `social-ads-audit` (Signal-Gate: Pixel/Events) — Site-Messung via `tracking-check` |
 
 - Kampagnen-Inventar: `linkedin_list_campaigns` (Name, Status, Budget).
+- **LinkedIn-Ebenen:** Seit 10/2025 heißt im Campaign Manager die alte „Campaign Group” jetzt **„Campaign”** und die alte „Campaign” jetzt **„Ad set”**. API und MCP-Tools nutzen weiter die alten Namen — `linkedin_list_campaigns` und `linkedin_campaign_performance` liefern also UI-„Ad sets”. Im Kunden-Report beide Namen nennen, z. B. „Kampagne (UI: Ad set)”.
 - **Read-only hart:** `linkedin_update_campaign_budget` / `linkedin_update_campaign_status` sind Schreib-Tools — im Report **nie** nutzen.
 - Für Δs gilt die Zeitraum-Mechanik oben: nur vergleichen, was sauber in zwei Perioden trennbar ist — sonst als Snapshot kennzeichnen.
 
@@ -68,6 +69,9 @@ Kein Δ ohne saubere Perioden-Trennung — überlappende `days`-Fenster als Verg
 | Impressionen | `sc_performance` | −25 % | `seo-audit` |
 | Ø-Position | `sc_performance` | +3 Positionen schlechter | `seo-audit` (Rankings/Traffic-Einbruch) |
 | Top-Query-Bewegung | `sc_top_queries` | Top-Query fällt aus Top-10 | `seo-audit` |
+
+- **Keine Summen aus Query-Zeilen.** GSC lässt auf Query-Ebene anonymisierte Suchanfragen weg (über alle Properties ca. 47 % der Klicks, Stand 04/2025). Summen über `sc_top_queries`- oder `query`-Zeilen sind daher kleiner als die Gesamtwerte — Totals nur über `sc_performance` mit `dimensions=[]` oder `["date"]`.
+- **Marke vs. Nicht-Marke (optional):** Der native GSC-Markenfilter ist im MCP nicht verfügbar. Split per `sc_performance` mit `dimension_filter` `{"dimension": "query", "operator": "includingRegex", "expression": "<marke1>|<marke2>"}` (Nicht-Marke: `excludingRegex`), Markenbegriffe aus dem Projekt-Kontext, Regex in RE2-Syntax. Beide Teile enthalten keine anonymisierten Suchanfragen — ihre Summe ist kleiner als der Gesamtwert, als Anteil ausweisen. Fallen nur die Marken-Klicks und Nicht-Marke bleibt stabil, ist das eher Marken-Nachfrage (Saison, Kampagnen, Journal) als ein Ranking-Problem: einordnen, nicht automatisch an `seo-audit` verweisen.
 
 **Traffic-Einbruch:** Zeitlich verorten (date-Dimension), gegen bekannte Google-Update-Termine **und** bekannte Ereignisse außerhalb von Updates legen (`references/bekannte-ereignisse.md` im Plugin, z. B. Wegfall der Gratis-Produkt-Listings in der EEA ab 17.–18.09.2026) → dann `seo-audit`.
 
@@ -104,6 +108,7 @@ Für lokale Kunden (Praxis, Bäckerei, Handwerk) sind das Kern-Zahlen — oft wi
 | Mentions / Citations / Share-of-Voice | `dfs_llm_mentions_metrics` (max. 10 Marken-/Themen-Keywords pro Call) | Share-of-Voice −20 %-Punkte oder Mentions halbieren sich | `geo-audit` |
 
 - **Pay-as-you-go, kein Abo:** `dfs_llm_mentions_metrics` läuft über das normale DataForSEO-Guthaben. Liefert der Call `{"error": "subscription_required", ...}` (Zugriffsproblem, z. B. Guthaben aufgebraucht), auf die alte Näherung degradieren: `ga4_traffic_sources` (days≥28, nach `sessionSource`) → AI-Referrer (chatgpt.com, perplexity.ai, copilot.microsoft.com/copilot.com, gemini) grob quantifizieren. **Näherung, kein Fetch-/Zitat-Beweis** — als beratend kennzeichnen.
+- **AI-Referrer-Key-Events:** Neben der Session-Menge auch die Key Events der AI-Referrer ausweisen — `ga4_traffic_sources` liefert keine Key Events, deshalb `ga4_report` mit `dimensions=["sessionSource"]`, `metrics=["sessions", "keyEvents"]` und `start_date`/`end_date` je Periode; die AI-Referrer-Zeilen herausgreifen. Das ist der Business-Nachweis zur Menge, bleibt aber **beratend** (Referrer fehlen oft, Consent-Lücken).
 - **Lag:** Index nicht tagesaktuell; die genaue Lag-Dauer ist nicht über die DataForSEO-Docs API-verifiziert — bei WoW-Vergleichen kurz vor dem Report-Stichtag entsprechend vorsichtig sein.
 - Auffällig: AI-Traffic/Mentions verschwinden oder verdoppeln sich → `geo-audit`.
 
@@ -115,11 +120,12 @@ Plausibilitäts-Check über `ads_conversion_performance` (`last_gap_days`) + `ga
 - `last_gap_days` > 7 (trotz laufendem Spend) = **Verdacht** — im Report kennzeichnen.
 - Conversions bei 0 trotz Spend **oder** Ads-vs-GA4-Klaffung > Faktor 2 = **Blocker** — ganz oben im Report markieren, auf `tracking-check` verweisen.
 - Solange das Gate nicht grün ist: Conversions/CPA/ROAS mit Beleg-Stufe **„mit Tracking-Vorbehalt”** ausweisen.
+- **DACH-Consent-Vorbehalt:** Fehlende Einwilligung drückt GA4- und Ads-Zahlen unterschiedlich stark. Consent Mode **Basic** modelliert nur mit einem allgemeinen Modell; **Advanced** nutzt Pings vor der Einwilligung, braucht aber eine Mindest-Datenmenge, die kleine DACH-Konten mit niedriger Einwilligungsrate oft nicht erreichen. Ein Teil der Ads-vs-GA4-Klaffung ist dann Consent, kein Defekt — im Report so benennen; die Prüfung bleibt bei `tracking-check`.
 
 ---
 
 ## WoW-Interpretation (Fallstricke)
-- **Kurze Zeiträume schwanken.** Bei niedrigem Volumen (< ~20 Conversions/Woche) ist ein WoW-Delta oft Rauschen — als „zu wenig Daten für belastbaren Trend” kennzeichnen, nicht als Trend verkaufen.
+- **Kurze Zeiträume schwanken.** Primär-Anker ist Googles eigener Wert: Smart-Bidding-Performance erst über Zeiträume mit mind. **30 Conversions** bewerten (**50** bei tROAS; https://support.google.com/google-ads/answer/7065882). Liegt die Woche darunter (erst recht unter ~20), ist ein WoW-Delta oft Rauschen — als „zu wenig Daten für belastbaren Trend” kennzeichnen, nicht als Trend verkaufen, und das Fenster verlängern (MoM oder 4 Wochen rollierend) statt das WoW-Δ zu bewerten.
 - **Attributions-Lag:** die letzten 1–3 Tage sind unvollständig (Conversions tropfen nach). Frische Kurzfenster nicht hart bewerten.
 - **Saisonalität / Feiertage:** DACH-Feiertage (regional unterschiedlich AT/CH/DE) und Wochenend-Muster erklären viele Deltas — vor dem Alarm prüfen.
 - **Eine Auffälligkeit ≠ eine Ursache.** Der Report zeigt *dass* etwas auffällt und *wo* man tiefer schaut — die Ursache findet der jeweilige Audit.

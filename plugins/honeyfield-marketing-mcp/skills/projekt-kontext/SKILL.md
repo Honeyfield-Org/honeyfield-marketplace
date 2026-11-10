@@ -2,7 +2,7 @@
 name: projekt-kontext
 description: "Erstellt und pflegt den Projekt-Kontext eines Kunden — das Fundament-Dokument, das alle anderen Marketing-Skills (seo-audit, google-ads-audit, geo-audit, …) zuerst lesen, damit sie Markt, Marke, Ziele und rechtlichen Rahmen kennen, ohne erneut zu fragen. Nutze diesen Skill am Anfang eines neuen Kunden-Projekts und bei: „Projekt-Kontext anlegen/aufsetzen”, „Kunden-Kontext”, „Kontext erstellen/updaten”, „neues Kunden-Onboarding”, „Kunde einrichten”, „festhalten wer der Kunde ist / was die Firma macht”, „Marke/Branche/Zielmarkt/Compliance hinterlegen”. Befüllt eine Erstversion automatisch aus verbundenen Quellen (Website/Impressum, Google Business Profile, Search Console, GA4) und verfeinert sie im Interview. Speichert das Ergebnis als `projekt-kontext.md` (Claude Code) bzw. zur Ablage im Projektwissen (Claude.ai). Kalibriert auf den DACH-Markt (DE/AT/CH). Für Audits/Reports selbst den jeweiligen Skill nutzen — hier entsteht nur das Fundament."
 metadata:
-  version: 0.3.0
+  version: 0.4.0
 ---
 
 # Projekt-Kontext
@@ -48,7 +48,7 @@ Nach dem Template unten: YAML-Frontmatter (greppbare Stable Keys) + Prosa-Sektio
 - **Claude Code** (Dateizugriff vorhanden): schreibe das Dokument nach `projekt-kontext.md` ins Arbeitsverzeichnis (oder den vom Nutzer genannten Pfad). Liegt es im Repo, lesen alle Audits es automatisch.
 - **Claude.ai** (kein Dateizugriff): gib das fertige Dokument vollständig aus und weise an: **„Füge dieses Dokument dem Projektwissen dieses Claude-Projekts hinzu (Projekteinstellungen → Wissen). Danach nutzen alle Audits es automatisch.”** Sei ehrlich: der Skill kann es hier **nicht selbst** speichern.
 
-Bestätige am Ende, welche Felder gesichert sind und welche noch zu prüfen sind.
+Bestätige am Ende, welche Felder gesichert sind und welche noch zu prüfen sind. Sind Google Ads oder GA4 verbunden, schlag als nächsten Schritt `tracking-check` vor (Consent und Conversion-Tracking prüfen; Googles EU User Consent Policy gilt auch für Kunden-Properties, die eine Agentur betreut). Prüf den Consent hier nicht selbst.
 
 ## Template
 ```markdown
@@ -102,7 +102,7 @@ stand:                # YYYY-MM-DD
 
 ## 7 — Compliance & rechtlicher Rahmen
 **Flags:** [siehe Frontmatter] — Audit-/Creation-Skills behandeln diese als harte Leitplanke
-**Hinweise:** z.B. HWG → keine Heil-/Wirkversprechen; DSGVO/TTDSG → Tracking nur mit Consent
+**Hinweise:** z.B. HWG → keine Heil-/Wirkversprechen; DSGVO/TTDSG (Gesetz: § 25 TDDDG) → Tracking nur mit Consent
 *(Keine Rechtsberatung — nur den Rahmen markieren; im Zweifel Fachanwalt.)*
 
 ## 8 — Ansprache & Ton
@@ -119,7 +119,7 @@ stand:                # YYYY-MM-DD
 ```
 
 ## Compliance als Policy
-Setze in `compliance:` die zutreffenden Flags anhand der Branche — Mapping + „worauf achten” in `references/dach-compliance.md`. Audit- und Creation-Skills lesen diese Flags und behandeln sie als **harte Leitplanke** (z.B. `HWG` → keine Heil-/Wirkversprechen in Anzeigen; `DSGVO`/`TTDSG` → Conversion-Tracking nur mit gültigem Consent als valide werten). Keine Rechtsberatung — nur den Rahmen markieren.
+Setze in `compliance:` die zutreffenden Flags anhand der Branche — Mapping + „worauf achten” in `references/dach-compliance.md`. Audit- und Creation-Skills lesen diese Flags und behandeln sie als **harte Leitplanke** (z.B. `HWG` → keine Heil-/Wirkversprechen in Anzeigen; `DSGVO`/`TTDSG` → Conversion-Tracking nur mit gültigem Consent als valide werten). `TTDSG` ist nur der Flag-Name — das Gesetz heißt seit 05/2024 TDDDG (§ 25 Abs. 1). Den Flag-Namen nicht umbenennen: Konsumenten-Skills matchen ihn wörtlich. Keine Rechtsberatung — nur den Rahmen markieren.
 
 ## Grenzen (ehrlich)
 - Auto-Draft ist ein **Entwurf** — immer vom Nutzer bestätigen lassen; nichts als gesichert ausgeben, was nur geraten ist.

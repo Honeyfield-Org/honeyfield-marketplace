@@ -36,10 +36,17 @@ Referenz für `tracking-check`. Detailkörper zum Consent-Layer-Querschnitt in S
 
 | Modus | Verhalten bei Consent-Ablehnung | Modelling |
 |---|---|---|
-| **Basic** | Google-Tags werden komplett geblockt — kein cookieless Ping | Kein Modelling möglich |
-| **Advanced** | Cookieless Ping wird trotzdem gesendet | Conversion- und Audience-Modelling aktiv |
+| **Basic** | Google-Tags laden erst nach Einwilligung — bei Ablehnung kein Ping | Google modelliert trotzdem — mit einem **allgemeinen Modell** (ohne Pings dieser Site, weniger genau) |
+| **Advanced** | Cookieless Pings werden auch ohne Einwilligung gesendet | **Eigenes Modell** aus den Pings — nur, wenn das Tag eine Mindest-Datenmenge („data collection threshold”) erreicht |
 
-Empfehlung DACH: Advanced = mehr Daten + Modelling, aber technisch anspruchsvoller und muss Banner-Logik korrekt implementieren (Default denied, kein Pre-Consent-Firing).
+**Abwägung DACH (neutral, keine Rechtsberatung):**
+- Beide Modi modellieren. Advanced **nie** mit „sonst kein Modelling” begründen — das ist falsch.
+- Advanced liefert ein genaueres, site-eigenes Modell, sendet aber Pings **ohne Einwilligung**. Rechtlich relevant: § 25 TDDDG (DE), § 165 TKG (AT). Die Wahl trifft der Kunde mit seiner Datenschutzberatung, nicht der Audit.
+- Kleine DACH-Konten mit niedriger Einwilligungsrate erreichen die Schwelle oft nicht — dann bringt Advanced kaum Zusatz-Modellierung, das rechtliche Risiko bleibt.
+- Ob und wie viel Google modelliert, liefern die MCP-Tools nicht → **nicht prüfbar**, beratend.
+- Technisch gilt für beide: Banner-Logik korrekt (Default denied, kein Pre-Consent-Firing).
+
+Beleg: https://developers.google.com/tag-platform/security/concepts/consent-mode
 
 ### Juni 2026 — Update (Stand/Datum vor Kundennutzung verifizieren)
 
@@ -68,6 +75,7 @@ Das frühere TTDSG heißt seit **Mai 2024 TDDDG** (Telekommunikation-Digitale-Di
 - **DSG** (Datenschutzgesetz AT): Ergänzt DSGVO auf nationaler Ebene; keine signifikante Abweichung bei Cookie-Consent.
 - **DSB-Leitlinien 2024**: verschärfte Anforderungen an Schaltflächen-Gleichwertigkeit auf erster Banner-Ebene + granulare Kategorien.
 - Pay-or-OK-Modelle unter Beobachtung (DSB hat noch keine abschließende Positionierung).
+- **US-Datentransfer (GA4/Google Ads):** Der EU-US-Angemessenheitsbeschluss (Data Privacy Framework, DPF) gilt. Das EuG wies am **03.09.2025** die Klage dagegen ab (**T-553/23**, Latombe). Der DSB-Bescheid von 2021 (Google Analytics, Schrems II) beschreibt nicht mehr die Transferlage zu DPF-zertifizierten US-Empfängern — er ist historischer Stand. Stand eines Rechtsmittels vor Kundennutzung prüfen (z. B. mit `honeyfield-legal-mcp`). Keine Rechtsberatung. Beleg: https://curia.europa.eu/jcms/upload/docs/application/pdf/2025-09/cp250106en.pdf
 
 ### Schweiz — nDSG (revDSG)
 
@@ -75,6 +83,13 @@ Das frühere TTDSG heißt seit **Mai 2024 TDDDG** (Telekommunikation-Digitale-Di
 - **Ausnahme**: Marketing-/Tracking-Cookies, die Personendaten verarbeiten, können dennoch DSGVO-Pflichten auslösen, wenn der Betreiber EU-Bezug hat (Art. 3 DSGVO).
 - **Google EU-UCP für CH**: Seit **31. Juli 2024** gilt Googles EU User Consent Policy auch für Schweizer Traffic — wer Google-Produkte (GA4, Google Ads) nutzt und CH-User trackt, muss Consent Mode implementieren oder riskiert eingeschränkte Datenerhebung.
 - **Praktisches Ergebnis**: Für DACH-übergreifende Setups immer mit Banner abdecken — rein-CH-Setups ohne EU-Targeting haben theoretisch mehr Spielraum, aber faktisch kaum.
+
+### Rolle von Google (DSGVO) — alle Märkte
+
+- Für Google-Ads- und GA4-Messung gelten grundsätzlich die **Controller-Controller-Bedingungen** (Google = eigener Verantwortlicher).
+- Google ist **Auftragsverarbeiter (Processor)** nur bei Uploads von Nutzerdaten: **Customer Match**, **Enhanced Conversions** (inkl. Enhanced Conversions for Leads) und **Store-Sales-Uploads**. Dort sind die Google Ads Data Processing Terms nötig, und die Einwilligung muss `ad_user_data` abdecken.
+- Relevant für den Operator: `ads_upload_conversions` mit gehashten E-Mails/Telefonnummern fällt in diese Fälle. DPT-Annahme und Einwilligung liefern die Tools nicht → **nicht prüfbar**, vor dem Upload ansprechen.
+- Beleg: https://business.safety.google/adsservices/
 
 ---
 
@@ -115,6 +130,13 @@ sGTM verschiebt Tag-Ausführung vom Browser auf einen Server-Container (Cloud Ru
 
 Consent Mode v2 muss im **Browser-Container** (Client-Side GTM) implementiert bleiben — sGTM löst das Consent-Problem nicht. Häufiger Fehler: sGTM als Consent-Bypass missverstanden (ist es nicht — personenbezogene Daten dürfen auch serverseitig nur mit Rechtsgrundlage verarbeitet werden).
 
+### Zweite First-Party-Option: Google tag gateway for advertisers
+
+Der Google tag gateway liefert den Google-Tag über die eigene First-Party-Infrastruktur aus (eigene Domain bzw. CDN), ohne eigenen Server-Container. Beleg: https://developers.google.com/tag-platform/tag-manager/gateway
+
+**Prüfbar mit Einschränkung:** `dfs_raw_html` einer konkreten URL — lädt das Tag-Script von der eigenen Domain statt von `googletagmanager.com`, ist ein Gateway (oder ein sGTM-Pfad) wahrscheinlich. Bestätigt nur diese Seite, nicht die Live-Gesundheit.
+**Gleiche Regel wie bei sGTM:** Der Gateway ist **kein Consent-Bypass**. Consent Mode bleibt im Browser Pflicht.
+
 ---
 
 ## F — compliance-Flag-Verknüpfung
@@ -126,7 +148,7 @@ Consent Mode v2 muss im **Browser-Container** (Client-Side GTM) implementiert bl
 | `DSGVO` | Kein Tracking vor expliziter Einwilligung; keine Pay-or-OK-Empfehlung; Erwähnung TDDDG §25 zwingend |
 | `TTDSG` | §25 TDDDG-Hinweis obligatorisch (DE: TDDDG, AT: §165 TKG); GTM-Pre-Consent-Laderisiko benennen |
 | `maerkte: [CH]` (nur CH) | nDSG-Hinweis: kein gesetzlicher Banner-Zwang, aber Google EU-UCP für CH-Traffic seit 31.07.2024 beachten |
-| `AT` in `maerkte:` | §165 TKG AT + DSB-Leitlinien 2024 benennen |
+| `AT` in `maerkte:` | §165 TKG AT + DSB-Leitlinien 2024 benennen; bei US-Transfer-Fragen DPF-Stand (EuG T-553/23, §C) nennen |
 | `no_remarketing` (Zusatz-Flag) | `ad_personalization` = denied hardcoded empfehlen; Remarketing-Audiences deaktivieren |
 
 Fehlt `compliance:` im `projekt-kontext`: Default = DSGVO-konservativ behandeln (DACH = DE-Standard).

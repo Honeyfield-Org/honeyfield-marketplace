@@ -50,6 +50,8 @@ Herzstück von Phase 1 des `marketing-plan`-Skills. Sie macht den Ist-Zustand ei
 
 **Beleg:** `sc_performance` (organische Klicks/Impressionen, Marken- vs. Nicht-Marken-Split, durchschnittliche Position) + `dfs_keyword_rankings` (für wie viele Keywords rankt die Domain, wie viele davon in Top 10). Zählwert: Anteil Nicht-Marken-Klicks + Anzahl Keywords in Top 10. Beleg-Stufe: **gemessen**.
 
+**Marken-Split ist eine Näherung.** Split per `sc_performance` mit `dimension_filter` auf `query` (Operator `includingRegex`/`excludingRegex`, Markenbegriffe aus `brand_begriffe`). GSC lässt auf Query-Ebene anonymisierte Suchanfragen weg (über alle Properties ca. 47 % der Klicks, Stand 04/2025; je Site oft 45–80 %, https://ahrefs.com/blog/gsc-anonymized-queries/). Den Anteil daher nur über die sichtbaren Queries rechnen und als Näherung kennzeichnen; Gesamt-Klicks aus `sc_performance` ohne `query`-Dimension ziehen — nie aus Query-Zeilen summieren.
+
 **Fallback wenn Quelle fehlt:** Keine `search_console`-Quelle → allein auf `dfs_keyword_rankings` stützen (extern gemessen, bleibt **gemessen**, ohne Marken-/Nicht-Marken-Split). Auch keine `dataforseo`-Quelle → Dimension als **Lücke** benennen.
 
 **Tiefe:** `seo-audit`.
@@ -166,9 +168,9 @@ Herzstück von Phase 1 des `marketing-plan`-Skills. Sie macht den Ist-Zustand ei
 - 2 = Durchschnittliche Ladezeit, einzelne UX-Reibungen (Rage Clicks / tote Scrolls sichtbar).
 - 3 = Solide Basis: Lighthouse im grünen Mittelfeld, mobil nutzbar, keine groben Reibungssignale.
 - 4 = Schnell, mobil sauber, gute Core Web Vitals, nur kleinere UX-Optimierungen offen.
-- 5 = Technisch exzellent: durchweg grüne Core Web Vitals, schnelle mobile Erfahrung, keine auffälligen Reibungssignale.
+- 5 = Technisch exzellent: grüne Labor-Werte für LCP und CLS (INP nicht gemessen), schnelle mobile Erfahrung, keine auffälligen Reibungssignale.
 
-**Beleg:** `dfs_lighthouse_live` (Performance-/Accessibility-/SEO-Score, Core Web Vitals) + `clarity_get_insights` (Rage Clicks, Scroll Depth, Session-Signale). Zählwert: Lighthouse-Performance-Score + Präsenz auffälliger Clarity-Reibungssignale. Beleg-Stufe: **gemessen**.
+**Beleg:** `dfs_lighthouse_live` (Performance-/Accessibility-/SEO-Score, LCP und CLS im Labor; kein INP — Laborlauf ohne Interaktion, INP-Felddaten liefert der MCP nicht → beratend) + `clarity_get_insights` (Rage Clicks, Scroll Depth, Session-Signale). Zählwert: Lighthouse-Performance-Score + Präsenz auffälliger Clarity-Reibungssignale. Beleg-Stufe: **gemessen**.
 
 **Fallback wenn Quelle fehlt:** Keine `clarity`-Quelle → allein auf `dfs_lighthouse_live` stützen (bleibt **gemessen**, ohne Verhaltens-Signal). Keine `dataforseo`-Quelle und kein Clarity → **Lücke** benennen.
 
@@ -213,5 +215,7 @@ Herzstück von Phase 1 des `marketing-plan`-Skills. Sie macht den Ist-Zustand ei
 **Beleg:** `projekt-kontext` (Felder `geschaeftsziel`, `ziel_kpi`, `maerkte`, `compliance`, `brand_begriffe` + ICP-Teil) — Selbstauskunft, kein Live-Tool. Zählwert: Vollständigkeit + Schärfe der Kontext-Felder. Beleg-Stufe: **beratend** (Selbstauskunft).
 
 **Fallback wenn Quelle fehlt:** Kein projekt-kontext vorhanden → Score 0 / **Lücke**; anbieten, ihn per `projekt-kontext` anzulegen (Fundament vor Planung).
+
+**Folge im Plan:** Score ≤ 2 → „Positionierung/ICP schärfen” (via `projekt-kontext`) ist die erste Foundation-Maßnahme der Roadmap, vor Velocity.
 
 **Tiefe:** `projekt-kontext`.

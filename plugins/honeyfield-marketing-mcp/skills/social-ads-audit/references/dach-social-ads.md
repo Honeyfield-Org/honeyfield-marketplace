@@ -29,6 +29,6 @@ Gilt für jede Creative-Empfehlung und jeden `meta_create_ad`-Text (message/head
 
 ## Markt-Kalibrierung
 - **Währung:** Meta-Budgets/Spend kommen aus den Tools in EUR normalisiert; LinkedIn in Konto-Währung (`currencyCode` — CH oft CHF). CPA-Ziele in Konto-Währung besprechen.
-- **DE ≠ AT ≠ CH:** ein Meta-Adset mit DE+AT+CH wird vom bevölkerungsstärksten Markt (DE) dominiert — AT-/CH-Fokus braucht eigene Adsets bzw. Kampagnen. LinkedIn: AT/CH-Zielgruppen schnell unter der Serving-Schwelle.
+- **DE ≠ AT ≠ CH:** ein Meta-Adset mit DE+AT+CH wird vom bevölkerungsstärksten Markt (DE) dominiert — AT-/CH-Fokus braucht eigene Adsets bzw. Kampagnen. LinkedIn: AT/CH-Zielgruppen fallen schnell unter die Empfehlung von 50.000 Mitgliedern (300.000 für Sponsored Content/Messaging) und bei engem Targeting sogar unter das technische Minimum von 300 je Ad set — Größe mit `linkedin_estimate_audience` messen (Details in `linkedin-ads-mechanik.md`).
 - **Saisonalität/Feiertage** sind regional verschieden (AT/CH/DE) — Fenster-Vergleiche entsprechend einordnen, bevor ein „Einbruch” diagnostiziert wird.
 - **Keine importierten Benchmarks:** CTR-/CPM-/CPA-Benchmarks aus US-Quellen nicht auf DACH übertragen — Vergleichsbasis ist immer das eigene Konto (Ad vs. Ad, Fenster vs. Fenster).

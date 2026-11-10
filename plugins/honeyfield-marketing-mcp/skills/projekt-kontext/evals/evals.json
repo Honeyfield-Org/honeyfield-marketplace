@@ -48,12 +48,13 @@
   {
     "id": "compliance-erkennung",
     "prompt": "Der Kunde ist eine Zahnarztpraxis. Leg den Kontext an.",
-    "expected_output": "Setzt compliance-Flags passend zur Branche (HWG, dazu DSGVO/TTDSG/Impressum) und hält im Kontext fest, dass Audit-/Ads-Skills keine Heil-/Wirkversprechen empfehlen dürfen. Gibt keine Rechtsberatung.",
+    "expected_output": "Setzt compliance-Flags passend zur Branche (HWG, dazu DSGVO/TTDSG/Impressum) und hält im Kontext fest, dass Audit-/Ads-Skills keine Heil-/Wirkversprechen empfehlen dürfen. Gibt keine Rechtsberatung. Nennt beim Consent-Hinweis die Norm § 25 Abs. 1 TDDDG, setzt das Flag aber weiter wörtlich als TTDSG.",
     "assertions": [
       "Setzt HWG sowie die allgemeinen Flags (DSGVO, TTDSG, Impressum) für eine Arztpraxis",
       "Notiert die Flags als harte Leitplanke für nachgelagerte Skills (keine Heilversprechen)",
       "Gibt explizit keine Rechtsberatung, verweist im Zweifel weiter",
-      "Konsultiert references/dach-compliance.md für das Branchen-Mapping"
+      "Konsultiert references/dach-compliance.md für das Branchen-Mapping",
+      "Nennt § 25 (Abs. 1) TDDDG als Norm, behält aber den Flag-Namen TTDSG unverändert bei"
     ],
     "files": ["SKILL.md", "references/dach-compliance.md"]
   },
@@ -108,5 +109,17 @@
       "Übergibt den SEO-Audit explizit an seo-audit, statt ihn selbst durchzuführen"
     ],
     "files": ["SKILL.md"]
+  },
+  {
+    "id": "handoff-tracking-check-consent",
+    "prompt": "Neuer Kunde, Online-Shop aus Graz. GA4 und Google Ads sind schon verbunden. Leg den Projekt-Kontext an.",
+    "expected_output": "Legt den Projekt-Kontext an (inkl. DSGVO/TTDSG-Flags, AT-Markt) und schlägt am Ende tracking-check als nächsten Schritt vor, um Consent und Conversion-Tracking zu prüfen (EU User Consent Policy gilt auch für Kunden-Properties, die eine Agentur betreut). Prüft den Consent nicht selbst. Hält im DSGVO-Hinweis fest, dass Google bei Ads/GA4-Messung grundsätzlich Controller ist und nur bei Customer Match/Enhanced Conversions/Store Sales Auftragsverarbeiter.",
+    "assertions": [
+      "Legt den Projekt-Kontext an, bevor ein Folge-Skill vorgeschlagen wird",
+      "Schlägt tracking-check für den Consent-/Tracking-Check vor, weil Ads/GA4 verbunden sind",
+      "Führt keinen eigenen Consent- oder Tracking-Check durch",
+      "Stellt Google nicht pauschal als Auftragsverarbeiter dar (Controller-Controller als Regel, Processor nur bei Customer Match/Enhanced Conversions/Store Sales)"
+    ],
+    "files": ["SKILL.md", "references/dach-compliance.md"]
   }
 ]

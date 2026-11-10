@@ -2,7 +2,7 @@
 name: tracking-check
 description: "Datengetriebener Tracking- und Conversion-Audit für einen Kunden, kalibriert auf DACH (DE/AT/CH). Nutze diesen Skill, wenn geprüft werden soll, ob das Conversion- und Event-Tracking korrekt läuft: „stimmt mein Tracking”, „Conversions werden nicht gezählt”, „GA4 und Google Ads weichen ab”, „feuern meine Events / Tags”, „Conversion-Tracking prüfen”, „doppelte Conversions”, „Cookie-/Consent-Tracking DSGVO-konform”, „GTM-Setup prüfen”, „Tracking eingerichtet, aber nichts kommt an”. Zieht echte Daten aus GA4, Google Tag Manager und Google Ads über den Marketing-Ops-MCP, belegt jeden Befund nach Beweiskraft (gemessen / nur konfiguriert / nicht prüfbar) und behebt Sicheres nach Bestätigung. Für bezahlte Such-Performance nutze `google-ads-audit`; für Meta-Pixel-/Social-Ads-Signale `social-ads-audit`; für organisches Ranking `seo-audit`; für KI-Sichtbarkeit `geo-audit`; fürs wöchentliche Reporting `wochenreport`."
 metadata:
-  version: 0.4.2
+  version: 0.5.0
 ---
 
 # Tracking-Check
@@ -45,7 +45,8 @@ Logik: „die Zahl lebt nicht” vor „die Zahl ist inkonsistent” vor „Fein
 ### 3 — GA4 ↔ Google-Ads-Konsistenz
 - `ga4_manage_google_ads_links` (list) → ist der GA4↔Ads-Link gesetzt? (nur konfiguriert, zugleich Operator-Hebel) — ob Conversions real importiert werden, zeigt erst der Kreuzcheck `ga4_conversions` vs. `ads_conversion_performance` (gemessen).
 - Kreuzcheck `ga4_conversions` vs. `ads_conversion_performance` für denselben Zeitraum → Größenordnung vergleichen. Fehlender Import **oder** **Doppelzählung** (GA4-Import-Conversion **und** nativer Ads-Tag für denselben Abschluss) — die Tools dedupen nicht, also nur als **Verdacht** kennzeichnen, manuell zu bestätigen.
-> Faktor-2+-Diskrepanz GA4↔Ads = Tracking-Verdacht, nicht „ist halt so”. Zeitzone/Attribution erklären kleine Abweichungen, keine Verdopplung.
+- Kleine Abweichungen beratend erklären (alle **nicht prüfbar**): GA4-Attributions-Kanal-Einstellung (seit 06/2023 bei neuer Verknüpfung Default „Google Paid Channels”), Cross-Device-Conversions nur mit Google Signals, Berichtszeit (Ads: Interaktionszeit, GA4: Event-Zeit), Zeitzone. Detail: `references/tracking-tool-grenzen.md` §D.
+> Faktor-2+-Diskrepanz GA4↔Ads = Tracking-Verdacht, nicht „ist halt so”. Diese Gründe erklären kleine Abweichungen, keine Verdopplung.
 
 ### 4 — GTM-Hygiene & Workspace-Drift
 - `gtm_container_info` / `gtm_get_version` (**Live**) **vs.** `gtm_list_tags` / `_triggers` / `_variables` (**Workspace-Draft**) → **Drift** explizit ausweisen. Ein nie gepublishter Tag ist **nicht live** — Draft ≠ Live ist der häufigste reale Tracking-Bug. Quelle jeder Aussage benennen.
@@ -61,13 +62,17 @@ Logik: „die Zahl lebt nicht” vor „die Zahl ist inkonsistent” vor „Fein
 
 ### 6 — Datenqualität
 - `ga4_enhanced_measurement` (get) → Auto-Events sinnvoll (Scroll / Outbound / Site-Search / Form)? **Nicht** mit „Tracking vollständig” verwechseln — deckt nur GA4-Auto-Events, nicht Custom-Events/Funnel.
-- `ga4_data_retention` (get) → `TWO_MONTHS` vs. `FOURTEEN_MONTHS`; **DACH oft unnötig kurz** auf 2 Monate → 14 Monate ist ein einfacher Hebel (Datenschutz-Default ≠ Pflicht).
-- Interne IPs / Bot-Filter / Cross-Domain — soweit aus den Tools lesbar; sonst beratend.
+- `ga4_data_retention` (get) → liest nur die **Event-Daten**-Retention. Standard-Property: `TWO_MONTHS` vs. `FOURTEEN_MONTHS`; **DACH oft unnötig kurz** auf 2 Monate → 14 Monate ist ein einfacher Hebel (Datenschutz-Default ≠ Pflicht). Grenzen: Large-/XL-Properties sind laut Google auf 2 Monate begrenzt (kein Quick Win); GA4 360 hat auch 26/38/50 Monate. Property-Größe, 360-Status und User-Daten-Retention liest das Tool nicht → nicht prüfbar.
+- **PII in URLs** (Google-Richtlinie: Pfad und Parameter frei von PII): `ga4_report` auf `pageLocation` mit PII-Regex (E-Mail, Telefon, Name) → Treffer = gemessen, Priorität hoch. Data Redaction (nur Web-Streams) ist nicht lesbar → nicht prüfbar.
+- **Self-Referral / Cross-Domain:** `ga4_report` nach `sessionSource` → eigene Domain, Checkout-Domain oder Payment-Anbieter als Quelle = Verdacht (gemessen); v. a. E-Commerce. Cross-Domain- und Referral-Einstellungen sind nicht lesbar.
+- **Test-Traffic:** `ga4_report` nach `hostName` → `localhost`, Staging-/Dev-Domains in der Prod-Property (gemessen). Datenfilter für interne/Developer-Zugriffe und Bot-Filter sind nicht lesbar → beratend.
+- Abfragen, Regex und Belege: `references/tracking-tool-grenzen.md` §D.
 
 ## DACH-Consent-Layer (Querschnitt — immer, gemischt prüfbar/beratend)
 - **Präsenz prüfbar (nur konfiguriert):** Consent-/CMP-Tag bzw. tag-level `consent_settings` im GTM via `gtm_list_tags` / `gtm_get_tag` vorhanden/fehlt. Beweist **nicht**, dass der Banner vor anderen Tags feuert.
 - **Korrektheit nicht prüfbar (beratend):** ob Consent Mode **v2** korrekt greift (Default-denied → Update-on-grant, `ad_user_data` / `ad_personalization`), Tag-Firing vor Consent. Ausdrücklich als Tool-Grenze ausweisen — GTM-Preview / Tag-Assistant nötig.
-- DACH-Recht (keine Rechtsberatung): §25 TDDDG (DE, früher TTDSG), §165 TKG (AT), nDSG (CH); Cookie-Banner/CMP (Usercentrics / Cookiebot / Consentmanager); sGTM nur aus `transport_url` ableitbar, nicht dessen Live-Gesundheit. `compliance`-Flags als harte Leitplanke. Detail in `references/dach-consent.md`.
+- **Basic vs. Advanced neutral darstellen:** Beide modellieren (Basic mit allgemeinem Modell, Advanced mit eigenem Modell nur ab Daten-Schwelle — bei kleinen DACH-Konten oft nicht erreicht). Advanced sendet Pings ohne Einwilligung (§ 25 TDDDG relevant). Advanced nie mit „sonst kein Modelling” begründen. Detail: `references/dach-consent.md` §B.
+- DACH-Recht (keine Rechtsberatung): §25 TDDDG (DE, früher TTDSG), §165 TKG (AT), nDSG (CH); Cookie-Banner/CMP (Usercentrics / Cookiebot / Consentmanager); sGTM nur aus `transport_url` ableitbar, nicht dessen Live-Gesundheit; Google tag gateway höchstens via `dfs_raw_html` erkennbar. Beide sind kein Consent-Bypass. `compliance`-Flags als harte Leitplanke. Detail in `references/dach-consent.md`.
 
 ## Tool-Grenzen / Footguns (nicht als Befund verkaufen)
 - **„Feuert” nie aus Config allein** — die GTM-API hat kein Browser-Firing-Signal. Config + Counts > 0 = belegt; Config ohne Counts = Verdacht.
@@ -91,7 +96,9 @@ Logik: „die Zahl lebt nicht” vor „die Zahl ist inkonsistent” vor „Fein
 ## Operator (Schreib-Aktionen — Dry-Run + Bestätigung)
 Regel: erst zeigen (was genau, welche Ebene, welche Wirkung), einzeln bestätigen lassen, dann ausführen. **Die Dry-Run-Lage ist uneinheitlich** — vor jeder Schreib-Aktion ausweisen, ob `validate_only` existiert (Ads-Conversion-Writes, `ads_upload_conversions`, `ga4_manage_audiences` → erst validieren) oder nicht (alle GA4- und GTM-Writes → der Skill zeigt vorher, was sich ändert, und wartet auf Bestätigung; besonders kritisch bei `ga4_delete_key_event`). Vollständige Dry-Run-Tabelle: `references/tracking-tool-grenzen.md` §C.
 
-**Sichere Einzelaktionen** (nach Bestätigung): Key Event markieren (`ga4_create_key_event`), Data Retention / Enhanced Measurement setzen, GA4↔Ads-Link (`ga4_manage_google_ads_links` create), Conversion-Action anlegen/ändern (Ads mit `validate_only` zuerst).
+**Sichere Einzelaktionen** (nach Bestätigung): Key Event markieren (`ga4_create_key_event`), Data Retention / Enhanced Measurement setzen, GA4↔Ads-Link (`ga4_manage_google_ads_links` create), Conversion-Action anlegen/ändern (Ads mit `validate_only` zuerst). Data-Retention-Erhöhung im Dry-Run so beschreiben: wirkt sofort auch auf noch gespeicherte Daten; schon gelöschte Daten kommen nicht zurück.
+
+**Uploads mit Nutzerdaten** (`ads_upload_conversions` mit gehashten E-Mails/Telefonnummern = Enhanced Conversions inkl. for Leads; ebenso Customer Match, Store Sales): Hier ist Google **Auftragsverarbeiter**, sonst gelten für Ads/GA4-Messung die Controller-Controller-Bedingungen. Vor dem Upload ansprechen: Data Processing Terms angenommen, Einwilligung deckt `ad_user_data` (nicht prüfbar). Detail: `references/dach-consent.md` §C.
 
 **GTM-Änderungen nur über den versionierten 6-Schritte-Flow** (Workspace ermitteln → Trigger → Tag → Version-Snapshot → Diff zeigen + Bestätigung → Publish; ausformuliert in `references/tracking-tool-grenzen.md` §C) — als **benannte Version mit Change-Notes**. Einziger live-wirksamer Schritt ist `gtm_publish_version`: **niemals ohne explizite Bestätigung**, ohne neuen Publish nicht rückgängig.
 
@@ -111,14 +118,14 @@ Regel: erst zeigen (was genau, welche Ebene, welche Wirkung), einzeln bestätige
 - Phase 3 (GA4↔Ads): `ga4_manage_google_ads_links`, `ga4_conversions`, `ads_conversion_performance`
 - Phase 4 (GTM): `gtm_container_info`, `gtm_get_version`, `gtm_list_tags`, `gtm_list_triggers`, `gtm_list_variables`, `gtm_get_tag`, `ga4_list_data_streams`; optional `dfs_domain_technologies` / `dfs_raw_html` (Snippet-Footgun, s.o.)
 - Phase 5 (Coverage): `ga4_list_key_events`, `ga4_report`
-- Phase 6 (Datenqualität): `ga4_enhanced_measurement`, `ga4_data_retention`
-- Consent-Layer: `gtm_list_tags`, `gtm_get_tag`
+- Phase 6 (Datenqualität): `ga4_enhanced_measurement`, `ga4_data_retention`, `ga4_report` (PII / `sessionSource` / `hostName`)
+- Consent-Layer: `gtm_list_tags`, `gtm_get_tag`; optional `dfs_raw_html` (Google tag gateway)
 - Operator: `ga4_create_key_event`, `ga4_create_custom_dimension`, `ga4_create_custom_metric`, `ga4_enhanced_measurement`, `ga4_data_retention`, `ga4_manage_google_ads_links`, `ga4_manage_audiences`, `ads_create_conversion_action`, `ads_update_conversion_action`, `ads_upload_conversions`, `gtm_list_workspaces`, `gtm_create_trigger`, `gtm_create_tag`, `gtm_create_version`, `gtm_publish_version`
 
 ## Verwandte Skills
 `projekt-kontext` (Foundation, zuerst) · `google-ads-audit` (hält ein schlankes Tracking-Gate und **defert die Tiefe hierhin**) · `social-ads-audit` (besitzt das Meta-Pixel-/LinkedIn-Signal-Gate selbst — dieser Skill bleibt Site-Messung: GA4/GTM/Google Ads) · `seo-audit` (organisches Ranking / On-Page; nutzt GTM punktuell) · `geo-audit` (KI-Sichtbarkeit) · `wochenreport` (Reporting / Zahlen über Zeit)
 
 ## Referenzen
-- `references/tracking-tool-grenzen.md` — Beleg-Stufen-Mapping (gemessen / nur konfiguriert / nicht prüfbar) je Tool + vollständige Footgun-Tabelle (was die MCP-Tools können/nicht können) + Operator-Dry-Run-Lage.
+- `references/tracking-tool-grenzen.md` — Beleg-Stufen-Mapping (gemessen / nur konfiguriert / nicht prüfbar) je Tool + vollständige Footgun-Tabelle (was die MCP-Tools können/nicht können) + Operator-Dry-Run-Lage + Datenqualitäts-Abfragen (PII, Self-Referral, Test-Traffic, Retention) und GA4↔Ads-Abweichungsgründe.
 - `references/event-soll-dach.md` — Event-Soll-Library nach Geschäftstyp (Marketing-Site/Lead-Gen · E-Commerce · SaaS · lokaler Dienstleister DACH) + Funnel-Sequenzen + Naming-Regeln; das Soll für Phase 5 (nur die relevante Sektion ziehen).
-- `references/dach-consent.md` — Consent Mode v2, §25 TDDDG / §165 TKG / nDSG, CMP-Landschaft (Usercentrics / Cookiebot / Consentmanager), sGTM; prüfbar vs. nicht prüfbar + `compliance`-Flag-Verknüpfung.
+- `references/dach-consent.md` — Consent Mode v2 (Basic/Advanced-Modellierung), §25 TDDDG / §165 TKG / nDSG, US-Transfer (DPF, EuG T-553/23), Google-Rolle (Controller vs. Processor), CMP-Landschaft (Usercentrics / Cookiebot / Consentmanager), sGTM + Google tag gateway; prüfbar vs. nicht prüfbar + `compliance`-Flag-Verknüpfung.

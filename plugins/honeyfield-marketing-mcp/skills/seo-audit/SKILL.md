@@ -2,7 +2,7 @@
 name: seo-audit
 description: "Datengetriebener SEO-Audit für eine Kunden-Website, kalibriert auf den DACH-Markt (DE/AT/CH). Nutze diesen Skill, wenn der Nutzer einen „SEO-Audit”, eine „SEO-Analyse”, einen „SEO-Check” oder eine Diagnose von Ranking- bzw. Sichtbarkeitsproblemen will. Auch bei: „warum ranke ich nicht”, „warum werden wir nicht gefunden”, „Traffic ist eingebrochen”, „Sichtbarkeit gesunken”, „seit dem Relaunch weg”, „nach dem Google-Update abgestürzt”, „technisches SEO prüfen”, „Core Web Vitals / Ladezeit”, „Indexierungsprobleme”, „wo rankt die Konkurrenz, wir nicht”, „stimmt was mit der Seite nicht”, oder vage „unser SEO ist schlecht”. Zieht echte Daten aus Search Console, DataForSEO, GA4 und Microsoft Clarity über den Marketing-Ops-MCP und kann gefundene Probleme auf Wunsch direkt beheben. Fürs wöchentliche Reporting nutze `wochenreport`; für bezahlte Suche (Wasted Spend, Konto-Audit) `google-ads-audit`; für KI-Sichtbarkeit (ChatGPT/Perplexity/AI Overviews) `geo-audit`."
 metadata:
-  version: 0.6.0
+  version: 0.7.0
 ---
 
 # SEO-Audit
@@ -12,7 +12,7 @@ Du bist ein erfahrener SEO-Spezialist für den deutschsprachigen Raum. Ziel: die
 Dieser Audit ist **datengetrieben**, nicht checklisten-basiert: Du rätst nicht, du ziehst die Zahlen aus den verbundenen Tools. Und er ist auf **DACH** kalibriert (DE/AT/CH), nicht auf den US-Markt.
 
 **Drei Beleg-Stufen — kennzeichne jeden Befund nach seiner Beweiskraft:**
-- **Gemessen** (harte Daten): Rankings/Sichtbarkeit, Core Web Vitals, Backlinks, Keyword-Lücken, lokale GBP-Daten → echte Zahlen.
+- **Gemessen** (harte Daten): Rankings/Sichtbarkeit, Core Web Vitals im Labor (LCP, CLS — **kein INP**, siehe Phase 2), Backlinks, Keyword-Lücken, lokale GBP-Daten → echte Zahlen.
 - **Pro Seite geprüft** (kein Crawler): Index-Status, On-Page, Canonical, Redirects, Duplicate, Schema-Präsenz → gilt nur für die geprüften URLs, nicht site-weit. Sag das dazu.
 - **Beratend** (kein Messtool): Schema-Tiefe/strukturierte Daten (Presence pro Seite prüfbar, Tiefe → `geo-audit`), E-E-A-T/Content-Qualität, hreflang-Tags, interne Verlinkungs-Strategie (site-weit nur bei durchgeführtem `dfs_onpage_crawl` gemessen), Conversion-Ursachen, KI-Sichtbarkeits-Tiefendiagnose (AIO-*Präsenz* selbst ist gemessen, Tiefe → `geo-audit`) → begründete Empfehlung, niemals als gemessenen Befund verkaufen.
 
@@ -58,13 +58,14 @@ Achten auf: nicht indexierte Schlüsselseiten, falsche/fehlende Canonicals, Mobi
 **Gecrawlt, aber nicht indexiert** (`coverage_state` „Crawled - currently not indexed” auf mehreren Schlüsselseiten). In dieser Reihenfolge prüfen:
 1. **Technik ausschließen (pro Seite geprüft):** `page_fetch_state` erfolgreich, kein `noindex`, `google_canonical` gleich `user_canonical`, Status 200 (`dfs_onpage_instant`). Erst wenn das sauber ist, weiter mit Schritt 2.
 2. **Startseite betroffen?** Bleibt die Startseite draußen, ist das ein deutlich stärkeres Signal als einzelne fehlende Unterseiten. Dann als Befund für die ganze Site führen, Wirkung Hoch.
-3. **Qualität der ganzen Site bewerten (beratend):** „Gecrawlt, nicht indexiert” ist nur manchmal ein Qualitätssignal. Bei echten Qualitätszweifeln crawlt und indexiert Google site-weit deutlich weniger. Inhalt und Seitenerlebnis zählen für die ganze Site. Prüfe vor allem Seiten, die nur lose zum Geschäft des Kunden passen: zuerst verbessern; erst wenn das nicht geht, `noindex` setzen oder entfernen. Wenig Traffic allein ist kein Grund zum Entfernen. Umsetzung über den `content`-Skill (Modus D), falls installiert.
+3. **Qualität der ganzen Site bewerten (beratend):** „Gecrawlt, nicht indexiert” ist nur manchmal ein Qualitätssignal. Bei echten Qualitätszweifeln crawlt und indexiert Google site-weit deutlich weniger. Inhalt und Seitenerlebnis zählen für die ganze Site. Prüfe vor allem Seiten, die nur lose zum Geschäft des Kunden passen: zuerst verbessern; erst wenn das nicht geht, `noindex` setzen oder entfernen. Wenig Traffic allein ist kein Grund zum Entfernen. Verbessern über den `content`-Skill (Modus D = Content-Refresh), falls installiert. `noindex` oder Entfernen entscheidet dieser Audit selbst: als Operator mit Bestätigung oder als Befund für den Kunden.
 4. **Crawl-Nachfrage (beratend, Daten vom User):** Die Crawling-Statistik liefert weder die Search-Console-API noch dieser MCP. Bitte den User um einen Screenshot aus der GSC-Oberfläche (Einstellungen → Crawling-Statistik, auch in einer URL-Präfix-Property vorhanden; Aufschlüsselung nach Zweck: „Discovery” und „Refresh”). Eine fallende Crawl-Nachfrage passt zu einem Qualitätssignal, kann aber auch andere Ursachen haben. Eine Domain-Property zeigt im Bericht nur die 20 häufigsten Subdomains.
 5. **Links für neue oder kaum indexierte Sites** → Phase 6.
 
 ### 2 — Technik & Performance
 - `dfs_lighthouse_live` mit `strategy="mobile"` UND `strategy="desktop"` für Startseite + 1-2 Templates (z.B. eine Leistungs-/Produktseite).
 - Scores: Performance, SEO. Core Web Vitals: **LCP < 2,5 s · INP < 200 ms · CLS < 0,1**.
+- **INP ist nicht gemessen.** `dfs_lighthouse_live` ist ein Lighthouse-Laborlauf ohne Interaktion — er misst kein INP (`inp_ms` kommt meist leer). Proxy: TBT (Total Blocking Time); das Tool gibt TBT nicht als eigenes Feld aus, sie steckt nur im Performance-Score. INP aus echten Nutzerdaten (CrUX/GSC-CWV-Bericht) liefert der MCP nicht → INP-Aussagen **beratend**, nie als gemessen ausgeben.
 
 Achten auf: schlechtes Mobil-LCP (häufigster Killer), CLS durch Cookie-Banner (DSGVO-Banner sind notorische Layout-Shifter in DACH), niedriger SEO-Score.
 
@@ -88,6 +89,14 @@ Achten auf: schlechtes Mobil-LCP (häufigster Killer), CLS durch Cookie-Banner (
 **Traffic-Einbruch?** `sc_performance` mit `dimensions=["date"]` (+ query/page) über einen längeren `days`-Zeitraum → den Einbruch zeitlich exakt verorten und gegen bekannte Google-Update-Termine legen. **Zusätzlich gegen bekannte Ereignisse außerhalb von Google-Updates prüfen** (`references/bekannte-ereignisse.md` im Plugin), z. B. den Wegfall der kostenlosen Produkt-Listings in der EEA am 17.–18.09.2026: Shop-Einbrüche ab diesem Datum nicht als Ranking-, Qualitäts- oder Technikproblem deuten. Datenbasierte Diagnose statt Hypothesenliste. „Helpful Content” ist seit dem März-2024-Core-Update Teil des Core-Algorithmus (kein separates System, kein Recovery-Knopf) — qualitätsbedingte Einbrüche wirken site-weit und erholen sich nur langsam über spätere Core-Updates. Termine: Google Search Status Dashboard.
 
 **Kein Update und kein bekanntes Ereignis am Datum?** Dann eigene Änderungen am Datum prüfen: Relaunch, Migration, URL- oder Slug-Wechsel, Domain- oder Hosting-Wechsel. Quellen: `journal_list` (Änderungen und Notizen in diesem Workspace) und Rückfrage beim User. **Recheck-Zeitpunkt:** nach jeder Änderung einige Wochen warten; eine Neubewertung der Qualität ist erst nach dem nächsten Core-Update belastbar, nicht nach einem festen Termin. Die Aussage „Erholung dauert Monate” gilt nur, wenn der Einbruch zeitlich auf ein Core- oder Spam-Update fällt.
+
+**Nach Relaunch/Migration** (Einbruch ab dem Relaunch-Datum) — diese Pflichtpunkte prüfen (Google: Site-Umzug mit URL-Änderungen):
+1. **Staging-Sperren entfernt?** `site_crawler_check` (robots.txt sperrt Googlebot?), `sc_url_inspection` für Schlüsselseiten (`robots_txt_state`, `indexing_state` z.B. noindex), `dfs_onpage_instant` (Status, Canonical).
+2. **Alte und neue Property verifiziert?** `sc_list_sites` → beide vorhanden, `permission_level` nicht `siteUnverifiedUser`.
+3. **Redirects 1:1, ohne Ketten:** alte Top-URLs aus `sc_performance` (`dimensions=["page"]`, `start_date`/`end_date` vor dem Relaunch) stichprobenartig mit `dfs_onpage_instant` prüfen → 301 auf das passende neue Ziel, nicht 404 und nicht pauschal auf die Startseite. Site-weit: `dfs_onpage_crawl_results` mit `section="redirect_chains"` und `section="non_indexable"`.
+4. **Interne Links, Canonicals, hreflang** zeigen auf die neuen URLs (pro Seite geprüft; site-weit mit `section="links"`).
+5. **Sitemap mit den neuen URLs eingereicht?** `sc_list_sitemaps`; Fix über `sc_submit_sitemap` (Operator).
+6. **Change of Address** in der Search Console nur bei Domain- oder Subdomain-Wechsel — **beratend**, kein Tool im MCP.
 
 ### 5 — Content-Lücken (Selbst-Gap + Markt-Gap)
 **Selbst-Gap (eigene Domain):**
@@ -132,7 +141,7 @@ Diese Punkte hat ein US-/Englisch-Audit nicht. Details + Listen: `references/dac
 3. **Umlaut/ß in URLs** (`ä→ae`, `ß→ss`) + Punycode-Konsistenz bei Umlaut-Domains.
 4. **Impressum + Datenschutz** als Trust-Gate: vorhanden, ≤ 1 Klick, datiert? In DACH rechtlich verpflichtend (DDG/DSGVO) und starkes Trust-/E-E-A-T-Signal. *Keine Rechtsberatung — nur Vorhandensein/Erreichbarkeit prüfen.*
 5. **Lokale Citations** je Land (Listen: `references/dach-seo.md`) + NAP-Konsistenz — **nicht** über `gbp_local_seo_audit` gemessen (reiner GBP-Profil-Vollständigkeits-Score, kein Citation-Abgleich); NAP-Konsistenz über die Citation-Quellen bleibt manuelle/beratende Prüfung.
-6. **AEO / AI-Overviews (teils gemessen):** AIO-Präsenz + Quellen sind über `dfs_serp_google_organic` (`ai_overview.present`, `ai_overview.sources`) messbar (GSC selbst liefert weiterhin keine AIO-Klickdaten). Reale Hebel: Marken-/Web-Erwähnungen, Answer-First-Struktur, eigene Daten/Zitate, Entity-Konsistenz (NAP + `sameAs`), Zitierfähigkeit über deutsche autoritative Quellen. **`llms.txt` nicht empfehlen** (kein Engine nutzt es). Tiefen-Diagnose (Share of Voice über Engines, wird zitiert) bleibt beratend bzw. → `geo-audit`.
+6. **AEO / AI-Overviews (teils gemessen):** AIO-Präsenz + Quellen sind über `dfs_serp_google_organic` (`ai_overview.present`, `ai_overview.sources`) messbar. Klicks und Impressionen aus AI Overviews und AI Mode stecken im GSC-Suchtyp „Web”, ohne eigenen Filter — nicht isolierbar. Muster „Klicks fallen, Impressionen stabil” daher mit `dfs_serp_google_organic` (`ai_overview`) belegen, nicht aus GSC. Reale Hebel: Marken-/Web-Erwähnungen, Answer-First-Struktur, eigene Daten/Zitate, Entity-Konsistenz (NAP + `sameAs`), Zitierfähigkeit über deutsche autoritative Quellen. **`llms.txt` nicht empfehlen:** bringt keine Sichtbarkeit in der Suche oder AI-Search (kein Such-/Antwort-System nutzt es nachweislich). Ausnahme: Dev-Docs für Coding-Agents (die rufen sie tatsächlich ab) — bei SaaS mit Entwickler-Doku optional. Tiefen-Diagnose (Share of Voice über Engines, wird zitiert) bleibt beratend bzw. → `geo-audit`.
 7. **AT/CH-Linter:** auf CH-Seiten **kein ß** („ausser/Strasse”), Zahlenformat `1'234.56 CHF`, Austriazismen/Helvetismen im Keyword-Mapping (Jänner≠Januar, Velo≠Fahrrad).
 
 ## Mythen vermeiden (nicht als Problem nennen)
@@ -143,7 +152,7 @@ Veraltet oder widerlegt — nennst du das als Befund, verlierst du Glaubwürdigk
 - **FAQ-/HowTo-Schema für Rich Results** → tot (FAQ seit Mai 2026 abgeschaltet); Schema für Entity-Klärung empfehlen, nicht für FAQ-Sterne.
 - **`rel=next/prev`** → tot; paginierte Seiten self-canonical, nicht auf Seite 1 kanonisieren.
 - **PageRank-Verlust durch Redirects** → Mythos; bei Redirects zählen Ketten/Loops/Latenz, nicht „verlorene Linkkraft”.
-- **`llms.txt`** → kein AI-Engine nutzt es.
+- **`llms.txt`** als SEO-/GEO-Hebel → bringt keine Sichtbarkeit in der Suche oder AI-Search (kein Such-/Antwort-System nutzt es nachweislich). Ausnahme: Dev-Docs für Coding-Agents (die rufen sie tatsächlich ab). Für SEO/GEO nicht empfehlen; bei SaaS mit Entwickler-Doku optional. Beleg: https://ahrefs.com/blog/llmstxt-study/
 - **„3-Klick-Regel”, „E-E-A-T-Score”** → Folklore bzw. kein direkter Faktor; E-E-A-T über Proxies (Trust-Signale, Autoren, Marken-Erwähnungen). (Die 3-Klick-Regel ist als *Ranking-Regel* Folklore — flache, logische Architektur bleibt trotzdem sinnvoll, nur ohne die Zahl als Beleg.)
 - **Wiederholte Indexierungsanträge** in der URL-Prüfung → bringen nichts. Ein einzelner Antrag schadet nicht.
 - **Indexing API für normale Seiten** → ist nur für `JobPosting` und `BroadcastEvent` freigegeben.
@@ -179,11 +188,13 @@ Biete am Ende an, die sicher behebbaren Punkte direkt zu erledigen. **Immer vorh
 - Domain-Rank-Historie über `dfs_historical_rank_overview` (Monatswerte, Domain-Aggregat) — auf Einzel-Keyword-Ebene liefert das Tool keine Historie, dafür bleibt Snapshot-Diffing nötig (`references/content-gap.md`).
 - **DataForSEO-Calls kosten pro Aufruf** — Keyword-/SERP-/Backlink-Calls auf die 3-5 Ziel-Keywords und 2-3 Konkurrenz-Domains fokussieren, nicht breit streuen; Crawls zusätzlich über `max_crawl_pages` deckeln.
 - AEO/AIO: Präsenz + Quellen sind gemessen (`dfs_serp_google_organic.ai_overview`); die tiefe KI-Sichtbarkeits-Diagnose bleibt bei `geo-audit`.
+- **Anonymisierte Suchanfragen:** GSC lässt auf Query-Ebene anonymisierte Suchanfragen weg (über alle Properties ca. 47 % der Klicks, Stand 04/2025). Summen über Query-Zeilen sind daher kleiner als Seiten- oder Gesamtsummen — nie aus Query-Zeilen Gesamtwerte bilden. Quick Wins und Kannibalisierung gelten nur für die sichtbaren Queries.
+- Kein INP aus echten Nutzerdaten (kein CrUX, kein GSC-CWV-Bericht im MCP) — INP bleibt beratend.
 - Clarity: nur 1-3 Tage, max 10 Calls/Tag.
 - Backlinks global (kein location).
 
 ## Tools nach Phase
-- Index/Crawl: `sc_list_sitemaps`, `sc_url_inspection`, `dfs_onpage_instant`, `dfs_onpage_crawl`, `dfs_onpage_crawl_results`
+- Index/Crawl: `sc_list_sitemaps`, `sc_url_inspection`, `sc_list_sites`, `site_crawler_check`, `dfs_onpage_instant`, `dfs_onpage_crawl`, `dfs_onpage_crawl_results`
 - Technik: `dfs_lighthouse_live`
 - On-Page: `dfs_onpage_instant`
 - Rankings: `sc_performance`, `sc_top_queries`, `sc_top_pages`, `dfs_keyword_rankings`, `dfs_serp_google_organic`
@@ -196,7 +207,7 @@ Biete am Ende an, die sicher behebbaren Punkte direkt zu erledigen. **Immer vorh
 > **Parameter-Namen exakt treffen** (häufige Verwechsler): `dfs_keyword_rankings` → `domain` · `dfs_serp_google_organic` → `keyword` · `dfs_onpage_instant` → `url` · `dfs_backlink_summary`/`dfs_backlink_competitors` → `domain` · `dfs_backlinks_list` → `target`.
 
 ## Verwandte Skills
-`projekt-kontext` (Foundation, zuerst lesen) · `google-ads-audit` (bezahlte Suche / Ads) · `geo-audit` (KI-Sichtbarkeit + Schema-Tiefe — Schwester-Skill) · `wochenreport` · `tracking-check` (Tracking-Setup und -Fixes) · `content` (Plugin content-studio, Modus D: Seiten verbessern oder streichen, falls installiert)
+`projekt-kontext` (Foundation, zuerst lesen) · `google-ads-audit` (bezahlte Suche / Ads) · `geo-audit` (KI-Sichtbarkeit + Schema-Tiefe — Schwester-Skill) · `wochenreport` · `tracking-check` (Tracking-Setup und -Fixes) · `content` (Plugin content-studio, Modus D: Seiten verbessern per Content-Refresh, falls installiert; `noindex`/Entfernen entscheidet `seo-audit` selbst)
 
 ## Referenzen
 - `references/dach-seo.md` — hreflang-Matrix, Citation-Listen je Land, Pixel-Snippet-Details, AEO-DACH, AT/CH-Linter, Impressum/Datenschutz-Checkliste.

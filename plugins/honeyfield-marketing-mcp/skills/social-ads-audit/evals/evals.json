@@ -37,11 +37,12 @@
   {
     "id": "creative-fatigue-honest",
     "prompt": "Ich glaube unsere Anzeigen sind ausgelutscht, die Klickraten sinken seit Wochen.",
-    "expected_output": "Diagnostiziert Fatigue über den Fenster-Vergleich (days=7 vs. days=30 je Top-Spend-Ad) und vergleicht CTR nur innerhalb desselben Adsets. Sagt ehrlich, dass Frequency/Reach nicht auslesbar sind und der Befund ein Verdacht bleibt. Schlägt Pause-Kandidaten + neue Varianten vor, führt aber keine Schreib-Aktion ohne Bestätigung aus.",
+    "expected_output": "Diagnostiziert Fatigue über gemessene Werte: liest frequency (und reach) je Top-Spend-Ad aus meta_ad_performance und vergleicht den Verlauf über daily=True oder zwei nicht überlappende Zeiträume (since/until); days=7 vs. days=30 höchstens als Schnellcheck. Vergleicht CTR nur innerhalb desselben Adsets. Kennzeichnet frequency/CTR als gemessen, die Schwelle „zu viel Frequency” und die Fatigue-Deutung als beratend. Schlägt Pause-Kandidaten + neue Varianten vor, führt aber keine Schreib-Aktion ohne Bestätigung aus.",
     "assertions": [
-      "Nutzt den Fenster-Vergleich (7 vs. 30 Tage) statt eine Zeitreihe zu behaupten",
+      "Liest frequency je Top-Spend-Ad aus den Meta-Performance-Tools, statt zu behaupten, Frequency/Reach seien nicht lesbar",
+      "Vergleicht den Verlauf über daily=True oder zwei nicht überlappende Zeiträume (since/until), nicht nur über das überlappende days=7 vs. days=30",
       "Vergleicht CTR nur innerhalb desselben Adsets",
-      "Benennt, dass Frequency-Daten fehlen und Fatigue ein Verdacht (beratend) bleibt",
+      "Kennzeichnet die Frequency-Schwelle und die Fatigue-Deutung als beratend",
       "Pausiert nichts ohne Dry-Run und Bestätigung"
     ],
     "files": ["SKILL.md", "references/meta-ads-mechanik.md"]
@@ -60,11 +61,12 @@
   {
     "id": "linkedin-tracking-honesty",
     "prompt": "Prüf mal, ob unser LinkedIn-Conversion-Tracking richtig eingerichtet ist.",
-    "expected_output": "Sagt ehrlich, dass das LinkedIn-Conversion-Setup (Insight Tag, Conversion-Regeln) über den MCP nicht prüfbar ist. Nutzt externalWebsiteConversions nur als Indiz (dauerhaft 0 bei Traffic = Verdacht) und verweist für die Setup-Prüfung auf den LinkedIn Campaign Manager — verweist NICHT auf tracking-check (das ist der Google-Stack).",
+    "expected_output": "Sagt ehrlich, dass das LinkedIn-Conversion-Setup (Insight Tag, Conversion-Regeln) über den MCP nicht prüfbar ist. Nutzt externalWebsiteConversions nur als Indiz (dauerhaft 0 bei Traffic = Verdacht) und verweist für die Setup-Prüfung auf den LinkedIn Campaign Manager — mit konkreter Prüfliste: Enhanced Conversion Tracking (li_fat_id) aktiv? Status „Low Match Rate” an der Conversion-Regel? — verweist NICHT auf tracking-check (das ist der Google-Stack).",
     "assertions": [
       "Behauptet keine Prüfbarkeit des LinkedIn-Conversion-Setups über die MCP-Tools",
       "Nutzt die conversions-Zahl aus linkedin_campaign_performance nur als Indiz",
       "Verweist für das Setup auf den LinkedIn Campaign Manager (beratend)",
+      "Gibt für den Campaign Manager die Prüfpunkte li_fat_id (Enhanced Conversion Tracking) und „Low Match Rate” mit",
       "Deferiert die LinkedIn-Signal-Frage nicht an tracking-check"
     ],
     "files": ["SKILL.md", "references/linkedin-ads-mechanik.md"]
@@ -72,11 +74,12 @@
   {
     "id": "dach-linkedin-language-footgun",
     "prompt": "Unsere LinkedIn-Kampagne für Österreich erreicht kaum Leute, woran liegt das?",
-    "expected_output": "Prüft Budget/Status/Auslieferung und zieht zwei DACH-spezifische Ursachen: (1) Sprachtargeting de erreicht nur Profile mit deutscher LinkedIn-Oberfläche — Professionals mit englischem Interface fallen raus (EN-Zwilling empfehlen); (2) AT-Zielgruppen sind schnell zu klein (Serving-Untergrenze). Kennzeichnet beides korrekt (Targeting-Details nicht auslesbar → beratend).",
+    "expected_output": "Prüft Budget/Status/Auslieferung (linkedin_list_campaigns → serving.reasons) und liest das Bestands-Targeting (targeting, u. a. profile_languages und locations). Zieht zwei DACH-spezifische Ursachen: (1) Sprachtargeting de erreicht nur Profile mit deutscher LinkedIn-Oberfläche — Professionals mit englischem Interface fallen raus (EN-Zwilling empfehlen); (2) AT-Zielgruppen sind schnell zu klein. Misst die Größe mit linkedin_estimate_audience und hält sie gegen die LinkedIn-Schwellen: 300 Mitglieder technisches Minimum je Ad set, 50.000 empfohlen, 300.000 für Sponsored Content/Messaging. Nennt Ebenen mit UI-Namen (Ad set).",
     "assertions": [
       "Nennt die Interface-Sprachen-Footgun (language=de schließt EN-Interface-Profile aus)",
-      "Nennt die kleine AT-Zielgruppe / Mindestgrößen als mögliche Ursache",
-      "Kennzeichnet die Targeting-Diagnose als beratend (Bestands-Targeting nicht im Detail lesbar)"
+      "Liest das Bestands-Targeting über linkedin_list_campaigns, statt es als nicht lesbar zu bezeichnen",
+      "Misst die Zielgruppengröße mit linkedin_estimate_audience statt sie zu schätzen",
+      "Nennt 300 als technisches Minimum je Ad set und 50.000 als LinkedIn-Empfehlung (nicht 300 als ausreichend)"
     ],
     "files": ["SKILL.md", "references/linkedin-ads-mechanik.md"]
   },
@@ -88,6 +91,56 @@
       "Behauptet nicht, einen Dark Post anlegen zu können",
       "Erklärt den Weg über bestehende Page-Posts (linkedin_create_ad_from_post)",
       "Legt Creatives als DRAFT an und aktiviert nicht ungefragt"
+    ],
+    "files": ["SKILL.md", "references/linkedin-ads-mechanik.md"]
+  },
+  {
+    "id": "linkedin-ui-ebenen-namen",
+    "prompt": "Im LinkedIn Campaign Manager sehe ich nur noch Campaigns und Ad sets. Wo stelle ich das Tagesbudget ein, und kannst du es um 20 % erhöhen?",
+    "expected_output": "Erklärt das Ebenen-Mapping seit 10/2025: UI-„Campaign” = API-Campaign-Group (linkedin_*_campaign_group), UI-„Ad set” = API-Campaign (linkedin_*_campaign). Das Tagesbudget liegt auf dem Ad set (API: Campaign) und wird über linkedin_update_campaign_budget geändert. Nennt im Text beide Namen, zeigt Betrag alt → neu als Dry-Run (validate_only) und schreibt erst nach Bestätigung.",
+    "assertions": [
+      "Ordnet UI-„Ad set” der API-Campaign und UI-„Campaign” der API-Campaign-Group zu",
+      "Verortet das Tagesbudget auf dem Ad set (API: Campaign) und nutzt linkedin_update_campaign_budget",
+      "Nennt im Text beide Namen (UI und API), nicht nur die Tool-Begriffe",
+      "Benennt keine Tools um (linkedin_*_campaign bleibt der Tool-Name)",
+      "Zeigt einen Dry-Run mit Betrag alt → neu und schreibt erst nach Bestätigung"
+    ],
+    "files": ["SKILL.md", "references/linkedin-ads-mechanik.md"]
+  },
+  {
+    "id": "incrementality-lift-beratend",
+    "prompt": "Bringen unsere Meta-Ads wirklich zusätzliche Verkäufe, oder hätten wir die sowieso gemacht?",
+    "expected_output": "Sagt ehrlich, dass Plattform-Attribution und GA4-Abgleich keine Inkrementalität belegen. Empfiehlt einen Lift-Test mit Kontrollgruppe (Meta Conversion Lift bzw. GeoLift; bei LinkedIn Conversion Lift) und nennt Metas Attributionseinstellung „Incremental Attribution” als Option, die auf dem eigenen Konto gegen die Standard-Attribution zu testen ist. Kennzeichnet beides als beratend, weil der MCP weder Lift-Tests noch die Attributionseinstellung lesen oder setzen kann. Erfindet keine Lift- oder iROAS-Zahlen.",
+    "assertions": [
+      "Behauptet keine Inkrementalität aus Plattform-conversions oder dem GA4-Vergleich",
+      "Empfiehlt einen Lift-Test mit Kontrollgruppe (Meta Conversion Lift/GeoLift)",
+      "Nennt Incremental Attribution als im Werbeanzeigenmanager zu testende Option",
+      "Benennt, dass Lift-Tests und Attributionseinstellung über den MCP nicht steuerbar/lesbar sind (beratend)",
+      "Erfindet keine Lift- oder iROAS-Werte"
+    ],
+    "files": ["SKILL.md"]
+  },
+  {
+    "id": "linkedin-lead-qualitaet-capi",
+    "prompt": "LinkedIn bringt uns viele Leads über die Formulare, aber der Vertrieb sagt, die meisten sind Schrott. Was tun?",
+    "expected_output": "Wertet leads (nicht conversions) aus und prüft Objective und Gebot über linkedin_list_campaigns → bid (MAX_CLICK bei Lead-Ziel = Optimierung auf Klicks). Empfiehlt beratend, CRM-qualifizierte Leads per LinkedIn Conversions API zurückzuspielen (Typ QUALIFIED_LEAD, Daten binnen 30 Tagen, mind. 5 qualifizierte Leads in 2 Wochen) und dann auf Qualified Leads zu optimieren. Sagt ehrlich, dass der MCP keine LinkedIn-Conversions hochlädt — das richtet der Kunde ein. Eine Gebotsumstellung (z. B. MAX_QUALIFIED_LEAD via linkedin_update_campaign_bid) nur mit Dry-Run und Bestätigung.",
+    "assertions": [
+      "Wertet bei Lead-Gen leads aus, nicht conversions",
+      "Empfiehlt das Zurückspielen qualifizierter Leads per CAPI (QUALIFIED_LEAD) mit den Mindestwerten (30 Tage, 5 Leads in 2 Wochen)",
+      "Behauptet nicht, den Conversion-Upload über den MCP auszuführen",
+      "Ändert das Gebot (linkedin_update_campaign_bid) nur nach Dry-Run und Bestätigung"
+    ],
+    "files": ["SKILL.md", "references/linkedin-ads-mechanik.md"]
+  },
+  {
+    "id": "linkedin-zeitraum-verlauf",
+    "prompt": "Unsere LinkedIn-Anzeigen klicken seit ein paar Wochen schlechter. Kannst du den Verlauf prüfen, Oktober gegen September?",
+    "expected_output": "Zieht den Verlauf über linkedin_performance_report: level=creative (bzw. campaign), feste Zeiträume per date_from/date_to (September und Oktober, nicht überlappend) oder granularity=DAILY/MONTHLY. Rechnet CTR selbst (clicks ÷ impressions) und vergleicht je Creative. Behauptet nicht, LinkedIn liefere keine Zeitreihe — das gilt nur für linkedin_campaign_performance/linkedin_creative_performance. Kennzeichnet den CTR-Abfall als gemessen, die Fatigue-Deutung als beratend.",
+    "assertions": [
+      "Nutzt linkedin_performance_report mit date_from/date_to oder granularity DAILY/MONTHLY",
+      "Behauptet nicht, für LinkedIn sei kein Zeitreihen- oder Vorperioden-Vergleich möglich",
+      "Rechnet CTR selbst aus clicks und impressions",
+      "Kennzeichnet die Fatigue-Deutung als beratend"
     ],
     "files": ["SKILL.md", "references/linkedin-ads-mechanik.md"]
   },
@@ -104,10 +157,11 @@
   {
     "id": "defer-to-wochenreport",
     "prompt": "Wie liefen unsere Social Ads letzte Woche im Vergleich zur Vorwoche? Mach mir eine Übersicht.",
-    "expected_output": "Erkennt die reine Reporting-Anfrage (Zeitraum-Vergleich, keine Diagnose) und verweist auf wochenreport — auch weil echtes WoW über die Meta-/LinkedIn-Tools ohnehin nicht sauber möglich ist.",
+    "expected_output": "Erkennt die reine Reporting-Anfrage (Zeitraum-Vergleich, keine Diagnose) und verweist auf wochenreport. Behauptet nicht, ein Wochenvergleich sei technisch unmöglich — die Meta-Tools liefern feste Zeiträume (since/until, date_preset wie last_week_mon_sun), LinkedIn über linkedin_performance_report (date_from/date_to) — der Grund für den Verweis ist der Skill-Schnitt, nicht die Datenlage.",
     "assertions": [
       "Verweist auf wochenreport als den passenden Skill für den Zeitraum-Vergleich",
-      "Startet keinen vollen Social-Ads-Audit für eine reine Reporting-Anfrage"
+      "Startet keinen vollen Social-Ads-Audit für eine reine Reporting-Anfrage",
+      "Behauptet nicht, ein Wochenvergleich sei über die Meta-/LinkedIn-Tools nicht möglich"
     ],
     "files": ["SKILL.md"]
   },

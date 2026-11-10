@@ -1,6 +1,6 @@
 # Schema-Templates — Entity-Klarheit via JSON-LD
 
-Phase 4 (Entity-Klarheit) + Operator. Ziel: ein referenzierbarer **Entity-Graph**, kein Insel-Snippet pro Typ. KIs matchen die Entity gegen ihren Knowledge-Graph — ein klarer `@id`-Knoten + `sameAs` ist der Hebel.
+Phase 4 (Entity-Klarheit) + Operator. Ziel: ein referenzierbarer **Entity-Graph**, kein Insel-Snippet pro Typ. Ein klarer `@id`-Knoten + `sameAs` macht die Entität eindeutig. Die Wirkung von Schema auf KI-Zitate ist **unbelegt** (https://ahrefs.com/blog/schema-ai-citations/) → Schema-Empfehlungen als beratend kennzeichnen, nicht als bewiesenen Citation-Hebel verkaufen. Schema bleibt sinnvoll für Rich Results und Klarheit über die Entität.
 
 ## Kernpattern: ein `@graph` mit `@id`-Knoten
 

@@ -2,7 +2,7 @@
 name: marketing-plan
 description: "Erstellt aus Projekt-Kontext + Live-MCP-Daten einen priorisierten, kundenfähigen Marketing-Plan oder ein Kampagnen-Konzept — vorwärtsgerichtet, jede Empfehlung einer AARRR-Stage zugeordnet, Current-State aus echten Daten (Search Console, GA4, Ads, GBP) statt Selbstauskunft, DACH-KMU-Budget-Logik, 90-Tage-Roadmap. Nutze diesen Skill bei: „Marketing-Plan erstellen”, „Gesamtkonzept”, „Kampagne planen”, „Kampagnen-Konzept”, „Marketing-Strategie”, „was machen wir als nächstes”, „wo investieren wir Budget”, „Quartals-/Jahresplanung”. Read-only Planungs-Hub: verweist zur Umsetzung auf die Topic-Skills, ändert nichts am Konto. Rückblickendes Reporting → `wochenreport`; Kanal-Tiefendiagnose → `google-ads-audit` / `social-ads-audit` / `seo-audit` / `geo-audit` / `tracking-check`; Anzeigentexte → `ad-creative`; Content-Themen → `content-strategie`. Kalibriert auf DACH (DE/AT/CH)."
 metadata:
-  version: 0.1.1
+  version: 0.2.0
 ---
 
 # Marketing-Plan
@@ -20,7 +20,7 @@ Zwei Eigenschaften definieren diesen Skill — analog zu `wochenreport`, dem rü
 
 ## Schritt 0 — Vorbereitung (immer zuerst)
 
-**Projekt-Kontext zuerst.** Liegt für dieses Projekt ein Projekt-Kontext vor — als **Projektwissen** in diesem Claude-Projekt oder als `projekt-kontext.md` im Arbeitsverzeichnis —, nutze ihn, bevor du fragst, und frage nur nach, was dort fehlt oder für diese Aufgabe spezifisch ist. Beachte gesetzte `compliance`-Flags als harte Leitplanke. Fehlt der Kontext, biete an, ihn per `projekt-kontext` anzulegen, oder frage knapp: welches Geschäftsziel, welche Ziel-KPIs, welcher Kunde/Workspace. Für die Planung zählen vor allem `geschaeftsziel`, `ziel_kpi`, `maerkte`, `compliance` und `brand_begriffe`; ein hinterlegtes ICP (Zielkundenprofil) schärft die Priorisierung, ist aber optional.
+**Projekt-Kontext zuerst.** Liegt für dieses Projekt ein Projekt-Kontext vor — als **Projektwissen** in diesem Claude-Projekt oder als `projekt-kontext.md` im Arbeitsverzeichnis —, nutze ihn, bevor du fragst, und frage nur nach, was dort fehlt oder für diese Aufgabe spezifisch ist. Beachte gesetzte `compliance`-Flags als harte Leitplanke. Fehlt der Kontext, biete an, ihn per `projekt-kontext` anzulegen, oder frage knapp: welches Geschäftsziel, welche Ziel-KPIs, welcher Kunde/Workspace. Für die Planung zählen vor allem `geschaeftsziel`, `ziel_kpi`, `maerkte`, `compliance` und `brand_begriffe`; ein hinterlegtes ICP (Zielkundenprofil) schärft die Priorisierung. Fehlt das ICP, erfinde keins — führe es als offene Entscheidung (Plan-Sektion 9).
 
 **Workspace + Datenquellen klären.** Rufe `list_workspaces` auf und prüfe die `sources` des Ziel-Workspace. **Die Rubric ist adaptiv (wie `wochenreport`):** Nur verbundene Quellen speisen einen Score. Fehlt eine Quelle (z.B. kein `meta_ads`), ist die betroffene Dimension eine **benannte Lücke**, kein Null-Score — rate keine Zahlen zusammen.
 - `google_ads` → Paid-Search · `meta_ads`/`linkedin_ads` → Social-Ads · `search_console` → organische Sichtbarkeit · `ga4` → Web/Messbarkeit · `business_profile` → Local · `dataforseo` → Rankings, Content-Gap, AI-Sichtbarkeit (pay-as-you-go) · `clarity` → UX-Signale.
@@ -59,11 +59,11 @@ Leite aus den Rubric-Scores Empfehlungen ab, je einer **AARRR-Stage** zugeordnet
 
 ## Phase 3 — Budget & Roadmap
 
-**Budget.** DACH-KMU-Budget-Logik (Revenue-Based-Anteil + Goal-Based-Formel, KMU-Budget-Bänder, Experimentier-Anteil): **`references/budget-dach-kmu.md`**. Budget-Aussagen sind **beratend** — Formeln und Bänder, kalibriert an `geschaeftsziel`/`ziel_kpi`, nicht am Konto gemessen.
+**Budget.** DACH-KMU-Budget-Logik (belegter Ist-Anker + Zielkorridor, Goal-Based-Formel, KMU-Budget-Bänder, Experimentier-Anteil, Marke vs. Abverkauf ohne KMU-Quote): **`references/budget-dach-kmu.md`**. Budget-Aussagen sind **beratend** — Formeln und Bänder, kalibriert an `geschaeftsziel`/`ziel_kpi`, nicht am Konto gemessen.
 
 **Roadmap (Modus A): 90 Tage in 4 Blöcken.**
 1. **Unblock** — Blocker aus Phase 1 (Tracking, Messbarkeit) beheben.
-2. **Foundation** — Fundament-Lücken schließen (z.B. Content-Basis, GBP-Vollständigkeit).
+2. **Foundation** — Fundament-Lücken schließen (z.B. Content-Basis, GBP-Vollständigkeit). Bei Rubric-Dimension 10 (Marken-Fundament) ≤ 2 ist die **erste** Foundation-Maßnahme „Positionierung/ICP schärfen” (via `projekt-kontext`) — vor jeder Velocity-Maßnahme.
 3. **Velocity** — Kanäle mit gutem Score skalieren, Budget dorthin.
 4. **Compound** — Effekte, die sich aufbauen (organisch, AI-Sichtbarkeit, Retention).
 
@@ -87,7 +87,7 @@ Baue den Plan **Sektion für Sektion** und hole nach jeder Plan-Sektion (Current
 - **Read-only** — dieser Skill plant, er setzt nicht um. Jede Umsetzung (Kampagnen bauen, Negatives setzen, Anzeigen texten, Content schreiben) läuft über die Topic-Skills.
 - **Keine Ursachen-Diagnose** — die Rubric zeigt *wo der Kunde steht*, nicht *warum*. Das „warum” ist Audit-Arbeit.
 - **Rubric = so gut wie die verbundenen Quellen.** Bei dünn verbundenem Workspace degradiert sie zur Selbstauskunft — dann ehrlich als **beratend** kennzeichnen, nicht als gemessen verkaufen.
-- **Budget ist beratend** — Formeln und Bänder, keine kontogenaue Prognose.
+- **Budget ist beratend** — Formeln und Bänder, keine kontogenaue Prognose. Kein MMM: Google Meridian empfiehlt mind. 2 Jahre Wochendaten (Geo-Modell) bzw. 3 Jahre (national) — bei KMU meist nicht vorhanden; stattdessen Quartals-Review gegen echte Daten.
 - **Retention & Referral ohne MCP-Anker** — kein E-Mail-/CRM-Tool im Stack. Diese Stages bleiben beratend; benenne die Datenlücke, statt Sicherheit vorzutäuschen.
 
 ## Tools nach Phase (nur Read-Tools)
@@ -114,6 +114,6 @@ Baue den Plan **Sektion für Sektion** und hole nach jeder Plan-Sektion (Current
 ## Referenzen
 
 - `references/current-state-rubric.md` — die ~10 Rubric-Dimensionen: was je Dimension bewertet wird, 0–5-Anker, Beleg-Tool, Fallback bei fehlender Quelle.
-- `references/budget-dach-kmu.md` — DACH-KMU-Budget-Logik: Revenue-Based-Anteil + Goal-Based-Formel, KMU-Budget-Bänder, Experimentier-Anteil, Kampagnen-Budget-Kurzform (Modus B).
+- `references/budget-dach-kmu.md` — DACH-KMU-Budget-Logik: Bitkom-Ist-Anker + Zielkorridor, Goal-Based-Formel, KMU-Budget-Bänder, Experimentier-Anteil, Marke vs. Abverkauf, Kampagnen-Budget-Kurzform (Modus B) mit Smart-Bidding-Datenschwellen.
 - `references/plan-template.md` — Vollstruktur des kundenfähigen Plan-Dokuments (~9 Sektionen) + Modus-B-Kurzform + Kundenfähig-Regeln (kein Tool-Jargon im Hauptteil).
 - `references/aarrr-dach.md` — AARRR-Primer, Zuordnungsregeln (Brand/Content cross-cutting), Ops-Stack-Mapping (Skill/Tool je Stage), ehrlich markierte Stage-Lücken (Retention/Referral).

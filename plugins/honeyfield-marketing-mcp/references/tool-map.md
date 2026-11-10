@@ -1,6 +1,6 @@
 # Tool-Map — Honeyfield Marketing-Ops MCP
 
-Alle Tools außer `list_workspaces`, `ping`, `authenticate` und `complete_authentication` nehmen `workspace` (optional, wenn nur ein Workspace verbunden ist; bei gleichem Slug in mehreren Agenturen die Form `Agentur/slug` nutzen). Quelle = welche Workspace-source verbunden sein muss.
+Alle Tools außer `list_workspaces`, `ping`, `workspace_suggestions`, `workspace_create` (beide nehmen stattdessen optional `agentur`), `authenticate` und `complete_authentication` nehmen `workspace` (optional, wenn nur ein Workspace verbunden ist; bei gleichem Slug in mehreren Agenturen die Form `Agentur/slug` nutzen). Quelle = welche Workspace-source verbunden sein muss.
 Lege Schreib-Tools (W) nie ohne write-guardrails.md an.
 
 ---
@@ -12,6 +12,9 @@ Lege Schreib-Tools (W) nie ohne write-guardrails.md an.
 | `list_workspaces` | Workspaces + verbundene sources auflisten | — | R |
 | `ping` | Connectivity-Check (liefert „pong”) | — | R |
 | `workspace_configure_source` | Source-IDs am Workspace setzen (`source`: google_ads/ga4/search_console/gtm/business_profile + `ids`) — ersetzt den Portal-Roundtrip beim Onboarding | — | W |
+| `workspace_suggestions` | Noch nicht zugeordnete Konten aller verbundenen Google-/Meta-/LinkedIn-Zugänge + Namensabgleich-`vorschlaege` im Format von `workspace_create`, freie Tarif-Plätze und Abrechnung je weiterem Workspace — Vorschläge sind nur ein Ausgangspunkt (Rohlisten prüfen); nur Inhaber/Admins | — | R |
+| `workspace_create` | Kunden-Workspaces mit zugeordneten Konten anlegen (max. 25 je Aufruf) — **erhöht ggf. die Rechnung**: `confirm=false` (Default) prüft nur und zeigt Abrechnung vorher/nachher, erst nach ausdrücklicher Zustimmung derselbe Aufruf mit `confirm=true`; nur Inhaber/Admins | — | W |
+| `workspace_prompt_ideas` | Beispiel-Aufgaben, die im Workspace mit den verbundenen Quellen und Rechten sofort funktionieren (`category` overview/analyze/optimize/act/report) — je Kategorie 2–3 anbieten, nicht die ganze Liste; `writes=true`-Prompts erst als Vorschlag zeigen | — | R |
 | `journal_add_note` | Notiz ins Änderungsjournal des Workspace (`note` mit Vorher→Nachher + Warum, optional `source`) — nach JEDER Schreib-Aktion aufrufen; Ersatz für die Google-Ads-Notizen, die Googles API nicht anbietet | — | W |
 | `journal_list` | Änderungsjournal lesen (`days`, `limit`, `kind`: note/auto) — automatische Protokolle aller Schreib-Tools + Notizen; für Wochenreports und um Performance-Knicke Änderungen zuzuordnen | — | R |
 | `authenticate` | OAuth-Flow zum MCP starten — nur Plugin-Kontext (Claude Code); in Claude Web ist der Connector vorauthentifiziert | — | — |
@@ -35,7 +38,7 @@ Lege Schreib-Tools (W) nie ohne write-guardrails.md an.
 | `ads_campaign_performance` | Kampagnen-KPIs (Impressions, Clicks, Cost, CTR, CPC, Conversions) | google_ads | R |
 | `ads_impression_share` | Impression Share, Top-IS und Abs-Top-IS je Kampagne, Anzeigengruppe oder Keyword (`level`); Filter `campaign_id`/`ad_group_id`/`keyword`. Rank-Verlust auf allen Ebenen, Budget-Verlust nur auf Kampagnenebene | google_ads | R |
 | `ads_search_terms` | Search-Terms-Report — was User wirklich gesucht haben | google_ads | R |
-| `ads_ai_max_search_terms` | AI-Max-Quelle-Split pro Suchbegriff × Headline × Landing-Page | google_ads | R |
+| `ads_ai_max_search_terms` | AI-Max-Quelle-Split (`source` = `search_term_match_source`, z.B. KEYWORD, AI_MAX_KEYWORDLESS, AI_MAX_BROAD_MATCH, BROAD_MATCH) je Suchbegriff × Quelle × Kampagne, nach Kosten sortiert; `min_cost_eur` filtert — Headline und Landing-Page sind NICHT enthalten (Googles Kombinations-View ist nicht mit der Quelle kombinierbar) | google_ads | R |
 | `ads_budget_status` | Tagesbudget, Ausgaben und Budget-Auslastung pro Kampagne | google_ads | R |
 | `ads_keyword_performance` | Keyword-Performance inkl. Quality Score, CPC, Conversions | google_ads | R |
 | `ads_ad_performance` | Anzeigen-Performance — welche Ads performen, welche nicht | google_ads | R |
@@ -49,7 +52,7 @@ Lege Schreib-Tools (W) nie ohne write-guardrails.md an.
 | `ads_list_ad_groups` | Ad Groups auflisten, optional nach Kampagne gefiltert | google_ads | R |
 | `ads_list_keywords` | Keywords auflisten, optional nach Kampagne oder Ad Group gefiltert; `limit` (Default 200, max. 1000) — wird abgeschnitten, kommt `{result, warning}` statt der Liste (dann `campaign_id`/`ad_group_id` einschränken oder `limit` erhöhen); enthält auch Ad-Group-Negatives, gekennzeichnet über `negative=true` | google_ads | R |
 | `ads_list_negative_keywords` | Negative Keywords auflisten, optional nach Kampagne gefiltert | google_ads | R |
-| `ads_list_ads` | Alle Anzeigen (Headlines, Descriptions, URLs, Status, Approval) | google_ads | R |
+| `ads_list_ads` | Alle Anzeigen (`headlines`, `descriptions`, `final_urls`, `status`, `approval_status`) | google_ads | R |
 | `ads_list_assets` | Assets auflisten (Sitelinks, Callouts, Structured Snippets) | google_ads | R |
 | `ads_get_geo_targeting` | Geo-Targeting pro Kampagne + Einstellung (Presence vs. POI) | google_ads | R |
 | `ads_list_recommendations` | Offene Google-Ads-Empfehlungen des Kontos | google_ads | R |
@@ -58,6 +61,9 @@ Lege Schreib-Tools (W) nie ohne write-guardrails.md an.
 | `ads_demographic_performance` | Performance nach Alter und Geschlecht | google_ads | R |
 | `ads_list_experiments` | Kampagnen-Experimente (A/B-Tests) mit Status und Laufzeit | google_ads | R |
 | `ads_list_customer_match_lists` | CRM-basierte Customer-Match-Userlisten auflisten | google_ads | R |
+| `ads_get_language_targeting` | Sprach-Targeting je Kampagne (optional `campaign_id`) — Kampagnen ohne Sprach-Kriterium (= alle Sprachen) fehlen; `[]` heißt „alle Sprachen” ODER unbekannte Kampagne (mit `ads_list_campaigns` gegenprüfen). Google entfernt seit Ende 09/2026 die Spracheinstellung auf Kampagnenebene für Search und AI Max — für diese Kampagnentypen nicht mehr maßgeblich | google_ads | R |
+| `ads_list_account_negatives` | Kontoweite Negatives als Shared-Set-Listen mit `keywords`-Array — `criterion_id` = Konto-Zuordnung, `shared_criterion_id` = einzelnes Keyword (Kampagnen-Listen: `ads_manage_shared_negative_list`) | google_ads | R |
+| `ads_list_campaign_conversion_goals` | Conversion-Ziel-Konfiguration einer Kampagne: Standard-Ziele (biddable je Kategorie) + ggf. Custom Goal mit seinen Aktionen | google_ads | R |
 
 ---
 
@@ -107,6 +113,32 @@ Lege Schreib-Tools (W) nie ohne write-guardrails.md an.
 | `ads_create_customer_match_list` | CRM-basierte Customer-Match-Userliste anlegen | google_ads | W |
 | `ads_upload_customer_match_members` | Mitglieder in Customer-Match-Userliste hochladen (gehasht) | google_ads | W |
 | `ads_remove_customer_match_members` | Mitglieder aus Customer-Match-Userliste entfernen (gehasht) | google_ads | W |
+| `ads_update_campaign_settings` | `final_url_suffix` einer Kampagne setzen (`''` entfernt es) — `url_expansion_opt_out` wird abgelehnt (Feld existiert in API v23 nicht mehr, nur in der Google-Ads-Oberfläche steuerbar) | google_ads | W |
+| `ads_update_language_targeting` | Sprach-Targeting einer Kampagne **ersetzen** (`language_codes`, z.B. `["de","en"]`; leere Liste = alle Sprachen). Google entfernt seit Ende 09/2026 die Spracheinstellung auf Kampagnenebene für Search und AI Max — für diese Kampagnentypen nicht mehr maßgeblich | google_ads | W |
+| `ads_manage_account_negatives` | Kontoweite negative Keywords hinzufügen/entfernen (`match_type` Default PHRASE) — `remove_criterion_ids` löst die **ganze Liste** vom Konto, `remove_keyword_ids` (`sharedSetId~criterionId`) einzelne Keywords; legt ohne Liste automatisch „Kontoweite negative Keywords (MCP)” an bzw. hängt eine vorhandene wieder an (vorher ankündigen); Duplikate → `skipped` | google_ads | W |
+| `ads_manage_brand_exclusions` | Marken als Ausschluss an eine Kampagne hängen (v.a. PMax gegen Brand-Kannibalisierung) — löst Namen in Googles Brand-Datenbank auf (ohne exakten Treffer erster Präfix-Vorschlag: `brands[]` prüfen, `unresolved` = nicht gefunden), Brand-Liste `list_name` wird wiederverwendet | google_ads | W |
+| `ads_set_campaign_conversion_goals` | Conversion-Ziele NUR für diese Kampagne setzen (Custom Goal aus `conversion_action_ids`) — wirkt auf Smart Bidding; idempotent (gleiche Aktionsmenge → `reused=true`, nicht automatisch aktiviert), Namenskonflikt → `error=goal_name_taken`; `use_account_default=True` stellt auf Konto-Standard zurück. Zurücklesen mit `ads_list_campaign_conversion_goals` | google_ads | W |
+
+---
+
+## Google Ads — Performance Max & Assets (source: google_ads) — enthält W ⚠ Guardrails
+
+Ablauf PMax: Text-/Bild-/Video-Assets anlegen → `ads_create_asset_group` (Default PAUSED) → Signale setzen. Anzeigen-Erweiterungen pausieren statt lösen: `ads_set_asset_link_status`.
+
+| Tool | Was | Quelle | R/W |
+|---|---|---|---|
+| `ads_list_asset_groups` | Asset Groups (PMax) mit Status, Ad Strength und Asset-Abdeckung je `field_type`, optional je Kampagne | google_ads | R |
+| `ads_asset_group_performance` | Performance je Asset Group der letzten `days` vollen Tage bis gestern: impressions, clicks, cost_eur, conversions, conversions_value, ad_strength — nach Kosten sortiert | google_ads | R |
+| `ads_pmax_search_insights` | Suchbegriffs-Insights einer PMax-Kampagne auf **Kategorie-Ebene** (kein Einzel-Suchbegriff) — der PMax-Ersatz für `ads_search_terms`; impressions, clicks, conversions, conversions_value, **keine Kosten** (liefert Google nicht) | google_ads | R |
+| `ads_upload_image_asset` | Bild von öffentlicher URL als Image-Asset anlegen (PNG/JPG, max. 5 MB, `name` kontoweit eindeutig) — PMax-Mindestgrößen (1,91:1 ≥600×314, 1:1 ≥300×300, Logo ≥128×128) prüft das Tool nicht, zu kleine Bilder scheitern erst beim Verknüpfen | google_ads | W |
+| `ads_upload_video_asset` | YouTube-Video (URL oder 11-stellige ID) als Video-Asset registrieren — danach `ads_add_asset_group_assets` mit `YOUTUBE_VIDEO` | google_ads | W |
+| `ads_create_text_assets` | Texte als wiederverwendbare Text-Assets anlegen (Headline max. 30, Long Headline/Description max. 90 Zeichen) — die Rolle entsteht erst über `field_type` beim Verknüpfen | google_ads | W |
+| `ads_create_asset_group` | Asset Group für eine PMax-Kampagne atomar mit den Mindest-Assets anlegen (3 Headlines, 2 Descriptions, Long Headline, Business Name, Marketing-, Quadrat-Bild, Logo) — **Default PAUSED**, `validate_only=True` = Dry-Run, `extra_assets` z.B. für Video | google_ads | W |
+| `ads_add_asset_group_assets` | Bestehende Assets an eine Asset Group hängen (`[{asset_id, field_type}]`, z.B. HEADLINE, DESCRIPTION, MARKETING_IMAGE, LOGO, YOUTUBE_VIDEO) | google_ads | W |
+| `ads_add_asset_group_signal` | Search Themes (max. 25 je Gruppe, nicht vorab geprüft) und/oder eine Audience an eine Asset Group hängen — `audience_id` ist eine Audience-Ressource, **nicht** die `user_list_id` aus `ads_list_audiences` (dafür `ads_add_audience_signal`); Ablehnungen kommen als Exception | google_ads | W |
+| `ads_link_asset` | Bestehendes Asset (z.B. Sitelink, Callout, Structured Snippet) mit Kampagne oder ohne `campaign_id` mit dem Konto verknüpfen, statt ein Duplikat anzulegen | google_ads | W |
+| `ads_unlink_asset` | Asset-Verknüpfung **dauerhaft** lösen (Asset bleibt bestehen); ohne `campaign_id` die Konto-Verknüpfung — reversibel stattdessen `ads_set_asset_link_status` mit PAUSED | google_ads | W |
+| `ads_set_asset_link_status` | Status einer Asset-Verknüpfung setzen: ENABLED / PAUSED (reversibel, Verknüpfung bleibt) / REMOVED — das echte „Pausieren” für Sitelinks, Preis-, Promotion-, Call-Assets; Ist-Zustand über `ads_list_assets` | google_ads | W |
 
 ---
 
@@ -149,7 +181,7 @@ Lege Schreib-Tools (W) nie ohne write-guardrails.md an.
 | `ga4_archive_custom_metric` | GA4 Custom Metric archivieren | ga4 | W |
 | `ga4_delete_key_event` | GA4 Key Event löschen — `key_event_name` akzeptiert die numerische ID, den vollen Pfad `properties/<pid>/keyEvents/<id>` oder den Event-Namen (z.B. `purchase`, wird zur ID aufgelöst; unbekannt → `{error: not_found}` mit vorhandenen Key Events, mehrdeutig → `{error: ambiguous, candidates}`) | ga4 | W |
 | `ga4_enhanced_measurement` | Enhanced Measurement lesen/setzen (Scroll, Outbound, Site-Search, Video, Downloads) | ga4 | R/W |
-| `ga4_data_retention` | Event-Daten-Aufbewahrung lesen/setzen (2 vs. 14 Monate) | ga4 | R/W |
+| `ga4_data_retention` | Aufbewahrung der **Event-Daten** lesen (`action=get`) oder setzen (`set`): `event_data_retention` `TWO_MONTHS` / `FOURTEEN_MONTHS`, bei GA4 360 zusätzlich `TWENTY_SIX_MONTHS` / `THIRTY_EIGHT_MONTHS` / `FIFTY_MONTHS` (sonst `error=invalid_retention`); dazu `reset_on_new_activity` (Rückgabefeld `reset_user_data_on_new_activity`). Die Aufbewahrung der Nutzerdaten liest das Tool nicht | ga4 | R/W |
 | `ga4_manage_google_ads_links` | GA4↔Google-Ads-Verknüpfung auflisten/anlegen | ga4 | R/W |
 | `ga4_manage_audiences` | Remarketing-Audiences auflisten/anlegen (`validate_only` = Dry-Run) | ga4 | R/W |
 
@@ -159,9 +191,9 @@ Lege Schreib-Tools (W) nie ohne write-guardrails.md an.
 
 | Tool | Was | Quelle | R/W |
 |---|---|---|---|
-| `sc_top_queries` | Top organische Suchanfragen (clicks, impressions, ctr, position) | search_console | R |
-| `sc_top_pages` | Top Landing Pages aus der Google-Suche | search_console | R |
-| `sc_performance` | Flexibler Search Analytics Report (query, page, country, device, date) | search_console | R |
+| `sc_top_queries` | Top organische Suchanfragen (clicks, impressions, ctr, position) — Zeitraum `days` (Default 28, endet heute−3) oder `start_date`+`end_date` (`YYYY-MM-DD`, nur gemeinsam, sonst `error=invalid_date_range`) | search_console | R |
+| `sc_top_pages` | Top Landing Pages aus der Google-Suche — Zeitraum `days` (Default 28, endet heute−3) oder `start_date`+`end_date` (`YYYY-MM-DD`, nur gemeinsam, sonst `error=invalid_date_range`) | search_console | R |
+| `sc_performance` | Flexibler Search Analytics Report — `dimensions` aus query, page, country, device, searchAppearance, date (weggelassen = `['query']`; `dimensions=[]` = Gesamtsumme der Property). Zeitraum `days` (endet heute−3) oder `start_date`+`end_date` gemeinsam (`YYYY-MM-DD`). `dimension_filter` = `{dimension, operator, expression}` oder Liste davon (UND): dimension query/page/country/device/searchAppearance, operator equals (Default)/contains/notContains/includingRegex/excludingRegex (RE2). Dazu `search_type` (web/image/video/news/discover/googleNews), `limit` max. 500, `start_row` zum Blättern. Marke/Nicht-Marke-Split per Query-Regex möglich (`includingRegex`/`excludingRegex` auf query); ein nativer GSC-Markenfilter ist nicht verfügbar | search_console | R |
 | `sc_url_inspection` | Indexierungsstatus, Canonicals und Crawl-Signale einer URL: `verdict`, `coverage_state`, `indexing_state`, `google_canonical`/`user_canonical`, `last_crawl`, `robots_txt_state` (ALLOWED/DISALLOWED), `page_fetch_state` (SUCCESSFUL, SOFT_404, BLOCKED_ROBOTS_TXT, NOT_FOUND, …); `mobile_verdict`/`mobile_issues` nur, wenn Google den eingestellten Mobile-Usability-Teil noch mitliefert — fehlen sie, wurde nichts geprüft | search_console | R |
 | `sc_list_sitemaps` | Eingereichte Sitemaps: Status, Warn- und Fehlerzahlen | search_console | R |
 | `sc_submit_sitemap` | Sitemap-URL bei GSC einreichen | search_console | W |
@@ -170,6 +202,28 @@ Lege Schreib-Tools (W) nie ohne write-guardrails.md an.
 | `sc_add_site` | GSC-Property anlegen (`https://…` URL-Prefix oder `sc-domain:…`) — liefert erst nach Verifizierung Daten | search_console | W |
 | `sc_verification_token` | Site-Verification-Token holen (Domain: DNS_TXT/DNS_CNAME, URL: META/FILE; ANALYTICS/TAG_MANAGER brauchen keins) | search_console | R |
 | `sc_verify_site` | Site-Eigentümerschaft verifizieren — nach Platzieren des Nachweises bzw. direkt via ANALYTICS/TAG_MANAGER, wenn GA/GTM schon auf der Site läuft. Braucht neuen siteverification-Scope (ggf. Verbindung im Portal erneuern) | search_console | W |
+
+---
+
+## Bing Webmaster Tools (source: bing_webmaster) — enthält W ⚠ Guardrails
+
+Bing liefert Suchdaten als **Wochenwerte** — Zeiträume greifen auf ganze Wochen, unter 7 Tagen oft leer. Zeitraum je Tool über `days` oder `date_from`/`date_to` (`YYYY-MM-DD`, inklusiv, max. 365 Tage).
+
+| Tool | Was | Quelle | R/W |
+|---|---|---|---|
+| `bing_list_sites` | Websites des Bing-Webmaster-Kontos: `site_url`, `verified` (nur bestätigte liefern Daten), `selected` — erster Aufruf bei `site_not_authorized` | bing_webmaster | R |
+| `bing_traffic` | Klicks und Impressionen in der Bing-Suche im Zeitverlauf + `total` (Default 90 Tage) — der Weg zu den **korrekten Gesamtzahlen** (Summe über `bing_top_queries` ist kleiner) | bing_webmaster | R |
+| `bing_top_queries` | Top-Suchanfragen (clicks, impressions, ctr_pct, avg_position, avg_click_position), optional je `page`; `limit` Default 50, max. 1000 — `total_listed` ist NICHT die Website-Summe | bing_webmaster | R |
+| `bing_top_pages` | Top-Seiten in der Bing-Suche, optional je `query`; Felder wie `bing_top_queries` | bing_webmaster | R |
+| `bing_crawl_stats` | Bingbot-Crawl je Tag: crawled_pages, in_index, crawl_errors, HTTP-Codes, blocked_by_robots_txt, Timeouts, DNS-Fehler, Malware (Default 30 Tage) | bing_webmaster | R |
+| `bing_crawl_issues` | URLs mit Crawl-Problemen inkl. `inbound_links` (hoch = zuerst beheben) und `by_issue`-Zählung; `limit` Default 200 | bing_webmaster | R |
+| `bing_url_info` | Index-Status einer URL in Bing: `http_status`, `discovered`, `last_crawled` (fehlt = nie gecrawlt), ggf. Traffic | bing_webmaster | R |
+| `bing_backlinks` | Eingehende Links laut Bing — ohne `url` Seiten mit Linkzahl, mit `url` die verlinkenden Seiten + Ankertext; `page` ab 0 | bing_webmaster | R |
+| `bing_keyword_research` | Bing-Suchvolumen (Impressionen, kostenlos, ohne DataForSEO) für ein Keyword (~6 Monate Wochenverlauf) oder mit `related=true` verwandte Keywords — `country` Default `at`, `language` `de-AT`; AT-Volumen oft 0–5, für Orientierung `de`/`de-DE` nehmen; kein Google-Ersatz | bing_webmaster | R |
+| `bing_list_sitemaps` | Bei Bing eingereichte Sitemaps/Feeds: url, type, status, submitted, last_crawled, url_count | bing_webmaster | R |
+| `bing_submit_urls` | URLs zur (Neu-)Indexierung bei Bing einreichen (max. 500, nur Workspace-Domain) — prüft das **Tageskontingent** vorab (`quota_before`/`quota_after`; reicht es nicht, wird nichts eingereicht: `quota_exceeded`); ohne Kontingent `site_indexnow_submit` | bing_webmaster | W |
+| `bing_submit_sitemap` | Sitemap bei Bing einreichen und zurücklesen (`verified`) | bing_webmaster | W |
+| `bing_remove_sitemap` | Sitemap aus Bing Webmaster Tools entfernen und zurücklesen — die Seiten bleiben im Index | bing_webmaster | W |
 
 ---
 
@@ -205,14 +259,17 @@ Lege Schreib-Tools (W) nie ohne write-guardrails.md an.
 | `gtm_create_workspace` | Neuen Workspace aus neuester Container-Version anlegen — Recovery bei nicht mehr synchronisierbarem Workspace | gtm | W |
 | `gtm_create_container` | Neuen GTM-Container anlegen (web/server/android/ios/amp) — danach mit `workspace_configure_source` verknüpfen | gtm | W |
 | `gtm_create_variable` | Neue Variable anlegen; Default-Typ Data-Layer-Variable, Key wird aus dem Namen abgeleitet (`dlv - foo` → `foo`) — Voraussetzung für GA4-Event-Tags mit Parameter-Mapping | gtm | W |
+| `gtm_create_preview_link` | Unveröffentlichten Workspace-Stand testbar machen, ohne zu publizieren und ohne Google-Login — liefert `gtm_auth`, `gtm_preview`, `script_url` (z.B. im Playwright-Test die gtm.js-Anfrage darauf umleiten); Momentaufnahme, nach jeder Änderung neu erzeugen; `gtm_auth` nicht öffentlich teilen. `workspace_id` numerisch | gtm | W |
 
 ---
 
-## Website-Checks (keine Quelle nötig)
+## Website-Checks + IndexNow (keine Quelle nötig) — enthält W ⚠ Guardrails
 
 | Tool | Was | Quelle | R/W |
 |---|---|---|---|
 | `site_crawler_check` | Dürfen Such- und KI-Bots die Website lesen? robots.txt nach RFC 9309 für 16 Bots in vier Gruppen (Suche, KI-Suche, KI-Assistenten im Nutzerauftrag, KI-Training), Cloudflare-Signale, Content Signals, Robots-Angaben der Startseite. `url` (ohne Angabe: Workspace-Website), `paths` (max. 10), `check_live=true` ruft die Startseite je Bot-User-Agent ab — **nur Indiz**, ein 403 auf den nachgemachten UA beweist keine Sperre des echten Bots. Rückgabe u. a. `bots[]`, `summary` je Gruppe, `hosting.cloudflare`, `notes` mit Empfehlung | — | R |
+| `site_indexnow_key` | IndexNow-Schlüssel der Website + ob die Schlüsseldatei online ist (`ready`; sonst `next_steps`: `<key>.txt` ins Wurzelverzeichnis) — Voraussetzung für `site_indexnow_submit`; `url` ohne Angabe = Workspace-Website | — | R |
+| `site_indexnow_submit` | Neue/geänderte URLs (eine Domain, max. 10 000) per IndexNow sofort an Bing (Basis der ChatGPT-Websuche), Yandex, Seznam, Naver melden — **Google nimmt nicht teil** (dort `sc_submit_sitemap`); nur wirklich Neues melden (Dauer-Meldungen wirken wie Spam); fehlt die Schlüsseldatei → `error=key_file_missing`. Angenommen heißt gemeldet, nicht indexiert | — | W |
 
 ---
 
@@ -231,7 +288,7 @@ Leere DataForSEO-Antworten (`"items": null`) brechen die `dfs_*`-Tools nicht meh
 | `dfs_backlink_summary` | Backlink-Profil einer Domain (Links, Referring Domains, Rank) | dataforseo | R |
 | `dfs_backlink_competitors` | Domains mit ähnlichem Backlink-Profil | dataforseo | R |
 | `dfs_onpage_instant` | Live On-Page Audit (Title, Meta, H1, Score, Issues) — `checks_failed` = echte Issue-Flags (`no_title`, `no_h1_tag`, `no_description`, `duplicate_title_tag`, `high_loading_time`, `is_broken`, …; Positivflags wie `has_html_doctype`/`is_https` zählen nicht), `fetched_at` (UTC-Zeitstempel; ersetzt `fetch_time_ms`), `page_timing_ms` (Ladezeiten in ms oder `null`); keine Core Web Vitals — dafür `dfs_lighthouse_live` | dataforseo | R |
-| `dfs_lighthouse_live` | Google Lighthouse Audit (Performance, Accessibility, SEO) | dataforseo | R |
+| `dfs_lighthouse_live` | Google Lighthouse Audit (`strategy` desktop/mobile, langsam 10–35 s, nur einzeln) — Rückgabe `scores{performance, accessibility, best_practices, seo}` (0–100), `lcp_ms`, `cls`, `inp_ms`. Ein Laborlauf ohne Interaktion misst kein INP, `inp_ms` kommt meist leer; ein TBT-Feld gibt es nicht | dataforseo | R |
 | `dfs_keyword_overview` | Volumen, CPC, Difficulty und Haupt-Intent für eine Keyword-Liste in einem Call (max 700) | dataforseo | R |
 | `dfs_domain_intersection` | Ranking-Schnittmenge zweier Domains — oder Gap-Modus: wofür Domain 2 rankt, Domain 1 nicht | dataforseo | R |
 | `dfs_competitors_domain` | Domains mit den meisten gemeinsamen Rankings — echte SEO-Konkurrenten statt Branchen-Raten | dataforseo | R |
@@ -247,7 +304,7 @@ Leere DataForSEO-Antworten (`"items": null`) brechen die `dfs_*`-Tools nicht meh
 | `dfs_serp_bing_organic` | Organische Bing-Ergebnisse für ein Keyword — Bing-Index-Präsenz prüfen | dataforseo | R |
 | `dfs_domain_technologies` | Eingesetzter Tech-Stack einer Domain (Analytics, Tag-Manager, Advertising-Pixel, CMS) | dataforseo | R |
 | `dfs_raw_html` | Rohes HTML einer URL abrufen (z.B. für JSON-LD-Check im Quelltext) | dataforseo | R |
-| `dfs_content_parsing` | Strukturierter Seiteninhalt einer URL (Headings, Absätze) | dataforseo | R |
+| `dfs_content_parsing` | Strukturierter Seiteninhalt einer URL — Rückgabe `headings[]{level, text}`, `paragraphs[]`, `links_count`, `title` (= erste erkannte Überschrift, NICHT das `<title>`-Tag — dafür `dfs_onpage_instant`) | dataforseo | R |
 | `dfs_historical_rank_overview` | Monatliche Ranking-Historie einer Domain (organische Keywords, ETV, Top3/Top10) | dataforseo | R |
 | `dfs_keyword_trends` | Google-Trends-Verlauf für bis zu 5 Keywords über einen Zeitraum | dataforseo | R |
 | `dfs_google_ads_advertisers` | Werbetreibende auf einem Keyword laut Google Ads Transparency Center | dataforseo | R |
@@ -303,6 +360,8 @@ Leere DataForSEO-Antworten (`"items": null`) brechen die `dfs_*`-Tools nicht meh
 | `meta_list_audiences` | Custom Audiences des Meta-Ad-Accounts inkl. Customer-Match-Listen — IDs als `custom_audience_ids` (einschließen) oder `excluded_custom_audience_ids` (ausschließen, z.B. Bestandskunden) in `meta_create_adset`/`meta_update_adset` verwendbar | meta_ads | R |
 | `meta_targeting_search` | Meta-Targeting-Schlüssel suchen (Metas Targeting Search) — DAS Werkzeug, bevor in `meta_create_adset`/`meta_update_adset` Städte, Regionen, PLZ, Interessen, Behaviors oder Sprachen gesetzt werden; Schlüssel nie raten. `kind`: `city` (Städte; `key` + `supports_region`/`country_code`), `region` (Bundesländer/Regionen), `zip` (Postleitzahlen; `key` mit Landespräfix wie `AT:5020`, `primary_city`), `country` (ISO-Code als `key`), `geo` (country+region+city+zip in einer Suche, `type` je Treffer), `interest` (Interessen: `id`, `name`, `path`, `audience_size_lower/upper_bound`, `topic` — `q` Pflicht, sonst `error=query_required`), `behavior` (Behaviors: `id`, `name`, `path`, `description`, Größe — Meta liefert die komplette Liste, `q` filtert sie über Name und Pfad), `locale` (Sprachen: `key` als Ganzzahl, `name` — `q` darf leer sein = alle Sprachen bis `limit`); anderer Wert → `error=invalid_kind`. `q` = Suchbegriff (z.B. `Salzburg`, `5020`, `Wandern`, `German`); `country_code` grenzt die Geo-Suche ein (z.B. `AT` — sonst findet `Salzburg` auch Orte in anderen Ländern); `limit` (Default 25; Metas eigener Default wären 8) — gibt es mehr Treffer, kommt `{result, warning}` (auch bei Behaviors/Sprachen, wo Meta keine Seiten meldet), dann `limit` erhöhen oder `q` präzisieren. Jeder Treffer trägt `verwendung` mit dem fertigen Parameter, z.B. `cities=[{'key': '2420605', 'radius_km': 17}]`, `regions=['1234']`, `zips=['AT:5020']`, `countries=['AT']`, `interest_ids=['6003…']`, `behavior_ids=['…']`, `locales=[5]`; dieselben Schlüssel gelten in `excluded_geo_locations` (z.B. `{'zips': ['AT:5020']}`). Leere Trefferliste = nichts gefunden (kein Fehler) — Schreibweise oder `country_code` prüfen. Nur Lesezugriff | meta_ads | R |
 | `meta_video_status` | Verarbeitungsstatus eines hochgeladenen Ad-Videos (`ready` = nutzbar) | meta_ads | R |
+| `meta_ad_preview` | Vorschau einer Anzeige je Platzierung (`formats` 1–8, Default Reels/Story/Feed) — `previews[].preview_url` öffnet ohne Facebook-Login (zum Weitergeben zur Kunden-Freigabe; Links laufen ab), dazu Creative-Inhalte, Vorschaubild und bei Videos ein Storyboard (`frames` 0–10, Default 6) ohne Ton | meta_ads | R |
+| `meta_list_leads` | Leads eines Instant Forms der letzten `days` (1–90, Default 30): je Lead Zeitpunkt, Kampagne/Adset/Ad, `answers` — **personenbezogene Daten**, nur mit Freigabe der Meta-Lead-Daten im Portal (sonst `error=lead_data_disabled`) und Berechtigung `leads_retrieval`; `limit` max. 500 | meta_ads | R |
 
 ---
 
@@ -323,6 +382,8 @@ Leere DataForSEO-Antworten (`"items": null`) brechen die `dfs_*`-Tools nicht meh
 | `meta_upload_ad_image` | Bild von öffentlicher URL in die Bildbibliothek laden (max. 8 MB) — liefert `image_hash` | meta_ads | W |
 | `meta_upload_ad_video` | Video von öffentlicher URL laden — asynchron, Status via `meta_video_status` | meta_ads | W |
 | `meta_create_ad` | Neue Ad anlegen (Bild ODER Video; Website- oder Lead-Anzeige) — Creative + Ad in einem Schritt (Standard: PAUSED); `link` = Zielseite, Pflicht außer bei Lead-Anzeigen (`error=link_required`); `lead_gen_form_id` (Instant Form, ID aus `meta_list_lead_forms`) macht die Anzeige zur Lead-Anzeige: als `link` erlaubt Meta dann nur den Platzhalter `https://fb.me/` (wird automatisch gesetzt; anderer `link` → `error=link_not_allowed_for_lead_ad`), das Adset muss auf `LEAD_GENERATION` mit `promoted_page_id` derselben Page laufen (`meta_create_adset`); `call_to_action` bei Lead-Anzeigen Default SIGN_UP (LEAD_GENERATION ist KEIN CTA-Typ) und nur APPLY_NOW/DOWNLOAD/GET_QUOTE/LEARN_MORE/SIGN_UP/SUBSCRIBE — andere Typen lehnt das Tool vorab ab (`error=invalid_lead_ad_cta`); lehnt Meta mit Subcode 1815089 ab, hat kein Page-Admin die Lead-Ads-Nutzungsbedingungen akzeptiert (Antwort enthält `hint`; Stand vorab in `meta_list_pages` → `leadgen_tos_accepted`); `url_tags` = UTM-Parameter als eigenes Creative-Feld, z.B. `utm_source=facebook&utm_medium=paid&utm_campaign={{campaign.name}}`; Zurücklesen: `meta_list_ads` zeigt `creative.lead_gen_form_id` und `url_tags` | meta_ads | W |
+| `meta_create_lead_form` | Instant Form (Lead-Formular) an der Facebook-Page anlegen — **Meta veröffentlicht es sofort und erlaubt danach keine Änderung mehr** (nur Archivieren): erst `dry_run=True`, Inhalt abstimmen, dann anlegen; `questions` = Standardfelder (FULL_NAME, EMAIL, PHONE, …) und/oder `{type: 'CUSTOM', label, options?}`, `privacy_policy_url` (https) Pflicht, `higher_intent=True` = Formulartyp „Höhere Absicht”; danach `meta_create_ad` mit `lead_gen_form_id` | meta_ads | W |
+| `meta_archive_lead_form` | Lead-Formular archivieren — die einzige Änderung, die Meta an einem veröffentlichten Instant Form erlaubt (Korrektur = archivieren + neu anlegen; Löschen geht bei Meta nicht); nutzende Anzeigen vorher pausieren/umstellen; fremdes Formular → `error=foreign_object` | meta_ads | W |
 
 ---
 
@@ -330,31 +391,115 @@ Leere DataForSEO-Antworten (`"items": null`) brechen die `dfs_*`-Tools nicht meh
 
 Hierarchie: Campaign Group (≈ Meta-Kampagne) → Campaign (Budget + Targeting, ≈ Meta-Adset) → Creative (≈ Meta-Ad, referenziert einen Page-Post).
 
+**Namenswechsel im Campaign Manager (seit 10/2025):** Die alte „Campaign Group” heißt dort jetzt „Campaign”, die alte „Campaign” heißt „Ad set”. Die Tool-Namen folgen der API und nutzen die alten Namen (`linkedin_*_campaign_group` = UI-„Campaign”, `linkedin_*_campaign` = UI-„Ad set”). Beim Abgleich mit Screenshots oder Kunden-Aussagen übersetzen.
+
 | Tool | Was | Quelle | R/W |
 |---|---|---|---|
 | `linkedin_list_accounts` | Verbundene LinkedIn-Ad-Accounts auflisten | linkedin_ads | R |
 | `linkedin_list_campaign_groups` | Kampagnengruppen auflisten (Name, Status, Gesamtbudget) | linkedin_ads | R |
-| `linkedin_list_campaigns` | Kampagnen auflisten (Name, Status, Typ, Tagesbudget) | linkedin_ads | R |
+| `linkedin_list_campaigns` | Kampagnen (UI: „Ad sets”) mit Einstellungen: id, name, status, type, format, objective, cost_type, campaign_group_id, daily_budget/total_budget, pacing, Laufzeit, `audience_expansion`, `linkedin_audience_network`; dazu `bid` (strategy, optimization_target, amount), `serving` (delivering + `reasons`, warum nicht ausgeliefert wird) und `targeting` (bei `include_targeting=true`, Default) — Ist-Zustand vor `linkedin_update_campaign_targeting`/`_bid` | linkedin_ads | R |
 | `linkedin_list_creatives` | Creatives (Anzeigen) auflisten, optional pro Kampagne — Status + Post-URN | linkedin_ads | R |
 | `linkedin_list_audiences` | Matched Audiences (DMP-Segmente): Retargeting- und Kontaktlisten | linkedin_ads | R |
 | `linkedin_campaign_performance` | Kampagnen-Performance (Impressionen, Klicks, Kosten, `conversions` = Website-Conversions, `leads` = abgeschickte Lead-Gen-Formulare, `lead_form_opens` = geöffnete Formulare) — bei Lead-Gen-Kampagnen `leads` auswerten, nicht `conversions` | linkedin_ads | R |
 | `linkedin_creative_performance` | Performance einzelner Anzeigen, sortiert nach Kosten — Felder wie `linkedin_campaign_performance` (`conversions` = Website-Conversions, `leads`/`lead_form_opens` = Lead-Gen-Formulare) | linkedin_ads | R |
+| `linkedin_performance_report` | Performance für frei wählbaren Zeitraum je `level` account/campaign_group/campaign/creative, `granularity` ALL/DAILY/MONTHLY/YEARLY, `date_from`/`date_to` oder `days` (Default 30), `campaign_ids` max. 20 — Felder impressions, clicks, cost, conversions, leads, lead_form_opens; Tageswerte hält LinkedIn 6 Monate; Konto-Summen über `level=account` statt Aufsummieren | linkedin_ads | R |
+| `linkedin_audience_breakdown` | Performance nach beruflicher Demografie (`dimension` job_function, seniority, industry, company_size, job_title, company, country, region; `limit` bis 100) — Näherungswerte (Datenschutz), Werte unter 3 Ereignissen fehlen, bis 24 h verzögert: Zeilensumme ≠ Gesamtwert (dafür `linkedin_performance_report` mit `level=account`) | linkedin_ads | R |
+| `linkedin_estimate_audience` | Geschätzte Zielgruppengröße für ein Targeting (`include`/`exclude` wie `linkedin_update_campaign_targeting`) oder eine bestehende Kampagne (`campaign_id`) — `too_small` = unter 300 Mitgliedern, LinkedIn liefert dann nicht aus; `targeting_notice` dem Nutzer wörtlich mit Link zeigen | linkedin_ads | R |
+| `linkedin_search_targeting` | Targeting-Werte `{name, urn}` suchen (`category` z.B. job_functions, seniorities, industries, company_sizes, job_titles, skills, companies, locations, profile_languages; `query`, `limit` bis 100) — feste Kategorien ohne `query` als ganze Liste, Jobtitel/Firmen/Orte immer mit `query`; `targeting_notice` (LinkedIn-Pflichthinweis) wörtlich mit Link zeigen | linkedin_ads | R |
+| `linkedin_list_lead_forms` | Lead-Gen-Formulare des Werbekontos: id, name, state (PUBLISHED/DRAFT/ARCHIVED), review_status inkl. rejection_reasons, Fragen — **keine eingegangenen Leads** (bräuchte LinkedIns Lead-Sync-Freigabe); Anzahl über `leads` in den Performance-Tools | linkedin_ads | R |
+| `linkedin_list_page_posts` | Veröffentlichte Posts der Unternehmensseite, neueste zuerst — `post_urn` für `linkedin_create_ad_from_post`; `sponsorable=false` bei multi_image, poll, celebration; `dark_post`; braucht Seiten-Leserecht + Rolle auf der Seite (sonst `error=missing_scope` → im Portal neu verbinden) | linkedin_ads | R |
 
 ---
 
 ## LinkedIn Ads — Mutation (source: linkedin_ads) ⚠ Guardrails
 
-Alle LinkedIn-Schreib-Tools akzeptieren `validate_only=true` (Vorschau ohne API-Call).
+Alle LinkedIn-Schreib-Tools akzeptieren `validate_only=true` (Vorschau ohne Schreibzugriff — meist rein lokal ohne API-Call; `linkedin_update_campaign_bid`/`_targeting`/`_schedule`/`_name` lesen dabei die Kampagne). Tool-Namen = alte API-Namen: `campaign_group` = UI-„Campaign”, `campaign` = UI-„Ad set” (siehe Reporting-Abschnitt).
 
 | Tool | Was | Quelle | R/W |
 |---|---|---|---|
 | `linkedin_create_campaign_group` | Neue Kampagnengruppe anlegen (Standard: DRAFT) | linkedin_ads | W |
 | `linkedin_update_campaign_group` | Kampagnengruppe ändern (Name, Status) | linkedin_ads | W |
-| `linkedin_create_campaign` | Neue Kampagne anlegen (Standard: DRAFT) — Budget, Geo-/Sprach-Targeting, Auto-Bidding | linkedin_ads | W |
+| `linkedin_create_campaign` | Neue Kampagne anlegen (Standard: DRAFT) — Tagesbudget, Geo-/Sprach- und optional weiteres Targeting; Optimierungsziel beim Anlegen **immer `MAX_CLICK`** (CPM), unabhängig vom Objective — danach mit `linkedin_update_campaign_bid` umstellen (z.B. MAX_LEAD, manuelles Gebot) | linkedin_ads | W |
 | `linkedin_update_campaign_status` | Kampagne aktivieren/pausieren/archivieren | linkedin_ads | W |
 | `linkedin_update_campaign_budget` | Tagesbudget einer Kampagne ändern | linkedin_ads | W |
 | `linkedin_create_ad_from_post` | Bestehenden Page-Post als Anzeige schalten (Sponsored Content) — Dark Posts gehen mangels `w_organization_social` nicht | linkedin_ads | W |
 | `linkedin_update_creative_status` | Creative-Status ändern (ACTIVE/PAUSED/DRAFT/ARCHIVED) | linkedin_ads | W |
+| `linkedin_update_campaign_bid` | Gebotsstrategie (`optimization_target`) und Betrag einer Kampagne ändern — manuell (NONE/ENHANCED_CONVERSION, `amount` je Klick bzw. 1 000 Impressionen), maximale Auslieferung (MAX_*, `amount` ignoriert), Zielkosten (TARGET_COST_PER_*) oder Kostenobergrenze (CAP_COST_AND_MAXIMIZE_*); `amount` außer bei MAX_* Pflicht und > 0; muss zum Kampagnenziel passen | linkedin_ads | W |
+| `linkedin_update_campaign_name` | Kampagne umbenennen (max. 255 Byte); Kampagnengruppen über `linkedin_update_campaign_group` | linkedin_ads | W |
+| `linkedin_update_campaign_schedule` | Laufzeit ändern (`start_date`/`end_date` als UTC-Tage, `remove_end=True` = unbefristet) — Start in der Vergangenheit → `error=start_in_past`; bereits gestarteter Start nicht mehr änderbar (`error=start_immutable`, außer DRAFT), das Ende immer | linkedin_ads | W |
+| `linkedin_update_campaign_targeting` | Targeting **vollständig ersetzen** (nicht ergänzen — was fehlt, wird entfernt): `include` = UND-verknüpfte Gruppen (innerhalb ODER, Gruppe mit `locations` Pflicht), `exclude` (None entfernt Ausschlüsse); job_titles nicht mit job_functions/seniorities kombinierbar (`error=incompatible_targeting`); vorher Ist-Zustand aus `linkedin_list_campaigns` und Größe per `linkedin_estimate_audience`; `targeting_notice` wörtlich mit Link zeigen | linkedin_ads | W |
+
+---
+
+## OpenAI Ads — Reporting (source: openai_ads, BETA)
+
+Anzeigen in ChatGPT. Hierarchie: Kampagne (Budget, Ziel, Standorte) → Anzeigengruppe (`context_hints`, Gebot) → Anzeige (Chat-Card). Alle Tools sind BETA.
+
+| Tool | Was | Quelle | R/W |
+|---|---|---|---|
+| `openai_ads_account` | Werbekonto: id, name, status, `review_status` (Marken-Prüfung — ohne approved keine Auslieferung), Währung, Zeitzone — erster Aufruf, um den Schlüssel dem richtigen Konto zuzuordnen | openai_ads | R |
+| `openai_ads_list_campaigns` | Kampagnen, neueste zuerst: status (active/paused/archived), objective, bidding_type, budget {daily, lifetime}, Laufzeit (UTC), `conversion_event_setting_ids`, targeting | openai_ads | R |
+| `openai_ads_list_ad_groups` | Anzeigengruppen einer Kampagne: status, `context_hints`, bidding {strategy, billing_event_type, max_bid} | openai_ads | R |
+| `openai_ads_list_ads` | Anzeigen einer Anzeigengruppe: status, `review_status` (OpenAI prüft jede Anzeige), creative (title, body, target_url, file_id) | openai_ads | R |
+| `openai_ads_insights` | Kennzahlen je `level` campaign/ad_group/ad + `total`: impressions, clicks, spend, ctr_pct, cpc, conversions (Klick 30 Tage + View 1 Tag, nur mit verknüpftem Conversion-Ereignis); `days` = volle Tage bis gestern, `daily=true` = Tageszeilen — Kosten des laufenden Tages verbucht OpenAI verzögert (oft 0) | openai_ads | R |
+| `openai_ads_conversion_setup` | Conversion-Messung: `pixels` (`source_id` für Event-Einstellungen, `pixel_id` für Snippet/Conversions API) und `event_settings` inkl. zugeordneter Kampagnen — ein Ereignis zählt nur bei zugeordneten Kampagnen | openai_ads | R |
+| `openai_ads_search_locations` | Standorte fürs Targeting suchen (Länder, Regionen, Märkte, PLZ) — `id` für `location_ids` in `openai_ads_create_campaign`; `limit` max. 50 | openai_ads | R |
+
+---
+
+## OpenAI Ads — Mutation (source: openai_ads, BETA) ⚠ Guardrails
+
+Anlage-Reihenfolge: `openai_ads_create_campaign` → `openai_ads_create_ad_group` → `openai_ads_create_ad` (alle **immer PAUSIERT**, identischer zweiter Aufruf legt nichts doppelt an) → nach Rückfrage beim Kunden alle drei mit `openai_ads_set_status` aktivieren.
+
+| Tool | Was | Quelle | R/W |
+|---|---|---|---|
+| `openai_ads_create_campaign` | Kampagne anlegen (immer PAUSIERT) — `objective` clicks (Default)/impressions/conversions, nach Anlage nicht änderbar (conversions braucht `conversion_event_setting_id`); `daily_budget` ODER `lifetime_budget` (EUR-Tagesbudget mind. 15; automatische Gebote brauchen `daily_budget`); `location_ids` angeben — ohne = alle Länder | openai_ads | W |
+| `openai_ads_create_ad_group` | Anzeigengruppe anlegen (immer PAUSIERT) — `context_hints` (in welchen Gesprächen/für wen nützlich) ist der wichtigste Hebel; ohne `max_bid` automatische Gebote (nur clicks/conversions mit Tagesbudget) | openai_ads | W |
+| `openai_ads_create_ad` | Chat-Card-Anzeige anlegen (immer PAUSIERT) — `title` 3–50, `body` max. 100 Zeichen, `target_url` https, Bild via `image_url` oder `file_id`; `preview_url` (24 h gültig) dem Kunden vor dem Aktivieren zeigen | openai_ads | W |
+| `openai_ads_set_status` | Kampagne/Anzeigengruppe/Anzeige auf active oder paused setzen (zurückgelesen) — **Aktivieren startet echte Auslieferung mit Kosten**; Archivieren nur im Ads Manager (unumkehrbar) | openai_ads | W |
+| `openai_ads_update_campaign` | Name, `daily_budget`/`lifetime_budget` (Kontowährung) und zugeordnete Conversion-Ereignisse (`add_`/`remove_conversion_event_setting_ids`) ändern — nur angegebene Felder; bei conversion-optimierten Kampagnen ist das Ereignis fest (`conversion_campaign_locked`) | openai_ads | W |
+| `openai_ads_create_pixel` | Web-Pixel (Conversion-Quelle) anlegen — erst `openai_ads_conversion_setup` prüfen (meist gibt es schon eins je Website); Snippet mit Marketing-Consent ausspielen (z.B. per GTM) | openai_ads | W |
+| `openai_ads_create_conversion_setting` | Conversion-Ereignis anlegen (`event_type` z.B. lead_created, appointment_scheduled, order_created oder custom + `custom_event_name`; `source_id` aus `openai_ads_conversion_setup`) — zählt erst nach Zuordnung per `openai_ads_update_campaign` | openai_ads | W |
+| `openai_ads_upload_conversions` | Conversions serverseitig senden (Conversions API, max. 1000 Events; braucht den Conversions-API-Schlüssel im Workspace) — `pixel_id` (nicht `source_id`), je Event eindeutige `id` (Entdopplung mit dem Pixel), keine Klartext-E-Mails/Telefonnummern; vorher `validate_only=true` | openai_ads | W |
+
+---
+
+## lemlist Outbound — Lesen (source: lemlist)
+
+Lead-bezogene Tools (`lemlist_list_leads`, `lemlist_list_replies`, `lemlist_get_conversation`, `lemlist_search_people`, `lemlist_set_lead_interest`, `lemlist_set_lead_paused`) brauchen die Freigabe „Lead-Daten freigeben” im Workspace (Portal) — sonst `error=lead_data_disabled`.
+
+| Tool | Was | Quelle | R/W |
+|---|---|---|---|
+| `lemlist_list_campaigns` | Kampagnen, neueste zuerst: status (running/paused/draft/ended/archived/errors), senders, `leads_total`/`leads_launched` (nur für die 50 neuesten), errors; `status`-Filter, `limit` max. 500 | lemlist | R |
+| `lemlist_campaign_performance` | Outbound-Kennzahlen je Kampagne + `total` für einen Zeitraum (`days` Default 30 oder `date_from`/`date_to`, UTC): messages (sent, delivered, bounced, opened, clicked, replied, meetings_booked, …), leads (reached, interested, unsubscribed, …), `rates_pct`; ohne `campaign_ids` die 25 neuesten außer Entwürfen/archivierten; `channel` email/linkedin/others | lemlist | R |
+| `lemlist_step_performance` | Kennzahlen einer Kampagne je Sequenzschritt und A/B-Variante (`ab_variants` nur bei A/B-Test) | lemlist | R |
+| `lemlist_get_sequence` | Sequenz lesen: je Schritt index, type, delay_days, subject, ab_test, body (ohne HTML, Platzhalter bleiben; `max_chars` 100–10000) inkl. Bedingungszweige (`level` > 0) — `step_id` für die Sequenz-Tools | lemlist | R |
+| `lemlist_mailbox_health` | Zustellbarkeit der Absender-Postfächer: status (CONNECTED/ERROR/DISCONNECTED), daily_email_limit, lemwarm, `deliverability_score` 0–100, je Domain `problems`/`min_score` — `user_id` für `sender_user_ids`; bei >50 Teammitgliedern nur die ersten 50 | lemlist | R |
+| `lemlist_list_leads` | Leads einer Kampagne mit `state` (letzter Schritt, z.B. contacted, emailsReplied, meetingBooked) und `status` (lemlist-Einordnung); `state`-Filter auch kommagetrennt, `limit` max. 500 — personenbezogen | lemlist | R |
+| `lemlist_list_replies` | Wer hat geantwortet? Antworten der letzten `days` (Default 7, max. 365) über alle oder eine Kampagne, `channel` email/linkedin — `contact_id` für `lemlist_get_conversation` | lemlist | R |
+| `lemlist_get_conversation` | Nachrichtenverlauf mit einem Kontakt (Text ohne HTML, `max_chars` je Nachricht, `limit` max. 100) — markiert nichts als gelesen | lemlist | R |
+| `lemlist_database_filters` | Filter der lemlist-Personen-/Firmendatenbank (`mode` leads/companies) mit `filter_id` und Werten — für `lemlist_search_people` | lemlist | R |
+| `lemlist_list_saved_searches` | Gespeicherte Personen-Suchen des Teams mit Filtern und letzter Trefferzahl — `saved_search_id` für `lemlist_search_people` | lemlist | R |
+| `lemlist_search_people` | Personen in der lemlist-Datenbank suchen (`filters`, `search`, `saved_search_id`; `size` max. 100) — **ohne E-Mail-Adressen** (für LinkedIn-Sequenzen `linkedin_url` an `lemlist_add_leads`); Suchen je 24 h begrenzt (`searches_left_24h`, jede Seite zählt); filtert bestehende Leads nicht heraus | lemlist | R |
+
+---
+
+## lemlist Outbound — Mutation (source: lemlist) ⚠ Guardrails
+
+Kampagnen lassen sich per API **nicht löschen**. Die meisten Schreib-Tools haben `validate_only=true`. Nachrichten, die lemlist nach dem Start verschickt, lassen sich nicht zurückholen.
+
+| Tool | Was | Quelle | R/W |
+|---|---|---|---|
+| `lemlist_create_campaign` | Kampagne mit Sequenz anlegen — entsteht als **Entwurf** (draft) und versendet nichts bis `lemlist_start_campaign`; `steps` (email/linkedinInvite/linkedinSend/linkedinVisit/manual/phone, `delay` in Tagen, max. 20), `timezone` Default Europe/Vienna, ohne `sender_user_ids` nicht startbar; nicht löschbar → erst `validate_only=True` | lemlist | W |
+| `lemlist_update_campaign` | Name, Absender (ersetzt), Stopp-Regeln und Tracking ändern — nur angegebene Felder; Stopp-Regeln/Tracking gibt lemlist nicht zurück (`not_readable`, Kontrolle im lemlist-UI) | lemlist | W |
+| `lemlist_add_sequence_step` | Schritt zur Hauptsequenz hinzufügen (`position` 1 = erster, ohne = ans Ende) — in laufenden Kampagnen gilt er für die folgenden Sendungen | lemlist | W |
+| `lemlist_update_sequence_step` | Betreff, Text, Verzögerung oder Titel eines Schritts ändern (Typ bleibt; Bedingungen nur im UI) — in laufenden Kampagnen gilt der neue Text für die folgenden Sendungen | lemlist | W |
+| `lemlist_delete_sequence_step` | Sequenzschritt löschen — nur in nicht laufenden Kampagnen (erst `lemlist_pause_campaign`) | lemlist | W |
+| `lemlist_start_campaign` | Kampagne starten/fortsetzen — **verschickt danach echte E-Mails/LinkedIn-Nachrichten, nicht rückholbar**: erst `validate_only=True` (liefert `summary` oder `not_ready` mit `problems`), Zusammenfassung bestätigen lassen, dann mit `expected_leads = summary.leads_total` starten (ohne passenden Wert kein Start) | lemlist | W |
+| `lemlist_pause_campaign` | Kampagne pausieren — stoppt weitere Sendungen, Leads bleiben | lemlist | W |
+| `lemlist_add_leads` | Leads zu einer Kampagne hinzufügen (max. 100 je Aufruf; `email` und/oder `linkedinUrl` + Variablen) — `deduplicate=True` (Default) überspringt Leads anderer Kampagnen; **laufende Kampagnen werden abgelehnt, weil lemlist dort sofort versendet** (außer `allow_running_campaign=True`); nur Leads mit Rechtsgrundlage für die Ansprache | lemlist | W |
+| `lemlist_set_lead_interest` | Lead als interessiert/nicht interessiert markieren (z.B. nach einer Antwort) | lemlist | W |
+| `lemlist_set_lead_paused` | Einzelnen Lead pausieren (`paused=True`) oder fortsetzen — die Kampagne läuft weiter; Fortsetzen wirkt nur in laufenden Kampagnen | lemlist | W |
 
 ---
 
@@ -375,6 +520,10 @@ Alle LinkedIn-Schreib-Tools akzeptieren `validate_only=true` (Vorschau ohne API-
 | `strapi_unpublish_entry` | Eintrag depublizieren (aus der öffentlichen API nehmen) — v5 (Standard): content-manager unpublish-Action, braucht den Admin Token des Workspace (wie `strapi_publish_entry`: Admin Tokens ab Strapi 5.47, NICHT der API-Token); `{error: admin_token_invalid}` = Token abgelehnt, `message` sagt, ob ein Content-API-Token statt Admin Token hinterlegt ist oder der Token ungültig/abgelaufen ist; v4: setzt publishedAt auf null; `locale` wählt die zu depublizierende Sprachversion (ohne Angabe Default-Locale) | strapi | W |
 | `strapi_upload_media` | Datei in die Medienbibliothek hochladen (`source_url`, max. 25 MB, ODER `file_base64`) — liefert `{success, uploaded: [{id, name, url, mime, size_kb}]}`; `full=true` liefert das komplette File-Objekt (width, height, formats, hash, ext, documentId …) direkt in `uploaded` — nötig für Bild-Nodes in Blocks-Rich-Text, für Media-Felder (z.B. cover) reicht die id | strapi | W |
 | `strapi_delete_media` | Datei aus der Medienbibliothek löschen | strapi | W |
+| `strapi_generate_upload_link` | Upload-Link für eine **lokale** Datei des Kunden erzeugen (Chat-Dateien erreichen den Server nie) — 15 min gültig, max. 100 MB je Datei, max. 20 Dateien; danach `strapi_check_upload_status(token)`. Online erreichbare Dateien direkter über `strapi_upload_media(source_url=…)` | strapi | W |
+| `strapi_check_upload_status` | Was wurde über einen Upload-Link hochgeladen? `{uploaded: [{id, name, url, mime, size_kb}], count, expired, expires_at}` — leeres `uploaded` = noch warten, kein Fehler; `error=unknown_token` = Token unbekannt oder >24 h abgelaufen | strapi | R |
+| `strapi_update_media` | Alt-Text, Bildunterschrift oder Namen einer Mediathek-Datei ändern (nur übergebene Felder; Verknüpfungen bleiben) — `file_id` numerisch; `strapi_update_entry` auf `upload/files` geht dafür nicht (405) | strapi | W |
+| `strapi_replace_text` | Wörtlichen Text in einem Eintrag gezielt ersetzen (`replacements: [{search, replace, field?, all?}]`, kein Regex) — schreibt NUR den Draft (live erst via `strapi_publish_entry`); ohne `all` muss `search` genau einmal vorkommen, sonst bricht der ganze Aufruf ohne Schreiben ab; `error=concurrent_modification` bei paralleler Admin-Änderung; nur Strapi 5, Single Types über Singular-API-ID | strapi | W |
 
 ---
 
@@ -387,7 +536,7 @@ Alle LinkedIn-Schreib-Tools akzeptieren `validate_only=true` (Vorschau ohne API-
 | `wp_list_media` | Dateien aus der Medienbibliothek auflisten (paginiert) | wordpress | R |
 | `wp_list_terms` | Kategorien oder Tags auflisten (id, name, slug, count) — IDs für `wp_create_post` | wordpress | R |
 | `wp_create_post` | Beitrag/Seite anlegen — status default `draft`; `publish` = sofort live; `future` (terminiert) braucht `date` (ISO 8601 ohne Zeitzonen-Suffix in der Site-Zeitzone, z.B. `2026-10-01T09:00:00`) — ohne `date` kommt `{error: date_required}` zurück, bevor etwas angelegt wird | wordpress | W |
-| `wp_update_post` | Beitrag/Seite/Vorlage aktualisieren (nur gesetzte Felder); `status=publish` = live | wordpress | W |
+| `wp_update_post` | Beitrag/Seite/Vorlage aktualisieren (nur gesetzte Felder); `status=publish` = live — **kein `date`-Parameter** (Terminieren mit `date` nur über `wp_create_post`) | wordpress | W |
 | `wp_delete_post` | Beitrag/Seite löschen — `force=False` → Papierkorb, `force=True` → endgültig | wordpress | W |
 | `wp_upload_media` | Datei in die Medienbibliothek hochladen (`source_url` ODER `file_base64`) | wordpress | W |
 | `wp_delete_media` | Datei aus der Medienbibliothek löschen (`force=True` Default → endgültig) | wordpress | W |
@@ -402,3 +551,6 @@ Alle LinkedIn-Schreib-Tools akzeptieren `validate_only=true` (Vorschau ohne API-
 | `wp_builder_replace_text` | Texte in Builder-Elementen gezielt ändern (Feld setzen oder Teilstring) — Layout bleibt unangetastet, Bricks-Code-Elemente tabu | wordpress | W |
 | `wp_seo_get_meta` | SEO-Metadaten (Yoast/Rank Math) lesen: Title, Description, Canonical, noindex | wordpress | R |
 | `wp_seo_update_meta` | SEO-Metadaten schreiben (nur übergebene Felder) | wordpress | W |
+| `wp_site_health` | Technischer Vorab-Check der WordPress-Seite: WP-/PHP-Version, HTTPS, Permalinks, Suchmaschinen-Sichtbarkeit, Plugin-Kategorien, gefundene Tracking-IDs und `warnings` (ausgesperrte Suchmaschinen, doppeltes Tracking, UA-Reste, Pixel ohne Consent-Plugin) + `auth`-Diagnose des App-Passworts — Tracking-Scan ohne Browser/Einwilligung: fehlende IDs nie als „nicht eingebunden” berichten, solange GA4 Sitzungen zählt. Braucht Connector ab 1.2.0 | wordpress | R |
+| `wp_tracking_status` | Welchen GTM-Container bindet der Connector ein, und was steht im Quelltext der Startseite? `config`, `output_active`, `consent_ack`, `scan` (gtm/ga4/meta_pixel/legacy_ua → Anzahl), `duplicates` (doppelt gezählte Conversions) — leerer Scan beweist NICHT, dass GTM fehlt (Cookie-Banner lädt nach Zustimmung, `scan_hinweis`) | wordpress | R |
+| `wp_tracking_configure` | GTM-Container (`GTM-XXXXXXX`, `''` entfernt) ohne Theme-Eingriff einbinden — **wirkt sofort live**; nie setzen, solange `wp_tracking_status` einen `scan_hinweis` zeigt (sonst doppelte Ladung); nur GTM, kein direktes GA4/Meta-Pixel; ohne Consent-Werkzeug `hf_consent_required` (nur der Betreiber kann freigeben). Bei `wp_timeout`/`wp_unreachable` erst prüfen, nicht wiederholen | wordpress | W |

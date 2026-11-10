@@ -12,15 +12,17 @@ KMU finanzieren Marketing aus dem laufenden Cashflow — kein externes Kapital u
 
 **Richtung:** Budget → Umsatzziel. Start bei dem, was der Betrieb verkraftbar ausgeben kann; daraus ableiten, welcher Umsatz plausibel wird.
 
-**Bänder als Anteil vom Jahresumsatz:** 5–40 %, **KMU-typisch eher 5–15 %.** Die 40 % sind die Obergrenze für margenstarke, gut skalierbare Modelle — nicht der Normalfall.
+**Belegter Ist-Anker:** Bitkom 2026 — Marketingbudget im Schnitt **4,1 % vom Umsatz**, die größte Gruppe investiert **1–3 %**. Geltungsbereich: Online-Befragung von 180 Unternehmen der Digitalbranche in Deutschland (Feldzeit KW 44–50/2025), laut Bitkom „nicht repräsentativ”; nicht DACH, nicht KMU-spezifisch. Quelle: https://www.bitkom.org/sites/main/files/2026-02/bitkom-studie-marketing-im-digitalen-wandel-zwischen-effizienz-automatisierung-und-wettbewerb-2026.pdf
 
-| Branche/Typ | Anteil vom Jahresumsatz | Logik |
+**Bänder als Anteil vom Jahresumsatz = Zielkorridor (Heuristik), kein Ist-Benchmark:** 5–40 % für wachstumsorientierte Betriebe. Der Bitkom-Durchschnitt liegt **unter** dem Band — wer 5–15 % plant, plant bewusst Wachstum über dem Ist-Niveau. Im Plan beides nennen: den Ist-Anker mit Geltungsbereich und den Zielkorridor als Wachstumsannahme (beratend). Die 40 % sind die Obergrenze für margenstarke, gut skalierbare Modelle — nicht der Normalfall.
+
+| Branche/Typ | Zielkorridor vom Jahresumsatz (beratend) | Logik |
 |---|---|---|
 | Lokale Dienstleistung / Handwerk / Praxis | 5–10 % | Hebel ist lokale Sichtbarkeit (GBP, Local SEO, wenig Paid). Auftragsmargen hoch, aber lokales Nachfragevolumen begrenzt — mehr Budget bringt nicht linear mehr Aufträge. |
 | B2B-Service / Mittelstand | 8–15 % | Lange Sales-Cycles, Content/SEO/LinkedIn, Lead-Gen. Budget baut Pipeline auf und wirkt verzögert. |
 | E-Commerce / Online-Handel | 15–25 % (Wachstum bis ~40 %) | ROAS direkt messbar, Paid skaliert linearer, dünnere Margen zwingen zu Volumen. |
 
-**Durchgerechnet (DACH-KMU):** Betrieb mit 800.000 € Jahresumsatz, 10 % Allokation → Jahresbudget **80.000 €** (grob **6.700 €/Monat**). Das ist der **Ausgabenrahmen**. Welcher Neu-Umsatz daraus plausibel wird, über die Unit Economics von Methode 2 gegenrechnen — **nicht** mit konstantem CAC hochskalieren: der CAC steigt mit dem Volumen (besonders in lokalen Märkten mit begrenztem Nachfragepool), ein linear hochgerechneter Umsatz überzeichnet daher.
+**Durchgerechnet (DACH-KMU):** Betrieb mit 800.000 € Jahresumsatz, 10 % Allokation (Zielkorridor, über dem Bitkom-Ist von 4,1 %) → Jahresbudget **80.000 €** (grob **6.700 €/Monat**). Das ist der **Ausgabenrahmen**. Welcher Neu-Umsatz daraus plausibel wird, über die Unit Economics von Methode 2 gegenrechnen — **nicht** mit konstantem CAC hochskalieren: der CAC steigt mit dem Volumen (besonders in lokalen Märkten mit begrenztem Nachfragepool), ein linear hochgerechneter Umsatz überzeichnet daher.
 
 ---
 
@@ -79,6 +81,18 @@ Beispiel (aus Methode 2): 25.000 € + 10–20 % = **27.500–30.000 €** Jahre
 
 ---
 
+## Marke vs. Abverkauf — keine KMU-Quote
+
+Die Methoden oben rechnen über CAC, also Abverkauf. Ein Teil des Budgets kann Marke aufbauen (Bekanntheit, künftige Nachfrage). Für die Aufteilung **gibt es keine belegte KMU-Quote.** Keine Quote erfinden, keine Quote aus Modellwissen als Norm ausgeben.
+
+- **60:40 (Marke:Abverkauf)** — Binet & Field (IPA), Durchschnitt aus Effektivitäts-Cases großer Marken (B2C). Die IPA-Folgepublikation *Effectiveness in Context* passt die Balance an Kategorie, Geschäftsmodell, Lebensphase und Größe der Marke an — ohne Werte für kleine Marken (https://ipa.co.uk/knowledge/publications-reports/effectiveness-in-context).
+- **B2B ~50:50** — Binet & Field für das LinkedIn B2B Institute: Headline „50/50 split”, Datenbefund ~46:54; der Report nennt es selbst „rough estimate” (https://news.linkedin.com/content/dam/me/news/en-us/linkedin-pressroom-page/LIN_B2B-Marketing-Report-Digital.pdf).
+- **95:5** — Dawes (Ehrenberg-Bass/LinkedIn B2B Institute): Nur ein kleiner Teil der B2B-Käufer (~5 %) ist gerade im Markt. Ein Argument für Marken-Anteil, keine Budgetquote, nicht wörtlich gemeint (https://marketingscience.info/the-955-rule-is-the-new-6040-rule).
+
+Im Plan eine Aufteilung höchstens als **beratend** nennen und am Kunden begründen (Lebensphase, Nachfrage schon vorhanden?, Sales-Cycle-Länge). Nie als Norm, nie als gemessen.
+
+---
+
 ## Modus B — Kampagnen-Budget rückrechnen
 
 Für ein einzelnes Kampagnen-Konzept (ein Ziel, 1–2 Kanäle, ein Zeitfenster) nicht das Jahresbudget, sondern direkt aus dem Kampagnenziel rechnen:
@@ -87,12 +101,12 @@ Für ein einzelnes Kampagnen-Konzept (ein Ziel, 1–2 Kanäle, ein Zeitfenster) 
 Kampagnen-Budget = Ziel-Conversions × Ziel-CPA
 ```
 
-Beispiel: 20 Leads (Ziel) × 60 € Ziel-CPA = **1.200 €** Kampagnen-Budget fürs Zeitfenster. Ziel-CPA = was ein Lead/Abschluss wert sein **darf** (aus Ø-Kundenwert und Abschlussquote), nicht was man „hofft”.
+Beispiel: 20 Leads (Ziel) × 60 € Ziel-CPA = **1.200 €** Kampagnen-Budget fürs Zeitfenster (20 < 30 — unter Googles tCPA-Bewertungsschwelle, siehe Flighting-Grundregel). Ziel-CPA = was ein Lead/Abschluss wert sein **darf** (aus Ø-Kundenwert und Abschlussquote), nicht was man „hofft”.
 
 **Flighting-Grundregel:**
-- Budget **nicht unter ~30 €/Tag/Kanal** zerstückeln. Darunter sammeln die Plattform-Algorithmen zu langsam Daten, die Lernphase endet nie, jeder Kanal verhungert.
+- Budget **nicht unter ~30 €/Tag/Kanal** zerstückeln. Darunter sammeln die Plattform-Algorithmen zu langsam Daten, jeder Kanal verhungert. **Google:** Der Status „Learning” dauert höchstens 7 Tage (https://support.google.com/google-ads/answer/13020501); das echte Problem bei kleinem Budget ist die Datenschwelle (30 Conversions tCPA / 50 tROAS, siehe unten). **Meta:** Ein Ad Set mit zu wenig Conversions bleibt in „Learning Limited”.
 - Lieber **wenige Kanäle nacheinander (Flighting) voll finanzieren** als viele gleichzeitig unterfinanziert.
-- **Lernphasen respektieren:** Meta-Ad-Sets brauchen grob ~50 Conversions/Woche zum Verlassen der Lernphase; Google Smart Bidding grob ~15–30 Conversions/Monat für stabile Gebote. Budget/Struktur so wählen, dass diese Schwellen realistisch erreichbar sind — sonst Ziel-Conversion gröber fassen (Micro-Conversions) oder Kanäle bündeln.
+- **Datenschwellen respektieren:** Meta-Ad-Sets brauchen grob ~50 Conversions/Woche zum Verlassen der Lernphase. Google Smart Bidding: Performance nur in Zeiträumen mit mind. **30 Conversions** (tCPA) bzw. **50** (tROAS) bewerten; vor Value-Based Bidding Conversion-Werte „4 Wochen oder 3 Conversion-Zyklen (der längere Zeitraum)” erfassen (Google: https://support.google.com/google-ads/answer/7065882 , https://support.google.com/google-ads/answer/6268633). Die Rückrechnung oben gegen diese Schwelle prüfen: Liefert das Kampagnen-Budget im Fenster weniger Ziel-Conversions, ist die Smart-Bidding-Bewertung nicht belastbar — Budget/Struktur so wählen, dass die Schwellen realistisch erreichbar sind, sonst Ziel-Conversion gröber fassen (Micro-Conversions) oder Kanäle bündeln.
 
 ---
 
@@ -121,4 +135,5 @@ Das Framework liefert ein **Budget** und ein **Jahresziel** — keine monatsgena
 
 - Die Budgetzahl ist ehrlich. Das Jahresziel ist ehrlich. Die Monat-für-Monat-Projektion ist **illustrativ**.
 - Kein KMU trifft Monatsprognosen zuverlässig. **Quartalsweise gegen echte Daten nachsteuern**, nicht Varianz wegdiskutieren.
+- **Kein MMM als Ersatz.** Ein Marketing-Mix-Modell wie Google Meridian empfiehlt mind. **2 Jahre Wochendaten** (Geo-Modell) bzw. **3 Jahre** (nationales Modell) (https://developers.google.com/meridian/docs/user-guide/collect-data). Das haben die meisten KMU nicht — dann den Quartals-Review gegen echte Daten nutzen.
 - Aktionabel ist: **wie** das Budget eingesetzt wird und was in den nächsten 90 Tagen konkret passiert (Roadmap). Nicht aktionabel: Traffic, Pipeline, Conversion-Raten und Kanal-Mix auf die Kommastelle vorherzusagen.

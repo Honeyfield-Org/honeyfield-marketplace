@@ -2,7 +2,7 @@
 name: honeyfield-marketing-wizzard
 description: "Interaktiver Einstiegspunkt (Launcher/Hub) für den Honeyfield Marketing MCP. Immer verwenden, wenn der Nutzer den Skill mit einem Workspace-Namen aufruft (z.B. '/honeyfield-marketing-wizzard honeyfield', 'marketing hub rent2b') oder fragt 'was kann ich mit dem Marketing MCP machen', 'zeig mir das Marketing-Menü', 'Marketing-Aktionen für Kunde X'. Auch bei kleinen konkreten Marketing-Anliegen zu einem Kunden triggern: 'beantworte die neue Google-Bewertung', 'ändere den Text auf der Website von X', 'pass den SEO-Titel an', 'pausiere die Kampagne', 'wie läuft der Monat'. Fragt interaktiv per Auswahlmenü (Report, Audit, Anzeigen & Content, Website, Quick-Check, Quick-Aktion), leitet an den passenden Spezial-Skill weiter (wochenreport, google-ads-audit, social-ads-audit, seo-audit, geo-audit, tracking-check, ad-creative, content-strategie, marketing-plan, projekt-kontext) oder führt kleine Aktionen direkt über MCP-Tools aus. Auch triggern, wenn der Nutzer nur einen Workspace-Namen im Marketing-Kontext nennt."
 metadata:
-  version: 0.4.1
+  version: 0.5.0
 ---
 
 # Honeyfield Marketing MCP — Launcher
@@ -16,7 +16,9 @@ Du bist der **interaktive Einstiegspunkt** für den Honeyfield Marketing MCP (mc
 - **Schreib-Aktionen nie ohne Bestätigung** (siehe unten).
 - **„Nicht verfügbar" gibt es fast nie.** Der MCP hat über 250 Tools; die Liste in deinem Client kann unvollständig geladen sein. Bevor du eine Funktion für nicht vorhanden erklärst, such gezielt nach dem Tool-Namen (Präfixe: `ads_`, `ga4_`, `gtm_`, `sc_`, `gbp_`, `wp_`, `strapi_`, `meta_`, `linkedin_`, `dfs_`) — und wenn es wirklich fehlt, sag dem Nutzer, dass ein neuer Chat die Liste frisch lädt.
 
-## Schritt 1 — Workspace setzen + kurz bestätigen
+## Schritt 1 — Vorbereitung: Projekt-Kontext, Workspace setzen + kurz bestätigen
+
+**Projekt-Kontext zuerst.** Liegt für dieses Projekt ein Projekt-Kontext vor — als **Projektwissen** in diesem Claude-Projekt oder als `projekt-kontext.md` im Arbeitsverzeichnis —, nutze ihn, bevor du fragst (vor allem Marke/Tonalität für Bewertungsantworten und Website-Texte), und frage nur nach, was dort fehlt oder für diese Aufgabe spezifisch ist. Beachte gesetzte `compliance`-Flags als harte Leitplanke. Fehlt der Kontext, biete an, ihn per `projekt-kontext` anzulegen — blockiere die gewählte Aktion aber nicht.
 
 Das Argument ist der Workspace-Slug (z.B. `honeyfield`, `rent2b`, `haus-hana`, `marketing-mcp`).
 
@@ -62,7 +64,7 @@ Folgefrage: **Was genau?**
 
 ### 4. Website (WordPress/Strapi — Schreiben nur mit Bestätigung)
 Folgefrage: **Was soll auf der Website passieren?**
-- **Artikel/Beitrag anlegen oder aktualisieren** → `wp_create_post`/`wp_update_post` (WordPress) bzw. `strapi_create_entry`/`strapi_update_entry` — immer als **Entwurf** anlegen; veröffentlichen erst nach Freigabe.
+- **Artikel/Beitrag anlegen oder aktualisieren** → `wp_create_post`/`wp_update_post` (WordPress) bzw. `strapi_create_entry`/`strapi_update_entry` — immer als **Entwurf** anlegen; veröffentlichen erst nach Freigabe. Veröffentlichungs- oder „Aktualisiert am”-Datum (Datumsfeld in Strapi, Datumstext im Inhalt) nur bei substanzieller inhaltlicher Änderung neu setzen — Datum hochsetzen ohne Änderung ist laut Google kein Qualitätssignal und kann schaden.
 - **Text auf einer bestehenden Seite ändern** → erst `wp_get_post`; ist der Inhalt leer/gekürzt, steckt er im Page-Builder: `wp_builder_get_content` liefert die Texte je Element, `wp_builder_replace_text` ändert gezielt einzelne Felder (Layout bleibt unangetastet).
 - **SEO-Titel/-Beschreibung/noindex** (Yoast, Rank Math) → `wp_seo_get_meta` lesen, Vorschlag zeigen, `wp_seo_update_meta` erst nach Bestätigung.
 - **Medien hochladen** → `wp_upload_media` (URL oder Datei) / `strapi_upload_media`.
@@ -82,9 +84,12 @@ Folgefrage: **Was willst du sehen?** — dann die Zahl(en) direkt über MCP-Tool
 
 Fällt beim Quick-Check etwas Größeres auf, biete den passenden Audit als Folgeaktion an — diagnostiziere nicht selbst tief.
 
+**7-Tage-Zahlen mit wenigen Conversions tragen keine Pause und keine Budget-Kürzung.** Google bewertet Smart-Bidding-Performance erst über Zeiträume mit mind. 30 Conversions (50 bei tROAS; https://support.google.com/google-ads/answer/7065882). Liegt das Fenster darunter, kennzeichne die Zahl als Rauschen und verweise für eine Entscheidung auf `google-ads-audit`.
+
 ### 6. Quick-Aktion (Schreiben — nur mit Bestätigung)
 Folgefrage: **Welche Aktion?**
-- Kampagne pausieren/aktivieren → `ads_update_campaign_status` (bzw. `meta_update_campaign`, `linkedin_update_campaign_status`)
+- Kampagne pausieren/aktivieren → `ads_update_campaign_status` (bzw. `meta_update_campaign`; LinkedIn siehe nächster Punkt)
+- **LinkedIn: erst die Ebene klären.** Seit 10/2025 heißt im Campaign Manager die alte „Campaign Group” jetzt „Campaign” und die alte „Campaign” jetzt „Ad set”; API und Tools nutzen die alten Namen. UI-„Campaign” → `linkedin_list_campaign_groups`, dann `linkedin_update_campaign_group` (`status`); UI-„Ad set” → `linkedin_list_campaigns`, dann `linkedin_update_campaign_status`. In der Rückfrage beide Namen nennen, z. B. „Kampagne (UI: Ad set)”.
 - Tagesbudget ändern → `ads_update_campaign_budget`
 - Negative Keywords setzen → `ads_add_negative_keyword` / `ads_bulk_add_negative_keywords`
 - Keyword/Anzeige pausieren → `ads_update_keyword_status` / `ads_update_ad_status`; mehrere Keywords einer Ad Group auf einmal → `ads_bulk_update_keyword_status`
@@ -92,7 +97,7 @@ Folgefrage: **Welche Aktion?**
 
 **Ablauf, immer:**
 1. Ziel-Objekt per Auswahlfrage bestimmen (Kampagnen/Keywords/Bewertungen erst listen, z.B. `ads_list_campaigns` — nie IDs raten).
-2. **Vorher/Nachher-Zusammenfassung zeigen**: „Kampagne X: Budget 50 € → 80 €/Tag. Ausführen?"
+2. **Vorher/Nachher-Zusammenfassung zeigen**: „Kampagne X: Budget 50 € → 80 €/Tag. Ausführen?” Bei Google-Ads-Kampagnen mit Smart Bidding die Lernphase korrekt nennen: Keywords hinzufügen oder entfernen (Änderung der Zusammensetzung) und eine reaktivierte Gebotsstrategie können den Status „Learning” auslösen (höchstens 7 Tage); Budget-, Zielwert- und Targeting-Änderungen laut Google nie (https://support.google.com/google-ads/answer/13020501). Große Budget-Sprünge können trotzdem kurz Volatilität bringen — das ist kein „Learning”.
 3. **Nur nach explizitem Ja ausführen.** Kein Ja = nichts schreiben.
 4. Ergebnis bestätigen und die Änderung doppelt protokollieren: ein Satz im Chat (was, wann, alter Wert) **und** per `journal_add_note` ins Änderungsjournal des Workspace (Vorher→Nachher + Warum, `source` setzen). Das Journal ersetzt die Google-Ads-Notizen (gibt es nicht per API) und überdauert Googles 30-Tage-Änderungsverlauf; `journal_list` zeigt alle Änderungen samt automatischer Protokolle.
 

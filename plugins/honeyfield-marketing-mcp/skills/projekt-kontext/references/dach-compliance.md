@@ -15,8 +15,8 @@ Zweck: Aus der Branche die richtigen `compliance:`-Flags ableiten und im Projekt
 ## Gilt (fast) immer
 | Flag | Was | Worauf achten |
 |---|---|---|
-| `DSGVO` | EU-Datenschutz (CH: revDSG) | Tracking-/Conversion-Pixel nur mit gültigem Consent; Auftragsverarbeitung sauber |
-| `TTDSG` | Cookie-/Endgeräte-Zugriff — DE: TDDDG (früher TTDSG) · AT: TKG §165 · CH: revDSG | Consent vor nicht-essentiellen Cookies; **Conversion-Tracking ohne Consent ist unvollständig** — erklärt oft „fehlende” Conversions; relevant für `tracking-check` + Ads-Conversion-Bewertung |
+| `DSGVO` | EU-Datenschutz (CH: revDSG) | Tracking-/Conversion-Pixel nur mit gültigem Consent. **Rolle je Dienst klären:** Für Google-Ads-/GA4-Messung gelten grundsätzlich die Controller-Controller-Bedingungen; Google ist Auftragsverarbeiter (AVV/Data Processing Terms) nur bei Customer Match, Enhanced Conversions (inkl. für Leads) und Store-Sales-Uploads ([Google-Liste](https://business.safety.google/adsservices/)). Die Google EU User Consent Policy ist Vertragspflicht — auch für Kunden-Properties, die eine Agentur betreut ([Policy](https://www.google.com/about/company/user-consent-policy/)). Im Zweifel Fachanwalt |
+| `TTDSG` | Cookie-/Endgeräte-Zugriff — DE: § 25 Abs. 1 TDDDG (früher TTDSG; der Flag-Name `TTDSG` bleibt, Konsumenten matchen ihn wörtlich) · AT: TKG §165 · CH: revDSG | Consent vor nicht-essentiellen Cookies — Einwilligung ist Gesetz, nicht nur Google-Vorgabe; **Conversion-Tracking ohne Consent ist unvollständig** — erklärt oft „fehlende” Conversions; relevant für die Ads-Conversion-Bewertung, den Consent-Check macht `tracking-check` |
 | `Impressum` | Anbieterkennzeichnung — DE: DDG (früher TMG) · AT: §5 ECG / §25 MedienG · CH: Art. 3 UWG (Fernabsatz) | Impressum vorhanden + ≤1 Klick erreichbar; auf beworbenen Landingpages Pflicht |
 | `PAngV` | Preisangaben | Endpreise inkl. USt., ggf. Grundpreis je Einheit; relevant für E-Commerce-Ads + LP |
 

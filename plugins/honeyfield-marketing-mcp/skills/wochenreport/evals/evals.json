@@ -157,5 +157,86 @@
       "Ersetzt die Diagnose nicht durch die GA4-AI-Referrer-Näherung aus dem Report"
     ],
     "files": ["SKILL.md"]
+  },
+  {
+    "id": "wow-unter-30-conversions-fenster-verlaengern",
+    "prompt": "Wochenreport für Kunde X — die Google-Ads-Conversions sind von 24 auf 17 gefallen, CPA um 35 % hoch. Müssen wir reagieren?",
+    "expected_output": "Ordnet das WoW-Delta bei unter 30 Conversions pro Woche als nicht belastbar ein und nennt Googles eigene Schwelle (mind. 30 Conversions je Bewertungszeitraum, 50 bei tROAS). Verlängert das Fenster (MoM oder 4 Wochen rollierend), statt das WoW-Δ als Trend zu bewerten. Löst keinen Alarm allein aufgrund der Wochenzahl aus.",
+    "assertions": [
+      "Nennt Googles Schwelle von mind. 30 Conversions je Bewertungszeitraum (50 bei tROAS) als Anker",
+      "Kennzeichnet das WoW-Delta bei < 30 Conversions als zu wenig Daten für einen belastbaren Trend",
+      "Verlängert das Bewertungsfenster (MoM oder 4 Wochen rollierend) statt das WoW-Δ zu bewerten",
+      "Löst keinen Problem-Alarm allein aufgrund des Wochen-Deltas aus"
+    ],
+    "files": ["SKILL.md", "references/report-kpis.md"]
+  },
+  {
+    "id": "consent-vorbehalt-kleines-dach-konto",
+    "prompt": "Wochenreport für einen kleinen Wiener Shop — GA4 zeigt 9 Käufe, Google Ads meldet 21. Ist unser Tracking kaputt?",
+    "expected_output": "Markiert die Ads-vs-GA4-Klaffung im Tracking-Gate und verweist auf tracking-check. Nennt dabei den DACH-Consent-Vorbehalt: fehlende Einwilligung drückt GA4- und Ads-Zahlen unterschiedlich; Basic modelliert nur generisch, Advanced braucht eine Mindest-Datenmenge, die kleine Konten oft nicht erreichen. Ein Teil der Klaffung kann Consent sein, kein Defekt. Diagnostiziert nicht selbst tief.",
+    "assertions": [
+      "Markiert die Ads-vs-GA4-Klaffung im Tracking-Gate und verweist auf tracking-check",
+      "Nennt, dass ein Teil der Klaffung durch fehlende Einwilligung (Consent) entstehen kann, nicht nur durch einen Defekt",
+      "Erwähnt, dass kleine Konten die Modellierungs-Schwelle von Consent Mode Advanced oft nicht erreichen",
+      "Erklärt die Klaffung nicht pauschal als kaputtes Tracking und diagnostiziert nicht selbst tief"
+    ],
+    "files": ["SKILL.md", "references/report-kpis.md"]
+  },
+  {
+    "id": "marke-nicht-marke-split-kein-auto-seo-audit",
+    "prompt": "Monatsreport bitte, und trenn bei SEO Marke und Nicht-Marke — ich habe das Gefühl, nur unsere Markensuchen sind gefallen.",
+    "expected_output": "Trennt Marke und Nicht-Marke über sc_performance mit dimension_filter auf query (includingRegex/excludingRegex) und Markenbegriffen aus dem Projekt-Kontext, weil der native GSC-Markenfilter im MCP fehlt. Weist darauf hin, dass anonymisierte Suchanfragen in beiden Teilen fehlen. Fallen nur die Marken-Klicks bei stabiler Nicht-Marke, ordnet es das als Marken-Nachfrage ein und verweist nicht automatisch auf seo-audit.",
+    "assertions": [
+      "Nutzt sc_performance mit dimension_filter auf query und includingRegex/excludingRegex",
+      "Nimmt die Markenbegriffe aus dem Projekt-Kontext (oder fragt danach)",
+      "Weist darauf hin, dass anonymisierte Suchanfragen in Marke und Nicht-Marke fehlen und die Summe kleiner als der Gesamtwert ist",
+      "Leitet einen reinen Marken-Rückgang bei stabiler Nicht-Marke nicht automatisch an seo-audit weiter"
+    ],
+    "files": ["SKILL.md", "references/report-kpis.md"]
+  },
+  {
+    "id": "seo-totals-nicht-aus-query-zeilen",
+    "prompt": "Für den Wochenreport: summier einfach die Klicks der Top-Suchanfragen, dann haben wir die organischen Klicks der Woche.",
+    "expected_output": "Lehnt die Summe über Query-Zeilen als Gesamtwert ab, weil GSC anonymisierte Suchanfragen auf Query-Ebene weglässt. Holt die Gesamtklicks je Periode über sc_performance mit start_date/end_date und dimensions=[] (oder dimensions=['date'] über beide Perioden) und bildet daraus das WoW-Δ.",
+    "assertions": [
+      "Bildet die Gesamtklicks nicht aus der Summe von sc_top_queries- oder query-Zeilen",
+      "Begründet das mit den weggelassenen anonymisierten Suchanfragen",
+      "Holt die Totals über sc_performance mit dimensions=[] oder ['date']",
+      "Trennt die Perioden über start_date/end_date oder Tageszeilen, nicht über überlappende days-Fenster"
+    ],
+    "files": ["references/report-kpis.md"]
+  },
+  {
+    "id": "linkedin-ebenen-ui-namen",
+    "prompt": "Wochenreport mit LinkedIn Ads — der Kunde kennt nur die Begriffe aus dem Campaign Manager.",
+    "expected_output": "Berichtet die LinkedIn-Zahlen aus linkedin_campaign_performance und benennt die Ebene mit UI- und API-Namen: Die API-„Campaign” heißt im Campaign Manager seit 10/2025 „Ad set”, die API-„Campaign Group” heißt „Campaign”. Nennt beide Namen, z. B. „Kampagne (UI: Ad set)”. Nutzt keine LinkedIn-Schreib-Tools.",
+    "assertions": [
+      "Erklärt, dass die API-Campaign im Campaign Manager seit 10/2025 „Ad set” heißt und die Campaign Group „Campaign”",
+      "Nennt im Report beide Namen für die Ebene",
+      "Nutzt keine LinkedIn-Schreib-Tools (read-only)"
+    ],
+    "files": ["references/report-kpis.md"]
+  },
+  {
+    "id": "ziel-plan-spalte-bei-ziel-kpis",
+    "prompt": "Monatsreport für Kunde Y. Im Projekt-Kontext steht ein CPA-Ziel von 45 € und ein Monatsbudget von 3.000 €.",
+    "expected_output": "Ergänzt in der KPI-Tabelle die Spalte „Ziel / Plan” und stellt Ist vs. Ziel dar: CPA gegen 45 €, Monats-Spend gegen 3.000 € über budget_pacing. Ohne Ziel-KPIs würde die Spalte entfallen.",
+    "assertions": [
+      "Liest die Ziel-KPIs aus dem Projekt-Kontext",
+      "Ergänzt die KPI-Tabelle um die Spalte „Ziel / Plan” mit Ist vs. Ziel",
+      "Nutzt budget_pacing für den Abgleich mit dem Monatsbudget"
+    ],
+    "files": ["SKILL.md"]
+  },
+  {
+    "id": "ai-referrer-key-events-beratend",
+    "prompt": "Wochenreport ohne DataForSEO-Zugang — zeig mir trotzdem, ob ChatGPT und Perplexity uns Kunden bringen.",
+    "expected_output": "Fällt auf die GA4-Referrer-Näherung zurück und weist neben den Sessions auch die Key Events der AI-Referrer aus, über ga4_report mit dimensions=['sessionSource'] und metrics=['sessions','keyEvents'], je Periode mit start_date/end_date. Kennzeichnet das Ergebnis als beratend/Näherung.",
+    "assertions": [
+      "Nutzt ga4_report mit sessionSource und keyEvents für die AI-Referrer-Key-Events",
+      "Weist Sessions und Key Events der AI-Referrer getrennt aus",
+      "Kennzeichnet das Ergebnis als beratend/Näherung, nicht als gemessene AI-Sichtbarkeit"
+    ],
+    "files": ["SKILL.md", "references/report-kpis.md"]
   }
 ]
