@@ -2,7 +2,7 @@
 name: seo-audit
 description: "Datengetriebener SEO-Audit für eine Kunden-Website, kalibriert auf den DACH-Markt (DE/AT/CH). Nutze diesen Skill, wenn der Nutzer einen „SEO-Audit”, eine „SEO-Analyse”, einen „SEO-Check” oder eine Diagnose von Ranking- bzw. Sichtbarkeitsproblemen will. Auch bei: „warum ranke ich nicht”, „warum werden wir nicht gefunden”, „Traffic ist eingebrochen”, „Sichtbarkeit gesunken”, „seit dem Relaunch weg”, „nach dem Google-Update abgestürzt”, „technisches SEO prüfen”, „Core Web Vitals / Ladezeit”, „Indexierungsprobleme”, „wo rankt die Konkurrenz, wir nicht”, „stimmt was mit der Seite nicht”, oder vage „unser SEO ist schlecht”. Zieht echte Daten aus Search Console, DataForSEO, GA4 und Microsoft Clarity über den Marketing-Ops-MCP und kann gefundene Probleme auf Wunsch direkt beheben. Fürs wöchentliche Reporting nutze `wochenreport`; für bezahlte Suche (Wasted Spend, Konto-Audit) `google-ads-audit`; für KI-Sichtbarkeit (ChatGPT/Perplexity/AI Overviews) `geo-audit`."
 metadata:
-  version: 0.5.3
+  version: 0.6.0
 ---
 
 # SEO-Audit
@@ -55,6 +55,13 @@ Achten auf: nicht indexierte Schlüsselseiten, falsche/fehlende Canonicals, Mobi
 - **Interne Verlinkung** (Hub-and-Spoke, verwaiste Seiten): standardmäßig nur **beratend** — prüfe die Schlüsselseiten auf ein-/ausgehende interne Links und empfiehl die Hub-Struktur; mit `dfs_onpage_crawl_results(task_id, section="links")` wird die Orphan-/Hub-Analyse site-weit **gemessen**.
 > Standard bleibt URL-für-URL für die wichtigsten Seiten (schnell, günstig). Für einen echten Site-Scan `dfs_onpage_crawl` einsetzen — gezielt bei Verdacht auf site-weite Probleme, nicht als Default (Kosten/Dauer beachten).
 
+**Gecrawlt, aber nicht indexiert** (`coverage_state` „Crawled - currently not indexed” auf mehreren Schlüsselseiten). In dieser Reihenfolge prüfen:
+1. **Technik ausschließen (pro Seite geprüft):** `page_fetch_state` erfolgreich, kein `noindex`, `google_canonical` gleich `user_canonical`, Status 200 (`dfs_onpage_instant`). Erst wenn das sauber ist, weiter mit Schritt 2.
+2. **Startseite betroffen?** Bleibt die Startseite draußen, ist das ein deutlich stärkeres Signal als einzelne fehlende Unterseiten. Dann als Befund für die ganze Site führen, Wirkung Hoch.
+3. **Qualität der ganzen Site bewerten (beratend):** „Gecrawlt, nicht indexiert” ist nur manchmal ein Qualitätssignal. Bei echten Qualitätszweifeln crawlt und indexiert Google site-weit deutlich weniger. Inhalt und Seitenerlebnis zählen für die ganze Site. Prüfe vor allem Seiten, die nur lose zum Geschäft des Kunden passen: zuerst verbessern; erst wenn das nicht geht, `noindex` setzen oder entfernen. Wenig Traffic allein ist kein Grund zum Entfernen. Umsetzung über den `content`-Skill (Modus D), falls installiert.
+4. **Crawl-Nachfrage (beratend, Daten vom User):** Die Crawling-Statistik liefert weder die Search-Console-API noch dieser MCP. Bitte den User um einen Screenshot aus der GSC-Oberfläche (Einstellungen → Crawling-Statistik, auch in einer URL-Präfix-Property vorhanden; Aufschlüsselung nach Zweck: „Discovery” und „Refresh”). Eine fallende Crawl-Nachfrage passt zu einem Qualitätssignal, kann aber auch andere Ursachen haben. Eine Domain-Property zeigt im Bericht nur die 20 häufigsten Subdomains.
+5. **Links für neue oder kaum indexierte Sites** → Phase 6.
+
 ### 2 — Technik & Performance
 - `dfs_lighthouse_live` mit `strategy="mobile"` UND `strategy="desktop"` für Startseite + 1-2 Templates (z.B. eine Leistungs-/Produktseite).
 - Scores: Performance, SEO. Core Web Vitals: **LCP < 2,5 s · INP < 200 ms · CLS < 0,1**.
@@ -80,6 +87,8 @@ Achten auf: schlechtes Mobil-LCP (häufigster Killer), CLS durch Cookie-Banner (
 
 **Traffic-Einbruch?** `sc_performance` mit `dimensions=["date"]` (+ query/page) über einen längeren `days`-Zeitraum → den Einbruch zeitlich exakt verorten und gegen bekannte Google-Update-Termine legen. **Zusätzlich gegen bekannte Ereignisse außerhalb von Google-Updates prüfen** (`references/bekannte-ereignisse.md` im Plugin), z. B. den Wegfall der kostenlosen Produkt-Listings in der EEA am 17.–18.09.2026: Shop-Einbrüche ab diesem Datum nicht als Ranking-, Qualitäts- oder Technikproblem deuten. Datenbasierte Diagnose statt Hypothesenliste. „Helpful Content” ist seit dem März-2024-Core-Update Teil des Core-Algorithmus (kein separates System, kein Recovery-Knopf) — qualitätsbedingte Einbrüche wirken site-weit und erholen sich nur langsam über spätere Core-Updates. Termine: Google Search Status Dashboard.
 
+**Kein Update und kein bekanntes Ereignis am Datum?** Dann eigene Änderungen am Datum prüfen: Relaunch, Migration, URL- oder Slug-Wechsel, Domain- oder Hosting-Wechsel. Quellen: `journal_list` (Änderungen und Notizen in diesem Workspace) und Rückfrage beim User. **Recheck-Zeitpunkt:** nach jeder Änderung einige Wochen warten; eine Neubewertung der Qualität ist erst nach dem nächsten Core-Update belastbar, nicht nach einem festen Termin. Die Aussage „Erholung dauert Monate” gilt nur, wenn der Einbruch zeitlich auf ein Core- oder Spam-Update fällt.
+
 ### 5 — Content-Lücken (Selbst-Gap + Markt-Gap)
 **Selbst-Gap (eigene Domain):**
 - `dfs_keyword_ideas_for_domain` (Domain) + `dfs_related_keywords` (Seed aus den Top-Themen) → was die Domain targeten könnte; `dfs_keyword_overview` (Liste, max. 700) → Volumen, CPC, Difficulty und Intent in einem Call.
@@ -100,6 +109,7 @@ Achten auf: schlechtes Mobil-LCP (häufigster Killer), CLS durch Cookie-Banner (
 - `dfs_backlink_summary` (Domain) → Profil + `broken_backlinks`-Zähler.
 - `dfs_backlink_competitors` (Domain) → wer ein ähnliches/stärkeres Profil hat = SEO-Konkurrenz, Link-Gap. Bei dünner Datenlage kann eine Null-Zeile zurückkommen — defensiv auf `domain=null` prüfen, nicht als Konkurrent rendern.
 - **Broken Backlinks = höchster Quick-Win:** erst `broken_backlinks` > 0 aus `dfs_backlink_summary` prüfen — `dfs_backlinks_list(mode="broken")` crasht bei 0 Treffern. Dann liefert es die konkrete Link-Liste (`url_from`, `url_to`, `anchor`) statt nur des Aggregat-Zählers → Link zeigt auf 404 → 301 auf passendes Ziel, Linkkraft zurückholen.
+- **Neue oder kaum indexierte Site:** Wenige Links von thematisch nahen Seiten (Integrationspartner, Branchenverzeichnisse, Communities) helfen Google beim Finden und Einordnen mehr als Indexierungsanträge in der Search Console. Ein Verzeichnis-Eintrag ist eine Fundstelle, kein Gütesiegel. Eigene Daten oder Studien sind ein Hebel für solche Links, keine Voraussetzung für die Indexierung.
 - **Kein Disavow empfehlen** (außer bei manueller Maßnahme in GSC oder selbst aufgebautem Link-Schema) — SpamBrain ignoriert Spam-Links automatisch; das größere Risiko ist, gute Links wegzudisavowen.
 > Backlink-Tools sind global (kein location-Parameter) — ok, Links sind länderunabhängig.
 
@@ -135,6 +145,10 @@ Veraltet oder widerlegt — nennst du das als Befund, verlierst du Glaubwürdigk
 - **PageRank-Verlust durch Redirects** → Mythos; bei Redirects zählen Ketten/Loops/Latenz, nicht „verlorene Linkkraft”.
 - **`llms.txt`** → kein AI-Engine nutzt es.
 - **„3-Klick-Regel”, „E-E-A-T-Score”** → Folklore bzw. kein direkter Faktor; E-E-A-T über Proxies (Trust-Signale, Autoren, Marken-Erwähnungen). (Die 3-Klick-Regel ist als *Ranking-Regel* Folklore — flache, logische Architektur bleibt trotzdem sinnvoll, nur ohne die Zahl als Beleg.)
+- **Wiederholte Indexierungsanträge** in der URL-Prüfung → bringen nichts. Ein einzelner Antrag schadet nicht.
+- **Indexing API für normale Seiten** → ist nur für `JobPosting` und `BroadcastEvent` freigegeben.
+- **Sitemap-Ping** → Google hat den Ping-Endpunkt 2023 abgeschaltet. Stattdessen `lastmod` korrekt pflegen und die Sitemap in der Search Console einreichen.
+- **„Viele Seiten = Spam”** → „scaled content abuse” hängt am Zweck (Rankings manipulieren ohne Mehrwert), nicht an der Menge.
 - **Keyword-Difficulty-Scores aus fremden Tools** (z.B. Ahrefs/SEMrush-artige Werte) zitieren → nutze stattdessen `dfs_keyword_overview` (unsere eigene, konsistente Difficulty-Metrik); fremde Scores sind nicht vergleichbar.
 
 ## Output-Format
@@ -146,6 +160,7 @@ Veraltet oder widerlegt — nennst du das als Befund, verlierst du Glaubwürdigk
    - **Fix** — konkrete Maßnahme
    - **Priorität** — 1-5
 3. **Maßnahmenplan in 4 Stufen:** Kritisch (blockiert Ranking/Indexierung) · High-Impact · Quick Wins · Langfristig.
+   Bei Indexierungsproblemen kommt die **Eskalation zuletzt**, erst nach Technik, Qualität und Links: ein Thread in der Google Search Central Help Community; bei begründetem Verdacht auf einen Fehler bei Google zusätzlich das Formular für Indexierungsprobleme. Die Erwartung niedrig ansetzen und das dem User so sagen. SEO Office Hours nur nachrangig.
 
 Der **Beleg** ist Pflicht und immer eine echte Zahl aus den Tools — kein „könnte sein”.
 
@@ -159,6 +174,7 @@ Biete am Ende an, die sicher behebbaren Punkte direkt zu erledigen. **Immer vorh
 
 ## Grenzen (ehrlich benennen)
 - Seitenweiter Crawl ist jetzt möglich (`dfs_onpage_crawl`), aber kostenpflichtig/asynchron — ohne explizit angeforderten Crawl bleibt es bei geprüften Einzel-URLs; Interne-Verlinkungs-/Orphan-Aussagen sind dann weiterhin beratend.
+- Keine Crawling-Statistik (Crawl-Nachfrage, Hoststatus): die API liefert sie nicht, nur die GSC-Oberfläche. Den User um einen Screenshot bitten.
 - Kein GSC-Gesamt-Coverage-Report (Googles eigene Index-Entscheidung bleibt URL-für-URL via `sc_url_inspection`) — technische Indexierbarkeit site-weit (robots/noindex) ist über `dfs_onpage_crawl_results(task_id, section="non_indexable")` separat prüfbar, ersetzt aber nicht GSCs Coverage-Urteil.
 - Domain-Rank-Historie über `dfs_historical_rank_overview` (Monatswerte, Domain-Aggregat) — auf Einzel-Keyword-Ebene liefert das Tool keine Historie, dafür bleibt Snapshot-Diffing nötig (`references/content-gap.md`).
 - **DataForSEO-Calls kosten pro Aufruf** — Keyword-/SERP-/Backlink-Calls auf die 3-5 Ziel-Keywords und 2-3 Konkurrenz-Domains fokussieren, nicht breit streuen; Crawls zusätzlich über `max_crawl_pages` deckeln.
@@ -180,7 +196,7 @@ Biete am Ende an, die sicher behebbaren Punkte direkt zu erledigen. **Immer vorh
 > **Parameter-Namen exakt treffen** (häufige Verwechsler): `dfs_keyword_rankings` → `domain` · `dfs_serp_google_organic` → `keyword` · `dfs_onpage_instant` → `url` · `dfs_backlink_summary`/`dfs_backlink_competitors` → `domain` · `dfs_backlinks_list` → `target`.
 
 ## Verwandte Skills
-`projekt-kontext` (Foundation, zuerst lesen) · `google-ads-audit` (bezahlte Suche / Ads) · `geo-audit` (KI-Sichtbarkeit + Schema-Tiefe — Schwester-Skill) · `wochenreport` · `tracking-check` (Tracking-Setup und -Fixes)
+`projekt-kontext` (Foundation, zuerst lesen) · `google-ads-audit` (bezahlte Suche / Ads) · `geo-audit` (KI-Sichtbarkeit + Schema-Tiefe — Schwester-Skill) · `wochenreport` · `tracking-check` (Tracking-Setup und -Fixes) · `content` (Plugin content-studio, Modus D: Seiten verbessern oder streichen, falls installiert)
 
 ## Referenzen
 - `references/dach-seo.md` — hreflang-Matrix, Citation-Listen je Land, Pixel-Snippet-Details, AEO-DACH, AT/CH-Linter, Impressum/Datenschutz-Checkliste.

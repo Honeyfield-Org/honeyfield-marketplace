@@ -160,5 +160,30 @@
       "Verortet den Einbruch zeitlich mit sc_performance und dimensions=[\"date\"]"
     ],
     "files": ["SKILL.md"]
+  },
+  {
+    "id": "crawled-not-indexed-new-site",
+    "prompt": "Unsere Website ist seit vier Monaten online, aber Google indexiert kaum etwas, nicht einmal die Startseite. In der Search Console steht 'Gecrawlt, zurzeit nicht indexiert'. Wir haben die Indexierung schon oft beantragt. Was sollen wir tun?",
+    "expected_output": "Schließt zuerst die Technik pro Seite aus (sc_url_inspection, Status, noindex, Canonical), wertet die fehlende Startseite als Signal für die ganze Site, bewertet dann die Qualität der ganzen Site beratend und empfiehlt Links von thematisch nahen Seiten. Rät von weiteren Anträgen, Indexing API und Sitemap-Ping ab. Eskalation über Help Community und Formular erst zuletzt, mit niedriger Erwartung.",
+    "assertions": [
+      "Prüft die Technik mit sc_url_inspection, bevor er ein Qualitätsproblem annimmt",
+      "Wertet die nicht indexierte Startseite als Befund für die ganze Site",
+      "Empfiehlt keine wiederholten Indexierungsanträge und nicht die Indexing API",
+      "Empfiehlt Links von thematisch nahen Seiten",
+      "Bittet um die Crawling-Statistik aus der GSC-Oberfläche, statt sie als gemessen auszugeben"
+    ],
+    "files": ["SKILL.md"]
+  },
+  {
+    "id": "traffic-drop-no-update-own-migration",
+    "prompt": "Seit Ende Juli sind fast alle unsere Seiten aus dem Google-Index gefallen. Im Juli gab es kein Google-Update. Woran kann das liegen?",
+    "expected_output": "Verortet den Einbruch mit sc_performance und dimensions=[\"date\"], findet kein Update und kein bekanntes Ereignis am Datum und fragt deshalb nach eigenen Änderungen am Datum (Relaunch, Migration, URL- oder Slug-Wechsel), auch über journal_list. Koppelt den Recheck an das nächste Core-Update statt an einen festen Termin.",
+    "assertions": [
+      "Fragt nach eigenen Änderungen am Datum wie Migration oder URL-Wechsel",
+      "Nutzt journal_list oder eine Rückfrage beim User als Quelle für eigene Änderungen",
+      "Verortet den Einbruch zeitlich mit sc_performance und dimensions=[\"date\"]",
+      "Koppelt den Recheck an das nächste Core-Update, nicht an einen festen Termin"
+    ],
+    "files": ["SKILL.md"]
   }
 ]
