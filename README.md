@@ -35,7 +35,7 @@ MCP-Tools in den Sitzungskontext aufgenommen werden.
 
 | Plugin | MCP-Server | Endpoint |
 |---|---|---|
-| `honeyfield-marketing-mcp` | Marketing-Ops — Google Ads, GA4, Search Console, Google Business Profile, GTM, Clarity, DataForSEO (SEO-, Backlink-, OnPage-Crawl- & LLM-Sichtbarkeits-Daten), LinkedIn/Meta Ads, Strapi- & WordPress-CMS **+ Skills (Projekt-Kontext + Audits + Ad-Creative + Content-Strategie + Wochenreport)** | `https://mcp.ads.honeyfield.at/mcp` |
+| `honeyfield-marketing-mcp` | Marketing-Ops — Google Ads, GA4, Search Console, Google Business Profile, GTM, Clarity, DataForSEO (SEO-, Backlink-, OnPage-Crawl- & LLM-Sichtbarkeits-Daten), Bing Webmaster Tools, LinkedIn/Meta/OpenAI Ads, lemlist, Strapi- & WordPress-CMS **+ Skills (Projekt-Kontext + Audits + Ad-Creative + Content-Strategie + Wochenreport)** | `https://mcp.ads.honeyfield.at/mcp` |
 | `honeyfield-legal-mcp` | Legal — österreichisches Recht (RIS: Bundes-/Landesrecht, Judikatur, BGBl/LGBl, Gemeinderecht) und EU-Recht (EUR-Lex: Rechtsakte, Konsolidierungen, Zitate, EuGH) **+ Skills (Rechtsrecherche + Judikatur)** | `https://mcp.honeyfield.at/ris/mcp` + `https://mcp.honeyfield.at/eurlex/mcp` |
 | `rent2b-mcp` | rent2b-Vermietungsverwaltung — Buchungen & Anfragen, Verfügbarkeit/Kalender, Preise & Staffelpreise (Langzeitrabatte), Artikel & Räume, Gäste, Statistiken; Login mit dem rent2b-Konto **+ interaktiver Launcher-Skill (`rent2b`)** | `https://mcp.honeyfield.at/rent2b/mcp` |
 
@@ -47,10 +47,12 @@ Rechts-Server (RIS + EUR-Lex) **und** die Legal-Skills; `rent2b-mcp` bündelt
 die rent2b-API (156 Tools) **und** den interaktiven Launcher-Skill — ein
 Install, alles dabei.
 
-Der vollständige Tool-Katalog (248 Tools über 11 Quellen, je Tool mit Quelle und
-Read/Write-Kennzeichnung) steht in
+Der vollständige Tool-Katalog (362 Tools über 14 Quellen, je Tool mit Quelle und
+Read/Write-Kennzeichnung, dazu die MCP-Prompts des Servers) steht in
 [`plugins/honeyfield-marketing-mcp/references/tool-map.md`](plugins/honeyfield-marketing-mcp/references/tool-map.md)
 — das ist die kanonische, modell-lesbare Referenz, die auch die Skills nutzen.
+Der CI-Check `.github/scripts/check_tool_map.py` gleicht sie mit einem Schnappschuss
+der Server-Registry ab (`.github/tool-registry/`).
 Der rent2b-Tool-Katalog (156 Tools, Präfix `rent2b_`, je Tool mit Read/Write-Kennzeichnung)
 steht analog in
 [`plugins/rent2b-mcp/references/tool-map.md`](plugins/rent2b-mcp/references/tool-map.md).

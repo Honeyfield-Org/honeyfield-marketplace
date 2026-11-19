@@ -115,5 +115,28 @@
       "Ruft bei Fehlern wp_bridge_status auf, statt zu improvisieren"
     ],
     "files": ["SKILL.md"]
+  },
+  {
+    "id": "briefing-und-freigabe-karte-bei-mehreren-aenderungen",
+    "prompt": "/honeyfield-marketing-wizzard honeyfield: schließ die fünf teuersten Suchbegriffe ohne Conversion als negative Keywords aus.",
+    "expected_output": "Bestätigt den Workspace über list_workspaces, liest workspace_briefing und beachtet dessen Vorgaben. Ermittelt die Suchbegriffe über ads_search_terms, ruft dann aenderungen_vorschlagen mit fünf Einträgen (art, objekt, nachher, grund, tool) auf und stoppt. Führt erst nach der Freigabe nur die freigegebenen Einträge mit ads_add_negative_keyword bzw. ads_bulk_add_negative_keywords aus und protokolliert per journal_add_note.",
+    "assertions": [
+      "Ruft workspace_briefing vor der Schreib-Aktion auf",
+      "Zeigt die fünf Änderungen gesammelt über aenderungen_vorschlagen statt fünf Einzel-Rückfragen",
+      "Schreibt nichts, bevor der Nutzer die Einträge freigegeben hat, und führt nur die freigegebenen aus",
+      "Protokolliert die ausgeführten Änderungen per journal_add_note"
+    ],
+    "files": ["SKILL.md"]
+  },
+  {
+    "id": "kunden-ampel-quick-check",
+    "prompt": "marketing hub: wie steht es diese Woche um alle meine Kunden?",
+    "expected_output": "Erkennt einen Überblick über alle Kunden. Ruft workspace_dashboard ohne workspace auf (bzw. ohne App-Anzeige workspace_kennzahlen je Workspace aus list_workspaces oder den Workflow wochenstart über workflow_starten) und zeigt die Ampel je Kunde mit Begründung, rote zuerst. Erfindet keine Zahlen, die die Tools nicht liefern.",
+    "assertions": [
+      "Nutzt workspace_dashboard, workspace_kennzahlen oder workflow_starten(workflow='wochenstart') statt eines vollen Wochenreports je Kunde",
+      "Listet den Inhalt einer angezeigten MCP-App-Karte nicht noch einmal komplett auf",
+      "Nennt keine Kennzahlen, die nicht aus den Tool-Ergebnissen stammen"
+    ],
+    "files": ["SKILL.md"]
   }
 ]
