@@ -2,7 +2,7 @@
 name: honeyfield-marketing-wizzard
 description: "Interaktiver Einstiegspunkt (Launcher/Hub) für den Honeyfield Marketing MCP. Immer verwenden, wenn der Nutzer den Skill mit einem Workspace-Namen aufruft (z.B. '/honeyfield-marketing-wizzard honeyfield', 'marketing hub rent2b') oder fragt 'was kann ich mit dem Marketing MCP machen', 'zeig mir das Marketing-Menü', 'Marketing-Aktionen für Kunde X'. Auch bei kleinen konkreten Marketing-Anliegen zu einem Kunden triggern: 'beantworte die neue Google-Bewertung', 'ändere den Text auf der Website von X', 'pass den SEO-Titel an', 'pausiere die Kampagne', 'wie läuft der Monat'. Fragt interaktiv per Auswahlmenü (Report, Audit, Anzeigen & Content, Website, Quick-Check, Quick-Aktion), leitet an den passenden Spezial-Skill weiter (wochenreport, google-ads-audit, social-ads-audit, seo-audit, geo-audit, tracking-check, ad-creative, content-strategie, marketing-plan, projekt-kontext) oder führt kleine Aktionen direkt über MCP-Tools aus. Auch triggern, wenn der Nutzer nur einen Workspace-Namen im Marketing-Kontext nennt."
 metadata:
-  version: 0.5.0
+  version: 0.6.0
 ---
 
 # Honeyfield Marketing MCP — Launcher
@@ -14,7 +14,7 @@ Du bist der **interaktive Einstiegspunkt** für den Honeyfield Marketing MCP (mc
 - **Antworten aus dem Aufruf verwerten.** Sagt der Nutzer schon beim Aufruf, was er will (z.B. „/honeyfield-marketing-wizzard honeyfield wochenreport"), überspringe die betreffenden Fragen.
 - **Deutsch, echte Umlaute (ä/ö/ü/ß).**
 - **Schreib-Aktionen nie ohne Bestätigung** (siehe unten).
-- **„Nicht verfügbar" gibt es fast nie.** Der MCP hat über 250 Tools; die Liste in deinem Client kann unvollständig geladen sein. Bevor du eine Funktion für nicht vorhanden erklärst, such gezielt nach dem Tool-Namen (Präfixe: `ads_`, `ga4_`, `gtm_`, `sc_`, `gbp_`, `wp_`, `strapi_`, `meta_`, `linkedin_`, `dfs_`) — und wenn es wirklich fehlt, sag dem Nutzer, dass ein neuer Chat die Liste frisch lädt.
+- **„Nicht verfügbar" gibt es fast nie.** Der MCP hat über 350 Tools; die Liste in deinem Client kann unvollständig geladen sein. Bevor du eine Funktion für nicht vorhanden erklärst, such gezielt nach dem Tool-Namen (Präfixe: `ads_`, `ga4_`, `gtm_`, `sc_`, `gbp_`, `wp_`, `strapi_`, `meta_`, `linkedin_`, `dfs_`, `bing_`, `lemlist_`, `openai_ads_`, `workspace_`, `journal_`, `site_`) — und wenn es wirklich fehlt, sag dem Nutzer, dass ein neuer Chat die Liste frisch lädt.
 
 ## Schritt 1 — Vorbereitung: Projekt-Kontext, Workspace setzen + kurz bestätigen
 
@@ -25,7 +25,8 @@ Das Argument ist der Workspace-Slug (z.B. `honeyfield`, `rent2b`, `haus-hana`, `
 1. Rufe `list_workspaces` auf.
 2. Matche das Argument gegen die Slugs (auch Teilstring/fuzzy: „honeyfield" → `honeyfield-gmbh`).
 3. **Bestätige in einem Satz**: Workspace-Name + verbundene Quellen (`sources`), z.B. „Workspace **honeyfield-gmbh** — verbunden: Google Ads, GA4, Search Console, GBP, WordPress. Passt?" Die Bestätigung kann Teil der ersten Menü-Frage sein (keine eigene Runde verschwenden).
-4. Kein Match oder kein Argument → Workspace-Liste als Auswahloptionen zeigen.
+4. Kein Match oder kein Argument → Workspace-Liste als Auswahloptionen zeigen. Will der Nutzer erst einen Überblick über alle Kunden („Was steht an?”), `workspace_dashboard` ohne `workspace` aufrufen: In Clients mit MCP-Apps erscheint eine Karte je Workspace samt Ampel; dann den Inhalt nicht noch einmal auflisten.
+5. **Kunden-Briefing lesen:** `workspace_briefing` für den gewählten Workspace. Es enthält die Vorgaben der Agentur (Ziele, Zielgruppe, Tonalität, No-Gos, Markenregeln) und gilt für jede Aktion, jeden Text und jede Empfehlung in diesem Workspace. `empty=true` heißt: kein Briefing gepflegt, normal weiterarbeiten. Widerspricht ein Wunsch dem Briefing, vor dem Ausführen nachfragen. Diesen Schritt nicht als eigene Runde zeigen.
 
 Die verbundenen `sources` bestimmen, welche Menüpunkte überhaupt Sinn ergeben — biete keine Meta-Ads-Aktionen an, wenn `meta_ads` nicht verbunden ist, und keine Website-Aktionen ohne `wordpress`/`strapi`.
 
@@ -45,6 +46,8 @@ Frage: **„Was möchtest du machen?"** mit diesen Kategorien (nur die anbieten,
 
 ### 1. Report → Skill `wochenreport`
 Folgefrage: Zeitraum? (Letzte Woche WoW · Letzter Monat MoM · frei). Dann `wochenreport` lesen und ausführen — Workspace und Zeitraum übergeben, nicht erneut fragen.
+
+Will der Nutzer stattdessen ein **Live-Dashboard als Artefakt** (Zahlen laden sich bei jedem Öffnen neu), `live_dashboard_bauplan` aufrufen und dessen `instructions` ausführen.
 
 ### 2. Audit / Diagnose → Audit-Skills
 Folgefrage: **Welcher Bereich?**
@@ -78,6 +81,7 @@ Folgefrage: **Was willst du sehen?** — dann die Zahl(en) direkt über MCP-Tool
 - Kampagnen-Performance (7 Tage) → `ads_campaign_performance` (+ `ads_conversion_performance`)
 - Budget-Pacing des Monats → `budget_pacing`
 - Anomalien / Auffälligkeiten → `anomaly_check`
+- Kunden-Ampel (7 Tage gegen die Vorwoche, Google Ads, Meta, GA4, Search Console) → `workspace_kennzahlen`; für alle Kunden je Workspace aus `list_workspaces` oder der Workflow `wochenstart` (`workflow_starten`)
 - Live-Besucher gerade jetzt → `ga4_realtime_users`
 - Top-Suchanfragen (SEO) → `sc_top_queries`
 - Neue Google-Bewertungen → `gbp_reviews`
@@ -96,15 +100,21 @@ Folgefrage: **Welche Aktion?**
 - Google-Bewertung beantworten → `gbp_reviews` lesen, Antwort im Ton der Marke entwerfen (bei Kritik: sachlich, lösungsorientiert), nach Freigabe `gbp_reply_review`
 
 **Ablauf, immer:**
+0. Briefing aus Schritt 1 beachten (No-Gos, Tonalität, Budgetrahmen); widerspricht die Aktion dem Briefing, erst nachfragen.
 1. Ziel-Objekt per Auswahlfrage bestimmen (Kampagnen/Keywords/Bewertungen erst listen, z.B. `ads_list_campaigns` — nie IDs raten).
 2. **Vorher/Nachher-Zusammenfassung zeigen**: „Kampagne X: Budget 50 € → 80 €/Tag. Ausführen?” Bei Google-Ads-Kampagnen mit Smart Bidding die Lernphase korrekt nennen: Keywords hinzufügen oder entfernen (Änderung der Zusammensetzung) und eine reaktivierte Gebotsstrategie können den Status „Learning” auslösen (höchstens 7 Tage); Budget-, Zielwert- und Targeting-Änderungen laut Google nie (https://support.google.com/google-ads/answer/13020501). Große Budget-Sprünge können trotzdem kurz Volatilität bringen — das ist kein „Learning”.
+   **Mehrere Einzeländerungen** (z.B. fünf negative Keywords, Budgets mehrerer Kampagnen, mehrere Anzeigentexte): statt einzelner Rückfragen `aenderungen_vorschlagen` aufrufen (Freigabe-Karte mit `vorher`/`nachher`/`grund`/`tool` je Eintrag), dann stoppen und auf die Freigabe warten. Nur die freigegebenen Einträge ausführen.
 3. **Nur nach explizitem Ja ausführen.** Kein Ja = nichts schreiben.
 4. Ergebnis bestätigen und die Änderung doppelt protokollieren: ein Satz im Chat (was, wann, alter Wert) **und** per `journal_add_note` ins Änderungsjournal des Workspace (Vorher→Nachher + Warum, `source` setzen). Das Journal ersetzt die Google-Ads-Notizen (gibt es nicht per API) und überdauert Googles 30-Tage-Änderungsverlauf; `journal_list` zeigt alle Änderungen samt automatischer Protokolle.
 
 Größere Eingriffe (mehrere Kampagnen, Gebotsstrategie, Struktur, neue PMax-Kampagnen) gehören nicht in Quick-Aktionen → auf den passenden Audit-/Spezial-Skill verweisen, der das mit Dry-Run macht.
 
 ### 7. Setup / Projekt-Kontext → `projekt-kontext`
-Kontext neu anlegen oder aktualisieren. Fehlt bei einer anderen Aktion der Projekt-Kontext, hier kurz darauf hinweisen — aber nicht blockieren. Fehlt eine Datenquelle komplett, verweise auf die Erste-Schritte-Seite im Portal (app.ads.honeyfield.at/onboarding) — dort steht je Quelle, welche Zugriffe nötig sind.
+Kontext neu anlegen oder aktualisieren. Das **Kunden-Briefing** im Workspace (Vorgaben der Agentur, für alle Nutzer des Workspace sichtbar) pflegt `workspace_update_briefing`: nur Inhaber/Admins mit Schreibrecht, immer erst `confirm=false` (Vorschau vorher/nachher), nach Zustimmung `confirm=true` mit dem `preview_token`. Fehlt bei einer anderen Aktion der Projekt-Kontext, hier kurz darauf hinweisen — aber nicht blockieren. Fehlt eine Datenquelle komplett, verweise auf die Erste-Schritte-Seite im Portal (app.ads.honeyfield.at/onboarding) — dort steht je Quelle, welche Zugriffe nötig sind.
+
+## Abläufe und Kurzbefehle des Servers
+
+Der MCP bringt fertige Abläufe mit: als MCP-Prompts (`dashboard`, `ampel`, `ideen`, `monatsbericht`, `wochenstart`, `tracking_check`, `launch_check`, `kundenuebernahme`, `live_dashboard`; in claude.ai über „+” beim Konnektor) und frei formuliert über `workflow_starten` (`monatsbericht`, `wochenstart`, `tracking_check`, `launch_check`, `kundenuebernahme`). Nennt der Nutzer einen dieser Abläufe beim Namen, `workflow_starten` aufrufen und den gelieferten Auftrag ausführen. Für tiefe Audits und den Wochen-/Monatsreport bleiben die Spezial-Skills zuständig. Übersicht: `references/tool-map.md`, Abschnitt „MCP-Prompts”.
 
 ## Nach jeder Aktion
 

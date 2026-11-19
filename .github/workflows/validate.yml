@@ -67,6 +67,11 @@ jobs:
             || python3 -m pip install --quiet --break-system-packages pyyaml
           python3 .github/scripts/check_skill_frontmatter.py
 
+      - name: Check tool-map vs. server registry snapshot
+        run: |
+          set -e
+          python3 .github/scripts/check_tool_map.py
+
       - name: Claude plugin validate
         run: |
           set -e
