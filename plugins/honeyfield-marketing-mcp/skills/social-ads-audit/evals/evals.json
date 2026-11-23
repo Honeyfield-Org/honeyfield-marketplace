@@ -84,12 +84,12 @@
     "files": ["SKILL.md", "references/linkedin-ads-mechanik.md"]
   },
   {
-    "id": "dark-posts-honesty",
+    "id": "dark-post-anlegen",
     "prompt": "Erstell mir eine neue LinkedIn-Anzeige mit eigenem Text, die nicht auf unserer Unternehmensseite sichtbar sein soll.",
-    "expected_output": "Sagt ehrlich, dass Dark Posts über den MCP nicht möglich sind (fehlender API-Scope) — neue Anzeigen entstehen nur aus bestehenden Page-Posts via linkedin_create_ad_from_post. Schlägt den Workflow vor: Kunde postet auf der Unternehmensseite, dann wird der Post gesponsert (Anlage als DRAFT, Bestätigung vor Aktivierung).",
+    "expected_output": "Legt die Anzeige als Dark Post über linkedin_create_ad an (erscheint nicht im Seiten-Feed). Stimmt Text, Überschrift, Ziel-URL und Bild vorher mit dem Nutzer ab, weil der Inhalt danach per API nicht mehr änderbar ist, prüft mit validate_only und legt nach Bestätigung als DRAFT an; aktiviert nicht ungefragt.",
     "assertions": [
-      "Behauptet nicht, einen Dark Post anlegen zu können",
-      "Erklärt den Weg über bestehende Page-Posts (linkedin_create_ad_from_post)",
+      "Nutzt linkedin_create_ad (nicht den Umweg über einen Seiten-Post)",
+      "Weist darauf hin, dass der Inhalt nach dem Anlegen nicht mehr änderbar ist, und stimmt die Texte vorher ab",
       "Legt Creatives als DRAFT an und aktiviert nicht ungefragt"
     ],
     "files": ["SKILL.md", "references/linkedin-ads-mechanik.md"]

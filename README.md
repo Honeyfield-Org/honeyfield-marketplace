@@ -47,7 +47,7 @@ Rechts-Server (RIS + EUR-Lex) **und** die Legal-Skills; `rent2b-mcp` bündelt
 die rent2b-API (156 Tools) **und** den interaktiven Launcher-Skill — ein
 Install, alles dabei.
 
-Der vollständige Tool-Katalog (362 Tools über 14 Quellen, je Tool mit Quelle und
+Der vollständige Tool-Katalog (365 Tools über 14 Quellen, je Tool mit Quelle und
 Read/Write-Kennzeichnung, dazu die MCP-Prompts des Servers) steht in
 [`plugins/honeyfield-marketing-mcp/references/tool-map.md`](plugins/honeyfield-marketing-mcp/references/tool-map.md)
 — das ist die kanonische, modell-lesbare Referenz, die auch die Skills nutzen.
