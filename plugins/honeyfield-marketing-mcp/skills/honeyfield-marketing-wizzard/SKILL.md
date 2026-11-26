@@ -2,7 +2,7 @@
 name: honeyfield-marketing-wizzard
 description: "Interaktiver Einstiegspunkt (Launcher/Hub) für den Honeyfield Marketing MCP. Immer verwenden, wenn der Nutzer den Skill mit einem Workspace-Namen aufruft (z.B. '/honeyfield-marketing-wizzard honeyfield', 'marketing hub rent2b') oder fragt 'was kann ich mit dem Marketing MCP machen', 'zeig mir das Marketing-Menü', 'Marketing-Aktionen für Kunde X'. Auch bei kleinen konkreten Marketing-Anliegen zu einem Kunden triggern: 'beantworte die neue Google-Bewertung', 'ändere den Text auf der Website von X', 'pass den SEO-Titel an', 'pausiere die Kampagne', 'wie läuft der Monat'. Fragt interaktiv per Auswahlmenü (Report, Audit, Anzeigen & Content, Website, Quick-Check, Quick-Aktion), leitet an den passenden Spezial-Skill weiter (wochenreport, google-ads-audit, social-ads-audit, seo-audit, geo-audit, tracking-check, ad-creative, content-strategie, marketing-plan, projekt-kontext) oder führt kleine Aktionen direkt über MCP-Tools aus. Auch triggern, wenn der Nutzer nur einen Workspace-Namen im Marketing-Kontext nennt."
 metadata:
-  version: 0.6.0
+  version: 0.7.0
 ---
 
 # Honeyfield Marketing MCP — Launcher
@@ -14,7 +14,7 @@ Du bist der **interaktive Einstiegspunkt** für den Honeyfield Marketing MCP (mc
 - **Antworten aus dem Aufruf verwerten.** Sagt der Nutzer schon beim Aufruf, was er will (z.B. „/honeyfield-marketing-wizzard honeyfield wochenreport"), überspringe die betreffenden Fragen.
 - **Deutsch, echte Umlaute (ä/ö/ü/ß).**
 - **Schreib-Aktionen nie ohne Bestätigung** (siehe unten).
-- **„Nicht verfügbar" gibt es fast nie.** Der MCP hat über 350 Tools; die Liste in deinem Client kann unvollständig geladen sein. Bevor du eine Funktion für nicht vorhanden erklärst, such gezielt nach dem Tool-Namen (Präfixe: `ads_`, `ga4_`, `gtm_`, `sc_`, `gbp_`, `wp_`, `strapi_`, `meta_`, `linkedin_`, `dfs_`, `bing_`, `lemlist_`, `openai_ads_`, `workspace_`, `journal_`, `site_`) — und wenn es wirklich fehlt, sag dem Nutzer, dass ein neuer Chat die Liste frisch lädt.
+- **„Nicht verfügbar" gibt es fast nie.** Der MCP hat über 400 Tools; die Liste in deinem Client kann unvollständig geladen sein. Bevor du eine Funktion für nicht vorhanden erklärst, such gezielt nach dem Tool-Namen (Präfixe: `ads_`, `ga4_`, `gtm_`, `sc_`, `gbp_`, `wp_`, `strapi_`, `microsoft_ads_`, `meta_`, `linkedin_`, `dfs_`, `bing_`, `lemlist_`, `openai_ads_`, `workspace_`, `journal_`, `site_`) — und wenn es wirklich fehlt, sag dem Nutzer, dass ein neuer Chat die Liste frisch lädt.
 
 ## Schritt 1 — Vorbereitung: Projekt-Kontext, Workspace setzen + kurz bestätigen
 
@@ -51,7 +51,7 @@ Will der Nutzer stattdessen ein **Live-Dashboard als Artefakt** (Zahlen laden si
 
 ### 2. Audit / Diagnose → Audit-Skills
 Folgefrage: **Welcher Bereich?**
-- Google Ads (Spend, CPA, Wasted Spend) → `google-ads-audit`
+- Google Ads oder Microsoft Ads (Spend, CPA, Wasted Spend) → `google-ads-audit`
 - Meta / LinkedIn Ads → `social-ads-audit`
 - SEO / organisches Ranking → `seo-audit`
 - KI-Sichtbarkeit (ChatGPT, Perplexity, AI Overviews) → `geo-audit`
@@ -92,7 +92,7 @@ Fällt beim Quick-Check etwas Größeres auf, biete den passenden Audit als Folg
 
 ### 6. Quick-Aktion (Schreiben — nur mit Bestätigung)
 Folgefrage: **Welche Aktion?**
-- Kampagne pausieren/aktivieren → `ads_update_campaign_status` (bzw. `meta_update_campaign`; LinkedIn siehe nächster Punkt)
+- Kampagne pausieren/aktivieren → `ads_update_campaign_status` (bzw. `microsoft_ads_update_campaign_status`, `meta_update_campaign`; LinkedIn siehe nächster Punkt)
 - **LinkedIn: erst die Ebene klären.** Seit 10/2025 heißt im Campaign Manager die alte „Campaign Group” jetzt „Campaign” und die alte „Campaign” jetzt „Ad set”; API und Tools nutzen die alten Namen. UI-„Campaign” → `linkedin_list_campaign_groups`, dann `linkedin_update_campaign_group` (`status`); UI-„Ad set” → `linkedin_list_campaigns`, dann `linkedin_update_campaign_status`. In der Rückfrage beide Namen nennen, z. B. „Kampagne (UI: Ad set)”.
 - Tagesbudget ändern → `ads_update_campaign_budget`
 - Negative Keywords setzen → `ads_add_negative_keyword` / `ads_bulk_add_negative_keywords`

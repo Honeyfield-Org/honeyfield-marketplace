@@ -1,8 +1,8 @@
 ---
 name: wochenreport
-description: "Erstellt einen kanalübergreifenden Wochen- oder Monatsreport für einen Kunden — zieht die Kern-KPIs aus allen verbundenen Kanälen (Google Ads, Meta/LinkedIn Ads, Search Console, GA4, Google Business Profile, AI-Sichtbarkeit) und stellt sie als Zeitraum-Vergleich (Woche-über-Woche / Monat-über-Monat) zusammen. Nutze diesen Skill für regelmäßiges Reporting: „Wochenreport”, „Monatsreport”, „wie lief die Woche”, „wie war der Monat”, „KPI-Übersicht”, „Performance-Report”, „Reporting für Kunde X”, „fass mir die Zahlen zusammen”, „Report erstellen”. Read-only — der Report ändert nichts am Konto. Er orchestriert statt zu duplizieren: bei Auffälligkeiten verweist er auf den passenden Audit. Für die tiefe Diagnose eines konkreten Problems nutze direkt `google-ads-audit` (bezahlte Suche), `social-ads-audit` (Meta/LinkedIn), `seo-audit` (organisch), `geo-audit` (KI-Sichtbarkeit) oder `tracking-check` (Conversion-Tracking). Kalibriert auf DACH (DE/AT/CH)."
+description: "Erstellt einen kanalübergreifenden Wochen- oder Monatsreport für einen Kunden — zieht die Kern-KPIs aus allen verbundenen Kanälen (Google Ads, Microsoft Ads, Meta/LinkedIn Ads, Search Console, GA4, Google Business Profile, AI-Sichtbarkeit) und stellt sie als Zeitraum-Vergleich (Woche-über-Woche / Monat-über-Monat) zusammen. Nutze diesen Skill für regelmäßiges Reporting: „Wochenreport”, „Monatsreport”, „wie lief die Woche”, „wie war der Monat”, „KPI-Übersicht”, „Performance-Report”, „Reporting für Kunde X”, „fass mir die Zahlen zusammen”, „Report erstellen”. Read-only — der Report ändert nichts am Konto. Er orchestriert statt zu duplizieren: bei Auffälligkeiten verweist er auf den passenden Audit. Für die tiefe Diagnose eines konkreten Problems nutze direkt `google-ads-audit` (bezahlte Suche, Google und Microsoft), `social-ads-audit` (Meta/LinkedIn), `seo-audit` (organisch), `geo-audit` (KI-Sichtbarkeit) oder `tracking-check` (Conversion-Tracking). Kalibriert auf DACH (DE/AT/CH)."
 metadata:
-  version: 0.6.0
+  version: 0.7.0
 ---
 
 # Wochenreport
@@ -19,8 +19,8 @@ Zwei Eigenschaften definieren diesen Skill:
 
 **Projekt-Kontext zuerst.** Liegt für dieses Projekt ein Projekt-Kontext vor — als **Projektwissen** in diesem Claude-Projekt oder als `projekt-kontext.md` im Arbeitsverzeichnis —, nutze ihn, bevor du fragst, und frage nur nach, was dort fehlt oder für diese Aufgabe spezifisch ist. Beachte gesetzte `compliance`-Flags als harte Leitplanke. Fehlt der Kontext, biete an, ihn per `projekt-kontext` anzulegen, oder frage knapp: welcher Kunde/Workspace, welcher Zeitraum, welche Ziel-KPIs.
 
-**Workspace + Datenquellen klären.** Rufe `list_workspaces` auf und prüfe die `sources` des Ziel-Workspace. **Der Report ist adaptiv:** Nimm nur die Kanäle auf, deren Quelle verbunden ist. Fehlt eine Quelle (z.B. kein `search_console`), nenne sie als Lücke im Report — rate keine Zahlen zusammen.
-- `google_ads` → Ads-Block · `meta_ads` / `linkedin_ads` → Social-Ads-Block · `search_console` → SEO-Block · `business_profile` → Local-Block · `ga4` → Web-Block · `dataforseo` → AI-Sichtbarkeit als echte KPI (`dfs_llm_mentions_metrics`, unabhängig von `ga4`); ohne `dataforseo` (oder bei `subscription_required`) fällt AI-Sichtbarkeit auf die `ga4`-Referrer-Näherung zurück — fehlen beide Quellen, entfällt der Block ganz.
+**Workspace + Datenquellen klären.** Rufe `list_workspaces` auf und prüfe die `sources` des Ziel-Workspace (alternativ `workspace_briefing` → `quellen.verbunden` samt Tool-Präfix je Quelle). **Der Report ist adaptiv:** Nimm nur die Kanäle auf, deren Quelle verbunden ist. Fehlt eine Quelle (z.B. kein `search_console`), nenne sie als Lücke im Report — rate keine Zahlen zusammen.
+- `google_ads` → Ads-Block · `microsoft_ads` → Microsoft-Ads-Block · `meta_ads` / `linkedin_ads` → Social-Ads-Block · `search_console` → SEO-Block · `business_profile` → Local-Block · `ga4` → Web-Block · `dataforseo` → AI-Sichtbarkeit als echte KPI (`dfs_llm_mentions_metrics`, unabhängig von `ga4`); ohne `dataforseo` (oder bei `subscription_required`) fällt AI-Sichtbarkeit auf die `ga4`-Referrer-Näherung zurück — fehlen beide Quellen, entfällt der Block ganz.
 
 **Zeitraum festlegen.** Default: letzte abgeschlossene **Woche** (ISO-KW, Mo–So) vs. Vorwoche (WoW). Auf Wunsch Monat vs. Vormonat (MoM) oder frei. **Attributions-Lag beachten:** die letzten 1–3 Tage sind unvollständig — entweder ausklammern oder als vorläufig kennzeichnen. Viele Tools nehmen nur `days` (Fenster endet heute) — wie die Vorperiode je Tool sauber zu beschaffen ist: **Zeitraum-Mechanik in `references/report-kpis.md` (Pflicht vor jedem Δ).**
 
@@ -32,11 +32,12 @@ Arbeite die verbundenen Kanäle durch und ziehe je die Kern-KPIs mit Zeitraum-Ve
 
 1. **Tracking-Health (Gate, zuerst).** Kurzer Plausibilitäts-Check: kommen Conversions überhaupt an (`ads_conversion_performance` `last_gap_days`, `ga4_conversions`)? Bei totem Tracking / großer Ads-vs-GA4-Klaffung: **ganz oben als Blocker markieren** + auf `tracking-check` verweisen — sonst steht jede weitere Zahl auf Sand.
 2. **Google Ads** (`ads_campaign_performance`, `ads_conversion_performance`, `ads_impression_share`, `ads_budget_status`/`budget_pacing`): Spend, Conversions, CPA, ROAS, Klicks/CTR — je mit WoW-Δ nach der Zeitraum-Mechanik; Impression Share als **Snapshot ohne Vorperiode** kennzeichnen.
-3. **Social Ads (Meta/LinkedIn)** (`meta_campaign_performance`, `linkedin_campaign_performance`): Impressionen, Klicks, Spend, Conversions. **Read-only bleibt hart:** `linkedin_update_campaign_budget`/`linkedin_update_campaign_status` nie nutzen.
-4. **SEO / Search Console** (`sc_performance`, `sc_top_queries`, `sc_top_pages`): Klicks, Impressionen, Ø-Position, Top-Query-Bewegung; optional Marke vs. Nicht-Marke per Query-Regex. Gesamtwerte nie aus Query-Zeilen summieren (anonymisierte Suchanfragen fehlen dort).
-5. **Local / Google Business Profile** (`gbp_performance`): Anrufe, Website-Klicks, Routenanfragen, Impressionen (Maps/Suche) — für lokale Kunden Kern-Zahlen.
-6. **Web / GA4** (`ga4_report`, `ga4_conversions`, `ga4_traffic_sources`): Sessions, Conversions/Key Events, Engagement, Traffic nach Quelle.
-7. **AI-Sichtbarkeit** (`dfs_llm_mentions_metrics`, max. 10 Marken-/Themen-Keywords pro Call): Mentions/Citations/Share-of-Voice als WoW-KPI (Index nicht tagesaktuell, Lag nicht API-verifiziert — bei Stichtag-nahen WoW-Vergleichen vorsichtig sein). Schlägt der Zugriff fehl (`subscription_required`, z. B. Guthaben aufgebraucht), Degradation auf `ga4_traffic_sources` (`sessionSource`, days≥28) — grobe AI-Referrer-Menge, dann explizit als **beratend/Näherung** kennzeichnen.
+3. **Microsoft Ads** (`microsoft_ads_campaign_performance`, bei Bedarf `microsoft_ads_impression_share`): Spend, Conversions, Kosten je Conversion, Klicks/CTR. Die Tools nehmen `date_from`/`date_to`, die Vorperiode ist also direkt abrufbar. Gesamtzahlen nur aus `total` von `microsoft_ads_campaign_performance`, nie aus `microsoft_ads_search_terms` summieren. Ist `microsoft_ads` verbunden, gehört der Block immer in den Report, auch wenn der Nutzer nur „Ads“ sagt.
+4. **Social Ads (Meta/LinkedIn)** (`meta_campaign_performance`, `linkedin_campaign_performance`): Impressionen, Klicks, Spend, Conversions. **Read-only bleibt hart:** `linkedin_update_campaign_budget`/`linkedin_update_campaign_status` nie nutzen.
+5. **SEO / Search Console** (`sc_performance`, `sc_top_queries`, `sc_top_pages`): Klicks, Impressionen, Ø-Position, Top-Query-Bewegung; optional Marke vs. Nicht-Marke per Query-Regex. Gesamtwerte nie aus Query-Zeilen summieren (anonymisierte Suchanfragen fehlen dort).
+6. **Local / Google Business Profile** (`gbp_performance`): Anrufe, Website-Klicks, Routenanfragen, Impressionen (Maps/Suche) — für lokale Kunden Kern-Zahlen.
+7. **Web / GA4** (`ga4_report`, `ga4_conversions`, `ga4_traffic_sources`): Sessions, Conversions/Key Events, Engagement, Traffic nach Quelle.
+8. **AI-Sichtbarkeit** (`dfs_llm_mentions_metrics`, max. 10 Marken-/Themen-Keywords pro Call): Mentions/Citations/Share-of-Voice als WoW-KPI (Index nicht tagesaktuell, Lag nicht API-verifiziert — bei Stichtag-nahen WoW-Vergleichen vorsichtig sein). Schlägt der Zugriff fehl (`subscription_required`, z. B. Guthaben aufgebraucht), Degradation auf `ga4_traffic_sources` (`sessionSource`, days≥28) — grobe AI-Referrer-Menge, dann explizit als **beratend/Näherung** kennzeichnen.
 
 **Anomalie-Assist:** `anomaly_check` (Google Ads, GA4 und Search Console in einem Call, läuft auch ohne Google Ads — `findings[].source` sagt, welcher Kanal; `sources.<quelle>.status` ≠ `checked` heißt „nicht geprüft”, nicht „unauffällig”; Clarity nur mit `include_clarity=True`, verbraucht 1 der 10 Tagesaufrufe) / `budget_pacing` (nur Google Ads) können Ausreißer vorschlagen — als Hinweis nutzen, nicht als alleinige Wahrheit.
 
@@ -46,7 +47,7 @@ Arbeite die verbundenen Kanäle durch und ziehe je die Kern-KPIs mit Zeitraum-Ve
 
 Für jede Auffälligkeit: **benennen (mit Zahl + Δ), einordnen (Kontext/Fallstrick prüfen), verweisen.** Nicht selbst tief diagnostizieren.
 - Conversions/Tracking auffällig → `tracking-check` zuerst, dann der Kanal.
-- Spend/CPA/ROAS/Impression-Share → `google-ads-audit`.
+- Spend/CPA/ROAS/Impression-Share (Google oder Microsoft) → `google-ads-audit`.
 - Organische Klicks/Position/Traffic-Einbruch → `seo-audit`.
 - Local (GBP-Anrufe/Klicks/Routen) auffällig → `seo-audit` (deckt `gbp_*` ab).
 - Social Ads (Meta/LinkedIn) auffällig → `social-ads-audit`.
@@ -72,6 +73,7 @@ Halte den Report scanbar (Tabellen, kurze Bullets). Jede Zahl ist echt aus den T
 
 ## Tools nach Kanal
 - Ads: `ads_campaign_performance`, `ads_conversion_performance`, `ads_impression_share`, `ads_budget_status`, `budget_pacing`
+- Microsoft Ads: `microsoft_ads_campaign_performance`, `microsoft_ads_impression_share`, `microsoft_ads_search_terms` (nur für Auffälligkeiten)
 - Anomalie-Assist (Ads + Web + SEO in einem Call): `anomaly_check` — Quelle google_ads / ga4 / search_console, mindestens eine verbunden; Clarity nur opt-in
 - Social Ads (read-only): `meta_campaign_performance`, `linkedin_campaign_performance`, `linkedin_list_campaigns`
 - SEO: `sc_performance`, `sc_top_queries`, `sc_top_pages`
