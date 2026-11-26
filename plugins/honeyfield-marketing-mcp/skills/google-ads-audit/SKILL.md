@@ -1,8 +1,8 @@
 ---
 name: google-ads-audit
-description: "Datengetriebener Google-Ads-Audit für einen Kunden-Account, kalibriert auf den DACH-Markt (DE/AT/CH). Nutze diesen Skill, wenn der Nutzer einen „Google-Ads-Audit”, eine „Ads-Analyse” oder einen „Ads-Check” will oder Performance-/Spend-Probleme diagnostizieren möchte. Auch bei: „warum performen meine Ads schlecht”, „wo verbrenne ich Budget”, „Wasted Spend / verschwendete Suchbegriffe”, „CPA/ROAS zu schlecht”, „Conversions eingebrochen”, „Impression Share verloren”, „Negatives/Suchbegriffe aufräumen” oder vage „mein Google Ads läuft nicht”. Zieht echte Daten aus dem Konto über den Marketing-Ops-MCP (+ GA4-Cross-Check fürs Conversion-Tracking) und kann behebbare Probleme — Negatives setzen, Keywords/Anzeigen pausieren, Budget und Gebote anpassen — nach Bestätigung direkt umsetzen. Für Reporting nutze `wochenreport`; für organisches Ranking `seo-audit`; für KI-Sichtbarkeit `geo-audit`; für tiefe Tracking-Diagnose `tracking-check`; für neue Anzeigentexte `ad-creative`."
+description: "Datengetriebener Google-Ads-Audit für einen Kunden-Account, kalibriert auf den DACH-Markt (DE/AT/CH). Nutze diesen Skill, wenn der Nutzer einen „Google-Ads-Audit”, eine „Ads-Analyse” oder einen „Ads-Check” will oder Performance-/Spend-Probleme diagnostizieren möchte. Auch bei: „warum performen meine Ads schlecht”, „wo verbrenne ich Budget”, „Wasted Spend / verschwendete Suchbegriffe”, „CPA/ROAS zu schlecht”, „Conversions eingebrochen”, „Impression Share verloren”, „Negatives/Suchbegriffe aufräumen” oder vage „mein Google Ads läuft nicht”. Microsoft Ads prüft er mit, falls verbunden. Zieht echte Daten aus dem Konto über den Marketing-Ops-MCP (+ GA4-Cross-Check fürs Conversion-Tracking) und kann behebbare Probleme — Negatives setzen, Keywords/Anzeigen pausieren, Budget und Gebote anpassen — nach Bestätigung direkt umsetzen. Für Reporting nutze `wochenreport`; für organisches Ranking `seo-audit`; für KI-Sichtbarkeit `geo-audit`; für tiefe Tracking-Diagnose `tracking-check`; für neue Anzeigentexte `ad-creative`."
 metadata:
-  version: 0.4.0
+  version: 0.5.0
 ---
 
 # Google-Ads-Audit
@@ -135,6 +135,13 @@ Jede Schreib-Aktion bewegt echtes Geld oder echte Auslieferung. Regel: **erst Dr
 - **Gebots-Modifier** → `ads_set_device_bid_modifier` u. ä. **Nur bei manuellem Bidding sinnvoll**; bei Smart Bidding höchstens −100 %-Ausschluss (s. Tool-Grenzen).
 - **Geo-Targeting umstellen** → `ads_update_geo_targeting`. Vorher: Kampagne, Einstellung alt → neu, erwartete Reichweiten-Wirkung zeigen, einzeln bestätigen.
 - **Tabu ohne ausführliche Rücksprache:** Kampagnen erstellen (`ads_create_campaign`), Gebotsstrategie umstellen (`ads_update_campaign_bidding_strategy` — startet eine Lernphase), `ads_apply_recommendation` pauschal anwenden.
+
+## Microsoft Ads mitprüfen (wenn `microsoft_ads` verbunden)
+Steht `microsoft_ads` in den `sources` (oder in `workspace_briefing` → `quellen.verbunden`), gehört Microsoft Ads in denselben Audit, auch wenn der Nutzer nur „Ads“ sagt. Ohne Verbindung melden die Tools „nicht verbunden“ mit Portal-Link: dann genau das als Lücke nennen, nicht „keine Berichte verfügbar“.
+- Phasen analog mit den `microsoft_ads_*`-Tools: Tracking (`microsoft_ads_list_uet_tags`, `microsoft_ads_list_conversion_goals`), Leistung (`microsoft_ads_campaign_performance` — Gesamtzahlen nur aus `total`), Suchbegriffe (`microsoft_ads_search_terms`, Negatives via `microsoft_ads_list_negative_keywords`), Keywords (`microsoft_ads_keyword_performance`), Anzeigen (`microsoft_ads_ad_performance`), Gebote/IS (`microsoft_ads_list_campaigns` → `bidding`, `microsoft_ads_impression_share`, `microsoft_ads_auction_insights`), Segmente (`microsoft_ads_device_performance`, `microsoft_ads_geo_performance`), Änderungen (`microsoft_ads_change_history`), Empfehlungen kritisch (`microsoft_ads_list_recommendations`).
+- Läuft ein Google-Ads-Import (`microsoft_ads_list_import_jobs`: letzter Lauf, Status, hinzugefügt/geändert/gelöscht/Fehler), die Import-Fehler und Abweichungen zu Google (Negatives, Budgets, Ziele) als Befund nennen und vor Änderungen klären, ob der Import sie wieder überschreiben kann (Import-Einstellungen in ads.microsoft.com, per API nicht lesbar).
+- Umsetzen mit denselben Regeln wie unten (vorher fragen, Freigabe-Karte): `microsoft_ads_add_negative_keywords`, `microsoft_ads_update_keyword_status`, `microsoft_ads_update_ad_status`, `microsoft_ads_update_campaign_budget`. Exakte Felder und Grenzen stehen in der Tool-Map.
+- Im Bericht Google und Microsoft je in eigener Tabelle, Summen getrennt (unterschiedliche Attribution).
 
 ## Grenzen (ehrlich benennen)
 - Momentaufnahme; Attributions-Lag verzerrt frische Conversions.

@@ -44,6 +44,18 @@ Kein Δ ohne saubere Perioden-Trennung — überlappende `days`-Fenster als Verg
 **Beleg-Stufe:** Conversions, CPA und ROAS tragen **„mit Tracking-Vorbehalt”**, solange das Tracking-Gate (unten) nicht grün ist.
 **Pacing-Check:** `budget_pacing` — liegt der Monats-Spend auf Kurs? Über-/Unter-Pacing als Auffälligkeit.
 
+## Microsoft Ads (Quelle: `microsoft_ads` verbunden)
+
+| KPI | Tool | WoW-Auffällig ab | Deep-Dive |
+|---|---|---|---|
+| Spend | `microsoft_ads_campaign_performance` (`total.cost`) | ±30 % ohne Budget-Änderung | `google-ads-audit` (Abschnitt Microsoft Ads) |
+| Conversions | `microsoft_ads_campaign_performance` | −25 % | `tracking-check` zuerst (UET-Tag/Ziele: `microsoft_ads_list_uet_tags`, `microsoft_ads_list_conversion_goals`), dann `google-ads-audit` |
+| Kosten je Conversion | `microsoft_ads_campaign_performance` (`cost_per_conversion`) | +40 % | `google-ads-audit` |
+| Impression Share | `microsoft_ads_impression_share` | −10 %-Punkte | `google-ads-audit` |
+| Klicks / CTR | `microsoft_ads_campaign_performance` | ±30 % | `google-ads-audit` |
+
+**Vorperiode:** Die Microsoft-Tools nehmen `date_from`/`date_to` (`YYYY-MM-DD`, inklusiv, max. 365 Tage) — Berichts- und Vorperiode also mit zwei Aufrufen sauber trennen. Gesamtzahlen nur aus `total`, nie aus `microsoft_ads_search_terms` summieren (Microsoft zeigt nicht jeden Suchbegriff). Microsoft ist bei DACH-Kunden meist der kleinere Suchkanal: niedriges Volumen ist eher Rauschen.
+
 ---
 
 ## Social Ads (Quelle: `meta_ads` / `linkedin_ads` verbunden)
